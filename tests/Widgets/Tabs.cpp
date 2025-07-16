@@ -309,6 +309,7 @@ TEST_CASE("[Tabs]")
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedBorderColorHover", "rgb(160, 170, 180)"));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", "(1, 2, 3, 4)"));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", "2"));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", "5"));
             }
 
             SECTION("set object property")
@@ -323,6 +324,7 @@ TEST_CASE("[Tabs]")
                 REQUIRE_NOTHROW(renderer->setProperty("SelectedBorderColorHover", tgui::Color{160, 170, 180}));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("DistanceToSide", 2));
+                REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
             }
 
             SECTION("functions")
@@ -337,6 +339,7 @@ TEST_CASE("[Tabs]")
                 renderer->setSelectedBorderColorHover({160, 170, 180});
                 renderer->setBorders({1, 2, 3, 4});
                 renderer->setDistanceToSide(2);
+                renderer->setRoundedBorderRadius(5);
             }
 
             REQUIRE(renderer->getProperty("BackgroundColor").getColor() == tgui::Color(10, 20, 30));
@@ -349,6 +352,7 @@ TEST_CASE("[Tabs]")
             REQUIRE(renderer->getProperty("SelectedBorderColorHover").getColor() == tgui::Color(160, 170, 180));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
             REQUIRE(renderer->getProperty("DistanceToSide").getNumber() == 2);
+            REQUIRE(renderer->getRoundedBorderRadius() == 5);
         }
 
         SECTION("textured")

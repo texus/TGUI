@@ -1612,7 +1612,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         {
             target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(backgroundColor, m_opacityCached),
                                         m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(borderColor, m_opacityCached));
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            states.transform.translate(m_bordersCached.getOffset());
         }
         else
         {

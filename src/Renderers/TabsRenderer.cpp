@@ -53,6 +53,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(TabsRenderer, TextureDisabledTab)
 
     TGUI_RENDERER_PROPERTY_NUMBER(TabsRenderer, DistanceToSide, 0)
+    TGUI_RENDERER_PROPERTY_NUMBER(TabsRenderer, RoundedBorderRadius, 0)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

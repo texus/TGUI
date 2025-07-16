@@ -664,6 +664,10 @@ namespace tgui
         {
             m_selectedBorderColorHoverCached = getSharedRenderer()->getSelectedBorderColorHover();
         }
+        else if (property == U"RoundedBorderRadius")
+        {
+            m_roundedBorderRadiusCached = getSharedRenderer()->getRoundedBorderRadius();
+        }
         else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
@@ -824,14 +828,20 @@ namespace tgui
 
     void Tabs::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        // Draw the borders around the tabs
-        if (m_bordersCached != Borders{0})
-        {
-            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
-        }
-
         const float borderWidth = (m_bordersCached.getLeftPlusRight()) / 2.f;
+        const bool roundedCorners = (m_roundedBorderRadiusCached > 0) && !m_spriteTab.isSet();
+        if (!roundedCorners)
+        {
+            // Draw the borders around the tabs
+            if (m_bordersCached != Borders{0})
+            {
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                states.transform.translate(m_bordersCached.getOffset());
+            }
+        }
+        else
+            states.transform.translate({borderWidth, 0});
+
         const float usableHeight = getSize().y - m_bordersCached.getTopPlusBottom();
         for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
@@ -839,6 +849,23 @@ namespace tgui
                 continue;
 
             RenderStates textStates = states;
+            if (roundedCorners)
+                textStates.transform.translate({0, m_bordersCached.getTop()});
+
+            Color backgroundColor;
+            if ((!m_enabled || !m_tabs[i].enabled) && m_backgroundColorDisabledCached.isSet())
+                backgroundColor = m_backgroundColorDisabledCached;
+            else if (m_selectedTab == static_cast<int>(i))
+            {
+                if ((m_hoveringTab == static_cast<int>(i)) && m_selectedBackgroundColorHoverCached.isSet())
+                    backgroundColor = m_selectedBackgroundColorHoverCached;
+                else
+                    backgroundColor = m_selectedBackgroundColorCached;
+            }
+            else if ((m_hoveringTab == static_cast<int>(i)) && m_backgroundColorHoverCached.isSet())
+                backgroundColor = m_backgroundColorHoverCached;
+            else
+                backgroundColor = m_backgroundColorCached;
 
             // Draw the background of the tab
             const Sprite* spriteTab = nullptr;
@@ -856,35 +883,31 @@ namespace tgui
             else if (m_spriteTab.isSet())
                 spriteTab = &m_spriteTab;
 
-            if (spriteTab)
+            if (roundedCorners)
             {
-                Sprite spriteTabCopy = *spriteTab;
-                spriteTabCopy.setSize({m_tabs[i].width, usableHeight});
-                target.drawSprite(states, spriteTabCopy);
+                states.transform.translate({-borderWidth, 0});
+                target.drawRoundedRectangle(states, {m_tabs[i].width + (2 * borderWidth), getSize().y}, Color::applyOpacity(backgroundColor, m_opacityCached),
+                                            m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                states.transform.translate({m_tabs[i].width + 2*borderWidth, 0});
             }
-            else // No texture was loaded
+            else
             {
-                if ((!m_enabled || !m_tabs[i].enabled) && m_backgroundColorDisabledCached.isSet())
-                    target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_backgroundColorDisabledCached, m_opacityCached));
-                else if (m_selectedTab == static_cast<int>(i))
+                if (spriteTab)
                 {
-                    if ((m_hoveringTab == static_cast<int>(i)) && m_selectedBackgroundColorHoverCached.isSet())
-                        target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
-                    else
-                        target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
+                    Sprite spriteTabCopy = *spriteTab;
+                    spriteTabCopy.setSize({m_tabs[i].width, usableHeight});
+                    target.drawSprite(states, spriteTabCopy);
                 }
-                else if ((m_hoveringTab == static_cast<int>(i)) && m_backgroundColorHoverCached.isSet())
-                    target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
-                else
-                    target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
-            }
+                else // No texture was loaded
+                    target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(backgroundColor, m_opacityCached));
 
-            // Draw the borders between the tabs
-            states.transform.translate({m_tabs[i].width, 0});
-            if ((borderWidth != 0) && (i < m_tabs.size() - 1))
-            {
-                target.drawFilledRect(states, {borderWidth, usableHeight}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
-                states.transform.translate({borderWidth, 0});
+                // Draw the borders between the tabs
+                states.transform.translate({m_tabs[i].width, 0});
+                if ((borderWidth != 0) && (i < m_tabs.size() - 1))
+                {
+                    target.drawFilledRect(states, {borderWidth, usableHeight}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                    states.transform.translate({borderWidth, 0});
+                }
             }
 
             // Highlight the borders of the selected and hovered tab when requested

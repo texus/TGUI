@@ -780,7 +780,7 @@ namespace tgui
                     else
                         target.drawBorders(states, m_bordersCached, {m_thumbs.first.width, m_thumbs.first.height}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
-                    states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+                    states.transform.translate(m_bordersCached.getOffset());
                 }
 
                 const Vector2f thumbInnerSize = {m_thumbs.first.width - m_bordersCached.getLeftPlusRight(),
@@ -817,7 +817,7 @@ namespace tgui
                     else
                         target.drawBorders(states, m_bordersCached, {m_thumbs.second.width, m_thumbs.second.height}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
-                    states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+                    states.transform.translate(m_bordersCached.getOffset());
                 }
 
                 const Vector2f thumbInnerSize = {m_thumbs.second.width - m_bordersCached.getLeftPlusRight(),

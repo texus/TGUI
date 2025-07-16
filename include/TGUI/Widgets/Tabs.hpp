@@ -464,6 +464,7 @@ namespace tgui
         Color     m_selectedTextColorCached;
         Color     m_selectedTextColorHoverCached;
         float     m_distanceToSideCached = 0;
+        float     m_roundedBorderRadiusCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

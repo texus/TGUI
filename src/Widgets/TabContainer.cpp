@@ -194,7 +194,7 @@ namespace tgui
     Panel::Ptr TabContainer::addTab(const String& name, bool selectPanel)
     {
         auto panel = Panel::create();
-        panel->setSize({getSize().x , getSize().y - m_tabs->getSize().y});
+        panel->setSize({getSize().x, getSize().y - m_tabs->getSize().y});
         layoutPanel(panel);
 
         m_panels.push_back(panel);
@@ -218,7 +218,7 @@ namespace tgui
             index = m_panels.size();
 
         auto panel = Panel::create();
-        panel->setSize({getSize().x , getSize().y - m_tabs->getSize().y});
+        panel->setSize({getSize().x, getSize().y - m_tabs->getSize().y});
         layoutPanel(panel);
 
         m_panels.insert(m_panels.begin() + static_cast<std::ptrdiff_t>(index), panel);

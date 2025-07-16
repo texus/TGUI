@@ -728,7 +728,7 @@ namespace tgui
         Label::draw(target, states);
 
         if (m_bordersCached != Borders{0})
-            states.transform.translate({m_bordersCached.getLeft(), m_bordersCached.getTop()});
+            states.transform.translate(m_bordersCached.getOffset());
 
         // Draw the images
         if (m_autoSize)

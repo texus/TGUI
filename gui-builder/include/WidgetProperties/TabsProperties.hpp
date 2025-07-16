@@ -100,6 +100,7 @@ struct TabsProperties : WidgetProperties
         pair.second["TextureSelectedTabHover"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureSelectedTabHover())};
         pair.second["TextureDisabledTab"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureDisabledTab())};
         pair.second["DistanceToSide"] = {"Float", tgui::String::fromNumber(renderer->getDistanceToSide())};
+        pair.second["RoundedBorderRadius"] = {"Float", tgui::String::fromNumber(renderer->getRoundedBorderRadius())};
         return pair;
     }
 };
