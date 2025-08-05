@@ -516,6 +516,36 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void ScrollablePanel::rightMousePressed(Vector2f pos)
+    {
+        if (m_verticalScrollbar->isMouseOnWidget(pos - getPosition()))
+            m_verticalScrollbar->rightMousePressed(pos - getPosition());
+        else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
+            m_horizontalScrollbar->rightMousePressed(pos - getPosition());
+        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+        {
+            Panel::rightMousePressed({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
+                                      pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ScrollablePanel::rightMouseReleased(Vector2f pos)
+    {
+        if (m_verticalScrollbar->isMouseOnWidget(pos - getPosition()))
+            m_verticalScrollbar->rightMouseReleased(pos - getPosition());
+        else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
+            m_horizontalScrollbar->rightMouseReleased(pos - getPosition());
+        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+        {
+            Panel::rightMouseReleased({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
+                                       pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void ScrollablePanel::mouseMoved(Vector2f pos)
     {
         // Check if the mouse event should go to the scrollbar
