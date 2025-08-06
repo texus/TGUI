@@ -692,6 +692,10 @@ namespace tgui
             insertTextAtCaretPosition(m_tabText);
         else if (event.code == Event::KeyboardKey::Enter)
             textEntered('\n');
+        else if (keyboard::isKeyPressDeleteWordLeft(event))
+            deleteWordLeft();
+        else if (keyboard::isKeyPressDeleteWordRight(event))
+            deleteWordRight();
         else if (event.code == Event::KeyboardKey::Backspace)
             backspaceKeyPressed();
         else if (event.code == Event::KeyboardKey::Delete)
@@ -1213,6 +1217,30 @@ namespace tgui
         m_selEnd.x = m_lines[m_selEnd.y].length();
         if (oldSelEnd != m_selEnd)
             onCaretPositionChange.emit(this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextArea::deleteWordLeft()
+    {
+        // If there is a selection then move the cursor to the beginning of the selection
+        if (m_selStart != m_selEnd)
+            moveCaretLeft(false);
+
+        moveCaretWordBegin(); // Only moves m_selEnd while m_selStart remains unchanged
+        deleteSelectedCharacters();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TextArea::deleteWordRight()
+    {
+        // If there is a selection then move the cursor to the end of the selection
+        if (m_selStart != m_selEnd)
+            moveCaretRight(false);
+
+        moveCaretWordEnd(); // Only moves m_selEnd while m_selStart remains unchanged
+        deleteSelectedCharacters();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

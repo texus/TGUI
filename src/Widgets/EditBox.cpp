@@ -580,6 +580,10 @@ namespace tgui
             onReturnKeyPress.emit(this, m_text);
             emitReturnOrUnfocus(m_text);
         }
+        else if (keyboard::isKeyPressDeleteWordLeft(event))
+            deleteWordLeft();
+        else if (keyboard::isKeyPressDeleteWordRight(event))
+            deleteWordRight();
         else if (event.code == Event::KeyboardKey::Backspace)
             backspaceKeyPressed();
         else if (event.code == Event::KeyboardKey::Delete)
@@ -1357,6 +1361,32 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         }
 
         return screenRefreshRequired;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::deleteWordLeft()
+    {
+        // If there is a selection then move the cursor to the beginning of the selection
+        if (m_selChars > 0)
+            moveCaretLeft(false);
+
+        moveCaretWordBegin(); // Only moves m_selEnd while m_selStart remains unchanged
+        updateSelection();
+        deleteSelectedCharacters();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void EditBox::deleteWordRight()
+    {
+        // If there is a selection then move the cursor to the end of the selection
+        if (m_selChars > 0)
+            moveCaretRight(false);
+
+        moveCaretWordEnd(); // Only moves m_selEnd while m_selStart remains unchanged
+        updateSelection();
+        deleteSelectedCharacters();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

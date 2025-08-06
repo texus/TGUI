@@ -313,6 +313,28 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        TGUI_NODISCARD inline bool isKeyPressDeleteWordLeft(const Event::KeyEvent& event)
+        {
+#ifdef TGUI_SYSTEM_MACOS
+            return (event.code == Event::KeyboardKey::Backspace) && !event.control && event.alt && !event.system;
+#else
+            return (event.code == Event::KeyboardKey::Backspace) && event.control && !event.alt && !event.system;
+#endif
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        TGUI_NODISCARD inline bool isKeyPressDeleteWordRight(const Event::KeyEvent& event)
+        {
+#ifdef TGUI_SYSTEM_MACOS
+            return (event.code == Event::KeyboardKey::Delete) && !event.control && event.alt && !event.system;
+#else
+            return (event.code == Event::KeyboardKey::Delete) && event.control && !event.alt && !event.system;
+#endif
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 }
 
