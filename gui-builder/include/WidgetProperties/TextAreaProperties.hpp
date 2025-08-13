@@ -77,6 +77,7 @@ struct TextAreaProperties : WidgetProperties
         pair.second["CaretWidth"] = {"Float", tgui::String::fromNumber(renderer->getCaretWidth())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
+        pair.second["RoundedBorderRadius"] = {"Float", tgui::String::fromNumber(renderer->getRoundedBorderRadius())};
         return pair;
     }
 };

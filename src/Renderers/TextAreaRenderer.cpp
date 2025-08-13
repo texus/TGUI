@@ -43,6 +43,7 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(TextAreaRenderer, TextureBackground)
 
     TGUI_RENDERER_PROPERTY_NUMBER(TextAreaRenderer, CaretWidth, 1)
+    TGUI_RENDERER_PROPERTY_NUMBER(TextAreaRenderer, RoundedBorderRadius, 0)
 
     TGUI_RENDERER_PROPERTY_RENDERER(TextAreaRenderer, Scrollbar, "Scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(TextAreaRenderer, ScrollbarWidth, 0)

@@ -1957,6 +1957,10 @@ namespace tgui
         {
             m_caretWidthCached = getSharedRenderer()->getCaretWidth();
         }
+        else if (property == U"RoundedBorderRadius")
+        {
+            m_roundedBorderRadiusCached = getSharedRenderer()->getRoundedBorderRadius();
+        }
         else if ((property == U"Opacity") || (property == U"OpacityDisabled"))
         {
             Widget::rendererChanged(property);
@@ -2029,18 +2033,27 @@ namespace tgui
     {
         const RenderStates statesForScrollbar = states;
 
-        // Draw the borders
-        if (m_bordersCached != Borders{0})
+        if ((m_roundedBorderRadiusCached > 0) && !m_spriteBackground.isSet())
         {
-            target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
+            target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached),
+                                        m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
-
-        // Draw the background
-        if (m_spriteBackground.isSet())
-            target.drawSprite(states, m_spriteBackground);
         else
-            target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+        {
+            // Draw the borders
+            if (m_bordersCached != Borders{0})
+            {
+                target.drawBorders(states, m_bordersCached, getSize(), Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                states.transform.translate(m_bordersCached.getOffset());
+            }
+
+            // Draw the background
+            if (m_spriteBackground.isSet())
+                target.drawSprite(states, m_spriteBackground);
+            else
+                target.drawFilledRect(states, getInnerSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+        }
 
         // Draw the contents of the text area
         {
