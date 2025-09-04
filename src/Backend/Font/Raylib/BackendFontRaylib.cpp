@@ -206,7 +206,7 @@ namespace tgui
 
     float BackendFontRaylib::getFontHeight(unsigned int characterSize)
     {
-        return getAscent(characterSize) + getDescent(characterSize);
+        return getAscent(characterSize) - getDescent(characterSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,10 +227,11 @@ namespace tgui
     float BackendFontRaylib::getDescent(unsigned int characterSize)
     {
         // Raylib doesn't provide a method to access the descent of the font.
-        // We extract the descent by examining the 'g' glyph, assuming it exists.
+        // We extract the descent by examining the 'g' and '_' glyphs, assuming it exists.
         const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
-        const FontGlyph& glyph = getGlyph(U'g', scaledTextSize, false);
-        return glyph.bounds.height + glyph.bounds.top;
+        const FontGlyph& glyphG = getGlyph(U'g', scaledTextSize, false);
+        const FontGlyph& glyphUnderscore = getGlyph(U'_', scaledTextSize, false);
+        return std::min(-glyphG.bounds.height - glyphG.bounds.top, -glyphUnderscore.bounds.height - glyphUnderscore.bounds.top);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

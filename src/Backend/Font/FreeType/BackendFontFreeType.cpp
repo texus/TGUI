@@ -261,9 +261,9 @@ namespace tgui
 
         float descent;
         if (FT_IS_SCALABLE(m_face))
-            descent = std::ceil(static_cast<float>(FT_MulFix(-m_face->descender, m_face->size->metrics.y_scale)) / unitsPerPixel);
+            descent = std::ceil(static_cast<float>(FT_MulFix(m_face->descender, m_face->size->metrics.y_scale)) / unitsPerPixel);
         else
-            descent = -m_face->size->metrics.descender / unitsPerPixel;
+            descent = m_face->size->metrics.descender / unitsPerPixel;
 
         m_cachedDescents[scaledCharacterSize] = descent;
         return descent / m_fontScale;

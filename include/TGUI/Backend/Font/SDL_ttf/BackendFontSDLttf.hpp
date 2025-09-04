@@ -139,7 +139,7 @@ namespace tgui
         TGUI_NODISCARD float getAscent(unsigned int characterSize) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum height of a glyph below the baseline
+        /// @brief Returns the maximum height of a glyph below the baseline as a negative value
         ///
         /// @param characterSize  Size of the characters
         ///

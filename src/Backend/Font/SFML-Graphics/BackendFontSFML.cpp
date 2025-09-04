@@ -27,6 +27,7 @@
 
 #include <SFML/Config.hpp>
 #include <SFML/Graphics/Image.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -153,7 +154,7 @@ namespace tgui
         if (!m_font)
             return 0;
 
-        return getAscent(characterSize) + getDescent(characterSize);
+        return getAscent(characterSize) - getDescent(characterSize);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,34 +164,46 @@ namespace tgui
         if (!m_font)
             return 0;
 
-        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
-
-        // SFML doesn't provide a method to access the ascent of the font.
+#if (SFML_VERSION_MAJOR > 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR >= 1)
+        return std::ceil(m_font->getAscent(characterSize));
+#elif (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)
+        // SFML didn't provide a method to access the ascent of the font prior to SFML 3.1.
         // If the font contains a capital e-circumflex glyph then we use its size as our ascent value.
-        // Otherwise we will simply assume that the ascent equals the character size, which is what SFML's sf::Text class does.
+        // Otherwise we will simply assume that the ascent equals the character size, which is what SFML's sf::Text class did.
         // With the built-in DejaVuSans font, ascent should be 15 for a text size of 16.
-#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)
         if (!m_font->hasGlyph(U'\u00CA'))
+        {
+            const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
             return static_cast<float>(scaledTextSize) / m_fontScale;
+        }
 
-        const FontGlyph& glyph = getGlyph(U'\u00CA', characterSize, false, 0);
+        return getGlyph(U'\u00CA', characterSize, false, 0).bounds.height;
 #else
         const FontGlyph& glyph = getGlyph(U'\u00CA', characterSize, false, 0);
         if ((glyph.advance == 0) && (glyph.bounds == FloatRect{}) && (glyph.textureRect == UIntRect{}))
+        {
+            const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
             return static_cast<float>(scaledTextSize) / m_fontScale;
-#endif
+        }
 
         return glyph.bounds.height;
+#endif
+
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     float BackendFontSFML::getDescent(unsigned int characterSize)
     {
-        // SFML doesn't provide a method to access the descent of the font.
-        // We extract the descent by examining the 'g' glyph, assuming it exists.
-        const FontGlyph& glyph = getGlyph(U'g', characterSize, false);
-        return glyph.bounds.height + glyph.bounds.top;
+#if (SFML_VERSION_MAJOR > 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR >= 1)
+        return std::ceil(m_font->getDescent(characterSize));
+#else
+        // SFML didn't provide a method to access the descent of the font prior to SFML 3.1.
+        // We extract the descent by examining the 'g' and '_' glyphs, assuming it exists.
+        const FontGlyph& glyphG = getGlyph(U'g', characterSize, false);
+        const FontGlyph& glyphUnderscore = getGlyph(U'_', characterSize, false);
+        return std::min(-glyphG.bounds.height - glyphG.bounds.top, -glyphUnderscore.bounds.height - glyphUnderscore.bounds.top);
+#endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

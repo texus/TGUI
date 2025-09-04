@@ -26,15 +26,32 @@
 
 TEST_CASE("[Font]")
 {
-    REQUIRE(tgui::Font() == nullptr);
-    REQUIRE(tgui::Font(nullptr) == nullptr);
-    REQUIRE(tgui::Font("resources/DejaVuSans.ttf") != nullptr);
-
-    REQUIRE_THROWS_AS(tgui::Font("NonExistentFile.ttf"), tgui::Exception);
-
     tgui::Font font("resources/DejaVuSans.ttf");
-    font.setSmooth(false);
-    REQUIRE(!font.isSmooth());
-    font.setSmooth(true);
-    REQUIRE(font.isSmooth());
+
+    SECTION("Constructor")
+    {
+        REQUIRE(tgui::Font() == nullptr);
+        REQUIRE(tgui::Font(nullptr) == nullptr);
+        REQUIRE(tgui::Font("resources/DejaVuSans.ttf") != nullptr);
+
+        REQUIRE_THROWS_AS(tgui::Font("NonExistentFile.ttf"), tgui::Exception);
+    }
+
+    SECTION("Smooth")
+    {
+        font.setSmooth(false);
+        REQUIRE(!font.isSmooth());
+        font.setSmooth(true);
+        REQUIRE(font.isSmooth());
+    }
+
+    SECTION("Font height")
+    {
+        const float fontHeight = font.getFontHeight(30);
+        const float ascent = font.getBackendFont()->getAscent(30);
+        const float descent = font.getBackendFont()->getDescent(30);
+        REQUIRE((fontHeight >= 33 && fontHeight <= 39));
+        REQUIRE((ascent >= 27 && ascent <= 30));
+        REQUIRE((descent >= -9 && descent <= -6));
+    }
 }
