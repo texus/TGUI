@@ -84,12 +84,22 @@ namespace tgui
             return true;
 
         int codePointInt = static_cast<int>(codePoint);
+#if (RAYLIB_VERSION_MAJOR > 5) || (RAYLIB_VERSION_MAJOR == 5 && RAYLIB_VERSION_MINOR >= 6)
+        int glyphCount;
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(scaledTextSize), &codePointInt, 1, FONT_DEFAULT, &glyphCount);
+        if (!glyphsInfo)
+            return false;
+
+        const bool glyphHasBitmap = glyphCount > 0 ? (glyphsInfo[0].image.data != nullptr) : false;
+        UnloadFontData(glyphsInfo, glyphCount);
+#else
         GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(scaledTextSize), &codePointInt, 1, FONT_DEFAULT);
         if (!glyphsInfo)
             return false;
 
         const bool glyphHasBitmap = (glyphsInfo[0].image.data != nullptr);
         UnloadFontData(glyphsInfo, 1);
+#endif
         return glyphHasBitmap;
     }
 
@@ -98,6 +108,30 @@ namespace tgui
     int BackendFontRaylib::estimateFontSize(unsigned int scaledTextSize)
     {
         std::array<int, 3> codePoints = {{'a', 'g', 0x00CA}};
+#if (RAYLIB_VERSION_MAJOR > 5) || (RAYLIB_VERSION_MAJOR == 5 && RAYLIB_VERSION_MINOR >= 6)
+        int glyphCount;
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(scaledTextSize),
+                                             codePoints.data(), static_cast<int>(codePoints.size()), FONT_DEFAULT, &glyphCount);
+        if (!glyphsInfo)
+            return static_cast<int>(scaledTextSize);
+
+        int ascent;
+        if (glyphCount > 0 && glyphsInfo[glyphCount-1].value == 0x00CA && glyphsInfo[glyphCount-1].image.height) // height of capital e-circumflex
+            ascent = glyphsInfo[glyphCount-1].image.height;
+        else if (glyphCount > 0 && glyphsInfo[0].value == 'a' && glyphsInfo[0].image.height) // height of "a"
+            ascent = glyphsInfo[0].image.height + glyphsInfo[0].offsetY;
+        else // Fall back to just using font size
+            ascent = static_cast<int>(scaledTextSize);
+
+        int descent = 0;
+        for (int i = 0; i < glyphCount; ++i)
+        {
+            if (glyphsInfo[i].image.height)
+                descent = std::max(descent, glyphsInfo[i].image.height + glyphsInfo[i].offsetY - ascent);
+        }
+
+        UnloadFontData(glyphsInfo, static_cast<int>(codePoints.size()));
+#else
         GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(scaledTextSize),
                                              codePoints.data(), static_cast<int>(codePoints.size()), FONT_DEFAULT);
         if (!glyphsInfo)
@@ -116,6 +150,7 @@ namespace tgui
             descent = glyphsInfo[1].image.height + glyphsInfo[1].offsetY - ascent;
 
         UnloadFontData(glyphsInfo, static_cast<int>(codePoints.size()));
+#endif
 
         if ((ascent == 0) || (descent == 0))
             return static_cast<int>(scaledTextSize);
@@ -140,10 +175,48 @@ namespace tgui
         {
             m_correctedTextSizes[scaledTextSize] = estimateFontSize(scaledTextSize);
 
-            std::array<int, 97> codePoints;
-            std::iota(codePoints.begin(), codePoints.begin() + 96, 32); // Fill the array with codepoints 32-126
-            codePoints[96] = 0x00CA; // capital e-circumflex to estimate font ascent
+            std::array<int, 96> codePoints;
+            std::iota(codePoints.begin(), codePoints.begin() + 95, 32); // Fill the array with codepoints 32-126
+            codePoints[95] = 0x00CA; // capital e-circumflex to estimate font ascent
 
+#if (RAYLIB_VERSION_MAJOR > 5) || (RAYLIB_VERSION_MAJOR == 5 && RAYLIB_VERSION_MINOR >= 6)
+            int glyphCount;
+            GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize),
+                                                 static_cast<int>(m_correctedTextSizes[scaledTextSize]),
+                                                 codePoints.data(), static_cast<int>(codePoints.size()), FONT_DEFAULT, &glyphCount);
+            if (glyphsInfo)
+            {
+                // Raylib has no way of getting the font ascent and only provides a character offset from the top instead of the baseline.
+                // So we try to figure out what the ascent is by getting the height of the capital e-circumflex glyph. If this glyph does
+                // not exist in the font then we will use the height of the "a" glyph plus the offset from the top position.
+                int ascentE = 0;
+                int ascentA = 0;
+                for (int i = 0; i < glyphCount; ++i)
+                {
+                    if (glyphsInfo[i].value == 0x00CA && glyphsInfo[i].image.height)
+                        ascentE = glyphsInfo[i].image.height;
+                    else if (glyphsInfo[i].value == 'a' && glyphsInfo[i].image.height)
+                        ascentA = glyphsInfo[i].image.height + glyphsInfo[i].offsetY;
+                }
+
+                if (ascentE > 0)
+                    m_cachedAscents[scaledTextSize] = ascentE;
+                else if (ascentA > 0)
+                    m_cachedAscents[scaledTextSize] = ascentA;
+                else // Fall back to just using font size
+                    m_cachedAscents[scaledTextSize] = static_cast<int>(scaledTextSize);
+
+                for (std::size_t i = 0; i < static_cast<std::size_t>(glyphCount); ++i)
+                    loadGlyph(glyphsInfo[i], static_cast<char32_t>(codePoints[i]), scaledTextSize, bold, scaledOutlineThickness);
+
+                UnloadFontData(glyphsInfo, glyphCount);
+            }
+            else // We couldn't load the glyphs
+            {
+                m_cachedAscents[scaledTextSize] = static_cast<int>(scaledTextSize);
+                m_glyphs.insert({constructGlyphKey(U'a', scaledTextSize, bold, scaledOutlineThickness), FontGlyph()});
+            }
+#else
             GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize),
                                                  static_cast<int>(m_correctedTextSizes[scaledTextSize]),
                                                  codePoints.data(), static_cast<int>(codePoints.size()), FONT_DEFAULT);
@@ -152,8 +225,8 @@ namespace tgui
                 // Raylib has no way of getting the font ascent and only provides a character offset from the top instead of the baseline.
                 // So we try to figure out what the ascent is by getting the height of the capital e-circumflex glyph. If this glyph does
                 // not exist in the font then we will use the height of the "a" glyph plus the offset from the top position.
-                if (glyphsInfo[96].image.height) // height of capital e-circumflex
-                    m_cachedAscents[scaledTextSize] = glyphsInfo[96].image.height;
+                if (glyphsInfo[95].image.height) // height of capital e-circumflex
+                    m_cachedAscents[scaledTextSize] = glyphsInfo[95].image.height;
                 else if (glyphsInfo[97-32].image.height) // height of "a"
                     m_cachedAscents[scaledTextSize] = glyphsInfo[97-32].image.height + glyphsInfo[97-32].offsetY;
                 else // Fall back to just using font size
@@ -169,6 +242,7 @@ namespace tgui
                 m_cachedAscents[scaledTextSize] = static_cast<int>(scaledTextSize);
                 m_glyphs.insert({constructGlyphKey(U'a', scaledTextSize, bold, scaledOutlineThickness), FontGlyph()});
             }
+#endif
 
             // It's possible that we just loaded the glyph that we were searching for
             const auto retryIt = m_glyphs.find(glyphKey);
@@ -177,12 +251,27 @@ namespace tgui
         }
 
         int codePointInt = static_cast<int>(codePoint);
+#if (RAYLIB_VERSION_MAJOR > 5) || (RAYLIB_VERSION_MAJOR == 5 && RAYLIB_VERSION_MINOR >= 6)
+        int glyphCount;
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(m_correctedTextSizes[scaledTextSize]), &codePointInt, 1, FONT_DEFAULT, &glyphCount);
+        if (!glyphsInfo || glyphCount == 0)
+        {
+            // If the glyph couldn't be loaded then it's undefined whether the LoadFontData returns a nullptr (because it calls calloc with 0 objects).
+            // In the unlikely event that we only get in this branch because glyphCount is 0 then we must call UnloadFontData. Otherwise it's a no-op.
+            UnloadFontData(glyphsInfo, glyphCount);
+            return m_glyphs.insert({glyphKey, FontGlyph()}).first->second;
+        }
+
+        FontGlyph glyph = loadGlyph(glyphsInfo[0], codePoint, scaledTextSize, bold, scaledOutlineThickness);
+        UnloadFontData(glyphsInfo, glyphCount);
+#else
         GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(m_correctedTextSizes[scaledTextSize]), &codePointInt, 1, FONT_DEFAULT);
         if (!glyphsInfo)
             return m_glyphs.insert({glyphKey, FontGlyph()}).first->second;
 
         FontGlyph glyph = loadGlyph(glyphsInfo[0], codePoint, scaledTextSize, bold, scaledOutlineThickness);
         UnloadFontData(glyphsInfo, 1);
+#endif
         return glyph;
     }
 
