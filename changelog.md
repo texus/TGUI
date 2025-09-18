@@ -1,5 +1,5 @@
-TGUI 1.11  (TBD)
-----------------
+TGUI 1.11  (18 September 2025)
+------------------------------
 
 - Added RoundedBorderRadius property to EditBox, TextArea, ComboBox and Tabs renderers
 - Added getLeftPlusRight and getTopPlusBottom functions to Outline class
