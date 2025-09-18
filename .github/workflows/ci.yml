@@ -1184,8 +1184,8 @@ jobs:
     needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sdl-gpu, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
     runs-on: windows-2025
     env:
-      SFML_VERSION: 3.0.0
-      MSVC_TOOLSET_VERSION: 142  # VS2019
+      SFML_VERSION: 3.0.2
+      MSVC_TOOLSET_VERSION: 143  # VS2022
     steps:
       - name: Checkout TGUI
         uses: actions/checkout@v4
@@ -1196,11 +1196,11 @@ jobs:
         run: |
           Install-ChocoPackage doxygen.install
           mkdir x86
-          C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc16-32-bit.zip
-          7z x SFML-${env:SFML_VERSION}-windows-vc16-32-bit.zip -o"x86"
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-Windows.VS2022.x86.zip
+          7z x SFML-${env:SFML_VERSION}-Windows.VS2022.x86.zip -o"x86"
           mkdir x64
-          C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-windows-vc16-64-bit.zip
-          7z x SFML-${env:SFML_VERSION}-windows-vc16-64-bit.zip -o"x64"
+          C:\msys64\usr\bin\wget.exe -nv https://github.com/SFML/SFML/releases/download/${env:SFML_VERSION}/SFML-${env:SFML_VERSION}-Windows.VS2022.x64.zip
+          7z x SFML-${env:SFML_VERSION}-Windows.VS2022.x64.zip -o"x64"
 
       - name: Remove .git folder
         run:
