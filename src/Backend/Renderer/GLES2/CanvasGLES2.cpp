@@ -73,7 +73,7 @@ namespace tgui
     {
         if (this != &right)
         {
-            ClickableWidget::operator=(right);
+            CanvasBase::operator=(right);
             setSize(right.getSize());
         }
 
@@ -103,7 +103,7 @@ namespace tgui
 
     void CanvasGLES2::setSize(const Layout2d& size)
     {
-        Widget::setSize(size);
+        CanvasBase::setSize(size);
         const Vector2f newSize = getSize();
 
         if ((newSize.x > 0) && (newSize.y > 0))
