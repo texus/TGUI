@@ -415,6 +415,7 @@ endfunction()
 
 # Find SDL_ttf and add it as a dependency
 macro(tgui_add_dependency_sdl_ttf)
+    set(TGUI_FOUND_SDL2_TTF_CONFIG FALSE)
     if(TGUI_USE_SDL3)
         if(NOT TARGET SDL3_ttf::SDL3_ttf)
             find_package(SDL3_ttf CONFIG)
