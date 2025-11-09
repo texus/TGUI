@@ -164,11 +164,17 @@ namespace tgui
             else
             {
                 timerTriggered = true;
-                timer->m_callback();
                 timer->m_remainingDuration = timer->m_interval;
 
                 if (!timer->m_repeats)
                     timer->setEnabled(false);
+
+                // Run the callback after the timer was already removed from m_activeTimers (by setEnabled above).
+                // Otherwise updating timers from inside the callback (which you shouldn't do) could result in the
+                // same non-repeating timer being triggered again. This case happens in the Gui Builder because
+                // it runs a different main loop during closing the form to provide a blocking function that still
+                // allows cancelling the closing.
+                timer->m_callback();
             }
         }
 
