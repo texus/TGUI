@@ -317,10 +317,7 @@ namespace dev
             return MessageBroker::subscribe(m_messageTopicId, std::move(func));
         }
 
-        void disconnectCallback(std::uint64_t id)
-        {
-            return MessageBroker::unsubscribe(id);
-        }
+        void disconnectCallback(std::uint64_t id) { MessageBroker::unsubscribe(id); }
 
     private:
 
