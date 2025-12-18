@@ -363,7 +363,7 @@ static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, c
                                 }
                             }
                             else
-                                std::cerr << "Failed to make path relative. '" + filename + "' does not start with '" + basePathStr + "'." << std::endl;
+                                std::cerr << "Failed to make path relative. '" + filename + "' does not start with '" + basePathStr + "'.\n";
 
                             break;
                         }

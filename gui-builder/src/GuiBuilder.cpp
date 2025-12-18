@@ -717,7 +717,7 @@ void GuiBuilder::reloadProperties()
         // If the widget isn't supported by the Gui Builder (i.e. it was manually placed in the form file), then don't try to create properties
         if (m_widgetProperties.find(selectedWidget->ptr->getWidgetType()) == m_widgetProperties.end())
         {
-            std::cerr << "Warning: widget of type '" << selectedWidget->ptr->getWidgetType() << "' can't be edited." << std::endl;
+            std::cerr << "Warning: widget of type '" << selectedWidget->ptr->getWidgetType() << "' can't be edited.\n";
             return;
         }
 
@@ -1497,7 +1497,7 @@ bool GuiBuilder::loadForm(tgui::String filename, bool loadingFromFile)
 
 void GuiBuilder::displayErrorMessage(const tgui::String& error)
 {
-    std::cerr << error << std::endl;
+    std::cerr << error << '\n';
 
     auto messageBox = tgui::MessageBox::create("Error", error, {"OK"});
     messageBox->setPosition("(&.size - size) / 2");

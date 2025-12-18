@@ -62,7 +62,7 @@ int main(int, char* argv[])
         LPWSTR* argvW = CommandLineToArgvW(commandLineStr, &argcW);
         if (argvW == NULL)
         {
-            std::cerr << "Failed to access command line arguments" << std::endl;
+            std::cerr << "Failed to access command line arguments\n";
             return 1;
         }
 
@@ -77,17 +77,17 @@ int main(int, char* argv[])
     }
     catch (const tgui::Exception& e)
     {
-        std::cerr << "TGUI exception thrown: " << e.what() << std::endl;
+        std::cerr << "TGUI exception thrown: " << e.what() << '\n';
         return 1;
     }
     catch (const std::exception& e)
     {
-        std::cerr << "Exception thrown: " << e.what() << std::endl;
+        std::cerr << "Exception thrown: " << e.what() << '\n';
         return 1;
     }
     catch (...)
     {
-        std::cerr << "Unknown exception thrown" << std::endl;
+        std::cerr << "Unknown exception thrown\n";
         return 1;
     }
     return 0;
