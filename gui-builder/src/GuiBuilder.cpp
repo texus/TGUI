@@ -2127,8 +2127,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
             const std::vector<tgui::String> tokens = tgui::Deserializer::split(str, ',');
             if (tokens.size() == 4)
                 return {tokens[0].toUInt(), tokens[1].toUInt(), tokens[2].toUInt(), tokens[3].toUInt()};
-            else
-                return {};
+            return {};
         };
 
         previewPicture->setUserData(std::make_shared<tgui::Texture>());
@@ -2891,11 +2890,8 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui:
 
         return wasFound;
     }
-    else
-    {
-        hierarchy.push_back(m_selectedForm->getFilename());
-        return true;
-    }
+    hierarchy.push_back(m_selectedForm->getFilename());
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
