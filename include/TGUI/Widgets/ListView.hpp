@@ -474,8 +474,7 @@ namespace tgui
         {
             if (index < m_items.size())
                 return AnyCast<DataType>(m_items[index].data);
-            else
-                throw std::bad_cast();
+            throw std::bad_cast();
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -518,15 +518,14 @@ std::shared_ptr<WidgetInfo> Form::getWidgetByName(const tgui::String& name) cons
             const auto& widgetInfo = idAndWidgetInfo.second;
             if (widgetInfo)
                 return idAndWidgetInfo.second->name == name;
-            else
-                return false;
+            return false;
         }
     );
 
     if (it != m_widgets.end())
         return it->second;
-    else
-        return {};
+
+    return {};
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

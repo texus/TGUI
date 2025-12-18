@@ -304,12 +304,11 @@ namespace dev
                 // is e.g. a value for both Normal and Disabled state and the widget is enabled.
                 return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Normal));
             }
-            else
-            {
-                // We don't have any relevant values, so return the default value. It is possible to pass here while storedStates > 0 when
-                // there is e.g. only a value for the Disabled state and the widget is enabled.
-                return m_defaultValue;
-            }
+
+            // We don't have any relevant values, so return the default value. It is possible to
+            // pass here while storedStates > 0 when there is e.g. only a value for the Disabled
+            // state and the widget is enabled.
+            return m_defaultValue;
         }
 
         TGUI_NODISCARD std::uint64_t connectCallback(std::function<void()> func)
@@ -635,34 +634,38 @@ namespace dev
         {
             if (active)
                 return ComponentState::DisabledActive;
-            else
-                return ComponentState::Disabled;
+
+            return ComponentState::Disabled;
         }
-        else if (focused)
+
+        if (focused)
         {
             if (active)
             {
                 if (hover)
                     return ComponentState::FocusedActiveHover;
-                else
-                    return ComponentState::FocusedActive;
+
+                return ComponentState::FocusedActive;
             }
-            else if (hover)
+
+            if (hover)
                 return ComponentState::FocusedHover;
-            else
-                return ComponentState::Focused;
+
+            return ComponentState::Focused;
         }
-        else if (active)
+
+        if (active)
         {
             if (hover)
                 return ComponentState::ActiveHover;
-            else
-                return ComponentState::Active;
+
+            return ComponentState::Active;
         }
-        else if (hover)
+
+        if (hover)
             return ComponentState::Hover;
-        else
-            return ComponentState::Normal;
+
+        return ComponentState::Normal;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

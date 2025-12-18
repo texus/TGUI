@@ -192,8 +192,9 @@ namespace tgui
                     requestFileIcons(m_files);
                     return false; // Wait until icons are loaded
                 }
-                else // No file list was provided for detailed icons, but generic file/folder icons can now be used
-                    return true;
+
+                // No file list was provided for detailed icons, but generic file/folder icons can now be used
+                return true;
             }
         }
         else if (m_loadFileIconsThreadStarted)
