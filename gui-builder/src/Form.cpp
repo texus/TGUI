@@ -475,7 +475,7 @@ void Form::removeWidget(const tgui::String& id)
         parentsToSearch.push(widget->ptr->cast<tgui::Container>());
         while (!parentsToSearch.empty())
         {
-            tgui::Container::Ptr parent = parentsToSearch.top();
+            const tgui::Container::Ptr parent = parentsToSearch.top();
             parentsToSearch.pop();
             for (const auto& childWidget : parent->getWidgets())
             {
@@ -589,7 +589,7 @@ void Form::updateSelectionSquarePositions()
     const auto& widget = m_selectedWidget->ptr;
 
     auto position = widget->getPosition();
-    tgui::Container* parentWidget = widget->getParent();
+    const tgui::Container* parentWidget = widget->getParent();
     while (parentWidget != m_widgetsContainer.get())
     {
         position += parentWidget->getPosition() + parentWidget->getChildWidgetsOffset();
@@ -675,7 +675,8 @@ void Form::mouseReleased()
 
 bool Form::rightMouseClick(tgui::Vector2i pos)
 {
-    tgui::Vector2f relativeWindowPos{(pos.x - m_formWindow->getAbsolutePosition().x), (pos.y - m_formWindow->getAbsolutePosition().y)};
+    const tgui::Vector2f relativeWindowPos{(pos.x - m_formWindow->getAbsolutePosition().x),
+                                           (pos.y - m_formWindow->getAbsolutePosition().y)};
     if (!tgui::FloatRect{m_formWindow->getChildWidgetsOffset(), m_formWindow->getClientSize()}.contains(relativeWindowPos))
         return false;
 
@@ -1065,8 +1066,8 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(const tgui::Container::Ptr& parent, 
         {
             if (widget->isContainer())
             {
-                tgui::Container::Ptr container = std::static_pointer_cast<tgui::Container>(widget);
-                tgui::Widget::Ptr child = getWidgetBelowMouse(container, pos - container->getPosition() - container->getChildWidgetsOffset());
+                const tgui::Container::Ptr container = std::static_pointer_cast<tgui::Container>(widget);
+                const tgui::Widget::Ptr child = getWidgetBelowMouse(container, pos - container->getPosition() - container->getChildWidgetsOffset());
                 if (child)
                     return child;
             }

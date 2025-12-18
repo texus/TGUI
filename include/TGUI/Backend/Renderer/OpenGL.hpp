@@ -92,7 +92,7 @@ namespace tgui
 #if !defined(NDEBUG) && !defined(TGUI_NO_RUNTIME_WARNINGS)
         inline void checkAndLogErrorOpenGL(const char* file, unsigned int line, const char* expression)
         {
-            GLenum errorCode = glGetError();
+            const GLenum errorCode = glGetError();
             if (errorCode == GL_NO_ERROR)
                 return;
 
@@ -108,7 +108,7 @@ namespace tgui
             default:                    error = "Unknown error";        break;
             }
 
-            std::string fileStr = file;
+            const std::string fileStr = file;
             TGUI_PRINT_WARNING("An internal OpenGL call failed in "
                 + fileStr.substr(fileStr.find_last_of("\\/") + 1)
                 + "(" + std::to_string(line) + ")."
