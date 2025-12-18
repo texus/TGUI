@@ -319,7 +319,7 @@ namespace dev
 
         void disconnectCallback(std::uint64_t id)
         {
-            return MessageBroker::unsubscribe(id);
+            MessageBroker::unsubscribe(id);
         }
 
     private:
