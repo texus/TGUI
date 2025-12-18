@@ -365,8 +365,8 @@ void GuiBuilder::mainLoop()
                         auto hoveredItem = m_widgetHierarchyTree->getHoveredItem();
                         if (!hoveredItem.empty())
                         {
-                            tgui::Widget::Ptr widgetToMove = m_selectedForm->getWidgetByName(m_draggedHierarchyTreeItem.back())->ptr;
-                            tgui::Widget::Ptr widgetAtDropLocation = hoveredItem.size() >= 2 ? m_selectedForm->getWidgetByName(hoveredItem.back())->ptr : m_selectedForm->getRootWidgetsGroup();
+                            const tgui::Widget::Ptr widgetToMove = m_selectedForm->getWidgetByName(m_draggedHierarchyTreeItem.back())->ptr;
+                            const tgui::Widget::Ptr widgetAtDropLocation = hoveredItem.size() >= 2 ? m_selectedForm->getWidgetByName(hoveredItem.back())->ptr : m_selectedForm->getRootWidgetsGroup();
 
                             if (widgetToMove != widgetAtDropLocation)
                             {
@@ -553,7 +553,7 @@ bool GuiBuilder::loadGuiBuilderState()
 
     std::size_t fileSize = 0;
     std::unique_ptr<std::uint8_t[]> fileContents = nullptr;
-    tgui::Filesystem::Path dataDir = getDataDirectory(false);
+    const tgui::Filesystem::Path dataDir = getDataDirectory(false);
     if (!dataDir.isEmpty())
     {
         // Try to open the files in the local user data folder
@@ -581,7 +581,7 @@ bool GuiBuilder::loadGuiBuilderState()
 
         for (const auto& value : node->propertyValuePairs["RecentFiles"]->valueList)
         {
-            tgui::String filename = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString();
+            const tgui::String filename = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString();
             if (tgui::Filesystem::fileExists(tgui::getResourcePath() / filename))
             {
                 m_recentFiles.push_back(filename);
@@ -1137,7 +1137,9 @@ void GuiBuilder::createNewWidget(const tgui::Widget::Ptr& widget, tgui::Containe
 {
     if (!parent)
     {
-        tgui::Widget::Ptr selectedWidget = m_selectedForm->getSelectedWidget() ? m_selectedForm->getSelectedWidget()->ptr : nullptr;
+        const tgui::Widget::Ptr selectedWidget = m_selectedForm->getSelectedWidget()
+                                                     ? m_selectedForm->getSelectedWidget()->ptr
+                                                     : nullptr;
         if (selectedWidget && selectedWidget->isContainer())
             parent = dynamic_cast<tgui::Container*>(selectedWidget.get());
         else if (selectedWidget)
@@ -1359,7 +1361,7 @@ void GuiBuilder::removeSelectedWidget()
         parentsToSearch.push(selectedWidget->ptr->cast<tgui::Container>());
         while (!parentsToSearch.empty())
         {
-            tgui::Container::Ptr parent = parentsToSearch.top();
+            const tgui::Container::Ptr parent = parentsToSearch.top();
             parentsToSearch.pop();
             for (const auto& widget : parent->getWidgets())
             {
@@ -1628,7 +1630,8 @@ void GuiBuilder::pasteWidgetFromInternalClipboard()
 
     // If widget still has same parent then move the widget a bit down and to the right to visually show that the new widget has been created.
     // If the widget lies outside its parent then move its position so that it becomes visible.
-    bool originalWidgetMovedSinceCopy = (widget->getPosition() != m_copiedWidgets[0].originalWidget->getPosition());
+    const bool originalWidgetMovedSinceCopy = (widget->getPosition()
+                                               != m_copiedWidgets[0].originalWidget->getPosition());
     if (widget->getPositionLayout().x.isConstant())
     {
         float newX = widget->getPosition().x;
@@ -1746,7 +1749,7 @@ void GuiBuilder::addPropertyValueBool(const tgui::String& property, const tgui::
     valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
 
-    tgui::String str = value.toLower();
+    const tgui::String str = value.toLower();
     if (str == "true" || str == "yes" || str == "on" || str == "y" || str == "t" || str == "1")
         valueComboBox->setSelectedItemByIndex(1);
     else
@@ -1884,7 +1887,9 @@ void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property, const t
         auto checkBoxUnderlined = textStyleWindow->get<tgui::CheckBox>("CheckBoxUnderlined");
         auto checkBoxStrikeThrough = textStyleWindow->get<tgui::CheckBox>("CheckBoxStrikeThrough");
 
-        unsigned int style = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::TextStyle, value).getTextStyle();
+        const unsigned int style
+            = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::TextStyle, value)
+                  .getTextStyle();
         checkBoxBold->setChecked((style & tgui::TextStyle::Bold) != 0);
         checkBoxItalic->setChecked((style & tgui::TextStyle::Italic) != 0);
         checkBoxUnderlined->setChecked((style & tgui::TextStyle::Underlined) != 0);
@@ -1928,7 +1933,9 @@ void GuiBuilder::addPropertyValueOutline(const tgui::String& property, const tgu
         auto editRight = outlineWindow->get<tgui::EditBox>("EditRight");
         auto editBottom = outlineWindow->get<tgui::EditBox>("EditBottom");
 
-        tgui::Outline outline = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Outline, value).getOutline();
+        const tgui::Outline outline
+            = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Outline, value)
+                  .getOutline();
         editLeft->setText(tgui::String::fromNumber(outline.getLeft()));
         editTop->setText(tgui::String::fromNumber(outline.getTop()));
         editRight->setText(tgui::String::fromNumber(outline.getRight()));
@@ -1998,7 +2005,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
         auto buttonArrowUp = stringListWindow->get<tgui::BitmapButton>("BtnArrowUp");
         auto buttonArrowDown = stringListWindow->get<tgui::BitmapButton>("BtnArrowDown");
 
-        std::vector<tgui::String> items = WidgetProperties::deserializeList(value);
+        const std::vector<tgui::String> items = WidgetProperties::deserializeList(value);
         for (const auto& item : items)
             listBox->addItem(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, item).getString());
 
@@ -2047,8 +2054,8 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
 
         buttonArrowUp->onPress([updateValue,lb=listBox.get()]{
             const std::size_t index = static_cast<std::size_t>(lb->getSelectedItemIndex());
-            tgui::String value1 = lb->getItemByIndex(index - 1);
-            tgui::String value2 = lb->getItemByIndex(index);
+            const tgui::String value1 = lb->getItemByIndex(index - 1);
+            const tgui::String value2 = lb->getItemByIndex(index);
             lb->changeItemByIndex(index - 1, value2);
             lb->changeItemByIndex(index, value1);
             lb->setSelectedItemByIndex(index - 1);
@@ -2057,8 +2064,8 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
 
         buttonArrowDown->onPress([updateValue,lb=listBox.get()]{
             const std::size_t index = static_cast<std::size_t>(lb->getSelectedItemIndex());
-            tgui::String value1 = lb->getItemByIndex(index);
-            tgui::String value2 = lb->getItemByIndex(index + 1);
+            const tgui::String value1 = lb->getItemByIndex(index);
+            const tgui::String value2 = lb->getItemByIndex(index + 1);
             lb->changeItemByIndex(index, value2);
             lb->changeItemByIndex(index + 1, value1);
             lb->setSelectedItemByIndex(index + 1);
@@ -2377,8 +2384,8 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
 
         buttonArrowUp->onPress([updateValue,lv=listView.get()]{
             const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
-            std::vector<tgui::String> value1 = lv->getItemRow(index - 1);
-            std::vector<tgui::String> value2 = lv->getItemRow(index);
+            const std::vector<tgui::String> value1 = lv->getItemRow(index - 1);
+            const std::vector<tgui::String> value2 = lv->getItemRow(index);
             lv->changeItem(index - 1, value2);
             lv->changeItem(index, value1);
             lv->setSelectedItem(index - 1);
@@ -2387,8 +2394,8 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
 
         buttonArrowDown->onPress([updateValue,lv=listView.get()]{
             const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
-            std::vector<tgui::String> value1 = lv->getItemRow(index);
-            std::vector<tgui::String> value2 = lv->getItemRow(index + 1);
+            const std::vector<tgui::String> value1 = lv->getItemRow(index);
+            const std::vector<tgui::String> value2 = lv->getItemRow(index + 1);
             lv->changeItem(index, value2);
             lv->changeItem(index + 1, value1);
             lv->setSelectedItem(index + 1);
@@ -2517,7 +2524,7 @@ void GuiBuilder::addPropertyValueChildWindowTitleButtons(const tgui::String& pro
 
         for (const auto& elem : tgui::Deserializer::split(value, '|'))
         {
-            tgui::String titleButtonStr = elem.trim().toLower();
+            const tgui::String titleButtonStr = elem.trim().toLower();
             if (titleButtonStr == "close")
                 checkClose->setChecked(true);
             else if (titleButtonStr == "maximize")
@@ -2570,7 +2577,7 @@ void GuiBuilder::addPropertyValueEnum(const tgui::String& property, const tgui::
     valueComboBox->setPosition({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, topPosition});
     valueComboBox->setSize({(bindWidth(m_propertiesContainer) - scrollbarWidth) / 2.f, EDIT_BOX_HEIGHT});
 
-    tgui::String valueLower = value.toLower();
+    const tgui::String valueLower = value.toLower();
     for (unsigned int i = 0; i < enumValues.size(); ++i)
     {
         if (enumValues[i].toLower() == valueLower)
@@ -2675,7 +2682,7 @@ void GuiBuilder::menuBarCallbackEditThemes()
             const tgui::String filename = ebNew->getText();
             if (!lbThemes->contains(filename))
             {
-                tgui::Theme theme{(tgui::getResourcePath() / filename).asString()};
+                const tgui::Theme theme{(tgui::getResourcePath() / filename).asString()};
                 lbThemes->addItem(filename);
                 m_themes[filename] = theme;
             }
