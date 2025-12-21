@@ -367,11 +367,8 @@ static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, c
 
                             break;
                         }
-                        else
-                        {
-                            formPathParts.pop_back();
-                            resourceParts.pop_back();
-                        }
+                        formPathParts.pop_back();
+                        resourceParts.pop_back();
                     }
                 }
             }
