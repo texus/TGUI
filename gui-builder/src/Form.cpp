@@ -531,7 +531,7 @@ std::vector<std::shared_ptr<WidgetInfo>> Form::getWidgets() const
 {
     std::vector<std::shared_ptr<WidgetInfo>> widgets;
 
-    for (auto& pair : m_widgets)
+    for (const auto& pair : m_widgets)
     {
         if (pair.second != nullptr)
             widgets.push_back(pair.second);
