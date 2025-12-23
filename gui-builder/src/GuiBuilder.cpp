@@ -1078,7 +1078,7 @@ void GuiBuilder::loadToolbox()
     };
 
     float topPosition = 0;
-    for (auto& widget : widgets)
+    for (const auto& widget : widgets)
     {
         auto icon = tgui::Picture::create("resources/widget-icons/" + widget.first + ".png");
         icon->setIgnoreMouseEvents(true);
