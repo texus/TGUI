@@ -56,328 +56,341 @@ const static float MOVE_STEP = 10;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static void importOldFormFileExtractValidProperties(std::set<tgui::String>& possibleProperties, const PropertyValueMap& propertyMap)
+namespace
 {
-    for (const auto& pair : propertyMap)
-        possibleProperties.insert(pair.first);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-static void importOldFormFileFixRendererProperties(const std::unique_ptr<tgui::DataIO::Node>& parentNode, const std::set<tgui::String>& possibleProperties)
-{
-    for (const auto& node : parentNode->children)
+    void importOldFormFileExtractValidProperties(std::set<tgui::String>& possibleProperties, const PropertyValueMap& propertyMap)
     {
-        if (!node->children.empty())
-            importOldFormFileFixRendererProperties(node, possibleProperties);
-
-        auto nameSeparator = node->name.find('.');
-        auto widgetType = node->name.substr(0, nameSeparator);
-
-        // Rename TextBox type to TextArea
-        if (widgetType == U"TextBox")
-            node->name = U"TextArea" + node->name.substr(nameSeparator);
-
-        if ((node->name != U"Renderer") && (widgetType != U"Renderer"))
-            continue;
-
-        auto oldPropertyValuePairs = std::move(node->propertyValuePairs);
-        node->propertyValuePairs.clear();
-        for (auto& property : oldPropertyValuePairs)
-        {
-            bool matchingPropertyFound = false;
-            for (const auto& validProperty : possibleProperties)
-            {
-                if (property.first.equalIgnoreCase(validProperty))
-                {
-                    node->propertyValuePairs[validProperty] = std::move(property.second);
-                    matchingPropertyFound = true;
-                    break;
-                }
-            }
-
-            // If the property is invalid then just keep the old value. It will give an error later.
-            if (!matchingPropertyFound)
-                node->propertyValuePairs[property.first] = std::move(property.second);
-        }
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-static void importOldForm(const std::unique_ptr<tgui::DataIO::Node>& rootNode)
-{
-    // Construct a list of all existing renderer properties for all widgets.
-    // Since the renderers may be global in the form file, we can't know which widget type will use it (without some effort),
-    // so instead we just get the properties for all widget types to match on.
-    std::set<tgui::String> possibleProperties;
-    importOldFormFileExtractValidProperties(possibleProperties, BitmapButtonProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("BitmapButton")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, ButtonProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Button")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, ChatBoxProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("ChatBox")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, ChildWindowProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("ChildWindow")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, ComboBoxProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("ComboBox")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, EditBoxProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("EditBox")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, GroupProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Group")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, KnobProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Knob")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, LabelProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Label")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, ListBoxProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("ListBox")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, PanelProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Panel")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, PictureProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Picture")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, ProgressBarProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("ProgressBar")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, RadioButtonProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("RadioButton")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, RangeSliderProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("RangeSlider")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, ScrollablePanelProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("ScrollablePanel")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, ScrollbarProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Scrollbar")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, SliderProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Slider")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, SpinButtonProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("SpinButton")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, TabsProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("Tabs")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, TextAreaProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("TextArea")()).second);
-    importOldFormFileExtractValidProperties(possibleProperties, TreeViewProperties().initProperties(
-        tgui::WidgetFactory::getConstructFunction("TreeView")()).second);
-
-    // Convert renderer properties from lowercase to the correct case-sensitive string
-    importOldFormFileFixRendererProperties(rootNode, possibleProperties);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-static void makePathsAbsolute(const std::unique_ptr<tgui::DataIO::Node>& node, const tgui::Filesystem::Path& formPath)
-{
-    for (const auto& pair : node->propertyValuePairs)
-    {
-        if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == U"Texture")) || (pair.first == U"Font") || (pair.first == U"Image"))
-        {
-            if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none") || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
-                continue;
-
-            // Skip absolute paths
-            if (pair.second->value[0] != '"')
-            {
-#ifdef TGUI_SYSTEM_WINDOWS
-                if ((pair.second->value[0] == '/') || (pair.second->value[0] == '\\') || ((pair.second->value.size() > 1) && (pair.second->value[1] == ':')))
-#else
-                if (pair.second->value[0] == '/')
-#endif
-                    continue;
-            }
-            else // The filename is between quotes
-            {
-                if (pair.second->value.size() <= 1)
-                    continue;
-
-#ifdef TGUI_SYSTEM_WINDOWS
-                if ((pair.second->value[1] == '/') || (pair.second->value[1] == '\\') || ((pair.second->value.size() > 2) && (pair.second->value[2] == ':')))
-#else
-                if (pair.second->value[1] == '/')
-#endif
-                    continue;
-            }
-
-            tgui::String filename;
-            if (pair.second->value[0] != '"')
-                filename = pair.second->value;
-            else
-            {
-                // The filename is surrounded by quotes, with optional options behind it
-                const auto endQuotePos = pair.second->value.find('"', 1);
-                assert(endQuotePos != tgui::String::npos);
-                filename = pair.second->value.substr(1, endQuotePos - 1);
-            }
-
-            // If the file can't be found anywhere then don't inject the file path
-            const bool fileFoundRelativeToForm = tgui::Filesystem::fileExists(formPath / filename);
-            const bool fileFoundRelativeToGuiBuilder = tgui::Filesystem::fileExists(tgui::getResourcePath() / filename);
-            if (!fileFoundRelativeToForm && !fileFoundRelativeToGuiBuilder)
-                continue;
-
-            tgui::String pathToInject = fileFoundRelativeToForm ? formPath.asString() : tgui::getResourcePath().asString();
-            assert(!pathToInject.empty());
-            if (pathToInject.back() == '/')
-                pathToInject.pop_back();
-
-            // Insert the path into the filename.
-            // We can't just deserialize the value to get rid of the quotes as it may contain things behind the filename.
-            if (pair.second->value[0] != '"')
-                pair.second->value = pathToInject + '/' + pair.second->value;
-            else // The filename is between quotes
-                pair.second->value = '"' + pathToInject + '/' + pair.second->value.substr(1);
-        }
+        for (const auto& pair : propertyMap)
+            possibleProperties.insert(pair.first);
     }
 
-    for (const auto& child : node->children)
-        makePathsAbsolute(child, formPath);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-static void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, const tgui::String& formPath, const tgui::String& guiBuilderPath)
-{
-    for (const auto& pair : node->propertyValuePairs)
+    void importOldFormFileFixRendererProperties(const std::unique_ptr<tgui::DataIO::Node>& parentNode,
+                                                const std::set<tgui::String>& possibleProperties)
     {
-        if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == U"Texture")) || (pair.first == U"Font") || (pair.first == U"Image"))
+        for (const auto& node : parentNode->children)
         {
-            if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none") || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
+            if (!node->children.empty())
+                importOldFormFileFixRendererProperties(node, possibleProperties);
+
+            auto nameSeparator = node->name.find('.');
+            auto widgetType = node->name.substr(0, nameSeparator);
+
+            // Rename TextBox type to TextArea
+            if (widgetType == U"TextBox")
+                node->name = U"TextArea" + node->name.substr(nameSeparator);
+
+            if ((node->name != U"Renderer") && (widgetType != U"Renderer"))
                 continue;
 
-            // Skip paths that are already relative (this shouldn't happen)
-            if (pair.second->value[0] != '"')
+            auto oldPropertyValuePairs = std::move(node->propertyValuePairs);
+            node->propertyValuePairs.clear();
+            for (auto& property : oldPropertyValuePairs)
             {
-#ifdef TGUI_SYSTEM_WINDOWS
-                if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
-#else
-                if (pair.second->value[0] != '/')
-#endif
-                    continue;
-            }
-            else // The filename is between quotes
-            {
-                if (pair.second->value.size() <= 1)
-                    continue;
-
-#ifdef TGUI_SYSTEM_WINDOWS
-                if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
-#else
-                if (pair.second->value[1] != '/')
-#endif
-                    continue;
-            }
-
-            tgui::String filename;
-            if (pair.second->value[0] != '"')
-                filename = pair.second->value;
-            else
-            {
-                // The filename is surrounded by quotes, with optional options behind it
-                const auto endQuotePos = pair.second->value.find('"', 1);
-                assert(endQuotePos != tgui::String::npos); // DataIO wouldn't have accepted the file if there is no close quote
-                filename = pair.second->value.substr(1, endQuotePos - 1);
-            }
-
-            // Make the path relative to the form or gui builder
-            if (filename.starts_with(formPath))
-            {
-                if (pair.second->value[0] != '"')
-                    pair.second->value.erase(0, formPath.length());
-                else
-                    pair.second->value.erase(1, formPath.length());
-            }
-            else if (filename.starts_with(guiBuilderPath))
-            {
-                if (pair.second->value[0] != '"')
-                    pair.second->value.erase(0, guiBuilderPath.length());
-                else
-                    pair.second->value.erase(1, guiBuilderPath.length());
-            }
-            else // We will need to use ".." if we want to make the path relative
-            {
-                // Split the form path an filename in parts (the folders that make up the path).
-                tgui::String lastPath;
-                tgui::Filesystem::Path path = tgui::Filesystem::Path(formPath);
-                std::vector<tgui::String> formPathParts;
-                while (path.asString() != lastPath)
+                bool matchingPropertyFound = false;
+                for (const auto& validProperty : possibleProperties)
                 {
-                    if (!path.getFilename().empty())
-                        formPathParts.insert(formPathParts.begin(), path.getFilename());
-
-                    lastPath = path.asString();
-                    path = path.getParentPath();
-                }
-
-                lastPath = U"";
-                path = tgui::Filesystem::Path(filename).getParentPath();
-                std::vector<tgui::String> resourceParts;
-                while (path.asString() != lastPath)
-                {
-                    if (!path.getFilename().empty())
-                        resourceParts.insert(resourceParts.begin(), path.getFilename());
-
-                    lastPath = path.asString();
-                    path = path.getParentPath();
-                }
-
-                const std::size_t originalFormPartsLength = formPathParts.size();
-                while (!formPathParts.empty() && !resourceParts.empty())
-                {
-                    if (formPathParts.size() > resourceParts.size())
-                        formPathParts.pop_back();
-                    else if (formPathParts.size() < resourceParts.size())
-                        resourceParts.pop_back();
-                    else
+                    if (property.first.equalIgnoreCase(validProperty))
                     {
-                        // Check if both subpaths are equal
-                        bool pathsEqual = true;
-                        for (std::size_t i = 0; pathsEqual && (i < formPathParts.size()); ++i)
-                            pathsEqual &= (formPathParts[i] == resourceParts[i]);
+                        node->propertyValuePairs[validProperty] = std::move(property.second);
+                        matchingPropertyFound = true;
+                        break;
+                    }
+                }
 
-                        if (pathsEqual)
+                // If the property is invalid then just keep the old value. It will give an error later.
+                if (!matchingPropertyFound)
+                    node->propertyValuePairs[property.first] = std::move(property.second);
+            }
+        }
+    }
+
+    void makePathsAbsolute(const std::unique_ptr<tgui::DataIO::Node>& node,
+                           const tgui::Filesystem::Path& formPath)
+    {
+        for (const auto& pair : node->propertyValuePairs)
+        {
+            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == U"Texture"))
+                || (pair.first == U"Font") || (pair.first == U"Image")) {
+                if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
+                    || pair.second->value.equalIgnoreCase(U"null")
+                    || pair.second->value.equalIgnoreCase(U"nullptr"))
+                    continue;
+
+                // Skip absolute paths
+                if (pair.second->value[0] != '"')
+                {
+#ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[0] == '/') || (pair.second->value[0] == '\\')
+                        || ((pair.second->value.size() > 1) && (pair.second->value[1] == ':')))
+#else
+                    if (pair.second->value[0] == '/')
+#endif
+                        continue;
+                }
+                else // The filename is between quotes
+                {
+                    if (pair.second->value.size() <= 1)
+                        continue;
+
+#ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[1] == '/') || (pair.second->value[1] == '\\')
+                        || ((pair.second->value.size() > 2) && (pair.second->value[2] == ':')))
+#else
+                    if (pair.second->value[1] == '/')
+#endif
+                        continue;
+                }
+
+                tgui::String filename;
+                if (pair.second->value[0] != '"')
+                    filename = pair.second->value;
+                else
+                {
+                    // The filename is surrounded by quotes, with optional options behind it
+                    const auto endQuotePos = pair.second->value.find('"', 1);
+                    assert(endQuotePos != tgui::String::npos);
+                    filename = pair.second->value.substr(1, endQuotePos - 1);
+                }
+
+                // If the file can't be found anywhere then don't inject the file path
+                const bool fileFoundRelativeToForm = tgui::Filesystem::fileExists(formPath / filename);
+                const bool fileFoundRelativeToGuiBuilder = tgui::Filesystem::fileExists(
+                    tgui::getResourcePath() / filename);
+                if (!fileFoundRelativeToForm && !fileFoundRelativeToGuiBuilder)
+                    continue;
+
+                tgui::String pathToInject = fileFoundRelativeToForm ? formPath.asString() : tgui::getResourcePath().asString();
+                assert(!pathToInject.empty());
+                if (pathToInject.back() == '/')
+                    pathToInject.pop_back();
+
+                // Insert the path into the filename.
+                // We can't just deserialize the value to get rid of the quotes as it may contain
+                // things behind the filename.
+                if (pair.second->value[0] != '"')
+                    pair.second->value = pathToInject + '/' + pair.second->value;
+                else // The filename is between quotes
+                    pair.second->value = '"' + pathToInject + '/' + pair.second->value.substr(1);
+            }
+        }
+
+        for (const auto& child : node->children)
+            makePathsAbsolute(child, formPath);
+    }
+
+    void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node,
+                           const tgui::String& formPath,
+                           const tgui::String& guiBuilderPath)
+    {
+        for (const auto& pair : node->propertyValuePairs)
+        {
+            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == U"Texture"))
+                || (pair.first == U"Font") || (pair.first == U"Image")) {
+                if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
+                    || pair.second->value.equalIgnoreCase(U"null")
+                    || pair.second->value.equalIgnoreCase(U"nullptr"))
+                    continue;
+
+                // Skip paths that are already relative (this shouldn't happen)
+                if (pair.second->value[0] != '"')
+                {
+#ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\')
+                        && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
+#else
+                    if (pair.second->value[0] != '/')
+#endif
+                        continue;
+                }
+                else // The filename is between quotes
+                {
+                    if (pair.second->value.size() <= 1)
+                        continue;
+
+#ifdef TGUI_SYSTEM_WINDOWS
+                    if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\')
+                        && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
+#else
+                    if (pair.second->value[1] != '/')
+#endif
+                        continue;
+                }
+
+                tgui::String filename;
+                if (pair.second->value[0] != '"')
+                    filename = pair.second->value;
+                else
+                {
+                    // The filename is surrounded by quotes, with optional options behind it
+                    const auto endQuotePos = pair.second->value.find('"', 1);
+                    assert(endQuotePos != tgui::String::npos); // DataIO wouldn't have accepted the
+                                                               // file if there is no close quote
+                    filename = pair.second->value.substr(1, endQuotePos - 1);
+                }
+
+                // Make the path relative to the form or gui builder
+                if (filename.starts_with(formPath))
+                {
+                    if (pair.second->value[0] != '"')
+                        pair.second->value.erase(0, formPath.length());
+                    else
+                        pair.second->value.erase(1, formPath.length());
+                }
+                else if (filename.starts_with(guiBuilderPath))
+                {
+                    if (pair.second->value[0] != '"')
+                        pair.second->value.erase(0, guiBuilderPath.length());
+                    else
+                        pair.second->value.erase(1, guiBuilderPath.length());
+                }
+                else // We will need to use ".." if we want to make the path relative
+                {
+                    // Split the form path an filename in parts (the folders that make up the path).
+                    tgui::String lastPath;
+                    tgui::Filesystem::Path path = tgui::Filesystem::Path(formPath);
+                    std::vector<tgui::String> formPathParts;
+                    while (path.asString() != lastPath)
+                    {
+                        if (!path.getFilename().empty())
+                            formPathParts.insert(formPathParts.begin(), path.getFilename());
+
+                        lastPath = path.asString();
+                        path = path.getParentPath();
+                    }
+
+                    lastPath = U"";
+                    path = tgui::Filesystem::Path(filename).getParentPath();
+                    std::vector<tgui::String> resourceParts;
+                    while (path.asString() != lastPath)
+                    {
+                        if (!path.getFilename().empty())
+                            resourceParts.insert(resourceParts.begin(), path.getFilename());
+
+                        lastPath = path.asString();
+                        path = path.getParentPath();
+                    }
+
+                    const std::size_t originalFormPartsLength = formPathParts.size();
+                    while (!formPathParts.empty() && !resourceParts.empty())
+                    {
+                        if (formPathParts.size() > resourceParts.size())
+                            formPathParts.pop_back();
+                        else if (formPathParts.size() < resourceParts.size())
+                            resourceParts.pop_back();
+                        else
                         {
-                            assert(originalFormPartsLength > formPathParts.size());
-                            const std::size_t pathsToGoUp = originalFormPartsLength - formPathParts.size();
+                            // Check if both subpaths are equal
+                            bool pathsEqual = true;
+                            for (std::size_t i = 0; pathsEqual && (i < formPathParts.size()); ++i)
+                                pathsEqual &= (formPathParts[i] == resourceParts[i]);
 
-                            tgui::String relativePath;
-                            tgui::Filesystem::Path basePath = tgui::Filesystem::Path(formPath).getParentPath();
-                            assert(basePath.asString() + '/' == formPath);
-                            for (std::size_t i = 0; i < pathsToGoUp; ++i)
-                            {
-                                relativePath += U"../";
-                                basePath = basePath.getParentPath();
-                            }
+                            if (pathsEqual) {
+                                assert(originalFormPartsLength > formPathParts.size());
+                                const std::size_t pathsToGoUp = originalFormPartsLength
+                                                                - formPathParts.size();
 
-                            tgui::String basePathStr = basePath.asString();
-                            assert(!basePathStr.empty());
-                            if (basePathStr.back() != '/')
-                                basePathStr.push_back('/');
-
-                            if (filename.starts_with(basePathStr))
-                            {
-                                if (pair.second->value[0] != '"')
+                                tgui::String relativePath;
+                                tgui::Filesystem::Path basePath = tgui::Filesystem::Path(formPath)
+                                                                      .getParentPath();
+                                assert(basePath.asString() + '/' == formPath);
+                                for (std::size_t i = 0; i < pathsToGoUp; ++i)
                                 {
-                                    pair.second->value.erase(0, basePathStr.length());
-                                    pair.second->value = relativePath + pair.second->value;
+                                    relativePath += U"../";
+                                    basePath = basePath.getParentPath();
+                                }
+
+                                tgui::String basePathStr = basePath.asString();
+                                assert(!basePathStr.empty());
+                                if (basePathStr.back() != '/')
+                                    basePathStr.push_back('/');
+
+                                if (filename.starts_with(basePathStr))
+                                {
+                                    if (pair.second->value[0] != '"') {
+                                        pair.second->value.erase(0, basePathStr.length());
+                                        pair.second->value = relativePath + pair.second->value;
+                                    }
+                                    else
+                                    {
+                                        pair.second->value.erase(0, basePathStr.length() + 1);
+                                        pair.second->value = U'"' + relativePath
+                                                             + pair.second->value;
+                                    }
                                 }
                                 else
-                                {
-                                    pair.second->value.erase(0, basePathStr.length() + 1);
-                                    pair.second->value = U'"' + relativePath + pair.second->value;
-                                }
-                            }
-                            else
-                                std::cerr << "Failed to make path relative. '" + filename + "' does not start with '" + basePathStr + "'.\n";
+                                    std::cerr << "Failed to make path relative. '" + filename
+                                                     + "' does not start with '" + basePathStr
+                                                     + "'.\n";
 
-                            break;
+                                break;
+                            }
+                            formPathParts.pop_back();
+                            resourceParts.pop_back();
                         }
-                        formPathParts.pop_back();
-                        resourceParts.pop_back();
                     }
                 }
             }
         }
+
+        for (const auto& child : node->children)
+            makePathsRelative(child, formPath, guiBuilderPath);
     }
 
-    for (const auto& child : node->children)
-        makePathsRelative(child, formPath, guiBuilderPath);
-}
+    void importOldForm(const std::unique_ptr<tgui::DataIO::Node>& rootNode)
+    {
+        // Construct a list of all existing renderer properties for all widgets.
+        // Since the renderers may be global in the form file, we can't know which widget type will use it (without some effort),
+        // so instead we just get the properties for all widget types to match on.
+        std::set<tgui::String> possibleProperties;
+        importOldFormFileExtractValidProperties(possibleProperties, BitmapButtonProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("BitmapButton")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, ButtonProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Button")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, ChatBoxProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("ChatBox")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, ChildWindowProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("ChildWindow")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, ComboBoxProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("ComboBox")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, EditBoxProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("EditBox")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, GroupProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Group")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, KnobProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Knob")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, LabelProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Label")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, ListBoxProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("ListBox")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, PanelProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Panel")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, PictureProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Picture")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, ProgressBarProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("ProgressBar")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, RadioButtonProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("RadioButton")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, RangeSliderProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("RangeSlider")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, ScrollablePanelProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("ScrollablePanel")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, ScrollbarProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Scrollbar")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, SliderProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Slider")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, SpinButtonProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("SpinButton")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, TabsProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("Tabs")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, TextAreaProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("TextArea")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties, TreeViewProperties().initProperties(
+            tgui::WidgetFactory::getConstructFunction("TreeView")()).second);
+
+        // Convert renderer properties from lowercase to the correct case-sensitive string
+        importOldFormFileFixRendererProperties(rootNode, possibleProperties);
+    }
+} // anonymous namespace
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
