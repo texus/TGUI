@@ -284,7 +284,7 @@ namespace tgui
 
     HorizontalAlignment EditBoxSlider::getTextAlignment() const
     {
-        return m_editBox->getAlignment();;
+        return m_editBox->getAlignment();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
