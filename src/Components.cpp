@@ -234,7 +234,7 @@ namespace dev
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void swap(Component& first, Component& second)
+    void swap(Component& first, Component& second) noexcept
     {
         using std::swap;
         swap(first.m_state, second.m_state);
@@ -334,7 +334,7 @@ namespace dev
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void swap(GroupComponent& first, GroupComponent& second)
+    void swap(GroupComponent& first, GroupComponent& second) noexcept
     {
         using std::swap;
         swap(static_cast<Component&>(first), static_cast<Component&>(second));

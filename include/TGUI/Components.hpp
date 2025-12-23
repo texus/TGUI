@@ -424,8 +424,7 @@ namespace dev
         TGUI_NODISCARD virtual std::shared_ptr<Component> clone() const = 0;
 
     protected:
-
-        friend void swap(Component& first, Component& second);
+        friend void swap(Component& first, Component& second) noexcept;
 
     protected:
 
@@ -460,7 +459,7 @@ namespace dev
 
         TGUI_NODISCARD std::shared_ptr<Component> clone() const override;
 
-        friend void swap(GroupComponent& first, GroupComponent& second);
+        friend void swap(GroupComponent& first, GroupComponent& second) noexcept;
 
     protected:
 
