@@ -18,3 +18,4 @@ CmakeSettings.json
 CombinedSources*.cpp
 .DS_Store
 *~
+.qtcreator/
