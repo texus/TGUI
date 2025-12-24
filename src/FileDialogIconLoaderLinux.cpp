@@ -67,7 +67,7 @@ namespace tgui
         TGUI_NODISCARD bool supportsSystemIcons() const override;
         TGUI_NODISCARD bool hasGenericIcons() const override;
         TGUI_NODISCARD Texture getGenericFileIcon(const Filesystem::FileInfo& file) override;
-        void requestFileIcons(const std::vector<Filesystem::FileInfo>&) override;
+        void requestFileIcons(const std::vector<Filesystem::FileInfo>& files) override;
         TGUI_NODISCARD std::vector<Texture> retrieveFileIcons() override;
 
     private:
