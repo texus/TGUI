@@ -384,7 +384,7 @@ void GuiBuilder::mainLoop()
                                 }
                                 else // Make the widget a sibling of the one where it was dropped on
                                 {
-                                    auto parent = widgetAtDropLocation->getParent();
+                                    auto* parent = widgetAtDropLocation->getParent();
                                     parent->add(widgetToMove);
 
                                     assert(parent->getWidgetIndex(widgetAtDropLocation) >= 0);
@@ -1829,7 +1829,7 @@ void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui
             if (!selectedWidget || !selectedWidget->ptr || !selectedWidget->ptr->getParent())
                 return;
 
-            const auto parent = selectedWidget->ptr->getParent();
+            const auto* parent = selectedWidget->ptr->getParent();
             const float parentSize = isHorizontal ? parent->getInnerSize().x : parent->getInnerSize().y;
             if (parentSize <= 0)
                 return;
@@ -1848,7 +1848,7 @@ void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui
             if (!selectedWidget || !selectedWidget->ptr || !selectedWidget->ptr->getParent())
                 return;
 
-            const auto parent = selectedWidget->ptr->getParent();
+            const auto* parent = selectedWidget->ptr->getParent();
             const float parentSize = isHorizontal ? parent->getInnerSize().x : parent->getInnerSize().y;
             if (parentSize <= 0)
                 return;
