@@ -1431,7 +1431,7 @@ std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> Form::getAlignmentLines()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::String Form::widgetPtrToStrId(const tgui::Widget::Ptr& widget) const
+tgui::String Form::widgetPtrToStrId(const tgui::Widget::Ptr& widget)
 {
     return tgui::String::fromNumber(reinterpret_cast<std::uintptr_t>(widget.get()));
 }

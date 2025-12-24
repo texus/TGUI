@@ -115,8 +115,8 @@ private:
     bool loadForm(tgui::String filename, bool loadingFromFile = true);
     void displayErrorMessage(const tgui::String& error);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
-    TGUI_NODISCARD tgui::String getDefaultFilename() const;
-    tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget) const;
+    TGUI_NODISCARD static tgui::String getDefaultFilename();
+    static tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget);
 
     void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, const std::shared_ptr<WidgetInfo>& widgetInfo);
     void pasteWidgetRecursive(const CopiedWidget& copiedWidget, tgui::Container* parent);
