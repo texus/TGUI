@@ -1537,15 +1537,14 @@ tgui::ChildWindow::Ptr GuiBuilder::openWindowWithFocus(tgui::ChildWindow::Ptr wi
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::String GuiBuilder::getDefaultFilename() const
+tgui::String GuiBuilder::getDefaultFilename()
 {
     return "form.txt";
 }
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tgui::String GuiBuilder::widgetPtrToStrId(const tgui::Widget::Ptr& widget) const
+tgui::String GuiBuilder::widgetPtrToStrId(const tgui::Widget::Ptr& widget)
 {
     return tgui::String::fromNumber(reinterpret_cast<std::uintptr_t>(widget.get()));
 }
