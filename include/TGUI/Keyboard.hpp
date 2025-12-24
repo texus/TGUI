@@ -82,7 +82,7 @@ namespace tgui
                 widget = parent;
             }
 
-            const auto gui = requestingWidget->getParentGui();
+            const auto* gui = requestingWidget->getParentGui();
             if (gui)
             {
                 const Vector2f topLeftPos = gui->mapCoordsToPixel(inputRect.getPosition());
