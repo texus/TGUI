@@ -22,6 +22,12 @@
 
 set(TGUI_SRC
     Animation.cpp
+    Backend/Font/BackendFont.cpp
+    Backend/Renderer/BackendRenderTarget.cpp
+    Backend/Renderer/BackendText.cpp
+    Backend/Renderer/BackendTexture.cpp
+    Backend/Window/Backend.cpp
+    Backend/Window/BackendGui.cpp
     Base64.cpp
     Color.cpp
     Components.cpp
@@ -33,29 +39,6 @@ set(TGUI_SRC
     Font.cpp
     Global.cpp
     Layout.cpp
-    ObjectConverter.cpp
-    Sprite.cpp
-    Signal.cpp
-    String.cpp
-    SignalManager.cpp
-    SubwidgetContainer.cpp
-    SvgImage.cpp
-    TextStyle.cpp
-    Text.cpp
-    Texture.cpp
-    TextureManager.cpp
-    Timer.cpp
-    ToolTip.cpp
-    Transform.cpp
-    TwoFingerScrollDetect.cpp
-    Widget.cpp
-    WindowsIMM.cpp
-    Backend/Font/BackendFont.cpp
-    Backend/Renderer/BackendRenderTarget.cpp
-    Backend/Renderer/BackendText.cpp
-    Backend/Renderer/BackendTexture.cpp
-    Backend/Window/Backend.cpp
-    Backend/Window/BackendGui.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
     Loading/ImageLoader.cpp
@@ -63,6 +46,7 @@ set(TGUI_SRC
     Loading/Theme.cpp
     Loading/ThemeLoader.cpp
     Loading/WidgetFactory.cpp
+    ObjectConverter.cpp
     Renderers/BoxLayoutRenderer.cpp
     Renderers/ButtonRenderer.cpp
     Renderers/ChatBoxRenderer.cpp
@@ -79,8 +63,8 @@ set(TGUI_SRC
     Renderers/MenuBarRenderer.cpp
     Renderers/MenuWidgetBaseRenderer.cpp
     Renderers/MessageBoxRenderer.cpp
-    Renderers/PanelRenderer.cpp
     Renderers/PanelListBoxRenderer.cpp
+    Renderers/PanelRenderer.cpp
     Renderers/PictureRenderer.cpp
     Renderers/ProgressBarRenderer.cpp
     Renderers/RadioButtonRenderer.cpp
@@ -95,6 +79,21 @@ set(TGUI_SRC
     Renderers/TextAreaRenderer.cpp
     Renderers/TreeViewRenderer.cpp
     Renderers/WidgetRenderer.cpp
+    Signal.cpp
+    SignalManager.cpp
+    Sprite.cpp
+    String.cpp
+    SubwidgetContainer.cpp
+    SvgImage.cpp
+    Text.cpp
+    TextStyle.cpp
+    Texture.cpp
+    TextureManager.cpp
+    Timer.cpp
+    ToolTip.cpp
+    Transform.cpp
+    TwoFingerScrollDetect.cpp
+    Widget.cpp
     Widgets/BitmapButton.cpp
     Widgets/BoxLayout.cpp
     Widgets/BoxLayoutRatios.cpp
@@ -111,8 +110,8 @@ set(TGUI_SRC
     Widgets/EditBox.cpp
     Widgets/EditBoxSlider.cpp
     Widgets/FileDialog.cpp
-    Widgets/Group.cpp
     Widgets/Grid.cpp
+    Widgets/Group.cpp
     Widgets/GrowHorizontalLayout.cpp
     Widgets/GrowVerticalLayout.cpp
     Widgets/HorizontalLayout.cpp
@@ -139,12 +138,13 @@ set(TGUI_SRC
     Widgets/SpinButton.cpp
     Widgets/SpinControl.cpp
     Widgets/SplitContainer.cpp
-    Widgets/Tabs.cpp
     Widgets/TabContainer.cpp
+    Widgets/Tabs.cpp
     Widgets/TextArea.cpp
     Widgets/ToggleButton.cpp
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
+    WindowsIMM.cpp
 )
 
 set(TGUI_HEADERS
@@ -152,6 +152,62 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/AllWidgets.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Animation.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Any.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/BackendFont.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/BackendFontFactory.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/Raylib/BackendFontRaylib.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/SFML-Graphics/BackendFontSFML.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/GLFW-GLES2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/GLFW-OpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/BackendRenderTarget.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/BackendRenderer.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/BackendText.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/BackendTexture.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/Raylib/BackendRenderTargetRaylib.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendRenderTargetSDLGPU.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-GLES2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-GPU.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-OpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-Renderer.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-TTF-GLES2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-TTF-OpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SFML-Graphics.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SFML-OpenGL3.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/Backend.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/BackendGui.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/GLFW/BackendGLFW.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/Raylib/BackendGuiRaylib.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/Raylib/BackendRaylib.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/SDL/BackendGuiSDL.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/SDL/BackendSDL.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/SFML/BackendGuiSFML.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/SFML/BackendSFML.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/raylib.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Base64.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Color.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Components.hpp"
@@ -173,92 +229,6 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Global.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Keyboard.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Layout.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/ObjectConverter.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Optional.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Outline.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Rect.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/RelFloatRect.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/RendererDefines.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/RenderStates.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Signal.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/SignalManager.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Sprite.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/String.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/StringView.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/SubwidgetContainer.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/SvgImage.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Text.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/TextStyle.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/TextureData.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Texture.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/TextureManager.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/TGUI.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Timer.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/ToolTip.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Transform.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/TwoFingerScrollDetect.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Utf.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Variant.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Vector2.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Vertex.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/WindowsIMM.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/raylib.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SFML-OpenGL3.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-TTF-OpenGL3.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-GPU.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-Renderer.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/GLFW-OpenGL3.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/GLFW-GLES2.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-GLES2.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-TTF-GLES2.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SDL-OpenGL3.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/SFML-Graphics.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/BackendTexture.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/BackendText.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/BackendRenderTarget.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/BackendRenderer.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_GPU/BackendRenderTargetSDLGPU.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/Raylib/BackendRenderTargetRaylib.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/BackendGui.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/Backend.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/Raylib/BackendRaylib.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/Raylib/BackendGuiRaylib.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/SDL/BackendSDL.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/SDL/BackendGuiSDL.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/SFML/BackendGuiSFML.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/SFML/BackendSFML.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/GLFW/BackendGLFW.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/BackendFontFactory.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/BackendFont.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/SFML-Graphics/BackendFontSFML.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/Raylib/BackendFontRaylib.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Loading/DataIO.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Loading/Deserializer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Loading/ImageLoader.hpp"
@@ -266,6 +236,13 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Loading/Theme.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Loading/ThemeLoader.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Loading/WidgetFactory.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/ObjectConverter.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Optional.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Outline.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Rect.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/RelFloatRect.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/RenderStates.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/RendererDefines.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/BoxLayoutRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/ButtonRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/ChatBoxRenderer.hpp"
@@ -301,11 +278,33 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/TextBoxRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/TreeViewRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/WidgetRenderer.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Signal.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/SignalManager.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Sprite.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/String.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/StringView.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/SubwidgetContainer.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/SvgImage.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/TGUI.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Text.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/TextStyle.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Texture.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/TextureData.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/TextureManager.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Timer.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/ToolTip.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Transform.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/TwoFingerScrollDetect.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Utf.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Variant.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Vector2.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Vertex.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/BitmapButton.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/BoxLayout.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/BoxLayoutRatios.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ButtonBase.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/Button.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ButtonBase.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/CanvasBase.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ChatBox.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/CheckBox.hpp"
@@ -334,8 +333,8 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/PanelListBox.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/Picture.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ProgressBar.hpp"
-    "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/RadioButtonGroup.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/RadioButton.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/RadioButtonGroup.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/RangeSlider.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/RichTextLabel.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ScrollablePanel.hpp"
@@ -351,12 +350,12 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ToggleButton.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/TreeView.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/VerticalLayout.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/WindowsIMM.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/extlibs/IncludeNanoSVG.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/extlibs/IncludeSDL.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/extlibs/IncludeStbImage.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/extlibs/IncludeStbImageWrite.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/extlibs/IncludeWindows.hpp"
-
 )
 
 set(TGUI_SRC_WITHOUT_UNITY "")
