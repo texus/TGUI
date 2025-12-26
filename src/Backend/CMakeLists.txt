@@ -243,8 +243,8 @@ if(TGUI_HAS_WINDOW_BACKEND_SDL)
 endif()
 if(TGUI_HAS_WINDOW_BACKEND_GLFW)
     set(new_tgui_backend_sources
-        Backend/Window/GLFW/BackendGuiGLFW.cpp
-        Backend/Window/GLFW/BackendGLFW.cpp)
+        Backend/Window/GLFW/BackendGLFW.cpp
+        Backend/Window/GLFW/BackendGuiGLFW.cpp)
     target_sources(tgui PRIVATE ${new_tgui_backend_sources})
     set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "WINDOW_BACKEND_GLFW")
     list(APPEND module_src_files "Backend/Window/GLFW/BackendWindowGLFW.cppm")
@@ -260,8 +260,8 @@ endif()
 
 if(TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS)
     set(new_tgui_backend_sources
-        Backend/Renderer/SFML-Graphics/BackendRendererSFML.cpp
         Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.cpp
+        Backend/Renderer/SFML-Graphics/BackendRendererSFML.cpp
         Backend/Renderer/SFML-Graphics/BackendTextureSFML.cpp
         Backend/Renderer/SFML-Graphics/CanvasSFML.cpp)
     target_sources(tgui PRIVATE ${new_tgui_backend_sources})
@@ -270,8 +270,8 @@ if(TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS)
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_SDL_GPU)
     set(new_tgui_backend_sources
-        Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.cpp
         Backend/Renderer/SDL_GPU/BackendRenderTargetSDLGPU.cpp
+        Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.cpp
         Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.cpp
         Backend/Renderer/SDL_GPU/CanvasSDLGPU.cpp)
     target_sources(tgui PRIVATE ${new_tgui_backend_sources})
@@ -280,8 +280,8 @@ if(TGUI_HAS_RENDERER_BACKEND_SDL_GPU)
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER)
     set(new_tgui_backend_sources
-        Backend/Renderer/SDL_Renderer/BackendRendererSDL.cpp
         Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.cpp
+        Backend/Renderer/SDL_Renderer/BackendRendererSDL.cpp
         Backend/Renderer/SDL_Renderer/BackendTextureSDL.cpp
         Backend/Renderer/SDL_Renderer/CanvasSDL.cpp)
     target_sources(tgui PRIVATE ${new_tgui_backend_sources})
@@ -290,8 +290,8 @@ if(TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER)
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_OPENGL3)
     set(new_tgui_backend_sources
-        Backend/Renderer/OpenGL3/BackendRendererOpenGL3.cpp
         Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.cpp
+        Backend/Renderer/OpenGL3/BackendRendererOpenGL3.cpp
         Backend/Renderer/OpenGL3/BackendTextureOpenGL3.cpp
         Backend/Renderer/OpenGL3/CanvasOpenGL3.cpp)
     target_sources(tgui PRIVATE ${new_tgui_backend_sources})
@@ -300,8 +300,8 @@ if(TGUI_HAS_RENDERER_BACKEND_OPENGL3)
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_GLES2)
     set(new_tgui_backend_sources
-            Backend/Renderer/GLES2/BackendRendererGLES2.cpp
             Backend/Renderer/GLES2/BackendRenderTargetGLES2.cpp
+            Backend/Renderer/GLES2/BackendRendererGLES2.cpp
             Backend/Renderer/GLES2/BackendTextureGLES2.cpp
             Backend/Renderer/GLES2/CanvasGLES2.cpp)
     target_sources(tgui PRIVATE ${new_tgui_backend_sources})
@@ -310,8 +310,8 @@ if(TGUI_HAS_RENDERER_BACKEND_GLES2)
 endif()
 if(TGUI_HAS_RENDERER_BACKEND_RAYLIB)
     set(new_tgui_backend_sources
-        Backend/Renderer/Raylib/BackendRendererRaylib.cpp
         Backend/Renderer/Raylib/BackendRenderTargetRaylib.cpp
+        Backend/Renderer/Raylib/BackendRendererRaylib.cpp
         Backend/Renderer/Raylib/BackendTextureRaylib.cpp
         Backend/Renderer/Raylib/CanvasRaylib.cpp)
     target_sources(tgui PRIVATE ${new_tgui_backend_sources})

@@ -26,9 +26,9 @@ if(NOT TGUI_DEFAULT_BACKEND)
 endif()
 
 set(GUI_BUILDER_SOURCES
-    src/main.cpp
     src/Form.cpp
     src/GuiBuilder.cpp
+    src/main.cpp
 )
 
 # Make a GUI application on windows (without having the command line window)
