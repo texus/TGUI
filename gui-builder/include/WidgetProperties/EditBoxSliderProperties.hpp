@@ -60,7 +60,7 @@ struct EditBoxSliderProperties : WidgetProperties
         pair.first["Step"] = {"Float", tgui::String::fromNumber(editBoxSlider->getStep())};
         pair.first["DecimalPlaces"] = {"UInt", tgui::String::fromNumber(editBoxSlider->getDecimalPlaces())};
         pair.first["TextAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(editBoxSlider->getTextAlignment())};
-        
+
         const auto editBoxRenderer = editBoxSlider->getEditBoxSharedRenderer();
         pair.second["EditBox.Padding"] = {"Outline", editBoxRenderer->getPadding().toString()};
         pair.second["EditBox.CaretWidth"] = {"Float", tgui::String::fromNumber(editBoxRenderer->getCaretWidth())};
