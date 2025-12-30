@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Container.hpp>
+#include <TGUI/Config.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>

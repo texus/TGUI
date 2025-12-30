@@ -28,6 +28,7 @@
 #include <TGUI/Renderers/RadioButtonRenderer.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

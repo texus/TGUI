@@ -28,6 +28,7 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ChatBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Config.hpp>
 
 #include <deque>
 #include <memory>

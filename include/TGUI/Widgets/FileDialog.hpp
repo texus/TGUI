@@ -34,6 +34,7 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Renderers/FileDialogRenderer.hpp>
 #include <TGUI/Filesystem.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 #include <tuple>

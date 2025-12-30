@@ -29,6 +29,7 @@
 #include <TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp>
 #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 

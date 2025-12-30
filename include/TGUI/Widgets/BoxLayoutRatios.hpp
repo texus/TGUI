@@ -26,6 +26,7 @@
 #define TGUI_BOX_LAYOUT_RATIOS_HPP
 
 #include <TGUI/Widgets/BoxLayout.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 #include <vector>
 

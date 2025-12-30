@@ -26,6 +26,7 @@
 #define TGUI_RICH_TEXT_LABEL_HPP
 
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 #include <vector>
 

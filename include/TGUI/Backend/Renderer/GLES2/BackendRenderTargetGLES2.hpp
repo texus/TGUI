@@ -27,6 +27,7 @@
 
 #include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

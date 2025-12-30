@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/ColorPicker.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cmath>
 #include <memory>

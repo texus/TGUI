@@ -27,6 +27,7 @@
 
 #include <TGUI/Vector2.hpp>
 #include <TGUI/String.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cstdint>
 #include <memory>

@@ -29,6 +29,7 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Global.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cstdint>
 #include <memory>

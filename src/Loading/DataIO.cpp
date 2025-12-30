@@ -25,6 +25,7 @@
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Global.hpp>
 #include <TGUI/String.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cctype> // isspace
 #include <algorithm>

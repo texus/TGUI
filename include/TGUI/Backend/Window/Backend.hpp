@@ -33,6 +33,7 @@
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cassert>
 #include <cstdint>

@@ -26,6 +26,7 @@
 #define TGUI_FONT_FACTORY_HPP
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 

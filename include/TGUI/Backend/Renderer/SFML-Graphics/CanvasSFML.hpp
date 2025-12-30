@@ -28,6 +28,7 @@
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Widgets/CanvasBase.hpp>
+#include <TGUI/Config.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>

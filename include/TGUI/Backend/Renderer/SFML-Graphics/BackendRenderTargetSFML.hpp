@@ -26,6 +26,7 @@
 #define TGUI_BACKEND_RENDER_TARGET_SFML_HPP
 
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Config.hpp>
 
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/RenderStates.hpp>

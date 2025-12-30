@@ -27,6 +27,7 @@
 
 #include <TGUI/Widgets/MenuWidgetBase.hpp>
 #include <TGUI/Renderers/ContextMenuRenderer.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 #include <vector>
 

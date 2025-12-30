@@ -24,6 +24,7 @@
 
 #include <set>
 
+#include <TGUI/Config.hpp>
 #include "Tests.hpp"
 #include <memory>
 #include <vector>

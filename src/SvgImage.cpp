@@ -26,6 +26,7 @@
 #include <TGUI/SvgImage.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/Config.hpp>
 
 #include <TGUI/extlibs/IncludeNanoSVG.hpp>
 #include <memory>

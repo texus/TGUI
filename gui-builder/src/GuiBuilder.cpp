@@ -60,6 +60,7 @@
 #include "WidgetProperties/ToggleButtonProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
 #include "WidgetProperties/VerticalLayoutProperties.hpp"
+#include <TGUI/Config.hpp>
 #include <cassert>
 #include <memory>
 #include <vector>

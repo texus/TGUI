@@ -27,6 +27,7 @@
 
 #include <TGUI/Widget.hpp>
 #include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/Config.hpp>
 
 #include <functional>
 #include <vector>

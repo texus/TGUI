@@ -24,6 +24,7 @@
 
 #include <TGUI/Global.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Config.hpp>
 
 #include <functional>
 #include <sstream>

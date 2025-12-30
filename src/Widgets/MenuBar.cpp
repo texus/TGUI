@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cmath>
 #include <memory>

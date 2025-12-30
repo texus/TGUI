@@ -29,6 +29,7 @@
 #include <TGUI/Renderers/LabelRenderer.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 #include <vector>
 

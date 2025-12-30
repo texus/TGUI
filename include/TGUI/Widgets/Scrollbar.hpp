@@ -28,6 +28,7 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/ScrollbarRenderer.hpp>
 #include <TGUI/CopiedSharedPtr.hpp>
+#include <TGUI/Config.hpp>
 
 #include <chrono>
 #include <memory>

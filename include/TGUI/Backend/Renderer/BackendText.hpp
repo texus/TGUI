@@ -26,7 +26,7 @@
 #define TGUI_BACKEND_TEXT_HPP
 
 #include <TGUI/Text.hpp>
-
+#include <TGUI/Config.hpp>
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <memory>

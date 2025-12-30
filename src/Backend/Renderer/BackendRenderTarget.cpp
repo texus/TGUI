@@ -25,6 +25,7 @@
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Widget.hpp>
+#include <TGUI/Config.hpp>
 
 #include <algorithm>
 #include <array>

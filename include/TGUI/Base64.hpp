@@ -26,6 +26,7 @@
 #define TGUI_BASE64_HPP
 
 #include <TGUI/String.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cstdint>
 #include <vector>

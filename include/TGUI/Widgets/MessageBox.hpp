@@ -29,6 +29,7 @@
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Renderers/MessageBoxRenderer.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 #include <vector>
 

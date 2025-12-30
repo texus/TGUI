@@ -24,6 +24,7 @@
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cmath>
 

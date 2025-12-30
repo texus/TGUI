@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/ContextMenu.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cmath>
 #include <memory>

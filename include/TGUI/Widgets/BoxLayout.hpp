@@ -26,6 +26,7 @@
 #define TGUI_BOX_LAYOUT_HPP
 
 #include <TGUI/Widgets/Group.hpp>
+#include <TGUI/Config.hpp>
 #include <TGUI/Renderers/BoxLayoutRenderer.hpp>
 #include <memory>
 

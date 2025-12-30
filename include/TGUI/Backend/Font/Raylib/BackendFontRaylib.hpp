@@ -26,6 +26,7 @@
 #define TGUI_BACKEND_FONT_RAYLIB_HPP
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 #include <unordered_map>

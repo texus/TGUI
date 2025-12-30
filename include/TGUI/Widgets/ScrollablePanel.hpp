@@ -28,6 +28,7 @@
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ScrollablePanelRenderer.hpp>
+#include <TGUI/Config.hpp>
 
 #include <chrono>
 #include <memory>

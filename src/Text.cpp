@@ -25,6 +25,7 @@
 #include <TGUI/Text.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
+#include <TGUI/Config.hpp>
 
 #include <algorithm>
 #include <memory>

@@ -27,6 +27,7 @@
 
 #include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Config.hpp>
 
 #include <unordered_map>
 #include <map>

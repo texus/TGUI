@@ -27,6 +27,7 @@
 
 #include <TGUI/Texture.hpp>
 #include <TGUI/Filesystem.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 #include <vector>

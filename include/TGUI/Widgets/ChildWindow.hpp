@@ -29,6 +29,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Renderers/ChildWindowRenderer.hpp>
+#include <TGUI/Config.hpp>
 
 #include <limits>
 #include <memory>

@@ -24,6 +24,7 @@
 
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cmath>
 #include <memory>

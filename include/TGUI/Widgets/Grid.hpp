@@ -26,6 +26,7 @@
 #define TGUI_GRID_HPP
 
 #include <TGUI/Container.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 #include <unordered_map>

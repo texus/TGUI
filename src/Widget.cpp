@@ -29,6 +29,7 @@
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/SignalManager.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 #include <vector>
 

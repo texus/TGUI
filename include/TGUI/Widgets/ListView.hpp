@@ -28,6 +28,7 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListViewRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 #include <set>

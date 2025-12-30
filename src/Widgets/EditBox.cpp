@@ -25,6 +25,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Keyboard.hpp>
+#include <TGUI/Config.hpp>
 
 #include <algorithm>
 #include <cmath>

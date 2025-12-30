@@ -27,6 +27,7 @@
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Timer.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 #include <vector>
 

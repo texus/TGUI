@@ -26,6 +26,7 @@
 #define TGUI_SIGNAL_MANAGER_HPP
 
 #include <TGUI/Widget.hpp>
+#include <TGUI/Config.hpp>
 
 #include <unordered_map>
 #include <memory>

@@ -26,6 +26,7 @@
 #define TGUI_BACKEND_TEXTURE_SFML_HPP
 
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/Config.hpp>
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Image.hpp>

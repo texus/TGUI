@@ -24,6 +24,7 @@
 
 #include <iostream>
 
+#include <TGUI/Config.hpp>
 #include "Tests.hpp"
 
 TEST_CASE("[Vector2]")

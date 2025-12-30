@@ -29,6 +29,7 @@
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Texture.hpp>
 #include <TGUI/Outline.hpp>
+#include <TGUI/Config.hpp>
 
 #include <unordered_map>
 #include <memory>

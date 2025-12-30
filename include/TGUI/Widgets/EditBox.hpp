@@ -29,6 +29,7 @@
 #include <TGUI/Renderers/EditBoxRenderer.hpp>
 #include <TGUI/Rect.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 #include <regex>

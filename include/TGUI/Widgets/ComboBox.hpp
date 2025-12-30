@@ -27,6 +27,7 @@
 
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Renderers/ComboBoxRenderer.hpp>
+#include <TGUI/Config.hpp>
 #include <memory>
 #include <vector>
 

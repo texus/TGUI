@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/FileDialog.hpp>
 #include <TGUI/FileDialogIconLoader.hpp>
+#include <TGUI/Config.hpp>
 
 #include <memory>
 #include <vector>

@@ -24,7 +24,7 @@
 
 #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
 #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
-
+#include <TGUI/Config.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Timer.hpp>
 

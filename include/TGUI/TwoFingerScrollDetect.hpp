@@ -26,6 +26,7 @@
 #define TGUI_TWO_FINGER_SCROLL_DETECT_HPP
 
 #include <TGUI/Vector2.hpp>
+#include <TGUI/Config.hpp>
 
 #include <cstdint>
 #include <unordered_map>
