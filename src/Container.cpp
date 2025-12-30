@@ -1585,7 +1585,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Container::transformMousePos(const Widget::Ptr& widget, Vector2f mousePos) const
+    Vector2f Container::transformMousePos(const Widget::Ptr& widget, Vector2f mousePos)
     {
         const bool defaultOrigin = (widget->getOrigin().x == 0) && (widget->getOrigin().y == 0);
         const bool scaledOrRotated = (widget->getScale().x != 1) || (widget->getScale().y != 1) || (widget->getRotation() != 0);
