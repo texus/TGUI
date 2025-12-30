@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
+#include <set>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/Config.hpp>

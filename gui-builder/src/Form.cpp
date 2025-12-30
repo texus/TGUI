@@ -52,6 +52,7 @@
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
 #include <memory>
+#include <set>
 
 const static float MOVE_STEP = 10;
 
