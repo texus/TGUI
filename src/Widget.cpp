@@ -1469,10 +1469,7 @@ namespace tgui
         // This behavior can be disabled by calling gui.setKeyboardNavigationEnabled(true).
         // TGUI_NEXT: Always return false here, irrelevant of whether keyboard navigation is enabled.
         // TGUI_NEXT: Deprecate or remove this function and let keyPressed return a bool value.
-        if (m_parentGui && m_parentGui->isKeyboardNavigationEnabled())
-            return false;
-        else
-            return true;
+        return !(m_parentGui && m_parentGui->isKeyboardNavigationEnabled());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

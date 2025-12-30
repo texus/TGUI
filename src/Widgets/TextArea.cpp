@@ -515,11 +515,7 @@ namespace tgui
                     m_selEnd.x = m_selStart.x;
                 }
 
-                bool selectingWhitespace;
-                if (isWhitespace(m_lines[m_selStart.y][m_selStart.x]))
-                    selectingWhitespace = true;
-                else
-                    selectingWhitespace = false;
+                const bool selectingWhitespace = isWhitespace(m_lines[m_selStart.y][m_selStart.x]);
 
                 // Move start pointer to the beginning of the word/whitespace
                 for (std::size_t i = m_selStart.x; i > 0; --i)

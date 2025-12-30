@@ -325,11 +325,8 @@ namespace tgui
         pos -= getPosition();
         if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
-            if (m_transparentTextureCached && m_spriteArrowDown.isTransparentPixel(pos - m_arrowDown.getPosition())
-             && m_spriteTrack.isTransparentPixel(pos - m_track.getPosition()) && m_spriteArrowUp.isTransparentPixel(pos))
-                return false;
-
-            return true;
+            return !(m_transparentTextureCached && m_spriteArrowDown.isTransparentPixel(pos - m_arrowDown.getPosition())
+                     && m_spriteTrack.isTransparentPixel(pos - m_track.getPosition()) && m_spriteArrowUp.isTransparentPixel(pos));
         }
 
         return false;

@@ -159,7 +159,7 @@ namespace tgui
                 // You can only have hex characters
                 for (std::size_t i = 1; i < str.length(); ++i)
                 {
-                    if (!((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'a' && str[i] <= 'f')))
+                    if ((str[i] < '0' || str[i] > '9') && (str[i] < 'a' || str[i] > 'f'))
                         throw Exception{U"Failed to deserialize color '" + str + U"'. Value started but '#' but contained an invalid character afterwards."};
                 }
 

@@ -149,10 +149,7 @@ namespace tgui
                             if (c == '"' && !backslash)
                                 break;
 
-                            if (c == '\\' && !backslash)
-                                backslash = true;
-                            else
-                                backslash = false;
+                            backslash = c == '\\' && !backslash;
                         }
                     }
                     else
@@ -227,10 +224,7 @@ namespace tgui
                         if (c == '"' && !backslash)
                             break;
 
-                        if (c == '\\' && !backslash)
-                            backslash = true;
-                        else
-                            backslash = false;
+                        backslash = c == '\\' && !backslash;
                     }
 
                     if (stream.peek() == EOF)
@@ -326,10 +320,7 @@ namespace tgui
                                         break;
                                     }
 
-                                    if (line[i] == '\\' && !backslash)
-                                        backslash = true;
-                                    else
-                                        backslash = false;
+                                    backslash = line[i] == '\\' && !backslash;
 
                                     i++;
                                 }

@@ -234,17 +234,11 @@ namespace tgui
             // Check if the mouse is on top of the upper/right arrow
             if (m_orientation == Orientation::Vertical)
             {
-                if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos))
-                    m_mouseDownOnTopArrow = true;
-                else
-                    m_mouseDownOnTopArrow = false;
+                m_mouseDownOnTopArrow = FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos);
             }
             else
             {
-                if (FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos))
-                    m_mouseDownOnTopArrow = false;
-                else
-                    m_mouseDownOnTopArrow = true;
+                m_mouseDownOnTopArrow = !FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos);
             }
 
             if (m_mouseDownOnTopArrow && m_value < m_maximum)
@@ -276,17 +270,11 @@ namespace tgui
         // Check if the mouse is on top of the upper/right arrow
         if (m_orientation == Orientation::Vertical)
         {
-            if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos))
-                m_mouseHoverOnTopArrow = true;
-            else
-                m_mouseHoverOnTopArrow = false;
+            m_mouseHoverOnTopArrow = FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos);
         }
         else
         {
-            if (FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos))
-                m_mouseHoverOnTopArrow = true;
-            else
-                m_mouseHoverOnTopArrow = false;
+            m_mouseHoverOnTopArrow = FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos);
         }
 
         if (!m_mouseHover)
