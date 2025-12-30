@@ -1211,22 +1211,20 @@ namespace tgui
 
             return true;
         }
-        else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
+        // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
+        if (button == Event::MouseButton::Left)
         {
-            if (button == Event::MouseButton::Left)
-            {
-                m_widgetWithLeftMouseDown = nullptr;
-                m_draggingWidget = false;
-            }
-            else if (button == Event::MouseButton::Right)
-                m_widgetWithRightMouseDown = nullptr;
-
-            if (m_focusedWidget)
-                m_focusedWidget->setFocused(false);
-
-            m_focusedWidget = nullptr;
-            setFocused(true);
+            m_widgetWithLeftMouseDown = nullptr;
+            m_draggingWidget = false;
         }
+        else if (button == Event::MouseButton::Right)
+            m_widgetWithRightMouseDown = nullptr;
+
+        if (m_focusedWidget)
+            m_focusedWidget->setFocused(false);
+
+        m_focusedWidget = nullptr;
+        setFocused(true);
 
         return false;
     }
@@ -1246,7 +1244,7 @@ namespace tgui
             m_draggingWidget = false;
             return true;
         }
-        else if ((button == Event::MouseButton::Right) && m_widgetWithRightMouseDown)
+        if ((button == Event::MouseButton::Right) && m_widgetWithRightMouseDown)
         {
             m_widgetWithRightMouseDown->rightMouseButtonNoLongerDown();
             m_widgetWithRightMouseDown = nullptr;
@@ -1290,17 +1288,17 @@ namespace tgui
                     m_focusedWidget->getNavigationUp()->setFocused(true);
                     return true;
                 }
-                else if ((event.code == Event::KeyboardKey::Down) && m_focusedWidget->getNavigationDown())
+                if ((event.code == Event::KeyboardKey::Down) && m_focusedWidget->getNavigationDown())
                 {
                     m_focusedWidget->getNavigationDown()->setFocused(true);
                     return true;
                 }
-                else if ((event.code == Event::KeyboardKey::Left) && m_focusedWidget->getNavigationLeft())
+                if ((event.code == Event::KeyboardKey::Left) && m_focusedWidget->getNavigationLeft())
                 {
                     m_focusedWidget->getNavigationLeft()->setFocused(true);
                     return true;
                 }
-                else if ((event.code == Event::KeyboardKey::Right) && m_focusedWidget->getNavigationRight())
+                if ((event.code == Event::KeyboardKey::Right) && m_focusedWidget->getNavigationRight())
                 {
                     m_focusedWidget->getNavigationRight()->setFocused(true);
                     return true;

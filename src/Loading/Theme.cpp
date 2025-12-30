@@ -808,8 +808,7 @@ namespace tgui
         auto propertyIt = m_globalProperties.find(property);
         if (propertyIt != m_globalProperties.end())
             return propertyIt->second;
-        else
-            return {};
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -845,8 +844,7 @@ namespace tgui
             m_renderers.erase(it);
             return true;
         }
-        else
-            return false;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

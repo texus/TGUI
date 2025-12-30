@@ -66,8 +66,7 @@ namespace tgui
     {
         if (label)
             return std::static_pointer_cast<RichTextLabel>(label->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +84,7 @@ namespace tgui
                     auto linkIt = m_links.find({i, j});
                     if (linkIt != m_links.end())
                         return linkIt->second;
-                    else
-                        return "";
+                    return "";
                 }
             }
         }
@@ -99,8 +97,7 @@ namespace tgui
                 auto linkIt = m_imageLinks.find(i);
                 if (linkIt != m_imageLinks.end())
                     return linkIt->second;
-                else
-                    return "";
+                return "";
             }
         }
 

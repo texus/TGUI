@@ -66,8 +66,7 @@ namespace tgui
     {
         if (progressBar)
             return std::static_pointer_cast<ProgressBar>(progressBar->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,10 +253,9 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else if (signalName == onFull.getName())
+        if (signalName == onFull.getName())
             return onFull;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

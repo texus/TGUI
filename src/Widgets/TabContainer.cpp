@@ -144,8 +144,7 @@ namespace tgui
     {
         if (tabContainer)
             return std::static_pointer_cast<TabContainer>(tabContainer->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -529,10 +528,9 @@ namespace tgui
     {
         if (signalName == onSelectionChange.getName())
             return onSelectionChange;
-        else if (signalName == onSelectionChanging.getName())
+        if (signalName == onSelectionChanging.getName())
             return onSelectionChanging;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

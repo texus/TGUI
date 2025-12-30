@@ -41,18 +41,18 @@ namespace tgui
 
             if (c == U'a')
                 return 10;
-            else if (c == U'b')
+            if (c == U'b')
                 return 11;
-            else if (c == U'c')
+            if (c == U'c')
                 return 12;
-            else if (c == U'd')
+            if (c == U'd')
                 return 13;
-            else if (c == U'e')
+            if (c == U'e')
                 return 14;
-            else if (c == U'f')
+            if (c == U'f')
                 return 15;
-            else // if (c >= U'0' && c <= U'9')
-                return static_cast<unsigned char>(c - U'0');
+            // if (c >= U'0' && c <= U'9')
+            return static_cast<unsigned char>(c - U'0');
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,12 +82,12 @@ namespace tgui
                     rect = {tokens[0].toUInt(), tokens[1].toUInt(), tokens[2].toUInt(), tokens[3].toUInt()};
                     return true;
                 }
-                else if (!rectRequiresFourValues && (tokens.size() == 2))
+                if (!rectRequiresFourValues && (tokens.size() == 2))
                 {
                     rect = {tokens[0].toUInt(), tokens[1].toUInt(), 0, 0};
                     return true;
                 }
-                else if (!rectRequiresFourValues && (tokens.size() == 1))
+                if (!rectRequiresFourValues && (tokens.size() == 1))
                 {
                     rect = {tokens[0].toUInt(), tokens[0].toUInt(), 0, 0};
                     return true;
@@ -103,10 +103,10 @@ namespace tgui
         {
             if (viewEqualIgnoreCase(str, U"true") || viewEqualIgnoreCase(str, U"yes") || viewEqualIgnoreCase(str, U"on") || viewEqualIgnoreCase(str, U"1"))
                 return {true};
-            else if (viewEqualIgnoreCase(str, U"false") || viewEqualIgnoreCase(str, U"no") || viewEqualIgnoreCase(str, U"off") || viewEqualIgnoreCase(str, U"0"))
+            if (viewEqualIgnoreCase(str, U"false") || viewEqualIgnoreCase(str, U"no") || viewEqualIgnoreCase(str, U"off") || viewEqualIgnoreCase(str, U"0"))
                 return {false};
-            else
-                throw Exception{U"Failed to deserialize boolean from '" + str + U"'"};
+
+            throw Exception{U"Failed to deserialize boolean from '" + str + U"'"};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,35 +170,31 @@ namespace tgui
                                  static_cast<std::uint8_t>(hexToDec(str[2]) * 16 + hexToDec(str[2])),
                                  static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[3]))};
                 }
-                else if (str.length() == 5)
+                if (str.length() == 5)
                 {
                     return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[1])),
                                  static_cast<std::uint8_t>(hexToDec(str[2]) * 16 + hexToDec(str[2])),
                                  static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[3])),
                                  static_cast<std::uint8_t>(hexToDec(str[4]) * 16 + hexToDec(str[4]))};
                 }
-                else if (str.length() == 7)
+                if (str.length() == 7)
                 {
                     return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[2])),
                                  static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[4])),
                                  static_cast<std::uint8_t>(hexToDec(str[5]) * 16 + hexToDec(str[6]))};
                 }
-                else // if (str.length() == 9)
-                {
-                    return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[2])),
-                                 static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[4])),
-                                 static_cast<std::uint8_t>(hexToDec(str[5]) * 16 + hexToDec(str[6])),
-                                 static_cast<std::uint8_t>(hexToDec(str[7]) * 16 + hexToDec(str[8]))};
-                }
+                // if (str.length() == 9)
+                return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[2])),
+                             static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[4])),
+                             static_cast<std::uint8_t>(hexToDec(str[5]) * 16 + hexToDec(str[6])),
+                             static_cast<std::uint8_t>(hexToDec(str[7]) * 16 + hexToDec(str[8]))};
             }
-            else // Color doesn't start with '#'
+            // Color doesn't start with '#'
+            // Check if the color is represented by a string with its name
+            for (const auto& pair : Color::colorNamesMap)
             {
-                // Check if the color is represented by a string with its name
-                for (const auto& pair : Color::colorNamesMap)
-                {
-                    if (str == pair.first)
-                        return pair.second;
-                }
+                if (str == pair.first)
+                    return pair.second;
             }
 
             // The string can optionally start with "rgb" or "rgba", but this is ignored
@@ -249,8 +245,7 @@ namespace tgui
 
                 return {result};
             }
-            else
-                return {value};
+            return {value};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,12 +274,12 @@ namespace tgui
             const std::vector<String> tokens = Deserializer::split(str, ',');
             if (tokens.size() == 1)
                 return {Outline{tokens[0]}};
-            else if (tokens.size() == 2)
+            if (tokens.size() == 2)
                 return {Outline{tokens[0], tokens[1]}};
-            else if (tokens.size() == 4)
+            if (tokens.size() == 4)
                 return {Outline{tokens[0], tokens[1], tokens[2], tokens[3]}};
-            else
-                throw Exception{U"Failed to deserialize outline '" + value + U"'. Expected numbers separated with a comma."};
+
+            throw Exception{U"Failed to deserialize outline '" + value + U"'. Expected numbers separated with a comma."};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,13 +343,12 @@ namespace tgui
                             smooth = true;
                             break;
                         }
-                        else if (viewEqualIgnoreCase(smoothParam, U"nosmooth"))
+                        if (viewEqualIgnoreCase(smoothParam, U"nosmooth"))
                         {
                             smooth = false;
                             break;
                         }
-                        else
-                            throw Exception{U"Failed to deserialize texture '" + value + U"'. Invalid text found behind filename."};
+                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Invalid text found behind filename."};
                     }
 
                     if (word.empty())

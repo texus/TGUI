@@ -59,14 +59,11 @@ namespace tgui
         auto it = m_data->propertyValuePairs.find("TitleBarHeight");
         if (it != m_data->propertyValuePairs.end())
             return it->second.getNumber();
-        else
-        {
-            it = m_data->propertyValuePairs.find("TextureTitleBar");
-            if (it != m_data->propertyValuePairs.end() && it->second.getTexture().getData())
-                return static_cast<float>(it->second.getTexture().getImageSize().y);
-            else
-                return 20;
-        }
+
+        it = m_data->propertyValuePairs.find("TextureTitleBar");
+        if (it != m_data->propertyValuePairs.end() && it->second.getTexture().getData())
+            return static_cast<float>(it->second.getTexture().getImageSize().y);
+        return 20;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

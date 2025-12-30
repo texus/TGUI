@@ -189,21 +189,20 @@ namespace tgui
                             *this = Layout{expression.substr(1, expression.size()-2)};
                             return;
                         }
-                        else if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == U"min"))
+                        if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == U"min"))
                         {
                             const auto& minSubExpressions = parseMinMaxExpresssion(expression.substr(4, expression.size() - 5));
                             *this = Layout{Operation::Minimum, std::make_unique<Layout>(minSubExpressions.first), std::make_unique<Layout>(minSubExpressions.second)};
                             return;
                         }
-                        else if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == U"max"))
+                        if ((searchPos == 3) && (bracketPos == expression.size()-1) && (expression.substr(0, 3) == U"max"))
                         {
                             const auto& maxSubExpressions = parseMinMaxExpresssion(expression.substr(4, expression.size() - 5));
                             *this = Layout{Operation::Maximum, std::make_unique<Layout>(maxSubExpressions.first), std::make_unique<Layout>(maxSubExpressions.second)};
                             return;
                         }
-                        else // The brackets form a sub-expression
-                            searchPos = bracketPos;
-
+                        // The brackets form a sub-expression
+                        searchPos = bracketPos;
                         break;
                     }
 
@@ -215,12 +214,10 @@ namespace tgui
                     TGUI_PRINT_WARNING("bracket mismatch while parsing layout string '" << expression << "'.");
                     return;
                 }
-                else
-                {
-                    // Search for the next operator, starting from the closing bracket, but keeping prevSearchPos before the opening bracket
-                    searchPos = expression.find_first_of("+-/*()", searchPos + 1);
-                    continue;
-                }
+
+                // Search for the next operator, starting from the closing bracket, but keeping prevSearchPos before the opening bracket
+                searchPos = expression.find_first_of("+-/*()", searchPos + 1);
+                continue;
             }
             case ')':
                 TGUI_PRINT_WARNING("bracket mismatch while parsing layout string '" << expression << "'.");
@@ -471,15 +468,13 @@ namespace tgui
         {
             return String::fromNumber(m_value);
         }
-        else if (m_operation == Operation::Minimum)
+        if (m_operation == Operation::Minimum)
         {
             return U"min(" + m_leftOperand->toString() + U", " + m_rightOperand->toString() + U")";
         }
-        else if (m_operation == Operation::Maximum)
-        {
+        if (m_operation == Operation::Maximum)
             return U"max(" + m_leftOperand->toString() + U", " + m_rightOperand->toString() + U")";
-        }
-        else if ((m_operation == Operation::Plus) || (m_operation == Operation::Minus) || (m_operation == Operation::Multiplies) || (m_operation == Operation::Divides))
+        if ((m_operation == Operation::Plus) || (m_operation == Operation::Minus) || (m_operation == Operation::Multiplies) || (m_operation == Operation::Divides))
         {
             char operatorChar;
             if (m_operation == Operation::Plus)
@@ -507,66 +502,54 @@ namespace tgui
 
             if (subExpressionNeedsBrackets(m_leftOperand) && subExpressionNeedsBrackets(m_rightOperand))
                 return U"(" + m_leftOperand->toString() + U") " + operatorChar + U" (" + m_rightOperand->toString() + U")";
-            else if (subExpressionNeedsBrackets(m_leftOperand))
+            if (subExpressionNeedsBrackets(m_leftOperand))
                 return U"(" + m_leftOperand->toString() + U") " + operatorChar + U" " + m_rightOperand->toString();
-            else if (subExpressionNeedsBrackets(m_rightOperand))
+            if (subExpressionNeedsBrackets(m_rightOperand))
                 return m_leftOperand->toString() + U" " + operatorChar + U" (" + m_rightOperand->toString() + U")";
-            else
-            {
-                if ((m_operation == Operation::Multiplies) && (m_leftOperand->m_operation == Operation::Value) && (m_rightOperand->toString() == U"100%"))
-                    return String::fromNumber(m_leftOperand->getValue() * 100) + '%';
-                else
-                    return m_leftOperand->toString() + U" " + operatorChar + U" " + m_rightOperand->toString();
-            }
+            if ((m_operation == Operation::Multiplies) && (m_leftOperand->m_operation == Operation::Value) && (m_rightOperand->toString() == U"100%"))
+                return String::fromNumber(m_leftOperand->getValue() * 100) + '%';
+            return m_leftOperand->toString() + U" " + operatorChar + U" " + m_rightOperand->toString();
         }
-        else
+        if (m_boundString == U"&.innersize")
+            return U"100%";
+
+        // Hopefully the expression is stored in the bound string, otherwise (i.e. when bind functions were used) it is infeasible to turn it into a string
+        if (!m_boundString.empty())
+            return m_boundString;
+        if ((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
+            || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
+            || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
+            || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight))
         {
-            if (m_boundString == U"&.innersize")
-                return U"100%";
-
-            // Hopefully the expression is stored in the bound string, otherwise (i.e. when bind functions were used) it is infeasible to turn it into a string
-            if (!m_boundString.empty())
-                return m_boundString;
-            else
+            TGUI_ASSERT(m_boundWidget != nullptr, "There has to be a bound widget with this operation type");
+            const String boundWidgetName = m_boundWidget->getWidgetName();
+            if (boundWidgetName.empty())
             {
-                if ((m_operation == Operation::BindingPosX) || (m_operation == Operation::BindingPosY)
-                 || (m_operation == Operation::BindingLeft) || (m_operation == Operation::BindingTop)
-                 || (m_operation == Operation::BindingWidth) || (m_operation == Operation::BindingHeight)
-                 || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight))
-                {
-                    TGUI_ASSERT(m_boundWidget != nullptr, "There has to be a bound widget with this operation type");
-                    const String boundWidgetName = m_boundWidget->getWidgetName();
-                    if (boundWidgetName.empty())
-                    {
-                        TGUI_PRINT_WARNING("layout can't be correctly converted to string because the bound widget has no name");
-                    }
-
-                    if (m_operation == Operation::BindingPosX)
-                        return boundWidgetName + U".x";
-                    else if (m_operation == Operation::BindingPosY)
-                        return boundWidgetName + U".y";
-                    else if (m_operation == Operation::BindingLeft)
-                        return boundWidgetName + U".left";
-                    else if (m_operation == Operation::BindingTop)
-                        return boundWidgetName + U".top";
-                    else if (m_operation == Operation::BindingWidth)
-                        return boundWidgetName + U".width";
-                    else if (m_operation == Operation::BindingHeight)
-                        return boundWidgetName + U".height";
-                    else if (m_operation == Operation::BindingInnerWidth)
-                        return boundWidgetName + U".innerwidth";
-                    else
-                    {
-                        TGUI_ASSERT(m_operation == Operation::BindingInnerHeight, "Operation can't be anything other than BindingInnerHeight here");
-                        return boundWidgetName + U".innerheight";
-                    }
-                }
-
-                // The layout contains an empty string
-                TGUI_ASSERT(m_operation == Operation::BindingString, "All operation types should have been covered already");
-                return m_boundString;
+                TGUI_PRINT_WARNING("layout can't be correctly converted to string because the bound widget has no name");
             }
+
+            if (m_operation == Operation::BindingPosX)
+                return boundWidgetName + U".x";
+            if (m_operation == Operation::BindingPosY)
+                return boundWidgetName + U".y";
+            if (m_operation == Operation::BindingLeft)
+                return boundWidgetName + U".left";
+            if (m_operation == Operation::BindingTop)
+                return boundWidgetName + U".top";
+            if (m_operation == Operation::BindingWidth)
+                return boundWidgetName + U".width";
+            if (m_operation == Operation::BindingHeight)
+                return boundWidgetName + U".height";
+            if (m_operation == Operation::BindingInnerWidth)
+                return boundWidgetName + U".innerwidth";
+
+            TGUI_ASSERT(m_operation == Operation::BindingInnerHeight, "Operation can't be anything other than BindingInnerHeight here");
+            return boundWidgetName + U".innerheight";
         }
+
+        // The layout contains an empty string
+        TGUI_ASSERT(m_operation == Operation::BindingString, "All operation types should have been covered already");
+        return m_boundString;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -836,22 +819,19 @@ namespace tgui
         {
             if (xAxis)
                 return parseBindingString(U"width", widget, xAxis);
-            else
-                return parseBindingString(U"height", widget, xAxis);
+            return parseBindingString(U"height", widget, xAxis);
         }
         else if (expression == U"innersize")
         {
             if (xAxis)
                 return parseBindingString(U"innerwidth", widget, xAxis);
-            else
-                return parseBindingString(U"innerheight", widget, xAxis);
+            return parseBindingString(U"innerheight", widget, xAxis);
         }
         else if ((expression == U"pos") || (expression == U"position"))
         {
             if (xAxis)
                 return parseBindingString(U"x", widget, xAxis);
-            else
-                return parseBindingString(U"y", widget, xAxis);
+            return parseBindingString(U"y", widget, xAxis);
         }
         else
         {
@@ -867,7 +847,7 @@ namespace tgui
                     // If there is no parent yet then patiently wait until the widget is added to its parent
                     return;
                 }
-                else if (!widgetName.empty())
+                if (!widgetName.empty())
                 {
                     // If the widget is a container, search in its children first
                     Container* container = dynamic_cast<Container*>(widget);

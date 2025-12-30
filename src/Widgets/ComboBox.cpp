@@ -215,8 +215,7 @@ namespace tgui
     {
         if (comboBox)
             return std::static_pointer_cast<ComboBox>(comboBox->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -704,8 +703,7 @@ namespace tgui
     {
         if (signalName == onItemSelect.getName())
             return onItemSelect;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

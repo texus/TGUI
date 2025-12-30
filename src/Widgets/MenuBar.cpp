@@ -67,8 +67,7 @@ namespace tgui
     {
         if (menuBar)
             return std::static_pointer_cast<MenuBar>(menuBar->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,8 +128,7 @@ namespace tgui
     {
         if (!m_menus.empty())
             return addMenuItem(m_menus.back().text.getString(), text);
-        else
-            return false;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -66,8 +66,7 @@ namespace tgui
     {
         if (slider)
             return std::static_pointer_cast<RangeSlider>(slider->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,8 +204,7 @@ namespace tgui
     {
         if (m_orientation == Orientation::Vertical)
             return {std::max(getSize().x, m_thumbs.first.width), getSize().y + m_thumbs.first.height};
-        else
-            return {getSize().x + m_thumbs.first.width, std::max(getSize().y, m_thumbs.first.height)};
+        return {getSize().x + m_thumbs.first.width, std::max(getSize().y, m_thumbs.first.height)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,8 +213,7 @@ namespace tgui
     {
         if (m_orientation == Orientation::Vertical)
             return {std::min(0.f, getSize().x - m_thumbs.first.width), -m_thumbs.first.height / 2.f};
-        else
-            return {-m_thumbs.first.width / 2.f, std::min(0.f, getSize().y - m_thumbs.first.height)};
+        return {-m_thumbs.first.width / 2.f, std::min(0.f, getSize().y - m_thumbs.first.height)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -514,8 +511,7 @@ namespace tgui
     {
         if (signalName == onRangeChange.getName())
             return onRangeChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

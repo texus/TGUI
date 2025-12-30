@@ -127,8 +127,7 @@ namespace tgui
     {
         if (editBoxSlider)
             return std::static_pointer_cast<EditBoxSlider>(editBoxSlider->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,8 +367,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

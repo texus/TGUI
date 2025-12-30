@@ -119,8 +119,7 @@ namespace tgui
     {
         if (button)
             return std::static_pointer_cast<BitmapButton>(button->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -133,22 +133,20 @@ namespace tgui
                     nodes.erase(it);
                     return true;
                 }
-                else
-                {
-                    // Return false if some menu in the hierarchy couldn't be found
-                    if (!removeItemImpl(hierarchy, removeParentsWhenEmpty, parentIndex + 1, (*it)->nodes))
-                        return false;
 
-                    // If parents don't have to be removed as well then we are done
-                    if (!removeParentsWhenEmpty)
-                        return true;
+                // Return false if some menu in the hierarchy couldn't be found
+                if (!removeItemImpl(hierarchy, removeParentsWhenEmpty, parentIndex + 1, (*it)->nodes))
+                    return false;
 
-                    // Also delete the parent if empty
-                    if ((*it)->nodes.empty())
-                        nodes.erase(it);
-
+                // If parents don't have to be removed as well then we are done
+                if (!removeParentsWhenEmpty)
                     return true;
-                }
+
+                // Also delete the parent if empty
+                if ((*it)->nodes.empty())
+                    nodes.erase(it);
+
+                return true;
             }
 
             // The hierarchy doesn't exist
@@ -180,10 +178,9 @@ namespace tgui
             {
                 if (node->text.getString() != hierarchy[parentIndex])
                     continue;
-                else if (parentIndex + 1 == hierarchy.size())
+                if (parentIndex + 1 == hierarchy.size())
                     return node.get();
-                else
-                    return findNode(node->nodes, hierarchy, parentIndex + 1);
+                return findNode(node->nodes, hierarchy, parentIndex + 1);
             }
 
             return nullptr;
@@ -353,8 +350,7 @@ namespace tgui
     {
         if (treeView)
             return std::static_pointer_cast<TreeView>(treeView->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1170,8 +1166,7 @@ namespace tgui
         {
             return true;
         }
-        else
-            return Widget::canHandleKeyPress(event);
+        return Widget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1180,16 +1175,15 @@ namespace tgui
     {
         if (signalName == onItemSelect.getName())
             return onItemSelect;
-        else if (signalName == onDoubleClick.getName())
+        if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else if (signalName == onExpand.getName())
+        if (signalName == onExpand.getName())
             return onExpand;
-        else if (signalName == onCollapse.getName())
+        if (signalName == onCollapse.getName())
             return onCollapse;
-        else if (signalName == onRightClick.getName())
+        if (signalName == onRightClick.getName())
             return onRightClick;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1694,21 +1688,19 @@ namespace tgui
 
             return true;
         }
-        else // Root node
+        // Root node
+        for (const auto& node : m_nodes)
         {
-            for (const auto& node : m_nodes)
+            if (node->text.getString() != hierarchy.back())
+                continue;
+
+            if (node->expanded != expandNode)
             {
-                if (node->text.getString() != hierarchy.back())
-                    continue;
-
-                if (node->expanded != expandNode)
-                {
-                    node->expanded = expandNode;
-                    markNodesDirty();
-                }
-
-                return true;
+                node->expanded = expandNode;
+                markNodesDirty();
             }
+
+            return true;
         }
 
         return false;
@@ -1806,10 +1798,9 @@ namespace tgui
         {
             if (node->text.getString() != hierarchy[parentIndex])
                 continue;
-            else if (parentIndex + 2 == hierarchy.size())
+            if (parentIndex + 2 == hierarchy.size())
                 return node.get();
-            else
-                return findParentNode(hierarchy, parentIndex + 1, node->nodes, node.get(), createParents);
+            return findParentNode(hierarchy, parentIndex + 1, node->nodes, node.get(), createParents);
         }
 
         if (createParents)
@@ -1817,10 +1808,8 @@ namespace tgui
             createNode(nodes, parent, hierarchy[parentIndex]);
             if (parentIndex + 2 == hierarchy.size())
                 return nodes.back().get();
-            else
-                return findParentNode(hierarchy, parentIndex + 1, nodes.back()->nodes, nodes.back().get(), createParents);
+            return findParentNode(hierarchy, parentIndex + 1, nodes.back()->nodes, nodes.back().get(), createParents);
         }
-
         return nullptr;
     }
 
@@ -1835,4 +1824,3 @@ namespace tgui
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-

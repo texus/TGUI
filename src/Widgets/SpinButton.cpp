@@ -64,8 +64,7 @@ namespace tgui
     {
         if (spinButton)
             return std::static_pointer_cast<SpinButton>(spinButton->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -300,8 +299,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -402,9 +400,8 @@ namespace tgui
         if (m_orientation == Orientation::Vertical)
             return {getSize().x - m_bordersCached.getLeftPlusRight(),
                     (getSize().y - m_bordersCached.getTopPlusBottom() - m_borderBetweenArrowsCached) / 2.0f};
-        else
-            return {getSize().y - m_bordersCached.getTopPlusBottom(),
-                    (getSize().x - m_bordersCached.getLeftPlusRight() - m_borderBetweenArrowsCached) / 2.0f};
+        return {getSize().y - m_bordersCached.getTopPlusBottom(),
+                (getSize().x - m_bordersCached.getLeftPlusRight() - m_borderBetweenArrowsCached) / 2.0f};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

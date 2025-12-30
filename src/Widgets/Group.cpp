@@ -59,8 +59,7 @@ namespace tgui
     {
         if (group)
             return std::static_pointer_cast<Group>(group->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

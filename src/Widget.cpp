@@ -652,8 +652,7 @@ namespace tgui
 
         if (m_parent)
             return m_parent->getAbsolutePosition(pos + m_parent->getChildWidgetsOffset());
-        else
-            return pos;
+        return pos;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -708,8 +707,7 @@ namespace tgui
     {
         if (m_scaleOrigin)
             return *m_scaleOrigin;
-        else
-            return m_origin;
+        return m_origin;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,8 +732,7 @@ namespace tgui
     {
         if (m_rotationOrigin)
             return *m_rotationOrigin;
-        else
-            return m_origin;
+        return m_origin;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1518,8 +1515,7 @@ namespace tgui
     {
         if (m_toolTip && isMouseOnWidget(mousePos))
             return getToolTip();
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1556,19 +1552,19 @@ namespace tgui
     {
         if (signalName == onPositionChange.getName())
             return onPositionChange;
-        else if (signalName == onSizeChange.getName())
+        if (signalName == onSizeChange.getName())
             return onSizeChange;
-        else if (signalName == onFocus.getName())
+        if (signalName == onFocus.getName())
             return onFocus;
-        else if (signalName == onUnfocus.getName())
+        if (signalName == onUnfocus.getName())
             return onUnfocus;
-        else if (signalName == onMouseEnter.getName())
+        if (signalName == onMouseEnter.getName())
             return onMouseEnter;
-        else if (signalName == onMouseLeave.getName())
+        if (signalName == onMouseLeave.getName())
             return onMouseLeave;
-        else if (signalName == onAnimationFinish.getName())
+        if (signalName == onAnimationFinish.getName())
             return onAnimationFinish;
-        else if (signalName == onShowEffectFinish.getName())
+        if (signalName == onShowEffectFinish.getName())
             return onShowEffectFinish;
 
         throw Exception{U"No signal exists with name '" + std::move(signalName) + U"'."};

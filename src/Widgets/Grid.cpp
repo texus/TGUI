@@ -156,8 +156,7 @@ namespace tgui
     {
         if (grid)
             return std::static_pointer_cast<Grid>(grid->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -384,8 +383,7 @@ namespace tgui
     {
         if ((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size()))
             return m_gridWidgets[row][col];
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,8 +441,7 @@ namespace tgui
     {
         if (((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size())) && (m_gridWidgets[row][col] != nullptr))
             return m_objPadding[row][col];
-        else
-            return {};
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -492,8 +489,7 @@ namespace tgui
     {
         if (((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size())) && (m_gridWidgets[row][col] != nullptr))
             return m_objAlignment[row][col];
-        else
-            return Alignment::Center;
+        return Alignment::Center;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -558,8 +554,7 @@ namespace tgui
                          + ", " + alignmentToString(getWidgetAlignment(row, col))
                          + ")\"";
                 }
-                else
-                    return "\"()\"";
+                return "\"()\"";
             };
 
             String str = "[" + getWidgetsInGridString(children[0]);

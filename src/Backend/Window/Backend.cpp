@@ -109,8 +109,7 @@ namespace tgui
     {
         if (m_fontBackend)
             return {static_cast<const unsigned char*>(defaultFontBytes), sizeof(defaultFontBytes)};
-        else
-            return {};
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

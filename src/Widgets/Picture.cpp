@@ -67,8 +67,7 @@ namespace tgui
     {
         if (picture)
             return std::static_pointer_cast<Picture>(picture->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,8 +167,7 @@ namespace tgui
     {
         if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

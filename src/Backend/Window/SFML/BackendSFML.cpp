@@ -314,8 +314,7 @@ namespace tgui
         auto cursor = sf::Cursor::createFromSystem(typeSFML);
         if (cursor)
             return std::make_unique<sf::Cursor>(std::move(*cursor));
-        else
-            return nullptr;
+        return nullptr;
 #else
         auto cursor = std::make_unique<sf::Cursor>();
         if (cursor->loadFromSystem(typeSFML))

@@ -67,8 +67,7 @@ namespace tgui
     {
         if (scrollbar)
             return std::static_pointer_cast<Scrollbar>(scrollbar->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,8 +186,7 @@ namespace tgui
     {
         if (m_maximum >= m_viewportSize)
             return m_maximum - m_viewportSize;
-        else
-            return 0;
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,10 +257,9 @@ namespace tgui
 
         if (m_policy == Policy::Never)
             return false;
-        else if (m_policy == Policy::Always)
+        if (m_policy == Policy::Always)
             return true;
-        else
-            return m_maximum > m_viewportSize;
+        return m_maximum > m_viewportSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,10 +303,9 @@ namespace tgui
     {
         if (m_spriteTrack.isSet())
             return static_cast<float>(m_spriteTrack.getTexture().getImageSize().x);
-        else if (m_spriteThumb.isSet())
+        if (m_spriteThumb.isSet())
             return static_cast<float>(m_spriteThumb.getTexture().getImageSize().x);
-        else
-            return 16;
+        return 16;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -845,8 +841,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1319,8 +1314,7 @@ namespace tgui
     {
         if (m_scrollbar->getOrientation() == Orientation::Vertical)
             return m_scrollbar->getSize().x;
-        else
-            return m_scrollbar->getSize().y;
+        return m_scrollbar->getSize().y;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

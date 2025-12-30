@@ -77,8 +77,7 @@ namespace tgui
     {
         if (textArea)
             return std::static_pointer_cast<TextArea>(textArea->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,8 +188,7 @@ namespace tgui
         const std::size_t selEnd = getSelectionEnd();
         if (selStart <= selEnd)
             return m_text.substr(selStart, selEnd - selStart);
-        else
-            return m_text.substr(selEnd, selStart - selEnd);
+        return m_text.substr(selEnd, selStart - selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,8 +323,7 @@ namespace tgui
         const auto caret = getCaretPosition();
         if (caret == 0)
             return 1;
-        else
-            return m_text.substr(0, caret).count('\n') + 1;
+        return m_text.substr(0, caret).count('\n') + 1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -339,8 +336,7 @@ namespace tgui
         auto lineStart = m_text.rfind('\n', caret - 1);
         if (lineStart == String::npos)
             return caret + 1;
-        else
-            return caret - lineStart;
+        return caret - lineStart;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -533,8 +529,7 @@ namespace tgui
                         m_selStart.x = i;
                         break;
                     }
-                    else
-                        m_selStart.x = 0;
+                    m_selStart.x = 0;
                 }
 
                 // Move end pointer to the end of the word/whitespace
@@ -545,8 +540,7 @@ namespace tgui
                         m_selEnd.x = i;
                         break;
                     }
-                    else
-                        m_selEnd.x = m_lines[m_selEnd.y].length();
+                    m_selEnd.x = m_lines[m_selEnd.y].length();
                 }
             }
             else // No double clicking
@@ -779,8 +773,7 @@ namespace tgui
         {
             return true;
         }
-        else
-            return Widget::canHandleKeyPress(event);
+        return Widget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -938,8 +931,7 @@ namespace tgui
             {
                 if (position.x < width + kerning + (charWidth / 2.0f))
                     return {i, lineNumber};
-                else
-                    return {i + 1, lineNumber};
+                return {i + 1, lineNumber};
             }
 
             prevChar = curChar;
@@ -1525,8 +1517,7 @@ namespace tgui
                 rearrangeText(true);
                 return;
             }
-            else
-                updateScrollbars();
+            updateScrollbars();
         }
         else // Horizontal scrollbar is enabled
         {
@@ -1876,12 +1867,11 @@ namespace tgui
     {
         if (signalName == onTextChange.getName())
             return onTextChange;
-        else if (signalName == onSelectionChange.getName())
+        if (signalName == onSelectionChange.getName())
             return onSelectionChange;
-        else if (signalName == onCaretPositionChange.getName())
+        if (signalName == onCaretPositionChange.getName())
             return onCaretPositionChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

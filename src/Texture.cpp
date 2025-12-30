@@ -293,8 +293,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         if (m_data->svgImage)
             return Vector2u{m_data->svgImage->getSize()};
-        else
-            return getPartRect().getSize();
+        return getPartRect().getSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,8 +309,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     {
         if (m_data && m_data->backendTexture)
             return m_data->backendTexture->isSmooth();
-        else
-            return true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -65,8 +65,7 @@ namespace tgui
     {
         if (panel)
             return std::static_pointer_cast<Panel>(panel->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -255,20 +254,19 @@ namespace tgui
     {
         if (signalName == onMousePress.getName())
             return onMousePress;
-        else if (signalName == onMouseRelease.getName())
+        if (signalName == onMouseRelease.getName())
             return onMouseRelease;
-        else if (signalName == onClick.getName())
+        if (signalName == onClick.getName())
             return onClick;
-        else if (signalName == onDoubleClick.getName())
+        if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else if (signalName == onRightMousePress.getName())
+        if (signalName == onRightMousePress.getName())
             return onRightMousePress;
-        else if (signalName == onRightMouseRelease.getName())
+        if (signalName == onRightMouseRelease.getName())
             return onRightMouseRelease;
-        else if (signalName == onRightClick.getName())
+        if (signalName == onRightClick.getName())
             return onRightClick;
-        else
-            return Group::getSignal(std::move(signalName));
+        return Group::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -82,8 +82,7 @@ namespace tgui
     {
         if (editBox)
             return std::static_pointer_cast<EditBox>(editBox->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -656,8 +655,7 @@ namespace tgui
         {
             return true;
         }
-        else
-            return ClickableWidget::canHandleKeyPress(event);
+        return ClickableWidget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,14 +732,13 @@ namespace tgui
     {
         if (signalName == onTextChange.getName())
             return onTextChange;
-        else if (signalName == onReturnKeyPress.getName())
+        if (signalName == onReturnKeyPress.getName())
             return onReturnKeyPress;
-        else if (signalName == onReturnOrUnfocus.getName())
+        if (signalName == onReturnOrUnfocus.getName())
             return onReturnOrUnfocus;
-        else if (signalName == onCaretPositionChange.getName())
+        if (signalName == onCaretPositionChange.getName())
             return onCaretPositionChange;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1057,7 +1054,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
                 prevChar = 0;
                 continue;
             }
-            else if (curChar == '\t')
+            if (curChar == '\t')
                 charWidth = static_cast<float>(m_fontCached.getGlyph(' ', textSize, bold).advance) * 4;
             else
                 charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, textSize, bold).advance);

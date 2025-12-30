@@ -59,8 +59,7 @@ namespace tgui
     {
         if (layout)
             return std::static_pointer_cast<HorizontalWrap>(layout->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

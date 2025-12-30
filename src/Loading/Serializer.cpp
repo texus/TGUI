@@ -44,18 +44,17 @@ namespace tgui
 
             if (c == 10)
                 return 'A';
-            else if (c == 11)
+            if (c == 11)
                 return 'B';
-            else if (c == 12)
+            if (c == 12)
                 return 'C';
-            else if (c == 13)
+            if (c == 13)
                 return 'D';
-            else if (c == 14)
+            if (c == 14)
                 return 'E';
-            else if (c == 15)
+            if (c == 15)
                 return 'F';
-            else
-                return static_cast<char>(c + '0');
+            return static_cast<char>(c + '0');
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,8 +77,7 @@ namespace tgui
         {
             if (value.getBool())
                 return "true";
-            else
-                return "false";
+            return "false";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,8 +86,7 @@ namespace tgui
         {
             if (value.getFont() && !value.getFont().getId().empty())
                 return Serializer::serialize({value.getFont().getId()});
-            else
-                return "null";
+            return "null";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,8 +246,8 @@ namespace tgui
 
             if (!encodedStyle.empty())
                 return encodedStyle.substr(3);
-            else // Something is wrong with the style parameter
-                return "Regular";
+            // Something is wrong with the style parameter
+            return "Regular";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -64,8 +64,7 @@ namespace tgui
     {
         if (chatBox)
             return std::static_pointer_cast<ChatBox>(chatBox->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,8 +160,8 @@ namespace tgui
         {
             return m_lines[lineIndex].string;
         }
-        else // Index too high
-            return "";
+        // Index too high
+        return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,8 +172,8 @@ namespace tgui
         {
             return m_lines[lineIndex].text.getColor();
         }
-        else // Index too high
-            return m_textColor;
+        // Index too high
+        return m_textColor;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,8 +182,8 @@ namespace tgui
     {
         if (lineIndex < m_lines.size())
             return m_lines[lineIndex].text.getStyle();
-        else // Index too high
-            return m_textStyle;
+        // Index too high
+        return m_textStyle;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,8 +197,8 @@ namespace tgui
             recalculateFullTextHeight();
             return true;
         }
-        else // Index too high
-            return false;
+        // Index too high
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

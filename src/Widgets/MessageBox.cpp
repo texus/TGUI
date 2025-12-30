@@ -149,8 +149,7 @@ namespace tgui
     {
         if (messageBox)
             return std::static_pointer_cast<MessageBox>(messageBox->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -417,8 +416,7 @@ namespace tgui
     {
         if (signalName == onButtonPress.getName())
             return onButtonPress;
-        else
-            return ChildWindow::getSignal(std::move(signalName));
+        return ChildWindow::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

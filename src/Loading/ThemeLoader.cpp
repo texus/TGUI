@@ -240,8 +240,7 @@ namespace tgui
     {
         if (filename.empty())
             return true;
-        else
-            return m_propertiesCache[filename].find(section) != m_propertiesCache[filename].end();
+        return m_propertiesCache[filename].find(section) != m_propertiesCache[filename].end();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

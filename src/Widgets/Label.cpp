@@ -70,8 +70,7 @@ namespace tgui
     {
         if (label)
             return std::static_pointer_cast<Label>(label->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,8 +234,7 @@ namespace tgui
     {
         if (m_autoSize)
             return m_maximumTextWidth;
-        else
-            return getSize().x;
+        return getSize().x;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -376,8 +374,7 @@ namespace tgui
     {
         if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

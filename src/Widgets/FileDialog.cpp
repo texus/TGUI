@@ -292,8 +292,7 @@ namespace tgui
     {
         if (dialog)
             return std::static_pointer_cast<FileDialog>(dialog->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -617,8 +616,7 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Enter) || (event.code == Event::KeyboardKey::Escape))
             return true;
-        else
-            return ChildWindow::canHandleKeyPress(event);
+        return ChildWindow::canHandleKeyPress(event);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -771,35 +769,26 @@ namespace tgui
             {
                 if (m_sortInversed)
                     return left.modificationTime < right.modificationTime;
-                else
-                    return left.modificationTime > right.modificationTime;
+                return left.modificationTime > right.modificationTime;
             }
-            else if (m_sortColumnIndex == 1) // Sort by file size
+            if (m_sortColumnIndex == 1) // Sort by file size
             {
                 if (left.directory != right.directory)
                     return right.directory; // Place directories at the end of the list
-                else if (left.directory) // Both are directories, sort them alphabetically by filename since they have no size
+                if (left.directory) // Both are directories, sort them alphabetically by filename since they have no size
                     return left.filename.toLower() < right.filename.toLower();
-                else // Both are files, sort them by file size
-                {
-                    if (m_sortInversed)
-                        return left.fileSize < right.fileSize;
-                    else
-                        return left.fileSize > right.fileSize;
-                }
+                // Both are files, sort them by file size
+                if (m_sortInversed)
+                    return left.fileSize < right.fileSize;
+                return left.fileSize > right.fileSize;
             }
-            else // Sort by filename
-            {
-                if (left.directory != right.directory)
-                    return left.directory; // Place directories in front of files
-                else // Both are directories or both are files, so sort alphabetically
-                {
-                    if (m_sortInversed)
-                        return left.filename.toLower() > right.filename.toLower();
-                    else
-                        return left.filename.toLower() < right.filename.toLower();
-                }
-            }
+            // Sort by filename
+            if (left.directory != right.directory)
+                return left.directory; // Place directories in front of files
+            // Both are directories or both are files, so sort alphabetically
+            if (m_sortInversed)
+                return left.filename.toLower() > right.filename.toLower();
+            return left.filename.toLower() < right.filename.toLower();
         });
 
         if (!m_listView->getHeaderVisible())
@@ -1207,10 +1196,9 @@ namespace tgui
     {
         if (signalName == onFileSelect.getName())
             return onFileSelect;
-        else if (signalName == onCancel.getName())
+        if (signalName == onCancel.getName())
             return onCancel;
-        else
-            return ChildWindow::getSignal(std::move(signalName));
+        return ChildWindow::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

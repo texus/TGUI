@@ -571,8 +571,7 @@ namespace tgui
         auto it = m_namedComponents.find(name);
         if (it != m_namedComponents.end())
             return it->second;
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

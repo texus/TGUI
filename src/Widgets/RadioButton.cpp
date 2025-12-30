@@ -62,8 +62,7 @@ namespace tgui
     {
         if (radioButton)
             return std::static_pointer_cast<RadioButton>(radioButton->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,8 +104,7 @@ namespace tgui
     {
         if (getText().empty())
             return getSize();
-        else
-            return {getSize().x + (getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
+        return {getSize().x + (getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,8 +113,7 @@ namespace tgui
     {
         if (getText().empty() || (getSize().y >= m_text.getSize().y))
             return {0, 0};
-        else
-            return {0, -(m_text.getSize().y - getSize().y) / 2};
+        return {0, -(m_text.getSize().y - getSize().y) / 2};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,8 +292,7 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             return true;
-        else
-            return ClickableWidget::canHandleKeyPress(event);
+        return ClickableWidget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,12 +317,11 @@ namespace tgui
     {
         if (signalName == onCheck.getName())
             return onCheck;
-        else if (signalName == onUncheck.getName())
+        if (signalName == onUncheck.getName())
             return onUncheck;
-        else if (signalName == onChange.getName())
+        if (signalName == onChange.getName())
             return onChange;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -542,10 +537,9 @@ namespace tgui
     {
         if (!m_enabled && m_checkColorDisabledCached.isSet())
             return m_checkColorDisabledCached;
-        else if (m_mouseHover && m_checkColorHoverCached.isSet())
+        if (m_mouseHover && m_checkColorHoverCached.isSet())
             return m_checkColorHoverCached;
-        else
-            return m_checkColorCached;
+        return m_checkColorCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -556,36 +550,27 @@ namespace tgui
         {
             if (!m_enabled && m_backgroundColorCheckedDisabledCached.isSet())
                 return m_backgroundColorCheckedDisabledCached;
-            else if (!m_enabled && m_backgroundColorDisabledCached.isSet())
+            if (!m_enabled && m_backgroundColorDisabledCached.isSet())
                 return m_backgroundColorDisabledCached;
-            else if (m_mouseHover)
+            if (m_mouseHover)
             {
                 if (m_backgroundColorCheckedHoverCached.isSet())
                     return m_backgroundColorCheckedHoverCached;
-                else if (m_backgroundColorCheckedCached.isSet())
-                    return m_backgroundColorCheckedCached;
-                else if (m_backgroundColorHoverCached.isSet())
-                    return m_backgroundColorHoverCached;
-                else
-                    return m_backgroundColorCached;
-            }
-            else
-            {
                 if (m_backgroundColorCheckedCached.isSet())
                     return m_backgroundColorCheckedCached;
-                else
-                    return m_backgroundColorCached;
-            }
-        }
-        else
-        {
-            if (!m_enabled && m_backgroundColorDisabledCached.isSet())
-                return m_backgroundColorDisabledCached;
-            else if (m_mouseHover && m_backgroundColorHoverCached.isSet())
-                return m_backgroundColorHoverCached;
-            else
+                if (m_backgroundColorHoverCached.isSet())
+                    return m_backgroundColorHoverCached;
                 return m_backgroundColorCached;
+            }
+            if (m_backgroundColorCheckedCached.isSet())
+                return m_backgroundColorCheckedCached;
+            return m_backgroundColorCached;
         }
+        if (!m_enabled && m_backgroundColorDisabledCached.isSet())
+            return m_backgroundColorDisabledCached;
+        if (m_mouseHover && m_backgroundColorHoverCached.isSet())
+            return m_backgroundColorHoverCached;
+        return m_backgroundColorCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -596,46 +581,37 @@ namespace tgui
         {
             if (!m_enabled && m_borderColorCheckedDisabledCached.isSet())
                 return m_borderColorCheckedDisabledCached;
-            else if (!m_enabled && m_borderColorDisabledCached.isSet())
+            if (!m_enabled && m_borderColorDisabledCached.isSet())
                 return m_borderColorDisabledCached;
-            else if (m_mouseHover)
+            if (m_mouseHover)
             {
                 if (m_borderColorCheckedHoverCached.isSet())
                     return m_borderColorCheckedHoverCached;
-                else if (m_borderColorCheckedCached.isSet())
+                if (m_borderColorCheckedCached.isSet())
                     return m_borderColorCheckedCached;
-                else if (m_focused && m_borderColorCheckedFocusedCached.isSet())
-                    return m_borderColorCheckedFocusedCached;
-                else if (m_borderColorHoverCached.isSet())
-                    return m_borderColorHoverCached;
-                else if (m_focused && m_borderColorFocusedCached.isSet())
-                    return m_borderColorFocusedCached;
-                else
-                    return m_borderColorCached;
-            }
-            else
-            {
                 if (m_focused && m_borderColorCheckedFocusedCached.isSet())
                     return m_borderColorCheckedFocusedCached;
-                else if (m_borderColorCheckedCached.isSet())
-                    return m_borderColorCheckedCached;
-                else if (m_focused && m_borderColorFocusedCached.isSet())
+                if (m_borderColorHoverCached.isSet())
+                    return m_borderColorHoverCached;
+                if (m_focused && m_borderColorFocusedCached.isSet())
                     return m_borderColorFocusedCached;
-                else
-                    return m_borderColorCached;
-            }
-        }
-        else
-        {
-            if (!m_enabled && m_borderColorDisabledCached.isSet())
-                return m_borderColorDisabledCached;
-            else if (m_mouseHover && m_borderColorHoverCached.isSet())
-                return m_borderColorHoverCached;
-            else if (m_focused && m_borderColorFocusedCached.isSet())
-                return m_borderColorFocusedCached;
-            else
                 return m_borderColorCached;
+            }
+            if (m_focused && m_borderColorCheckedFocusedCached.isSet())
+                return m_borderColorCheckedFocusedCached;
+            if (m_borderColorCheckedCached.isSet())
+                return m_borderColorCheckedCached;
+            if (m_focused && m_borderColorFocusedCached.isSet())
+                return m_borderColorFocusedCached;
+            return m_borderColorCached;
         }
+        if (!m_enabled && m_borderColorDisabledCached.isSet())
+            return m_borderColorDisabledCached;
+        if (m_mouseHover && m_borderColorHoverCached.isSet())
+            return m_borderColorHoverCached;
+        if (m_focused && m_borderColorFocusedCached.isSet())
+            return m_borderColorFocusedCached;
+        return m_borderColorCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

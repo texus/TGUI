@@ -75,8 +75,7 @@ namespace tgui
     {
         if (knob)
             return std::static_pointer_cast<Knob>(knob->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,8 +461,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,9 +552,8 @@ namespace tgui
     {
         if (m_spriteBackground.isSet())
             return getSize();
-        else
-            return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
-                    std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

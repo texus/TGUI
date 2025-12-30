@@ -57,8 +57,7 @@ namespace tgui
     {
         if (button)
             return std::static_pointer_cast<Button>(button->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,10 +124,9 @@ namespace tgui
     {
         if (m_ignoreKeyEvents)
             return false;
-        else if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
+        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             return true;
-        else
-            return ButtonBase::canHandleKeyPress(event);
+        return ButtonBase::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,8 +135,7 @@ namespace tgui
     {
         if (signalName == onPress.getName())
             return onPress;
-        else
-            return ButtonBase::getSignal(std::move(signalName));
+        return ButtonBase::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

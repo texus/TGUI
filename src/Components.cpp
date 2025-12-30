@@ -491,11 +491,10 @@ namespace dev
         {
             if ((pos.x < m_borders.getLeft()) || (pos.y < m_borders.getTop()) || (pos.x >= m_borders.getLeft() + m_clientSize.x) || (pos.y >= m_borders.getTop() + m_clientSize.y))
                 return false;
-            else
-                return m_sprite.isTransparentPixel(pos - m_borders.getOffset());
+            return m_sprite.isTransparentPixel(pos - m_borders.getOffset());
         }
-        else /// TODO: Perform check when using rounded corners
-            return false;
+        /// TODO: Perform check when using rounded corners
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -849,8 +848,7 @@ namespace dev
     {
         if (transparentTexture && m_sprite.isSet()) /// TODO: transparentTexture should be option on Texture (similar to Smooth) instead of a parameter
             return m_sprite.isTransparentPixel(pos);
-        else
-            return false;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

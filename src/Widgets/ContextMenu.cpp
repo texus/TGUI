@@ -67,8 +67,7 @@ namespace tgui
     {
         if (menuBar)
             return std::static_pointer_cast<ContextMenu>(menuBar->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

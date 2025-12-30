@@ -72,8 +72,7 @@ namespace tgui
     {
         if (checkbox)
             return std::static_pointer_cast<CheckBox>(checkbox->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,16 +106,11 @@ namespace tgui
             Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
             if (getText().empty())
                 return getSize() + Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()), std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
-            else
-                return getSize() + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()))};
+            return getSize() + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()))};
         }
-        else
-        {
-            if (getText().empty())
-                return getSize();
-            else
-                return {getSize().x + (getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
-        }
+        if (getText().empty())
+            return getSize();
+        return {getSize().x + (getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(getSize().y, m_text.getSize().y)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,8 +128,7 @@ namespace tgui
 
         if (getText().empty() || (getSize().y >= m_text.getSize().y))
             return {0, -yOffset};
-        else
-            return {0, -std::max(yOffset, (m_text.getSize().y - getSize().y) / 2)};
+        return {0, -std::max(yOffset, (m_text.getSize().y - getSize().y) / 2)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,8 +180,7 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             return true;
-        else
-            return RadioButton::canHandleKeyPress(event);
+        return RadioButton::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
