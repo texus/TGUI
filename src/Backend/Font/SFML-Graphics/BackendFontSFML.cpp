@@ -27,6 +27,8 @@
 
 #include <SFML/Config.hpp>
 #include <SFML/Graphics/Image.hpp>
+
+#include <cassert>
 #include <cmath>
 #include <memory>
 

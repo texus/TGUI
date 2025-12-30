@@ -27,6 +27,7 @@
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <memory>
 #include <set>

@@ -30,6 +30,7 @@
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/Filesystem.hpp>
 
+#include <cassert>
 #include <fstream>
 #include <memory>
 

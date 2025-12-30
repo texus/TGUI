@@ -34,6 +34,7 @@
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 
+#include <cassert>
 #include <cstdint>
 #include <memory>
 #include <set>
