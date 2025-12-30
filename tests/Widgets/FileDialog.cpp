@@ -26,6 +26,8 @@
 
 #include <TGUI/FileDialogIconLoader.hpp>
 
+#include <memory>
+
 TEST_CASE("[FileDialog]")
 {
     const tgui::FileDialog::Ptr dialog = tgui::FileDialog::create();

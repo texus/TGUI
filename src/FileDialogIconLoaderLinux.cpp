@@ -24,6 +24,7 @@
 
 #include <TGUI/FileDialogIconLoader.hpp>
 #include <TGUI/Exception.hpp>
+#include <memory>
 
 #if defined(TGUI_SYSTEM_LINUX)
 

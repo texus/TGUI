@@ -51,6 +51,7 @@
 #include "WidgetProperties/TabsProperties.hpp"
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
+#include <memory>
 
 const static float MOVE_STEP = 10;
 

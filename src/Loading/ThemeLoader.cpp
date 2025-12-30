@@ -26,6 +26,7 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 
+#include <memory>
 #include <sstream>
 #include <fstream>
 

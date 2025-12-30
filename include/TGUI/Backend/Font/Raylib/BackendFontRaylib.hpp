@@ -27,6 +27,7 @@
 
 #include <TGUI/Backend/Font/BackendFont.hpp>
 
+#include <memory>
 #include <unordered_map>
 
 struct GlyphInfo;

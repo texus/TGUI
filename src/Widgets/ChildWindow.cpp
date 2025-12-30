@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <memory>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/Config.hpp>

@@ -25,6 +25,7 @@
 #include <iostream>
 
 #include "Tests.hpp"
+#include <memory>
 
 using namespace tgui::bind_functions;
 using tgui::Layout;

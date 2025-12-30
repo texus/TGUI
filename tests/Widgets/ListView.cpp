@@ -25,6 +25,7 @@
 #include <set>
 
 #include "Tests.hpp"
+#include <memory>
 
 TEST_CASE("[ListView]")
 {

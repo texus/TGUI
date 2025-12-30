@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/Label.hpp>
 
+#include <memory>
 #include <numeric> // accumulate
 #include <algorithm>
 

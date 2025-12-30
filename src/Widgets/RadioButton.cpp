@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Container.hpp>
+#include <memory>
 
 namespace tgui
 {

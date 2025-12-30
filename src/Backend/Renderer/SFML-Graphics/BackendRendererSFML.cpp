@@ -25,6 +25,7 @@
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

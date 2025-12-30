@@ -29,6 +29,7 @@
 #include <sstream>
 #include <locale>
 #include <limits>
+#include <memory>
 
 #include <stdio.h> // C header for compatibility with _wfopen_s, NOLINT(modernize-deprecated-headers)
 

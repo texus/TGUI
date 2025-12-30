@@ -27,6 +27,7 @@
 #include <TGUI/Loading/ImageLoader.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/Event.hpp>
+#include <memory>
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <TGUI/Backend/SFML-Graphics.hpp>

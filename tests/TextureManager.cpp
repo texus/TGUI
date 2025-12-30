@@ -26,6 +26,8 @@
 
 #include <TGUI/TextureManager.hpp>
 
+#include <memory>
+
 TEST_CASE("[TextureManager]")
 {
     tgui::Texture texture;

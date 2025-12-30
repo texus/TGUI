@@ -25,6 +25,7 @@
 #include <iostream>
 
 #include "Tests.hpp"
+#include <memory>
 
 TEST_CASE("[Widget]")
 {

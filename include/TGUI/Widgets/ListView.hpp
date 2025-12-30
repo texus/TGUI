@@ -29,6 +29,7 @@
 #include <TGUI/Renderers/ListViewRenderer.hpp>
 #include <TGUI/Text.hpp>
 
+#include <memory>
 #include <set>
 #include <limits>
 
