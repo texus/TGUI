@@ -29,6 +29,7 @@
 #if defined(TGUI_SYSTEM_LINUX)
 
 #include <fstream>
+#include <vector>
 #include <atomic>
 #include <thread>
 #include <cstdlib> // getenv

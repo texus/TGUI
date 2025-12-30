@@ -27,6 +27,7 @@
 #include <TGUI/FileDialogIconLoader.hpp>
 
 #include <memory>
+#include <vector>
 
 TEST_CASE("[FileDialog]")
 {

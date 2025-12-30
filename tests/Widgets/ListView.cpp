@@ -26,6 +26,7 @@
 
 #include "Tests.hpp"
 #include <memory>
+#include <vector>
 
 TEST_CASE("[ListView]")
 {

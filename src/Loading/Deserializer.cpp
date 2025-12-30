@@ -30,6 +30,7 @@
 #include <TGUI/Global.hpp>
 
 #include <cstdint>
+#include <vector>
 
 namespace tgui
 {

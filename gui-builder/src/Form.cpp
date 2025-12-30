@@ -54,6 +54,7 @@
 #include <cassert>
 #include <memory>
 #include <set>
+#include <vector>
 
 const static float MOVE_STEP = 10;
 

@@ -31,6 +31,7 @@
 #include <cmath>
 #include <memory>
 #include <set>
+#include <vector>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/Config.hpp>

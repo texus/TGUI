@@ -31,6 +31,7 @@
 #include <cassert>
 #include <cmath>
 #include <memory>
+#include <vector>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
     #include <numbers>

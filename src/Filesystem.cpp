@@ -26,6 +26,7 @@
 #include <TGUI/Global.hpp>
 
 #include <cstdlib> // getenv
+#include <vector>
 
 #if defined(TGUI_SYSTEM_WINDOWS)
     #include <TGUI/extlibs/IncludeWindows.hpp>
