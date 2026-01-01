@@ -36,22 +36,25 @@
 
 #include "Tests.hpp"
 
-static void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
+namespace
 {
-    SECTION("Ignore mouse events")
+    void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
     {
-        REQUIRE(!canvas->isIgnoringMouseEvents());
-        canvas->ignoreMouseEvents(true);
-        REQUIRE(canvas->isIgnoringMouseEvents());
-        canvas->ignoreMouseEvents(false);
-        REQUIRE(!canvas->isIgnoringMouseEvents());
-    }
+        SECTION("Ignore mouse events")
+        {
+            REQUIRE(!canvas->isIgnoringMouseEvents());
+            canvas->ignoreMouseEvents(true);
+            REQUIRE(canvas->isIgnoringMouseEvents());
+            canvas->ignoreMouseEvents(false);
+            REQUIRE(!canvas->isIgnoringMouseEvents());
+        }
 
-    SECTION("canGainFocus")
-    {
-        REQUIRE(!canvas->canGainFocus());
+        SECTION("canGainFocus")
+        {
+            REQUIRE(!canvas->canGainFocus());
+        }
     }
-}
+} // anonymous namespace
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
 

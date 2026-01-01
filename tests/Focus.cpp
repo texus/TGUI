@@ -27,79 +27,81 @@
 
 #include "Tests.hpp"
 
-static tgui::Container::Ptr rootContainer;
-
-static bool noWidgetsFocused(const tgui::Container::Ptr& root)
+namespace
 {
-    for (const auto& widget : root->getWidgets())
+    static tgui::Container::Ptr rootContainer;
+
+    bool noWidgetsFocused(const tgui::Container::Ptr& root)
     {
-        if (widget->isFocused())
+        for (const auto& widget : root->getWidgets())
+        {
+            if (widget->isFocused())
+                return false;
+
+            const tgui::Container::Ptr container = std::dynamic_pointer_cast<tgui::Container>(widget);
+            if (container != nullptr)
+            {
+                if (!noWidgetsFocused(container))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    bool widgetFocused(const tgui::Widget::Ptr& widget)
+    {
+        if (!widget->isFocused())
             return false;
 
-        const tgui::Container::Ptr container = std::dynamic_pointer_cast<tgui::Container>(widget);
-        if (container != nullptr)
+        std::set<tgui::Container*> parents;
+        tgui::Container* parent = widget->getParent();
+        while (parent)
         {
-            if (!noWidgetsFocused(container))
-                return false;
+            parents.insert(parent);
+            parent = parent->getParent();
         }
-    }
 
-    return true;
-}
-
-static bool widgetFocused(const tgui::Widget::Ptr& widget)
-{
-    if (!widget->isFocused())
-        return false;
-
-    std::set<tgui::Container*> parents;
-    tgui::Container* parent = widget->getParent();
-    while (parent)
-    {
-        parents.insert(parent);
-        parent = parent->getParent();
-    }
-
-    std::stack<tgui::Container::Ptr> containers;
-    containers.push(rootContainer);
-    while (!containers.empty())
-    {
-        const tgui::Container::Ptr container = containers.top();
-        containers.pop();
-
-        for (const auto& child : container->getWidgets())
+        std::stack<tgui::Container::Ptr> containers;
+        containers.push(rootContainer);
+        while (!containers.empty())
         {
-            if (child == widget)
-                continue;
+            const tgui::Container::Ptr container = containers.top();
+            containers.pop();
 
-            const tgui::Container::Ptr childContainer = std::dynamic_pointer_cast<tgui::Container>(child);
-            if (childContainer)
+            for (const auto& child : container->getWidgets())
             {
-                containers.push(childContainer);
+                if (child == widget)
+                    continue;
 
-                // Parent of widget has to be focused, all other containers have to be unfocused
-                if (parents.find(childContainer.get()) != parents.end())
+                const tgui::Container::Ptr childContainer = std::dynamic_pointer_cast<tgui::Container>(child);
+                if (childContainer)
                 {
-                    if (!child->isFocused())
-                        return false;
+                    containers.push(childContainer);
+
+                           // Parent of widget has to be focused, all other containers have to be unfocused
+                    if (parents.find(childContainer.get()) != parents.end())
+                    {
+                        if (!child->isFocused())
+                            return false;
+                    }
+                    else // Not a parent
+                    {
+                        if (child->isFocused())
+                            return false;
+                    }
                 }
-                else // Not a parent
+                else // Not a container
                 {
                     if (child->isFocused())
                         return false;
                 }
             }
-            else // Not a container
-            {
-                if (child->isFocused())
-                    return false;
-            }
         }
+
+        return true;
     }
-
-    return true;
-}
-
+} // anonymous namespace
 
 /// Widgets hierarchy:
 //
