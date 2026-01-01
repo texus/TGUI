@@ -1804,7 +1804,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void String::swap(String& other)
+    void String::swap(String& other) noexcept
     {
         m_string.swap(other.m_string);
     }
