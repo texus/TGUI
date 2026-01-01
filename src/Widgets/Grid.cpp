@@ -257,8 +257,8 @@ namespace tgui
             if (col + 1 == m_columnWidth.size())
             {
                 std::size_t nrUsedColumns = 0;
-                for (std::size_t r = 0; r < m_gridWidgets.size(); ++r)
-                    nrUsedColumns = std::max(nrUsedColumns, m_gridWidgets[r].size());
+                for (const auto& grid_widget : m_gridWidgets)
+                    nrUsedColumns = std::max(nrUsedColumns, grid_widget.size());
 
                 if (m_columnWidth.size() > nrUsedColumns)
                     m_columnWidth.resize(nrUsedColumns);

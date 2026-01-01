@@ -213,11 +213,10 @@ namespace tgui
         float width = 0;
         std::size_t imageIndex = 0;
         Vector2f pos{m_paddingCached.getLeft() + textOffset, m_paddingCached.getTop()};
-        for (std::size_t i = 0; i < textPiecesLinesPtr->size(); ++i)
+        for (const auto& textPiecesLine : *textPiecesLinesPtr)
         {
             const std::size_t imageIndexBeforeLine = imageIndex;
 
-            const auto& textPiecesLine = (*textPiecesLinesPtr)[i];
             TGUI_EMPLACE_BACK(line, m_lines)
 
             float lineWidth = 0;
@@ -327,9 +326,9 @@ namespace tgui
                 for (auto& textPiece : m_lines[i])
                     textPiece.setPosition({textPiece.getPosition().x + horizontalOffset, textPiece.getPosition().y});
 
-                for (std::size_t j = 0; j < textPiecesLine.size(); ++j)
+                for (const auto& piece : textPiecesLine)
                 {
-                    if (textPiecesLine[j].gapSize != Vector2u{})
+                    if (piece.gapSize != Vector2u{})
                     {
                         auto& image = m_images[imageIndex];
                         image.setPosition({image.getPosition().x + horizontalOffset, image.getPosition().y});

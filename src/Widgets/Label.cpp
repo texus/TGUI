@@ -755,8 +755,8 @@ namespace tgui
             auto& line = m_lines[i];
 
             float maxHeight = 0;
-            for (std::size_t j = 0; j < line.size(); ++j)
-                maxHeight = std::max(maxHeight, line[j].getSize().y);
+            for (const auto& text : line)
+                maxHeight = std::max(maxHeight, text.getSize().y);
 
             Vector2f piecePos = pos;
             if ((m_horizontalAlignment != tgui::HorizontalAlignment::Left) && !line.empty()) // TGUI_NEXT: Remove "tgui::" prefix
