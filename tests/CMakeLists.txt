@@ -26,26 +26,31 @@ if(NOT TGUI_DEFAULT_BACKEND)
 endif()
 
 set(TEST_SOURCES
-    Tests.cpp
-    CompareFiles.cpp
     AbsoluteOrRelativeValue.cpp
     Animation.cpp
     Clipboard.cpp
     Clipping.cpp
     Color.cpp
+    CompareFiles.cpp
     Container.cpp
     Duration.cpp
     Filesystem.cpp
     Focus.cpp
     Font.cpp
     Layouts.cpp
+    Loading/DataIO.cpp
+    Loading/Deserializer.cpp
+    Loading/Serializer.cpp
+    Loading/Theme.cpp
+    Loading/ThemeLoader.cpp
     MouseCursors.cpp
     Outline.cpp
-    Sprite.cpp
     Signal.cpp
     SignalManager.cpp
+    Sprite.cpp
     String.cpp
     SvgImage.cpp
+    Tests.cpp
     Text.cpp
     Texture.cpp
     TextureManager.cpp
@@ -53,11 +58,6 @@ set(TEST_SOURCES
     ToolTip.cpp
     Vector2.cpp
     Widget.cpp
-    Loading/DataIO.cpp
-    Loading/Serializer.cpp
-    Loading/Deserializer.cpp
-    Loading/Theme.cpp
-    Loading/ThemeLoader.cpp
     Widgets/BitmapButton.cpp
     Widgets/Button.cpp
     Widgets/ChatBox.cpp
@@ -70,8 +70,8 @@ set(TEST_SOURCES
     Widgets/EditBox.cpp
     Widgets/EditBoxSlider.cpp
     Widgets/FileDialog.cpp
-    Widgets/Group.cpp
     Widgets/Grid.cpp
+    Widgets/Group.cpp
     Widgets/GrowHorizontalLayout.cpp
     Widgets/GrowVerticalLayout.cpp
     Widgets/HorizontalLayout.cpp
@@ -97,8 +97,8 @@ set(TEST_SOURCES
     Widgets/SpinButton.cpp
     Widgets/SpinControl.cpp
     Widgets/SplitContainer.cpp
-    Widgets/Tabs.cpp
     Widgets/TabContainer.cpp
+    Widgets/Tabs.cpp
     Widgets/TextArea.cpp
     Widgets/ToggleButton.cpp
     Widgets/TreeView.cpp
