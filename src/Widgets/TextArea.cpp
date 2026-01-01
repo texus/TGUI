@@ -26,6 +26,7 @@
 #include <TGUI/Widgets/TextArea.hpp>
 #include <TGUI/Keyboard.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,8 +210,7 @@ namespace tgui
 
     void TextArea::updateTextSize()
     {
-        if (m_textSizeCached < 1)
-            m_textSizeCached = 1;
+        m_textSizeCached = std::max<unsigned int>(m_textSizeCached, 1);
 
         // Change the text size
         m_textBeforeSelection.setCharacterSize(m_textSizeCached);
@@ -1417,8 +1417,7 @@ namespace tgui
                 else // Not using optimization for monospaced font, so really calculate the width of every line
                 {
                     float lineWidth = Text::getLineWidth(m_lines.back(), m_fontCached, m_textSizeCached);
-                    if (lineWidth > m_maxLineWidth)
-                        m_maxLineWidth = lineWidth;
+                    m_maxLineWidth = std::max(lineWidth, m_maxLineWidth);
                 }
             }
 
@@ -2106,8 +2105,7 @@ namespace tgui
     void TextArea::setCaretPositionImpl(std::size_t charactersBeforeCaret, bool selEndNeedUpdate, bool emitCaretChangedPosition)
     {
         // The caret position has to stay inside the string
-        if (charactersBeforeCaret > m_text.length())
-            charactersBeforeCaret = m_text.length();
+        charactersBeforeCaret = std::min(charactersBeforeCaret, m_text.length());
 
         // Find the line and position on that line on which the caret is located
         std::size_t count = 0;

@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/Knob.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
@@ -171,8 +172,7 @@ namespace tgui
             m_minimum = minimum;
 
             // The maximum can't be below the minimum
-            if (m_maximum < m_minimum)
-                m_maximum = m_minimum;
+            m_maximum = std::max(m_maximum, m_minimum);
 
             // When the value is below the minimum then adjust it
             if (m_value < m_minimum)
@@ -200,8 +200,7 @@ namespace tgui
             m_maximum = maximum;
 
             // The minimum can't be below the maximum
-            if (m_minimum > m_maximum)
-                m_minimum = m_maximum;
+            m_minimum = std::min(m_minimum, m_maximum);
 
             // When the value is above the maximum then adjust it
             if (m_value > m_maximum)

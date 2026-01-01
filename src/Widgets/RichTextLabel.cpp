@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/RichTextLabel.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,8 +265,7 @@ namespace tgui
             }
 
             lineWidths.push_back(lineWidth);
-            if (lineWidth > width)
-                width = lineWidth;
+            width = std::max(lineWidth, width);
 
             // If a line contains pieces of multiple sizes then align their bottom position
             for (auto& textPiece : line)
@@ -397,8 +397,7 @@ namespace tgui
         }
 
         float lineSpacing = (lineMaxTextSize > 0) ? m_fontCached.getLineSpacing(lineMaxTextSize) : 0;
-        if (static_cast<float>(maxGapHeight) > lineSpacing)
-            lineSpacing = static_cast<float>(maxGapHeight);
+        lineSpacing = std::max(static_cast<float>(maxGapHeight), lineSpacing);
 
         return lineSpacing;
     }

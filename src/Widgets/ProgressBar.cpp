@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/ProgressBar.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,12 +116,10 @@ namespace tgui
         m_minimum = minimum;
 
         // The minimum can never be greater than the maximum
-        if (m_minimum > m_maximum)
-            m_maximum = m_minimum;
+        m_maximum = std::max(m_minimum, m_maximum);
 
         // When the value is below the minimum then adjust it
-        if (m_value < m_minimum)
-            m_value = m_minimum;
+        m_value = std::max(m_value, m_minimum);
 
         // Recalculate the size of the front image (the size of the part that will be drawn)
         recalculateFillSize();
@@ -141,12 +140,10 @@ namespace tgui
         m_maximum = maximum;
 
         // The maximum can never be below the minimum
-        if (m_maximum < m_minimum)
-            m_minimum = m_maximum;
+        m_minimum = std::min(m_maximum, m_minimum);
 
         // When the value is above the maximum then adjust it
-        if (m_value > m_maximum)
-            m_value = m_maximum;
+        m_value = std::min(m_value, m_maximum);
 
         // Recalculate the size of the front image (the size of the part that will be drawn)
         recalculateFillSize();

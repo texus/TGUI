@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/TabContainer.hpp>
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -213,8 +214,7 @@ namespace tgui
 
     Panel::Ptr TabContainer::insertTab(std::size_t index, const String& name, bool selectPanel)
     {
-        if (index > m_panels.size())
-            index = m_panels.size();
+        index = std::min(index, m_panels.size());
 
         auto panel = Panel::create();
         panel->setSize({getSize().x, getSize().y - m_tabs->getSize().y});

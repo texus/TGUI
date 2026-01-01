@@ -26,6 +26,7 @@
 #include <TGUI/Keyboard.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
@@ -1507,8 +1508,7 @@ namespace tgui
             // Don't allow columns that are so small that we can't tell on which border the mouse is standing anymore.
             // If we allow 1 pixel columns then findBorderBelowMouse should be improved to not pick the first border it finds
             // but also check other borders and see which one is closest to the mouse.
-            if (newWidth < 5)
-                newWidth = 5;
+            newWidth = std::max<float>(newWidth, 5);
 
             m_columns[m_resizingColumn-1].expanded = false;
             m_columns[m_resizingColumn-1].autoResize = false;
@@ -2881,8 +2881,7 @@ namespace tgui
         {
             firstItem = m_verticalScrollbar->getValue() / totalItemHeight;
             lastItem = ((static_cast<std::size_t>(m_verticalScrollbar->getValue()) + m_verticalScrollbar->getViewportSize()) / totalItemHeight) + 1;
-            if (lastItem > m_items.size())
-                lastItem = m_items.size();
+            lastItem = std::min(lastItem, m_items.size());
         }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});

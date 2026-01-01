@@ -24,6 +24,7 @@
 
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,8 +194,7 @@ namespace tgui
         if (!m_font)
             return {};
 
-        if (index > m_string.length())
-            index = m_string.length();
+        index = std::min(index, m_string.length());
 
         const bool isBold           = static_cast<unsigned int>(m_style) & TextStyle::Bold;
         const float whitespaceWidth = m_font->getGlyph(U' ', m_characterSize, isBold).advance;

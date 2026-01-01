@@ -26,6 +26,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -461,8 +462,7 @@ namespace tgui
             if (!item.menuItems.empty())
                 width += arrowSpace;
 
-            if (width > maxWidth)
-                maxWidth = width;
+            maxWidth = std::max(width, maxWidth);
         }
 
         return maxWidth;

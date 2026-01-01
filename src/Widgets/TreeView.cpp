@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Keyboard.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1406,8 +1407,7 @@ namespace tgui
                                     (pos * m_itemHeight) + ((m_itemHeight - node->text.getSize().y) / 2.f)});
 
             const float right = node->text.getPosition().x + node->text.getSize().x + m_paddingCached.getRight();
-            if (right > m_maxRight)
-                m_maxRight = right;
+            m_maxRight = std::max(right, m_maxRight);
 
             pos++;
             if (node->expanded && !node->nodes.empty())

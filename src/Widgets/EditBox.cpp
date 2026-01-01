@@ -26,6 +26,7 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Keyboard.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,8 +337,7 @@ namespace tgui
     void EditBox::setCaretPosition(std::size_t charactersBeforeCaret)
     {
         // The caret position has to stay inside the string
-        if (charactersBeforeCaret > m_text.length())
-            charactersBeforeCaret = m_text.length();
+        charactersBeforeCaret = std::min(charactersBeforeCaret, m_text.length());
 
         // Set the caret to the correct position
         m_selStart = charactersBeforeCaret;

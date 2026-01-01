@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/RangeSlider.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,8 +227,7 @@ namespace tgui
         m_minimum = minimum;
 
         // The maximum can't be below the minimum
-        if (m_maximum < m_minimum)
-            m_maximum = m_minimum;
+        m_maximum = std::max(m_maximum, m_minimum);
 
         // When the selection start equaled the minimum, move it as well, otherwise set it again to make sure it is still within minimum and maximum
         if (oldMinimum == m_selectionStart)
@@ -293,8 +293,7 @@ namespace tgui
             m_selectionStart = value;
 
             // Update the selection end when the selection start passed it
-            if (m_selectionEnd < value)
-                m_selectionEnd = value;
+            m_selectionEnd = std::max(m_selectionEnd, value);
 
             onRangeChange.emit(this, m_selectionStart, m_selectionEnd);
 
@@ -328,8 +327,7 @@ namespace tgui
             m_selectionEnd = value;
 
             // Update the selection start when the selection end passed it
-            if (m_selectionStart > value)
-                m_selectionStart = value;
+            m_selectionStart = std::min(m_selectionStart, value);
 
             onRangeChange.emit(this, m_selectionStart, m_selectionEnd);
 

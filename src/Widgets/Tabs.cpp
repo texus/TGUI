@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Optional.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,8 +142,7 @@ namespace tgui
     void Tabs::insert(std::size_t index, const String& text, bool selectTab)
     {
         // If the index is too high then just insert at the end
-        if (index > m_tabs.size())
-            index = m_tabs.size();
+        index = std::min(index, m_tabs.size());
 
         // Create the new tab
         Tab newTab;

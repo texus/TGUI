@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/Grid.hpp>
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -239,8 +240,7 @@ namespace tgui
                 if ((m_gridWidgets[r].size() <= col) || !m_gridWidgets[r][col])
                     continue;
 
-                if (m_columnWidth[col] < m_gridWidgets[r][col]->getFullSize().x + m_objPadding[r][col].getLeft() + m_objPadding[r][col].getRight())
-                    m_columnWidth[col] = m_gridWidgets[r][col]->getFullSize().x + m_objPadding[r][col].getLeft() + m_objPadding[r][col].getRight();
+                m_columnWidth[col] = std::max(m_columnWidth[col], m_gridWidgets[r][col]->getFullSize().x + m_objPadding[r][col].getLeft() + m_objPadding[r][col].getRight());
             }
 
             // Update the height of the row that used to contain the widget
@@ -250,8 +250,7 @@ namespace tgui
                 if (!m_gridWidgets[row][c])
                     continue;
 
-                if (m_rowHeight[row] < m_gridWidgets[row][c]->getFullSize().y + m_objPadding[row][c].getTop() + m_objPadding[row][c].getBottom())
-                    m_rowHeight[row] = m_gridWidgets[row][c]->getFullSize().y + m_objPadding[row][c].getTop() + m_objPadding[row][c].getBottom();
+                m_rowHeight[row] = std::max(m_rowHeight[row], m_gridWidgets[row][c]->getFullSize().y + m_objPadding[row][c].getTop() + m_objPadding[row][c].getBottom());
             }
 
             // If this was the last column and it is now empty then remove the empty columns at the end
@@ -810,12 +809,10 @@ namespace tgui
                     continue;
 
                 // Remember the biggest column width
-                if (m_columnWidth[col] < m_gridWidgets[row][col]->getFullSize().x + m_objPadding[row][col].getLeft() + m_objPadding[row][col].getRight())
-                    m_columnWidth[col] = m_gridWidgets[row][col]->getFullSize().x + m_objPadding[row][col].getLeft() + m_objPadding[row][col].getRight();
+                m_columnWidth[col] = std::max(m_columnWidth[col], m_gridWidgets[row][col]->getFullSize().x + m_objPadding[row][col].getLeft() + m_objPadding[row][col].getRight());
 
                 // Remember the biggest row height
-                if (m_rowHeight[row] < m_gridWidgets[row][col]->getFullSize().y + m_objPadding[row][col].getTop() + m_objPadding[row][col].getBottom())
-                    m_rowHeight[row] = m_gridWidgets[row][col]->getFullSize().y + m_objPadding[row][col].getTop() + m_objPadding[row][col].getBottom();
+                m_rowHeight[row] = std::max(m_rowHeight[row], m_gridWidgets[row][col]->getFullSize().y + m_objPadding[row][col].getTop() + m_objPadding[row][col].getBottom());
             }
         }
 

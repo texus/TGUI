@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/MessageBox.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,8 +337,7 @@ namespace tgui
                 tempText.setCharacterSize(m_textSizeCached);
                 tempText.setString(button->getText());
                 const float width = tempText.getSize().x;
-                if (buttonWidth < width * 10.0f / 9.0f)
-                    buttonWidth = width * 10.0f / 9.0f;
+                buttonWidth = std::max(buttonWidth, width * 10.0f / 9.0f);
             }
         }
 
@@ -354,8 +354,7 @@ namespace tgui
         Vector2f size = {2*distance + m_label->getSize().x, 3*distance + m_label->getSize().y + buttonHeight};
 
         // Make sure the buttons fit inside the message box
-        if (buttonsAreaWidth > size.x)
-            size.x = buttonsAreaWidth;
+        size.x = std::max(buttonsAreaWidth, size.x);
 
         // Set the size of the window
         if (m_autoSize)

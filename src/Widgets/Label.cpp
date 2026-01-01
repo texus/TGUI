@@ -667,8 +667,7 @@ namespace tgui
             else
                 textPiece.setString(stringPtr->substr(searchPosStart));
 
-            if (textPiece.getSize().x > width)
-                width = textPiece.getSize().x;
+            width = std::max(textPiece.getSize().x, width);
 
             searchPosStart = newLinePos + 1;
         }

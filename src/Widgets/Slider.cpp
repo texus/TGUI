@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/Slider.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,8 +220,7 @@ namespace tgui
         m_minimum = minimum;
 
         // The maximum can't be below the minimum
-        if (m_maximum < m_minimum)
-            m_maximum = m_minimum;
+        m_maximum = std::max(m_maximum, m_minimum);
 
         // When the value is below the minimum then adjust it
         if (m_value < m_minimum)
