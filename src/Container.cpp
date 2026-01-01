@@ -547,7 +547,7 @@ namespace tgui
         if (replaceExisting)
             removeAllWidgets();
 
-        if (rootNode->propertyValuePairs.size() != 0)
+        if (!rootNode->propertyValuePairs.empty())
             Widget::load(rootNode, {});
 
         std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;

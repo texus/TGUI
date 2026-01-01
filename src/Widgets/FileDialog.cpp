@@ -386,7 +386,7 @@ namespace tgui
             m_fileTypeFilters.emplace_back(filter.first, expressions);
         }
 
-        if (m_fileTypeFilters.size() == 0)
+        if (m_fileTypeFilters.empty())
             m_fileTypeFilters.emplace_back("All files (*)", std::vector<String>());
 
         m_comboBoxFileTypes->removeAllItems();

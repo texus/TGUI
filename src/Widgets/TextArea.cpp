@@ -1342,7 +1342,7 @@ namespace tgui
         clipboardContents.replace('\r', U"");
 
         // Only continue pasting if you actually have to do something
-        if ((m_selStart != m_selEnd) || (clipboardContents != U""))
+        if ((m_selStart != m_selEnd) || (!clipboardContents.empty()))
         {
             deleteSelectedCharacters();
             insertTextAtCaretPosition(clipboardContents);
@@ -1798,7 +1798,7 @@ namespace tgui
                 {
                     m_selectionRects.back().width += textOffset;
 
-                    if (m_textSelection2.getString() != U"")
+                    if (!m_textSelection2.getString().empty())
                     {
                         tempText.setString(m_lines[selectionEnd.y].substr(0, selectionEnd.x));
                         m_selectionRects.emplace_back(m_textSelection2.getPosition().x - textOffset, static_cast<float>(selectionEnd.y) * m_lineHeight,

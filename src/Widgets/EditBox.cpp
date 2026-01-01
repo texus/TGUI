@@ -1495,7 +1495,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         // Only continue pasting if you actually have to do something
         const auto clipboardContents = getBackend()->getClipboard();
-        if ((m_selChars > 0) || (clipboardContents.length() > 0))
+        if ((m_selChars > 0) || (!clipboardContents.empty()))
         {
             deleteSelectedCharacters();
 

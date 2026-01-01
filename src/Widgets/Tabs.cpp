@@ -700,7 +700,7 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        if (m_tabs.size() > 0)
+        if (!m_tabs.empty())
         {
             bool allTabsVisible = true;
             bool allTabsEnabled = true;

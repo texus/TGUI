@@ -148,7 +148,7 @@ namespace tgui
 
     void DefaultThemeLoader::flushCache(const String& filename)
     {
-        if (filename != U"")
+        if (!filename.empty())
         {
             m_propertiesCache.erase(filename);
             m_globalPropertiesCache.erase(filename);
@@ -164,7 +164,7 @@ namespace tgui
 
     void DefaultThemeLoader::preload(const String& filename)
     {
-        if (filename == U"")
+        if (filename.empty())
             return;
 
         // Load the file when not already in cache

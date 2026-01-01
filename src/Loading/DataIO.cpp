@@ -431,7 +431,7 @@ namespace tgui
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
 
                 String word = readWord(stream);
-                if (word == U"")
+                if (word.empty())
                 {
                     if (stream.peek() == EOF)
                         return "Found EOF while trying to read property or nested section name.";
@@ -486,7 +486,7 @@ namespace tgui
             REMOVE_WHITESPACE_AND_COMMENTS(false)
 
             String word = readWord(stream);
-            if (word == U"")
+            if (word.empty())
             {
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
                 if (stream.peek() != '{')
@@ -519,7 +519,7 @@ namespace tgui
                     output.emplace_back("    " + pair.first + " = " + pair.second->value + ";");
             }
 
-            if (node->propertyValuePairs.size() > 0 && node->children.size() > 0)
+            if (!node->propertyValuePairs.empty() && !node->children.empty())
                 output.emplace_back("");
 
             if (!node->children.empty())
@@ -579,7 +579,7 @@ namespace tgui
         for (const auto& pair : rootNode->propertyValuePairs)
             stream << pair.first << " = " << pair.second->value << ";" << std::endl;
 
-        if (rootNode->propertyValuePairs.size() > 0 && rootNode->children.size() > 0)
+        if (!rootNode->propertyValuePairs.empty() && !rootNode->children.empty())
             stream << std::endl;
 
         std::vector<String> output;

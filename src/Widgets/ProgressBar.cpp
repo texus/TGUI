@@ -544,7 +544,7 @@ namespace tgui
         }
 
         // Draw the text
-        if (m_textBack.getString() != U"")
+        if (!m_textBack.getString().empty())
         {
             const Vector2f textTranslation = (getInnerSize() - m_textBack.getSize()) / 2.f;
 

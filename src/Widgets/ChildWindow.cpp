@@ -1288,7 +1288,7 @@ namespace tgui
         else if (m_titleAlignment == HorizontalAlignment::Right)
             node->propertyValuePairs[U"TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
-        if (getTitle().length() > 0)
+        if (!getTitle().empty())
             node->propertyValuePairs[U"Title"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getTitle()));
 
         if (m_titleTextSize != 0)
