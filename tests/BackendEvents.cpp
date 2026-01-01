@@ -102,7 +102,7 @@ TEST_CASE("[Backend events]")
 #endif
                 SECTION("All key codes")
                 {
-                    std::array<std::pair<sf::Keyboard::Key, tgui::Event::KeyboardKey>, 100> keys = {{
+                    const std::array<std::pair<sf::Keyboard::Key, tgui::Event::KeyboardKey>, 100> keys = {{
                         {sf::Keyboard::Key::A,          tgui::Event::KeyboardKey::A},
                         {sf::Keyboard::Key::B,          tgui::Event::KeyboardKey::B},
                         {sf::Keyboard::Key::C,          tgui::Event::KeyboardKey::C},
@@ -212,7 +212,7 @@ TEST_CASE("[Backend events]")
                     {
 #if SFML_VERSION_MAJOR >= 3
                         eventKeyPressed.code = pair.first;
-                        sf::Event eventSFML(eventKeyPressed);
+                        const sf::Event eventSFML(eventKeyPressed);
 #else
                         eventSFML.key.code = pair.first;
 #endif
@@ -226,7 +226,7 @@ TEST_CASE("[Backend events]")
                 SECTION("Invalid key code")
                 {
                     eventKeyPressed.code = sf::Keyboard::Key::Unknown;
-                    sf::Event eventSFML(eventKeyPressed);
+                    const sf::Event eventSFML(eventKeyPressed);
 
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -239,7 +239,7 @@ TEST_CASE("[Backend events]")
                     eventKeyPressed.control = true;
                     eventKeyPressed.shift = true;
                     eventKeyPressed.system = false;
-                    sf::Event eventSFML(eventKeyPressed);
+                    const sf::Event eventSFML(eventKeyPressed);
 
                     tgui::Event eventTGUI;
                     REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -255,7 +255,7 @@ TEST_CASE("[Backend events]")
                 {
                     sf::Event::KeyReleased eventKeyReleased;
                     eventKeyReleased.code = sf::Keyboard::Key::Space;
-                    sf::Event eventSFML(eventKeyReleased);
+                    const sf::Event eventSFML(eventKeyReleased);
 
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -333,8 +333,8 @@ TEST_CASE("[Backend events]")
 #if SFML_VERSION_MAJOR >= 3
             SECTION("GainedFocus")
             {
-                sf::Event::FocusGained eventFocusGained;
-                sf::Event eventSFML{eventFocusGained};
+                const sf::Event::FocusGained eventFocusGained;
+                const sf::Event eventSFML{eventFocusGained};
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -343,8 +343,8 @@ TEST_CASE("[Backend events]")
 
             SECTION("LostFocus")
             {
-                sf::Event::FocusLost eventFocusLost;
-                sf::Event eventSFML{eventFocusLost};
+                const sf::Event::FocusLost eventFocusLost;
+                const sf::Event eventSFML{eventFocusLost};
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -353,8 +353,8 @@ TEST_CASE("[Backend events]")
 
             SECTION("Closed")
             {
-                sf::Event::Closed eventClose;
-                sf::Event eventSFML{eventClose};
+                const sf::Event::Closed eventClose;
+                const sf::Event eventSFML{eventClose};
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -366,7 +366,7 @@ TEST_CASE("[Backend events]")
                 sf::Event::Resized eventResized;
                 eventResized.size.x = 400;
                 eventResized.size.y = 300;
-                sf::Event eventSFML{eventResized};
+                const sf::Event eventSFML{eventResized};
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -379,7 +379,7 @@ TEST_CASE("[Backend events]")
             {
                 sf::Event::TextEntered eventTextEntered;
                 eventTextEntered.unicode = 0x2705;
-                sf::Event eventSFML{eventTextEntered};
+                const sf::Event eventSFML{eventTextEntered};
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -466,7 +466,7 @@ TEST_CASE("[Backend events]")
                 sf::Event::MouseMoved eventMouseMoved;
                 eventMouseMoved.position.x = 200;
                 eventMouseMoved.position.y = 150;
-                sf::Event eventSFML{eventMouseMoved};
+                const sf::Event eventSFML{eventMouseMoved};
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -509,8 +509,8 @@ TEST_CASE("[Backend events]")
 
             SECTION("MouseEntered")
             {
-                sf::Event::MouseEntered eventMouseEntered;
-                sf::Event eventSFML{eventMouseEntered};
+                const sf::Event::MouseEntered eventMouseEntered;
+                const sf::Event eventSFML{eventMouseEntered};
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -519,8 +519,8 @@ TEST_CASE("[Backend events]")
 
             SECTION("MouseLeft")
             {
-                sf::Event::MouseLeft eventMouseLeft;
-                sf::Event eventSFML{eventMouseLeft};
+                const sf::Event::MouseLeft eventMouseLeft;
+                const sf::Event eventSFML{eventMouseLeft};
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
@@ -595,7 +595,7 @@ TEST_CASE("[Backend events]")
                 eventMouseMoved.position.y = 80;
                 backendGuiSFML->handleEvent({eventMouseMoved});
                 slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
-                sf::Event::MouseLeft eventMouseLeft;
+                const sf::Event::MouseLeft eventMouseLeft;
                 backendGuiSFML->handleEvent({eventMouseLeft});
                 REQUIRE(mouseLeftCount == 1);
 

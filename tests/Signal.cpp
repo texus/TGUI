@@ -26,7 +26,7 @@
 
 TEST_CASE("[Signal]")
 {
-    tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
+    const tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
 
     SECTION("connect")
     {
@@ -59,7 +59,7 @@ TEST_CASE("[Signal]")
 
         REQUIRE_THROWS_AS(widget->getSignal("SomeInvalidSignal"), tgui::Exception);
 
-        tgui::Button::Ptr widget2 = tgui::Button::create();
+        const tgui::Button::Ptr widget2 = tgui::Button::create();
         REQUIRE(widget2->onPress([](){}) == ++id);
         REQUIRE(widget2->onPress([](int){}, 5) == ++id);
         REQUIRE(widget2->onPress([](auto){}, 10.f) == ++id);
@@ -104,7 +104,7 @@ TEST_CASE("[Signal]")
     SECTION("disconnect")
     {
         unsigned int i = 0;
-        unsigned int id = widget->onPositionChange([&](){ i++; });
+        const unsigned int id = widget->onPositionChange([&](){ i++; });
         widget->setPosition(10, 10);
         REQUIRE(i == 1);
 

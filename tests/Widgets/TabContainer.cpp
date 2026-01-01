@@ -26,7 +26,7 @@
 
 TEST_CASE("[tabContainer]")
 {
-    tgui::TabContainer::Ptr tabContainer = tgui::TabContainer::create();
+    const tgui::TabContainer::Ptr tabContainer = tgui::TabContainer::create();
 
     SECTION("Signals")
     {

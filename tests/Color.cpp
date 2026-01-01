@@ -26,7 +26,7 @@
 
 TEST_CASE("[Color]")
 {
-    tgui::Color color{16, 32, 64, 128};
+    const tgui::Color color{16, 32, 64, 128};
     REQUIRE(tgui::Color(color).getRed() == 16);
     REQUIRE(tgui::Color(color).getGreen() == 32);
     REQUIRE(tgui::Color(color).getBlue() == 64);

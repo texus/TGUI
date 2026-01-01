@@ -26,7 +26,7 @@
 
 TEST_CASE("[ProgressBar]")
 {
-    tgui::ProgressBar::Ptr progressBar = tgui::ProgressBar::create();
+    const tgui::ProgressBar::Ptr progressBar = tgui::ProgressBar::create();
     progressBar->getRenderer()->setFont("resources/DejaVuSans.ttf");
     progressBar->setMinimum(10);
     progressBar->setMaximum(20);
@@ -277,8 +277,8 @@ TEST_CASE("[ProgressBar]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBack("resources/Black.png", {180, 64, 90, 40}, {20, 0, 50, 40});
-            tgui::Texture textureFront("resources/Black.png", {180, 108, 82, 32}, {16, 0, 50, 32});
+            const tgui::Texture textureBack("resources/Black.png", {180, 64, 90, 40}, {20, 0, 50, 40});
+            const tgui::Texture textureFront("resources/Black.png", {180, 108, 82, 32}, {16, 0, 50, 32});
 
             SECTION("set serialized property")
             {

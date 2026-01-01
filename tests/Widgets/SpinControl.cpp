@@ -26,7 +26,7 @@
 
 TEST_CASE("[spinControl]")
 {
-    tgui::SpinControl::Ptr spinControl = tgui::SpinControl::create(0, 10, 5);
+    const tgui::SpinControl::Ptr spinControl = tgui::SpinControl::create(0, 10, 5);
 
     SECTION("Signals")
     {

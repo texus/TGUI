@@ -26,7 +26,7 @@
 
 TEST_CASE("[RadioButton]")
 {
-    tgui::RadioButton::Ptr radioButton = tgui::RadioButton::create();
+    const tgui::RadioButton::Ptr radioButton = tgui::RadioButton::create();
     radioButton->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -109,7 +109,7 @@ TEST_CASE("[RadioButton]")
         REQUIRE(!radioButton2->isChecked());
         REQUIRE(radioButton3->isChecked());
     }
-    
+
     SECTION("Text")
     {
         REQUIRE(radioButton->getText() == "");
@@ -387,14 +387,14 @@ TEST_CASE("[RadioButton]")
 
         SECTION("textured")
         {
-            tgui::Texture textureUncheckedNormal("resources/Black.png", {124, 32, 32, 32});
-            tgui::Texture textureUncheckedHover("resources/Black.png", {188, 32, 32, 32});
-            tgui::Texture textureUncheckedDisabled("resources/Black.png", {124, 32, 32, 32});
-            tgui::Texture textureUncheckedFocused("resources/Texture1.png");
-            tgui::Texture textureCheckedNormal("resources/Black.png", {156, 32, 32, 32});
-            tgui::Texture textureCheckedHover("resources/Black.png", {220, 32, 32, 32});
-            tgui::Texture textureCheckedDisabled("resources/Black.png", {156, 32, 32, 32});
-            tgui::Texture textureCheckedFocused("resources/Texture2.png");
+            const tgui::Texture textureUncheckedNormal("resources/Black.png", {124, 32, 32, 32});
+            const tgui::Texture textureUncheckedHover("resources/Black.png", {188, 32, 32, 32});
+            const tgui::Texture textureUncheckedDisabled("resources/Black.png", {124, 32, 32, 32});
+            const tgui::Texture textureUncheckedFocused("resources/Texture1.png");
+            const tgui::Texture textureCheckedNormal("resources/Black.png", {156, 32, 32, 32});
+            const tgui::Texture textureCheckedHover("resources/Black.png", {220, 32, 32, 32});
+            const tgui::Texture textureCheckedDisabled("resources/Black.png", {156, 32, 32, 32});
+            const tgui::Texture textureCheckedFocused("resources/Texture2.png");
 
             SECTION("set serialized property")
             {

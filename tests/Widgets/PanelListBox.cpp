@@ -25,7 +25,7 @@
 
 TEST_CASE("[PanelListBox]")
 {
-    tgui::PanelListBox::Ptr panelListBox = tgui::PanelListBox::create();
+    const tgui::PanelListBox::Ptr panelListBox = tgui::PanelListBox::create();
 
     SECTION("Signals")
     {

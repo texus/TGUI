@@ -213,15 +213,15 @@ TEST_CASE("[Deserializer]")
 
     SECTION("deserialize renderer")
     {
-        tgui::String data = "{\n"
-                           "  Nested = {\n"
-                           "    Num = 5;\n"
-                           "  };\n"
-                           "  SomeColor = Red;\n"
-                           "  TextStyleProperty = StrikeThrough;\n"
-                           "}";
+        const tgui::String data = "{\n"
+                                  "  Nested = {\n"
+                                  "    Num = 5;\n"
+                                  "  };\n"
+                                  "  SomeColor = Red;\n"
+                                  "  TextStyleProperty = StrikeThrough;\n"
+                                  "}";
 
-        std::shared_ptr<tgui::RendererData> rendererData = tgui::Deserializer::deserialize(Type::RendererData, data).getRenderer();
+        const std::shared_ptr<tgui::RendererData> rendererData = tgui::Deserializer::deserialize(Type::RendererData, data).getRenderer();
         REQUIRE(rendererData->propertyValuePairs.size() == 3);
         REQUIRE(rendererData->propertyValuePairs["SomeColor"].getString() == "Red");
         REQUIRE(rendererData->propertyValuePairs["TextStyleProperty"].getString() == "StrikeThrough");
@@ -232,11 +232,11 @@ TEST_CASE("[Deserializer]")
     {
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == tgui::Color(10, 20, 30));
         auto oldFunc = tgui::Deserializer::getFunction(tgui::ObjectConverter::Type::Color);
-        
+
         tgui::Deserializer::setFunction(Type::Color, [](const tgui::String&){ return tgui::ObjectConverter{tgui::Color::Green}; });
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == tgui::Color::Green);
         REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "(50, 60, 70, 80)").getOutline() == tgui::Outline(50, 60, 70, 80));
-        
+
         tgui::Deserializer::setFunction(tgui::ObjectConverter::Type::Color, oldFunc);
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == tgui::Color(10, 20, 30));
     }

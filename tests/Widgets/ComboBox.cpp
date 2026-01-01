@@ -26,7 +26,7 @@
 
 TEST_CASE("[ComboBox]")
 {
-    tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create();
+    const tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create();
     comboBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -102,7 +102,7 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getIdByIndex(1) == "2");
         REQUIRE(comboBox->getIdByIndex(2) == "");
     }
-    
+
     SECTION("Removing items")
     {
         comboBox->addItem("Item 1", "1");
@@ -133,7 +133,7 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->removeItemById("4"));
         REQUIRE(comboBox->getItemCount() == 1);
         REQUIRE(comboBox->getItems()[0] == "Item 3");
-        
+
         comboBox->addItem("Item 5");
         comboBox->addItem("Item 5");
         comboBox->addItem("Item 6");
@@ -141,7 +141,7 @@ TEST_CASE("[ComboBox]")
         comboBox->removeAllItems();
         REQUIRE(comboBox->getItemCount() == 0);
     }
-    
+
     SECTION("Changing items")
     {
         comboBox->addItem("Item 1", "1");
@@ -158,7 +158,7 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getItems()[0] == "Item 10");
         REQUIRE(comboBox->getItems()[1] == "Item 2");
         REQUIRE(comboBox->getItems()[2] == "Item 3");
-        
+
         REQUIRE(!comboBox->changeItemById("0", "Item 00"));
         REQUIRE(comboBox->getItemCount() == 3);
         REQUIRE(comboBox->getItems()[0] == "Item 10");
@@ -169,7 +169,7 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getItems()[0] == "Item 10");
         REQUIRE(comboBox->getItems()[1] == "Item 2");
         REQUIRE(comboBox->getItems()[2] == "Item 30");
-        
+
         REQUIRE(!comboBox->changeItemByIndex(3, "Item 00"));
         REQUIRE(comboBox->getItemCount() == 3);
         REQUIRE(comboBox->getItems()[0] == "Item 10");
@@ -189,33 +189,33 @@ TEST_CASE("[ComboBox]")
         comboBox->addItem("Item 3", "3");
 
         REQUIRE(comboBox->getSelectedItem() == "");
-        REQUIRE(comboBox->getSelectedItemId() == "");        
+        REQUIRE(comboBox->getSelectedItemId() == "");
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
-        
+
         REQUIRE(!comboBox->setSelectedItem("Item 0"));
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
         REQUIRE(comboBox->setSelectedItem("Item 1"));
         REQUIRE(comboBox->getSelectedItem() == "Item 1");
-        REQUIRE(comboBox->getSelectedItemId() == "1");        
+        REQUIRE(comboBox->getSelectedItemId() == "1");
         REQUIRE(comboBox->getSelectedItemIndex() == 0);
 
         REQUIRE(!comboBox->setSelectedItemById("0"));
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
         REQUIRE(comboBox->setSelectedItemById("2"));
         REQUIRE(comboBox->getSelectedItem() == "Item 2");
-        REQUIRE(comboBox->getSelectedItemId() == "2");        
+        REQUIRE(comboBox->getSelectedItemId() == "2");
         REQUIRE(comboBox->getSelectedItemIndex() == 1);
 
         REQUIRE(!comboBox->setSelectedItemByIndex(3));
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
         REQUIRE(comboBox->setSelectedItemByIndex(2));
         REQUIRE(comboBox->getSelectedItem() == "Item 3");
-        REQUIRE(comboBox->getSelectedItemId() == "3");        
+        REQUIRE(comboBox->getSelectedItemId() == "3");
         REQUIRE(comboBox->getSelectedItemIndex() == 2);
 
         comboBox->deselectItem();
         REQUIRE(comboBox->getSelectedItem() == "");
-        REQUIRE(comboBox->getSelectedItemId() == "");        
+        REQUIRE(comboBox->getSelectedItemId() == "");
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
     }
 
@@ -261,7 +261,7 @@ TEST_CASE("[ComboBox]")
         comboBox->setItemData(0, 3);
         REQUIRE(comboBox->getItemData<int>(0) == 3);
     }
-    
+
     SECTION("ItemsToDisplay")
     {
         comboBox->setItemsToDisplay(5);
@@ -280,7 +280,7 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getItemCount() == 3);
         REQUIRE(comboBox->getItems()[0] == "Item 1");
         REQUIRE(comboBox->getItems()[2] == "Item 3");
-        
+
         comboBox->addItem("Item 6");
         REQUIRE(comboBox->getItemCount() == 3);
         REQUIRE(comboBox->getItems()[0] == "Item 1");
@@ -553,11 +553,11 @@ TEST_CASE("[ComboBox]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
-            tgui::Texture textureBackgroundDisabled("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
-            tgui::Texture textureArrow("resources/Black.png", {92,  0, 32, 32});
-            tgui::Texture textureArrowHover("resources/Black.png", {92, 32, 32, 32});
-            tgui::Texture textureArrowDisabled("resources/Black.png", {92,  0, 32, 32});
+            const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureBackgroundDisabled("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureArrow("resources/Black.png", {92,  0, 32, 32});
+            const tgui::Texture textureArrowHover("resources/Black.png", {92, 32, 32, 32});
+            const tgui::Texture textureArrowDisabled("resources/Black.png", {92,  0, 32, 32});
 
             SECTION("set serialized property")
             {

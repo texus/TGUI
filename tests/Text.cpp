@@ -56,7 +56,7 @@ TEST_CASE("[Text]")
 
     SECTION("Font")
     {
-        tgui::Font font("resources/DejaVuSans.ttf");
+        const tgui::Font font("resources/DejaVuSans.ttf");
 
         REQUIRE(text.getFont() == nullptr);
         text.setFont(font);
@@ -82,7 +82,7 @@ TEST_CASE("[Text]")
         {
             text.setCharacterSize(40);
             text.setString("a\nb\nc");
-            float width = text.getSize().x;
+            const float width = text.getSize().x;
 
             const tgui::Font& font = text.getFont();
             REQUIRE(text.getSize().y == 2 * font.getLineSpacing(40) + std::max(font.getFontHeight(40), font.getLineSpacing(40)));
@@ -104,7 +104,7 @@ TEST_CASE("[Text]")
         SECTION("Tab is 4x wider than space")
         {
             text.setString(" ");
-            float width = text.getSize().x;
+            const float width = text.getSize().x;
 
             text.setString("\t");
             REQUIRE(text.getSize().x == 4 * width);

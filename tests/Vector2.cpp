@@ -30,53 +30,53 @@ TEST_CASE("[Vector2]")
 {
     SECTION("Constructor")
     {
-        tgui::Vector2f vecFloat{1.4f, 2.5f};
+        const tgui::Vector2f vecFloat{1.4f, 2.5f};
         REQUIRE(vecFloat.x == 1.4f);
         REQUIRE(vecFloat.y == 2.5f);
 
-        tgui::Vector2u vecUint{10, 4};
+        const tgui::Vector2u vecUint{10, 4};
         REQUIRE(vecUint.x == 10);
         REQUIRE(vecUint.y == 4);
 
-        tgui::Vector2i vecInt{-5, 7};
+        const tgui::Vector2i vecInt{-5, 7};
         REQUIRE(vecInt.x == -5);
         REQUIRE(vecInt.y == 7);
 
-        tgui::Vector2<double> vecDouble{3.1, -0.8};
+        const tgui::Vector2<double> vecDouble{3.1, -0.8};
         REQUIRE(vecDouble.x == 3.1);
         REQUIRE(vecDouble.y == -0.8);
 
-        tgui::Vector2i vecStr1{"(1,2)"};
+        const tgui::Vector2i vecStr1{"(1,2)"};
         REQUIRE(vecStr1.x == 1);
         REQUIRE(vecStr1.y == 2);
 
-        tgui::Vector2i vecStr2{"{3, 4}"};
+        const tgui::Vector2i vecStr2{"{3, 4}"};
         REQUIRE(vecStr2.x == 3);
         REQUIRE(vecStr2.y == 4);
 
-        tgui::Vector2f vecStr3{"5.6, 7.8"};
+        const tgui::Vector2f vecStr3{"5.6, 7.8"};
         REQUIRE(vecStr3.x == 5.6f);
         REQUIRE(vecStr3.y == 7.8f);
 
         std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
 
-        tgui::Vector2i vecStrInvalid1{""};
+        const tgui::Vector2i vecStrInvalid1{""};
         REQUIRE(vecStrInvalid1.x == 0);
         REQUIRE(vecStrInvalid1.y == 0);
 
-        tgui::Vector2i vecStrInvalid2{"()"};
+        const tgui::Vector2i vecStrInvalid2{"()"};
         REQUIRE(vecStrInvalid2.x == 0);
         REQUIRE(vecStrInvalid2.y == 0);
 
-        tgui::Vector2i vecStrInvalid3{"{9}"};
+        const tgui::Vector2i vecStrInvalid3{"{9}"};
         REQUIRE(vecStrInvalid3.x == 0);
         REQUIRE(vecStrInvalid3.y == 0);
 
-        tgui::Vector2i vecStrInvalid4{"(1,2"};
+        const tgui::Vector2i vecStrInvalid4{"(1,2"};
         REQUIRE(vecStrInvalid4.x == 0); // "(1" to int
         REQUIRE(vecStrInvalid4.y == 2); // "2" to int
 
-        tgui::Vector2i vecStrInvalid5{"3,4}"};
+        const tgui::Vector2i vecStrInvalid5{"3,4}"};
         REQUIRE(vecStrInvalid5.x == 3); // "3" to int
         REQUIRE(vecStrInvalid5.y == 4); // "4}" to int
 
@@ -85,13 +85,13 @@ TEST_CASE("[Vector2]")
 
     SECTION("Copy")
     {
-        tgui::Vector2u vecUint{1, 2};
+        const tgui::Vector2u vecUint{1, 2};
 
-        tgui::Vector2u vecUint2{vecUint};
+        const tgui::Vector2u vecUint2{vecUint};
         REQUIRE(vecUint2.x == 1);
         REQUIRE(vecUint2.y == 2);
 
-        tgui::Vector2u vecInt{vecUint};
+        const tgui::Vector2u vecInt{vecUint};
         REQUIRE(vecInt.x == 1);
         REQUIRE(vecInt.y == 2);
     }
@@ -99,16 +99,16 @@ TEST_CASE("[Vector2]")
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     SECTION("Construct from sf::Vector")
     {
-        sf::Vector2i sfmlVec{1, 2};
-        tgui::Vector2i tguiVec{sfmlVec};
+        const sf::Vector2i sfmlVec{1, 2};
+        const tgui::Vector2i tguiVec{sfmlVec};
         REQUIRE(tguiVec.x == 1);
         REQUIRE(tguiVec.y == 2);
     }
 
     SECTION("Convert to sf::Vector")
     {
-        tgui::Vector2u tguiVec{1, 2};
-        sf::Vector2u sfmlVec{tguiVec};
+        const tgui::Vector2u tguiVec{1, 2};
+        const sf::Vector2u sfmlVec{tguiVec};
         REQUIRE(sfmlVec.x == 1);
         REQUIRE(sfmlVec.y == 2);
     }

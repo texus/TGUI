@@ -26,7 +26,7 @@
 
 TEST_CASE("[RangeSlider]")
 {
-    tgui::RangeSlider::Ptr slider = tgui::RangeSlider::create();
+    const tgui::RangeSlider::Ptr slider = tgui::RangeSlider::create();
     slider->getRenderer()->setFont("resources/DejaVuSans.ttf");
     slider->setMinimum(10);
     slider->setMaximum(20);
@@ -259,12 +259,12 @@ TEST_CASE("[RangeSlider]")
 
         SECTION("textured")
         {
-            tgui::Texture textureTrack("resources/Black.png", {203, 150, 20, 45}, {0, 15, 20, 15});
-            tgui::Texture textureTrackHover("resources/Black.png", {223, 150, 20, 45}, {0, 15, 20, 15});
-            tgui::Texture textureThumb("resources/Black.png", {243, 150, 30, 30});
-            tgui::Texture textureThumbHover("resources/Black.png", {243, 150, 30, 30});
-            tgui::Texture textureSelectedTrack("resources/Texture1.png");
-            tgui::Texture textureSelectedTrackHover("resources/Texture2.png");
+            const tgui::Texture textureTrack("resources/Black.png", {203, 150, 20, 45}, {0, 15, 20, 15});
+            const tgui::Texture textureTrackHover("resources/Black.png", {223, 150, 20, 45}, {0, 15, 20, 15});
+            const tgui::Texture textureThumb("resources/Black.png", {243, 150, 30, 30});
+            const tgui::Texture textureThumbHover("resources/Black.png", {243, 150, 30, 30});
+            const tgui::Texture textureSelectedTrack("resources/Texture1.png");
+            const tgui::Texture textureSelectedTrackHover("resources/Texture2.png");
 
             SECTION("set serialized property")
             {

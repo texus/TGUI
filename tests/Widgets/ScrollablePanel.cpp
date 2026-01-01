@@ -145,7 +145,7 @@ TEST_CASE("[ScrollablePanel]")
         auto scrollbar = tgui::Scrollbar::create();
         REQUIRE(panel->getScrollbarWidth() == scrollbar->getDefaultWidth());
 
-        tgui::Texture image("resources/Texture1.png");
+        const tgui::Texture image("resources/Texture1.png");
         tgui::ScrollbarRenderer scrollbarRenderer;
         scrollbarRenderer.setTextureTrack(image);
         panel->getRenderer()->setScrollbar(scrollbarRenderer.getData());

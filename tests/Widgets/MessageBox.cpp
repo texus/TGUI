@@ -26,7 +26,7 @@
 
 TEST_CASE("[MessageBox]")
 {
-    tgui::MessageBox::Ptr messageBox = tgui::MessageBox::create();
+    const tgui::MessageBox::Ptr messageBox = tgui::MessageBox::create();
     messageBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")

@@ -34,9 +34,9 @@ TEST_CASE("[TextureManager]")
     tgui::Texture texture1;
     tgui::Texture texture2;
     tgui::Texture texture3;
-    std::shared_ptr<tgui::TextureData> textureData1 = tgui::TextureManager::getTexture(texture1, "resources/image.png", true);
-    std::shared_ptr<tgui::TextureData> textureData2 = tgui::TextureManager::getTexture(texture2, "resources/image.png", true);
-    std::shared_ptr<tgui::TextureData> textureData3 = tgui::TextureManager::getTexture(texture3, "resources/image.png", false);
+    const std::shared_ptr<tgui::TextureData> textureData1 = tgui::TextureManager::getTexture(texture1, "resources/image.png", true);
+    const std::shared_ptr<tgui::TextureData> textureData2 = tgui::TextureManager::getTexture(texture2, "resources/image.png", true);
+    const std::shared_ptr<tgui::TextureData> textureData3 = tgui::TextureManager::getTexture(texture3, "resources/image.png", false);
     REQUIRE(textureData1 != nullptr);
     REQUIRE(textureData2 != nullptr);
     REQUIRE(textureData3 != nullptr);

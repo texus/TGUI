@@ -28,7 +28,7 @@
 
 TEST_CASE("[FileDialog]")
 {
-    tgui::FileDialog::Ptr dialog = tgui::FileDialog::create();
+    const tgui::FileDialog::Ptr dialog = tgui::FileDialog::create();
     dialog->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")

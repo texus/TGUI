@@ -30,7 +30,7 @@ TEST_CASE("[Mouse cursors]")
 {
     SECTION("All cursor types")
     {
-        std::array<tgui::Cursor::Type, 16> cursors = {{
+        const std::array<tgui::Cursor::Type, 16> cursors = {{
             tgui::Cursor::Type::Arrow,
             tgui::Cursor::Type::Text,
             tgui::Cursor::Type::Hand,

@@ -34,13 +34,13 @@ TEST_CASE("[Layouts]")
 {
     SECTION("constants")
     {
-        Layout l1;
-        Layout l2(-20.3f);
-        Layout l3{"60"};
+        const Layout l1;
+        const Layout l2(-20.3f);
+        const Layout l3{"60"};
 
-        Layout2d l4;
-        Layout2d l5({10.f, {" 50 "}});
-        Layout2d l6(".2", "-3.5");
+        const Layout2d l4;
+        const Layout2d l5({10.f, {" 50 "}});
+        const Layout2d l6(".2", "-3.5");
 
         REQUIRE(l1.getValue() == 0);
         REQUIRE(l2.getValue() == -20.3f);
@@ -64,10 +64,10 @@ TEST_CASE("[Layouts]")
 
     SECTION("copying layouts")
     {
-        Layout l1;
-        Layout l2{2};
-        Layout l3 = l2; // NOLINT(performance-unnecessary-copy-initialization)
-        Layout l4;
+        const Layout l1;
+        const Layout l2{2};
+        const Layout l3 = l2; // NOLINT(performance-unnecessary-copy-initialization)
+        const Layout l4;
         Layout l5{0};
         Layout l6{"max(2,3)+1"};
         l5 = std::move(l6);
@@ -87,10 +87,10 @@ TEST_CASE("[Layouts]")
     {
         SECTION("relative values")
         {
-            Layout layout{tgui::RelativeValue(1)};
+            const Layout layout{tgui::RelativeValue(1)};
             REQUIRE(layout.toString() == "100%");
 
-            Layout layout2{tgui::RelativeValue(0.5f)};
+            const Layout layout2{tgui::RelativeValue(0.5f)};
             REQUIRE(layout2.toString() == "50%");
 
             REQUIRE(!layout.isConstant());
@@ -121,8 +121,8 @@ TEST_CASE("[Layouts]")
 
         SECTION("operators")
         {
-            Layout l1{2};
-            Layout l2(3);
+            const Layout l1{2};
+            const Layout l2(3);
 
             REQUIRE((l1 + l2).getValue() == 5);
             REQUIRE((l1 - l2).getValue() == -1);
@@ -138,9 +138,9 @@ TEST_CASE("[Layouts]")
             REQUIRE((-Layout{1}).toString() == "0 - 1");
             REQUIRE((-Layout{-2}).toString() == "0 - -2");
 
-            Layout2d l3{-6, 5};
-            Layout2d l4(4, 5);
-            Layout2d l5(6, 7);
+            const Layout2d l3{-6, 5};
+            const Layout2d l4(4, 5);
+            const Layout2d l5(6, 7);
 
             REQUIRE((l3 + l4).getValue() == tgui::Vector2f(-2, 10));
             REQUIRE((l3 - l4).getValue() == tgui::Vector2f(-10, 0));
@@ -297,10 +297,10 @@ TEST_CASE("[Layouts]")
     {
         SECTION("percentages")
         {
-            Layout layout{"100%"};
+            const Layout layout{"100%"};
             REQUIRE(layout.toString() == "100%");
 
-            Layout layout2{"50%"};
+            const Layout layout2{"50%"};
             REQUIRE(layout2.toString() == "50%");
 
             REQUIRE(!layout.isConstant());
@@ -868,10 +868,10 @@ TEST_CASE("[Layouts]")
     {
         using namespace tgui::literals::percent;
 
-        Layout layout{20_percent};
+        const Layout layout{20_percent};
         REQUIRE(layout.toString() == "20%");
 
-        Layout layout2{22.7_percent};
+        const Layout layout2{22.7_percent};
         REQUIRE(layout2.toString() == "22.7%");
 
         REQUIRE(!layout.isConstant());
@@ -882,8 +882,8 @@ TEST_CASE("[Layouts]")
     {
         SECTION("Setting negative size and reverting back to positive (https://github.com/texus/TGUI/issues/54)")
         {
-            tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
-            tgui::Button::Ptr button = std::make_shared<tgui::Button>();
+            const tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
+            const tgui::Button::Ptr button = std::make_shared<tgui::Button>();
             panel->add(button);
 
             // Button width becomes -10
@@ -905,15 +905,15 @@ TEST_CASE("[Layouts]")
 
                 void setSize(const tgui::Layout2d& size) override
                 {
-                    tgui::Layout2d newSize = size; // NOLINT(performance-unnecessary-copy-initialization)
+                    const tgui::Layout2d newSize = size; // NOLINT(performance-unnecessary-copy-initialization)
                     ClickableWidget::setSize(newSize);
                 }
             };
 
-            tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
+            const tgui::Panel::Ptr panel = std::make_shared<tgui::Panel>();
             panel->setSize({400, 300});
 
-            CustomWidget::Ptr widget = std::make_shared<CustomWidget>();
+            const CustomWidget::Ptr widget = std::make_shared<CustomWidget>();
             widget->setSize({bindWidth(panel) + 50, bindHeight(panel) * 2});
 
             // The line below causes CustomWidget::setSize to be executed while looping over the

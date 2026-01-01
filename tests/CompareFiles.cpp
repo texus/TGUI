@@ -50,7 +50,7 @@ void compareImageFiles(const tgui::String& filename1, const tgui::String& filena
     {
         for (unsigned int x = 0; x < imageSize1.x; ++x)
         {
-            unsigned int index = ((y * x) + x) * 4;
+            const unsigned int index = ((y * x) + x) * 4;
             totalDiff += std::abs(int(imagePixels1[index+0]) - int(imagePixels2[index+0])) / 255.0;
             totalDiff += std::abs(int(imagePixels1[index+1]) - int(imagePixels2[index+1])) / 255.0;
             totalDiff += std::abs(int(imagePixels1[index+2]) - int(imagePixels2[index+2])) / 255.0;

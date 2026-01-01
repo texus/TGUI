@@ -26,7 +26,7 @@
 
 TEST_CASE("[ColorPicker]")
 {
-    tgui::ColorPicker::Ptr colorPicker = tgui::ColorPicker::create("Select your color");
+    const tgui::ColorPicker::Ptr colorPicker = tgui::ColorPicker::create("Select your color");
     colorPicker->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")

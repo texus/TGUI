@@ -31,12 +31,12 @@ static tgui::Container::Ptr rootContainer;
 
 static bool noWidgetsFocused(const tgui::Container::Ptr& root)
 {
-    for (auto& widget : root->getWidgets())
+    for (const auto& widget : root->getWidgets())
     {
         if (widget->isFocused())
             return false;
 
-        tgui::Container::Ptr container = std::dynamic_pointer_cast<tgui::Container>(widget);
+        const tgui::Container::Ptr container = std::dynamic_pointer_cast<tgui::Container>(widget);
         if (container != nullptr)
         {
             if (!noWidgetsFocused(container))
@@ -67,12 +67,12 @@ static bool widgetFocused(const tgui::Widget::Ptr& widget)
         const tgui::Container::Ptr container = containers.top();
         containers.pop();
 
-        for (auto& child : container->getWidgets())
+        for (const auto& child : container->getWidgets())
         {
             if (child == widget)
                 continue;
 
-            tgui::Container::Ptr childContainer = std::dynamic_pointer_cast<tgui::Container>(child);
+            const tgui::Container::Ptr childContainer = std::dynamic_pointer_cast<tgui::Container>(child);
             if (childContainer)
             {
                 containers.push(childContainer);

@@ -28,7 +28,7 @@
 
 TEST_CASE("[ListView]")
 {
-    tgui::ListView::Ptr listView = tgui::ListView::create();
+    const tgui::ListView::Ptr listView = tgui::ListView::create();
     listView->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -102,10 +102,10 @@ TEST_CASE("[ListView]")
 
         SECTION("Text")
         {
-            float width1 = listView->getColumnWidth(0);
-            float width2 = listView->getColumnWidth(1);
-            float width3 = listView->getColumnWidth(2);
-            float width4 = listView->getColumnWidth(3);
+            const float width1 = listView->getColumnWidth(0);
+            const float width2 = listView->getColumnWidth(1);
+            const float width3 = listView->getColumnWidth(2);
+            const float width4 = listView->getColumnWidth(3);
 
             listView->setColumnText(2, "New col 2");
             listView->setColumnText(3, "New col 3");
@@ -233,7 +233,7 @@ TEST_CASE("[ListView]")
         listView->addColumn("Col 2");
         listView->addColumn("Col 3");
 
-        std::vector<std::vector<tgui::String>> items = {{"300"}, {"200", "-5", "20"}, {"1000", "7"}};
+        const std::vector<std::vector<tgui::String>> items = {{"300"}, {"200", "-5", "20"}, {"1000", "7"}};
         listView->addMultipleItems(items);
 
         auto cmp1 = [](const tgui::String& a, const tgui::String& b) { return a < b; };
@@ -244,7 +244,7 @@ TEST_CASE("[ListView]")
 
         listView->sort(5, cmp1);
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
-        
+
         listView->sort(1, cmp2);
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"300", "", ""}, {"200", "-5", "20"}});
 
@@ -1080,8 +1080,8 @@ TEST_CASE("[ListView]")
 
         SECTION("textured")
         {
-            tgui::Texture textureHeaderBackground("resources/Black.png", {48, 154, 75, 25}, {16, 16, 16, 16});
-            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureHeaderBackground("resources/Black.png", {48, 154, 75, 25}, {16, 16, 16, 16});
+            const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
             SECTION("set serialized property")
             {

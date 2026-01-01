@@ -26,7 +26,7 @@
 
 TEST_CASE("[Button]")
 {
-    tgui::Button::Ptr button = tgui::Button::create();
+    const tgui::Button::Ptr button = tgui::Button::create();
     button->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -259,11 +259,11 @@ TEST_CASE("[Button]")
 
         SECTION("textured")
         {
-            tgui::Texture textureNormal("resources/Texture1.png");
-            tgui::Texture textureHover("resources/Texture2.png");
-            tgui::Texture textureDown("resources/Texture3.png");
-            tgui::Texture textureDisabled("resources/Texture4.png");
-            tgui::Texture textureFocused("resources/Texture5.png");
+            const tgui::Texture textureNormal("resources/Texture1.png");
+            const tgui::Texture textureHover("resources/Texture2.png");
+            const tgui::Texture textureDown("resources/Texture3.png");
+            const tgui::Texture textureDisabled("resources/Texture4.png");
+            const tgui::Texture textureFocused("resources/Texture5.png");
 
             SECTION("set serialized property")
             {

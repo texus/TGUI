@@ -26,7 +26,7 @@
 
 TEST_CASE("[SplitContainer]")
 {
-    tgui::SplitContainer::Ptr splitContainer = tgui::SplitContainer::create();
+    const tgui::SplitContainer::Ptr splitContainer = tgui::SplitContainer::create();
     splitContainer->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("WidgetType")

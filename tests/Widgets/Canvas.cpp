@@ -123,7 +123,7 @@ TEST_CASE("[CanvasSFML]")
         SECTION("internal render texture")
         {
             canvas = tgui::CanvasSFML::create({50, 50});
-            sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
+            const sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
 
             canvas->setSize({70, 80});
             canvas->setView(sf::View(sf::FloatRect{{20, 10}, {100, 50}}));

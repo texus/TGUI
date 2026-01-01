@@ -139,12 +139,12 @@ TEST_CASE("[Serializer]")
         rendererData->propertyValuePairs["TextStyleProperty"] = {tgui::TextStyle::StrikeThrough};
         rendererData->propertyValuePairs["Nested"] = {childRendererData};
 
-        tgui::String result = "SomeColor = red;\n"
-                             "TextStyleProperty = StrikeThrough;\n"
-                             "\n"
-                             "Nested {\n"
-                             "    Num = 5;\n"
-                             "}\n";
+        const tgui::String result = "SomeColor = red;\n"
+                                    "TextStyleProperty = StrikeThrough;\n"
+                                    "\n"
+                                    "Nested {\n"
+                                    "    Num = 5;\n"
+                                    "}\n";
 
         REQUIRE(tgui::Serializer::serialize(rendererData) == result);
     }
@@ -157,7 +157,7 @@ TEST_CASE("[Serializer]")
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, [](tgui::ObjectConverter&&){ return "STR"; });
         REQUIRE(tgui::Serializer::serialize(tgui::Color::Blue) == "STR");
         REQUIRE(tgui::Serializer::serialize(tgui::Outline{10, 2, 50, 300}) == "(10, 2, 50, 300)");
-        
+
         tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, oldFunc);
         REQUIRE(tgui::Serializer::serialize(tgui::Color::Blue) == "blue");
     }

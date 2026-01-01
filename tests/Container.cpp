@@ -329,7 +329,7 @@ TEST_CASE("[Container]")
     SECTION("focus")
     {
         auto editBox1 = tgui::EditBox::create();
-        tgui::EditBox::Ptr editBox2 = tgui::EditBox::create();
+        const tgui::EditBox::Ptr editBox2 = tgui::EditBox::create();
         auto editBox3 = tgui::EditBox::create();
 
         container->removeAllWidgets();
