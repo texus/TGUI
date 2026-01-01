@@ -449,7 +449,7 @@ TEST_CASE("[EditBox]")
     testWidgetRenderer(editBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = editBox->getRenderer();
+        auto* renderer = editBox->getRenderer();
 
         SECTION("colored")
         {

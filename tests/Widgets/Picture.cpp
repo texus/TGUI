@@ -175,7 +175,7 @@ TEST_CASE("[Picture]")
 
     SECTION("Renderer")
     {
-        auto renderer = picture->getRenderer();
+        auto* renderer = picture->getRenderer();
 
         const tgui::Texture texture("resources/Texture1.png");
 

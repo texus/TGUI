@@ -59,7 +59,7 @@
 TEST_CASE("[Backend events]")
 {
 #if TGUI_HAS_WINDOW_BACKEND_SFML
-    auto backendGuiSFML = dynamic_cast<tgui::BackendGuiSFML*>(globalGui);
+    auto* backendGuiSFML = dynamic_cast<tgui::BackendGuiSFML*>(globalGui);
     if (backendGuiSFML)
     {
         SECTION("SFML")

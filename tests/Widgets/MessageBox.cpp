@@ -155,7 +155,7 @@ TEST_CASE("[MessageBox]")
     testWidgetRenderer(messageBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = messageBox->getRenderer();
+        auto* renderer = messageBox->getRenderer();
 
         tgui::ButtonRenderer buttonsRenderer;
         buttonsRenderer.setBackgroundColor(tgui::Color::Cyan);

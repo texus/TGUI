@@ -202,7 +202,7 @@ TEST_CASE("[SplitContainer]")
     testWidgetRenderer(splitContainer->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = splitContainer->getRenderer();
+        auto* renderer = splitContainer->getRenderer();
 
         SECTION("colored")
         {

@@ -55,7 +55,7 @@ TEST_CASE("[ColorPicker]")
     testWidgetRenderer(colorPicker->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = colorPicker->getRenderer();
+        auto* renderer = colorPicker->getRenderer();
 
         tgui::ButtonRenderer buttonRenderer;
         buttonRenderer.setBackgroundColor(tgui::Color::Cyan);

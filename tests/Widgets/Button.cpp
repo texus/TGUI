@@ -138,7 +138,7 @@ TEST_CASE("[Button]")
     testWidgetRenderer(button->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = button->getRenderer();
+        auto* renderer = button->getRenderer();
 
         SECTION("colored")
         {

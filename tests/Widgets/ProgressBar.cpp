@@ -211,7 +211,7 @@ TEST_CASE("[ProgressBar]")
     testWidgetRenderer(progressBar->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = progressBar->getRenderer();
+        auto* renderer = progressBar->getRenderer();
 
         SECTION("colored")
         {

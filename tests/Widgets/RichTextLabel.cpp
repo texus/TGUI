@@ -215,7 +215,7 @@ TEST_CASE("[RichTextLabel]")
     testWidgetRenderer(label->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = label->getRenderer();
+        auto* renderer = label->getRenderer();
 
         const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 

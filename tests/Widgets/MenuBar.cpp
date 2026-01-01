@@ -395,7 +395,7 @@ TEST_CASE("[MenuBar]")
     testWidgetRenderer(menuBar->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = menuBar->getRenderer();
+        auto* renderer = menuBar->getRenderer();
 
         SECTION("colored")
         {

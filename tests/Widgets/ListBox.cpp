@@ -570,7 +570,7 @@ TEST_CASE("[ListBox]")
     testWidgetRenderer(listBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = listBox->getRenderer();
+        auto* renderer = listBox->getRenderer();
 
         SECTION("colored")
         {

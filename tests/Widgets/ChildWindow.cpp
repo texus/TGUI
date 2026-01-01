@@ -325,7 +325,7 @@ TEST_CASE("[ChildWindow]")
     testWidgetRenderer(childWindow->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = childWindow->getRenderer();
+        auto* renderer = childWindow->getRenderer();
 
         childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::None);
 

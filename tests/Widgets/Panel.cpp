@@ -150,7 +150,7 @@ TEST_CASE("[Panel]")
     testWidgetRenderer(panel->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = panel->getRenderer();
+        auto* renderer = panel->getRenderer();
 
         SECTION("colored")
         {

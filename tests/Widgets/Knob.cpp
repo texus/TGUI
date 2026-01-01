@@ -157,7 +157,7 @@ TEST_CASE("[Knob]")
     testWidgetRenderer(knob->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = knob->getRenderer();
+        auto* renderer = knob->getRenderer();
 
         SECTION("colored")
         {

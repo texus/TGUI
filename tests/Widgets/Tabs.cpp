@@ -293,7 +293,7 @@ TEST_CASE("[Tabs]")
     testWidgetRenderer(tabs->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = tabs->getRenderer();
+        auto* renderer = tabs->getRenderer();
 
         SECTION("colored")
         {

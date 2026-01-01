@@ -231,7 +231,7 @@ TEST_CASE("[RadioButton]")
     testWidgetRenderer(radioButton->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = radioButton->getRenderer();
+        auto* renderer = radioButton->getRenderer();
 
         SECTION("colored")
         {

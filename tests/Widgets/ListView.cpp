@@ -985,7 +985,7 @@ TEST_CASE("[ListView]")
     testWidgetRenderer(listView->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = listView->getRenderer();
+        auto* renderer = listView->getRenderer();
 
         SECTION("colored")
         {

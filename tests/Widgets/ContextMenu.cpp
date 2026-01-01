@@ -267,7 +267,7 @@ TEST_CASE("[ContextMenu]")
     testWidgetRenderer(contextMenu->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = contextMenu->getRenderer();
+        auto* renderer = contextMenu->getRenderer();
 
         SECTION("colored")
         {

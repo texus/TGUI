@@ -328,7 +328,7 @@ TEST_CASE("[ScrollablePanel]")
     testWidgetRenderer(panel->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = panel->getRenderer();
+        auto* renderer = panel->getRenderer();
 
         tgui::ScrollbarRenderer scrollbarRenderer;
         scrollbarRenderer.setTrackColor(tgui::Color::Red);

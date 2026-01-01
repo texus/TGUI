@@ -706,7 +706,7 @@ TEST_CASE("[TreeView]")
     testWidgetRenderer(treeView->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = treeView->getRenderer();
+        auto* renderer = treeView->getRenderer();
 
         SECTION("colored")
         {

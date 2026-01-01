@@ -435,7 +435,7 @@ TEST_CASE("[Widget]")
 
     SECTION("Renderer")
     {
-        auto renderer = widget->getRenderer();
+        auto* renderer = widget->getRenderer();
 
         SECTION("Opacity")
         {

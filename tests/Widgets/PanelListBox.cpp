@@ -370,7 +370,7 @@ TEST_CASE("[PanelListBox]")
     testWidgetRenderer(panelListBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = panelListBox->getRenderer();
+        auto* renderer = panelListBox->getRenderer();
 
         SECTION("colored")
         {

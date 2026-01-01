@@ -258,7 +258,7 @@ TEST_CASE("[SpinButton]")
     testWidgetRenderer(spinButton->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = spinButton->getRenderer();
+        auto* renderer = spinButton->getRenderer();
 
         SECTION("Colored")
         {

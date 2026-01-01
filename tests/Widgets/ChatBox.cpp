@@ -199,7 +199,7 @@ TEST_CASE("[ChatBox]")
     testWidgetRenderer(chatBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = chatBox->getRenderer();
+        auto* renderer = chatBox->getRenderer();
 
         SECTION("colored")
         {

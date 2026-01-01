@@ -436,7 +436,7 @@ TEST_CASE("[ComboBox]")
     testWidgetRenderer(comboBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = comboBox->getRenderer();
+        auto* renderer = comboBox->getRenderer();
 
         SECTION("colored")
         {

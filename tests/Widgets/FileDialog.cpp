@@ -143,7 +143,7 @@ TEST_CASE("[FileDialog]")
     testWidgetRenderer(dialog->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = dialog->getRenderer();
+        auto* renderer = dialog->getRenderer();
 
         tgui::LabelRenderer filenameLabelRenderer;
         filenameLabelRenderer.setBackgroundColor(tgui::Color::Red);
@@ -241,7 +241,7 @@ TEST_CASE("[FileDialog]")
         dialog->setSelectingDirectory(true);
         dialog->setMultiSelect(true);
 
-        auto renderer = dialog->getRenderer();
+        auto* renderer = dialog->getRenderer();
         renderer->setBackgroundColor({255, 99, 71});
         renderer->setArrowsOnNavigationButtonsVisible(false);
 

@@ -235,7 +235,7 @@ TEST_CASE("[Scrollbar]")
     testWidgetRenderer(scrollbar->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = scrollbar->getRenderer();
+        auto* renderer = scrollbar->getRenderer();
 
         SECTION("colored")
         {

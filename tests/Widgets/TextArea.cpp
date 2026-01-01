@@ -588,7 +588,7 @@ TEST_CASE("[TextArea]")
     testWidgetRenderer(textArea->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = textArea->getRenderer();
+        auto* renderer = textArea->getRenderer();
 
         SECTION("colored")
         {

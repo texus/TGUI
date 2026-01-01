@@ -193,7 +193,7 @@ TEST_CASE("[RangeSlider]")
     testWidgetRenderer(slider->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = slider->getRenderer();
+        auto* renderer = slider->getRenderer();
 
         SECTION("colored")
         {

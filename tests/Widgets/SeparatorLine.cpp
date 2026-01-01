@@ -55,7 +55,7 @@ TEST_CASE("[SeparatorLine]")
 
     SECTION("Renderer")
     {
-        auto renderer = separator->getRenderer();
+        auto* renderer = separator->getRenderer();
 
         SECTION("set serialized property")
         {

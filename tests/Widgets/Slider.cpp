@@ -346,7 +346,7 @@ TEST_CASE("[Slider]")
     testWidgetRenderer(slider->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = slider->getRenderer();
+        auto* renderer = slider->getRenderer();
 
         SECTION("colored")
         {
@@ -575,7 +575,7 @@ TEST_CASE("[Slider]")
                 TEST_DRAW("Slider_NonSquareThumbTexture.png")
 
                 const auto imageSize = texture.getImageSize();
-                const auto pixels = texture.getData()->backendTexture->getPixels();
+                const auto* const pixels = texture.getData()->backendTexture->getPixels();
 
                 auto rotatedImagePixels = tgui::MakeUniqueForOverwrite<std::uint8_t[]>(imageSize.x * imageSize.y * 4);
                 for (unsigned y = 0; y < imageSize.y; ++y)
