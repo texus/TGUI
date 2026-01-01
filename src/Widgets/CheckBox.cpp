@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/CheckBox.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
@@ -106,7 +107,7 @@ namespace tgui
             const Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
             if (getText().empty())
                 return getSize() + Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()), std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
-            return getSize() + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()))};
+            return getSize() + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max({0.f, (m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()})};
         }
         if (getText().empty())
             return getSize();

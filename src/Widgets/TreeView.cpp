@@ -712,8 +712,8 @@ namespace tgui
         {
             m_iconBounds =
                 {
-                    std::max(std::max(m_spriteBranchCollapsed.getSize().x, m_spriteBranchExpanded.getSize().x), m_spriteLeaf.getSize().x),
-                    std::max(std::max(m_spriteBranchCollapsed.getSize().y, m_spriteBranchExpanded.getSize().y), m_spriteLeaf.getSize().y)
+                    std::max({m_spriteBranchCollapsed.getSize().x, m_spriteBranchExpanded.getSize().x, m_spriteLeaf.getSize().x}),
+                    std::max({m_spriteBranchCollapsed.getSize().y, m_spriteBranchExpanded.getSize().y, m_spriteLeaf.getSize().y})
                 };
         }
         else
