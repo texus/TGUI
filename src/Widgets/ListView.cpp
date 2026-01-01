@@ -985,6 +985,7 @@ namespace tgui
         for (const auto& item : m_items)
         {
             std::vector<String> row;
+            row.reserve(item.texts.size());
             for (const auto& text : item.texts)
                 row.push_back(text.getString());
 

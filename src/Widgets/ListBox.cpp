@@ -411,6 +411,7 @@ namespace tgui
     std::vector<String> ListBox::getItems() const
     {
         std::vector<String> items;
+        items.reserve(m_items.size());
         for (const auto& item : m_items)
             items.push_back(item.text.getString());
 
@@ -422,6 +423,7 @@ namespace tgui
     std::vector<String> ListBox::getItemIds() const
     {
         std::vector<String> ids;
+        ids.reserve(m_items.size());
         for (const auto& item : m_items)
             ids.push_back(item.id);
 

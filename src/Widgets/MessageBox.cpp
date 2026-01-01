@@ -280,6 +280,7 @@ namespace tgui
     std::vector<String> MessageBox::getButtons() const
     {
         std::vector<String> buttonTexts;
+        buttonTexts.reserve(m_buttons.size());
         for (const auto& button : m_buttons)
             buttonTexts.emplace_back(button->getText());
 
