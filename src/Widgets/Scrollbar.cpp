@@ -1223,9 +1223,9 @@ namespace tgui
 
     ScrollbarAccessor::ScrollbarAccessor(ScrollbarChildWidget& scrollbar, std::function<void()> valueChangedCallback, std::function<void()> policyChangedCallback, std::function<void()> scrollAmountChangedCallback) :
         m_scrollbar(&scrollbar),
-        m_valueChangedCallback(valueChangedCallback),
-        m_policyChangedCallback(policyChangedCallback),
-        m_scrollAmountChangedCallback(scrollAmountChangedCallback)
+        m_valueChangedCallback(std::move(valueChangedCallback)),
+        m_policyChangedCallback(std::move(policyChangedCallback)),
+        m_scrollAmountChangedCallback(std::move(scrollAmountChangedCallback))
     {
     }
 
