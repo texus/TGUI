@@ -734,7 +734,7 @@ namespace tgui
         // We do this in a separate loop because all renderers need to be replaced before
         // we tell the observers (because e.g. an observer of the BitmapButton renderer might
         // want to access the Button renderer of the theme to inherit properties).
-        for (auto pair : m_renderers)
+        for (const auto& pair : m_renderers)
         {
             const auto& renderer = pair.second;
 
