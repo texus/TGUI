@@ -32,8 +32,8 @@
 
 void login(const tgui::EditBox::Ptr& username, const tgui::EditBox::Ptr& password)
 {
-    std::cout << "Username: " << username->getText() << std::endl;
-    std::cout << "Password: " << password->getText() << std::endl;
+    std::cout << "Username: " << username->getText() << '\n';
+    std::cout << "Password: " << password->getText() << '\n';
 }
 
 void updateTextSize(tgui::BackendGui& gui)
@@ -95,7 +95,7 @@ bool runExample(tgui::BackendGui& gui)
     }
     catch (const tgui::Exception& e)
     {
-        std::cerr << "Failed to load TGUI widgets: " << e.what() << std::endl;
+        std::cerr << "Failed to load TGUI widgets: " << e.what() << '\n';
         return false;
     }
 }

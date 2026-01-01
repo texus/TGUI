@@ -237,7 +237,7 @@ bool runExample(tgui::BackendGui& gui)
     }
     catch (const tgui::Exception& e)
     {
-        std::cerr << "TGUI Exception: " << e.what() << std::endl;
+        std::cerr << "TGUI Exception: " << e.what() << '\n';
         return false;
     }
 
