@@ -552,7 +552,7 @@ namespace tgui
             if (m_tooltipTime >= ToolTip::getInitialDelay())
             {
                 const Vector2f lastMousePos = mapPixelToCoords(m_lastMousePos);
-                Widget::Ptr tooltip = m_container->askToolTip(lastMousePos);
+                const Widget::Ptr tooltip = m_container->askToolTip(lastMousePos);
                 if (tooltip)
                 {
                     m_visibleToolTip = tooltip;

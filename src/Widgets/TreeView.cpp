@@ -175,7 +175,7 @@ namespace tgui
         TreeView::Node* findNode(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, const std::vector<String>& hierarchy, unsigned int parentIndex)
         {
             assert(parentIndex < hierarchy.size());
-            for (auto& node : nodes)
+            for (const auto& node : nodes)
             {
                 if (node->text.getString() != hierarchy[parentIndex])
                     continue;
@@ -973,7 +973,7 @@ namespace tgui
             pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
             // NOLINTNEXTLINE(bugprone-integer-division)
-            int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
+            const int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
             if ((selectedItem >= 0) && (selectedItem < static_cast<int>(m_visibleNodes.size())))
             {
                 updateSelectedItem(selectedItem);
@@ -1425,7 +1425,7 @@ namespace tgui
         if (m_selectedItem >= 0 && static_cast<std::size_t>(m_selectedItem) < m_visibleNodes.size())
             selectedNode = m_visibleNodes[static_cast<std::size_t>(m_selectedItem)].get();
 
-        int oldHoveredItem = m_hoveredItem;
+        const int oldHoveredItem = m_hoveredItem;
 
         m_maxRight = 0;
         m_hoveredItem = -1;
@@ -1482,7 +1482,7 @@ namespace tgui
 
     void TreeView::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        RenderStates statesForScrollbars = states;
+        const RenderStates statesForScrollbars = states;
 
         if (m_bordersCached != Borders{0})
         {

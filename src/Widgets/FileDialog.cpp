@@ -590,7 +590,7 @@ namespace tgui
         {
             if (m_createFolderDialogOpen)
             {
-                EditBox::Ptr folderNameEditBox = get<EditBox>("FolderNameEditBox");
+                const EditBox::Ptr folderNameEditBox = get<EditBox>("FolderNameEditBox");
                 createFolder(folderNameEditBox->getText());
                 destroyCreateFolderDialog();
                 return;
@@ -986,24 +986,24 @@ namespace tgui
     void FileDialog::createCreateFolderDialog()
     {
         // Create a transparent background
-        Panel::Ptr backgroundPanel = Panel::create({"100%", "100%"});
+        const Panel::Ptr backgroundPanel = Panel::create({"100%", "100%"});
         backgroundPanel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
 
-        ChildWindow::Ptr createFolderWindow = ChildWindow::create(m_buttonCreateFolder->getText(), TitleButton::None);
+        const ChildWindow::Ptr createFolderWindow = ChildWindow::create(m_buttonCreateFolder->getText(), TitleButton::None);
         createFolderWindow->setPositionLocked(true);
         createFolderWindow->setPosition("50%", "50%");
         createFolderWindow->setSize("50%", "25%");
         createFolderWindow->setOrigin(0.5f, 0.5f);
 
-        EditBox::Ptr folderNameEditBox = EditBox::create();
+        const EditBox::Ptr folderNameEditBox = EditBox::create();
         folderNameEditBox->setPosition("50%", "30%");
         folderNameEditBox->setOrigin(0.5f, 0.5f);
 
-        Button::Ptr cancelButton = Button::create("Cancel");
+        const Button::Ptr cancelButton = Button::create("Cancel");
         cancelButton->setPosition("25%", "75%");
         cancelButton->setOrigin(0.5f, 0.5f);
 
-        Button::Ptr confirmButton = Button::create("Confirm");
+        const Button::Ptr confirmButton = Button::create("Confirm");
         confirmButton->setPosition("75%", "75%");
         confirmButton->setOrigin(0.5f, 0.5f);
         confirmButton->setEnabled(false);
@@ -1370,7 +1370,7 @@ namespace tgui
             if (!childNode->propertyValuePairs[U"Pattern"]->listNode)
                 throw Exception{U"Failed to parse 'Pattern' property inside the 'FileTypeFilter' property, expected a list as value"};
 
-            String description = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Description"]->value).getString();
+            const String description = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Description"]->value).getString();
 
             std::vector<String> patterns;
             for (const auto& item : childNode->propertyValuePairs[U"Pattern"]->valueList)

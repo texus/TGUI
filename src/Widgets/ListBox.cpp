@@ -1058,7 +1058,7 @@ namespace tgui
 
         if (node->propertyValuePairs[U"TextAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TextAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TextAlignment"]->value).getString();
             if (alignment == U"Right")
                 setTextAlignment(HorizontalAlignment::Right);
             else if (alignment == U"Center")

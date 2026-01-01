@@ -328,7 +328,7 @@ namespace tgui
 
         m_editBox->onTextChange.disconnectAll();
         m_editBox->onTextChange([this](const String &text) {
-            float value = text.toFloat();
+            const float value = text.toFloat();
 
             if (inRange(value))
                 m_slider->setValue(value);

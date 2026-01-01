@@ -360,7 +360,7 @@ namespace tgui
             stream.read(&chr, 1);
             REMOVE_WHITESPACE_AND_COMMENTS(true)
 
-            String baseSectionName = readWord(stream);
+            const String baseSectionName = readWord(stream);
             if (baseSectionName.empty())
                 return "Expected name of base section to inherit from after ':'.";
 
@@ -430,7 +430,7 @@ namespace tgui
             {
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
 
-                String word = readWord(stream);
+                const String word = readWord(stream);
                 if (word.empty())
                 {
                     if (stream.peek() == EOF)
@@ -485,7 +485,7 @@ namespace tgui
         {
             REMOVE_WHITESPACE_AND_COMMENTS(false)
 
-            String word = readWord(stream);
+            const String word = readWord(stream);
             if (word.empty())
             {
                 REMOVE_WHITESPACE_AND_COMMENTS(true)

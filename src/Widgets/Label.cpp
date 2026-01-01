@@ -516,7 +516,7 @@ namespace tgui
         if (node->propertyValuePairs[U"HorizontalAlignment"])
         {
             // TGUI_NEXT: Remove "tgui::" prefixes
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"HorizontalAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"HorizontalAlignment"]->value).getString();
             if (alignment == U"Right")
                 setHorizontalAlignment(tgui::HorizontalAlignment::Right);
             else if (alignment == U"Center")
@@ -528,7 +528,7 @@ namespace tgui
         if (node->propertyValuePairs[U"VerticalAlignment"])
         {
             // TGUI_NEXT: Remove "tgui::" prefixes
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"VerticalAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"VerticalAlignment"]->value).getString();
             if (alignment == U"Bottom")
                 setVerticalAlignment(tgui::VerticalAlignment::Bottom);
             else if (alignment == U"Center")

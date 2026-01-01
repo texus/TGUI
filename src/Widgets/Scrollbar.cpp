@@ -985,7 +985,7 @@ namespace tgui
 #endif
         if (node->propertyValuePairs[U"ScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
+            const String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
             if (policy == U"Automatic")
                 setPolicy(Policy::Automatic);
             else if (policy == U"Always")
@@ -1023,10 +1023,10 @@ namespace tgui
 
     void Scrollbar::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall)
     {
-        std::weak_ptr<Scrollbar> widgetPtr = std::static_pointer_cast<Scrollbar>(shared_from_this());
+        const std::weak_ptr<Scrollbar> widgetPtr = std::static_pointer_cast<Scrollbar>(shared_from_this());
         Timer::scheduleCallback([widgetPtr, clickedTime]()
         {
-            Scrollbar::Ptr scrollbar = widgetPtr.lock();
+            const Scrollbar::Ptr scrollbar = widgetPtr.lock();
             if (!scrollbar)
                 return;
 
@@ -1416,7 +1416,7 @@ namespace tgui
     {
         if (node->propertyValuePairs[U"ScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
+            const String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
             if (policy == U"Automatic")
                 m_scrollbar->setPolicy(Scrollbar::Policy::Automatic);
             else if (policy == U"Always")
@@ -1562,7 +1562,7 @@ namespace tgui
     {
         if (node->propertyValuePairs[U"VerticalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
+            const String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
             if (policy == U"Automatic")
                 m_verticalScrollbar->setPolicy(Scrollbar::Policy::Automatic);
             else if (policy == U"Always")
@@ -1575,7 +1575,7 @@ namespace tgui
 
         if (node->propertyValuePairs[U"HorizontalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
+            const String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
             if (policy == U"Automatic")
                 m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Automatic);
             else if (policy == U"Always")

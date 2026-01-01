@@ -1416,7 +1416,7 @@ namespace tgui
                 }
                 else // Not using optimization for monospaced font, so really calculate the width of every line
                 {
-                    float lineWidth = Text::getLineWidth(m_lines.back(), m_fontCached, m_textSizeCached);
+                    const float lineWidth = Text::getLineWidth(m_lines.back(), m_fontCached, m_textSizeCached);
                     m_maxLineWidth = std::max(lineWidth, m_maxLineWidth);
                 }
             }
@@ -1654,16 +1654,16 @@ namespace tgui
             const unsigned int left = m_horizontalScrollbar->getValue();
             if (m_caretPosition.x <= left)
             {
-                unsigned int newValue =
+                const unsigned int newValue =
                     static_cast<unsigned int>(std::max(0, static_cast<int>(m_caretPosition.x
                                                                            - (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2))));
                 m_horizontalScrollbar->setValue(newValue);
             }
             else if (m_caretPosition.x > (left + m_horizontalScrollbar->getViewportSize()))
             {
-                unsigned int newValue = static_cast<unsigned int>(m_caretPosition.x
-                                                                  + (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2)
-                                                                  - m_horizontalScrollbar->getViewportSize());
+                const unsigned int newValue = static_cast<unsigned int>(m_caretPosition.x
+                                                                        + (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2)
+                                                                        - m_horizontalScrollbar->getViewportSize());
                 m_horizontalScrollbar->setValue(newValue);
             }
         }

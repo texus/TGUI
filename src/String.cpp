@@ -344,7 +344,7 @@ namespace tgui
         }
         else // When the delimeter is empty, each character is put in its own part
         {
-            for (char32_t c : m_string)
+            for (const char32_t c : m_string)
                 substrings.push_back(c);
         }
 

@@ -215,7 +215,7 @@ namespace tgui
         Vector2f pos{m_paddingCached.getLeft() + textOffset, m_paddingCached.getTop()};
         for (std::size_t i = 0; i < textPiecesLinesPtr->size(); ++i)
         {
-            std::size_t imageIndexBeforeLine = imageIndex;
+            const std::size_t imageIndexBeforeLine = imageIndex;
 
             const auto& textPiecesLine = (*textPiecesLinesPtr)[i];
             TGUI_EMPLACE_BACK(line, m_lines)
@@ -734,7 +734,7 @@ namespace tgui
         }
         else
         {
-            Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight(),
+            const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight(),
                                   getSize().y - m_bordersCached.getTopPlusBottom() - m_paddingCached.getTopPlusBottom()};
 
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize});

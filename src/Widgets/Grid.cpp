@@ -645,7 +645,7 @@ namespace tgui
                 if (pos == String::npos)
                     throw Exception{U"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after padding."};
 
-                String alignmentStr = str.substr(pos + 1).trim();
+                const String alignmentStr = str.substr(pos + 1).trim();
                 if (alignmentStr == U"Center")
                     alignment = Grid::Alignment::Center;
                 else if (alignmentStr == U"UpperLeft")
@@ -680,11 +680,11 @@ namespace tgui
         Vector2f minSize;
 
         // Loop through all rows to find the minimum height required by the grid
-        for (float rowHeight : m_rowHeight)
+        for (const float rowHeight : m_rowHeight)
             minSize.y += rowHeight;
 
         // Loop through all columns to find the minimum width required by the grid
-        for (float columnWidth : m_columnWidth)
+        for (const float columnWidth : m_columnWidth)
             minSize.x += columnWidth;
 
         return minSize;

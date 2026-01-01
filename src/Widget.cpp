@@ -148,10 +148,10 @@ namespace tgui
         if (m_renderer)
             m_renderer->unsubscribe(this);
 
-        for (auto& layout : m_boundPositionLayouts)
+        for (const auto& layout : m_boundPositionLayouts)
             layout->unbindWidget();
 
-        for (auto& layout : m_boundSizeLayouts)
+        for (const auto& layout : m_boundSizeLayouts)
             layout->unbindWidget();
 
         SignalManager::getSignalManager()->remove(this);
@@ -495,7 +495,7 @@ namespace tgui
             rendererData->themePropertiesInherited = true;
         }
 
-        std::shared_ptr<RendererData> oldData = m_renderer->getData();
+        const std::shared_ptr<RendererData> oldData = m_renderer->getData();
 
         // Update the data
         m_renderer->unsubscribe(this);
@@ -1791,7 +1791,7 @@ namespace tgui
 
         if (node->propertyValuePairs[U"MouseCursor"])
         {
-            String cursorStr = node->propertyValuePairs[U"MouseCursor"]->value.trim();
+            const String cursorStr = node->propertyValuePairs[U"MouseCursor"]->value.trim();
             if (cursorStr == U"Text")
                 m_mouseCursor = Cursor::Type::Text;
             else if (cursorStr == U"Hand")
@@ -1863,7 +1863,7 @@ namespace tgui
                     const auto& constructor = WidgetFactory::getConstructFunction(toolTipWidgetNode->name);
                     if (constructor)
                     {
-                        Widget::Ptr toolTip = constructor();
+                        const Widget::Ptr toolTip = constructor();
                         toolTip->load(toolTipWidgetNode, renderers);
                         setToolTip(toolTip);
                     }

@@ -130,9 +130,9 @@ namespace tgui
             sprite->updateVertices();
 
         // Update the size of all texts in all widgets
-        for (auto& gui : m_guis)
+        for (const auto& gui : m_guis)
         {
-            for (auto& widget : gui->getWidgets())
+            for (const auto& widget : gui->getWidgets())
                 widget->updateTextSize();
         }
     }

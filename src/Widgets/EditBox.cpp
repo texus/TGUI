@@ -1674,8 +1674,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
                 {getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             const float textOffset = m_textFull.getExtraHorizontalPadding();
-            Vector2f offset{getInnerSize().x - m_paddingCached.getRight() - textOffset - m_textSuffix.getSize().x,
-                            m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_textSuffix.getSize().y) / 2.f)};
+            const Vector2f offset{getInnerSize().x - m_paddingCached.getRight() - textOffset - m_textSuffix.getSize().x,
+                                  m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_textSuffix.getSize().y) / 2.f)};
 
             states.transform.translate(offset);
             target.drawText(states, m_textSuffix);

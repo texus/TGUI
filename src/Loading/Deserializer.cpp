@@ -416,7 +416,7 @@ namespace tgui
         ObjectConverter deserializeTextStyle(const String& style)
         {
             unsigned int decodedStyle = TextStyle::Regular;
-            std::vector<String> styles = Deserializer::split(style, '|');
+            const std::vector<String> styles = Deserializer::split(style, '|');
             for (const auto& elem : styles)
             {
                 if (viewEqualIgnoreCase(elem, U"bold"))

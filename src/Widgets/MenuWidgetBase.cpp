@@ -262,7 +262,7 @@ namespace tgui
     {
         TGUI_ASSERT(hierarchy.size() >= 2, "Hierarchy needs at least 2 elements in MenuWidgetBase::findMenuItemParent!");
 
-        for (auto& menu : menus)
+        for (const auto& menu : menus)
         {
             if (menu.text.getString() != hierarchy[parentIndex])
                 continue;
@@ -324,7 +324,7 @@ namespace tgui
             menuItems = &menu->menuItems;
         }
 
-        for (auto& menuItem : *menuItems)
+        for (const auto& menuItem : *menuItems)
         {
             if (menuItem.text.getString() != hierarchy.back())
                 continue;
@@ -805,7 +805,7 @@ namespace tgui
         if (menu.menuItems.empty())
             return;
 
-        Transform oldTransform = states.transform;
+        const Transform oldTransform = states.transform;
 
         // Draw the backgrounds
         Sprite backgroundSprite = m_spriteItemBackground;
@@ -865,7 +865,7 @@ namespace tgui
             // Draw an arrow next to the text if there is a submenu
             if (!menu.menuItems[j].menuItems.empty())
             {
-                Transform textTransform = states.transform;
+                const Transform textTransform = states.transform;
                 const float arrowHeight = itemHeight / 2.f;
                 const float arrowWidth = arrowHeight / 2.f;
                 states.transform.translate({menuWidth - 2*m_distanceToSideCached - arrowWidth, // 2x m_distanceToSideCached because we already translated once

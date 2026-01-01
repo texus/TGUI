@@ -471,7 +471,7 @@ namespace tgui
         auto tabAlign = TabContainer::TabAlign::Top;
         if (node->propertyValuePairs[U"TabAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TabAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TabAlignment"]->value).getString();
             if (alignment == U"Bottom")
                 tabAlign = TabContainer::TabAlign::Bottom;
             else if (alignment != U"Top")

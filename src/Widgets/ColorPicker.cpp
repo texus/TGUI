@@ -164,7 +164,7 @@ namespace tgui
             return std::sqrt(x.x * x.x + x.y * x.y);
         };
 
-        float s = length(position);
+        const float s = length(position);
 
         float h = std::atan2(position.y, -position.x);
 

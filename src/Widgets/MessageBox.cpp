@@ -138,7 +138,7 @@ namespace tgui
         auto messageBox = std::make_shared<MessageBox>();
         messageBox->setTitle(title);
         messageBox->setText(text);
-        for (auto& buttonText : buttons)
+        for (const auto& buttonText : buttons)
             messageBox->addButton(std::move(buttonText));
 
         return messageBox;

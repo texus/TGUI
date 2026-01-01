@@ -1992,7 +1992,7 @@ namespace tgui
 
             if (childNode->propertyValuePairs[U"Alignment"])
             {
-                String alignmentString = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Alignment"]->value).getString();
+                const String alignmentString = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Alignment"]->value).getString();
                 if (alignmentString == U"Right")
                     alignment = HorizontalAlignment::Right;
                 else if (alignmentString == U"Center")
@@ -2928,7 +2928,7 @@ namespace tgui
             // Draw the horizontal grid lines
             if (m_showHorizontalGridLines && (m_gridLinesWidth > 0) && !m_items.empty())
             {
-                Transform transformBeforeGridLines = states.transform;
+                const Transform transformBeforeGridLines = states.transform;
 
                 states.transform.translate({0, (totalItemHeight * firstItem) + m_itemHeight - static_cast<float>(m_verticalScrollbar->getValue())});
 

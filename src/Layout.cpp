@@ -451,7 +451,7 @@ namespace tgui
     void Layout::replaceValue(const Layout& value)
     {
         // Copy the layout, but keep the original parent
-        const auto oldParent = m_parent;
+        auto* const oldParent = m_parent;
         *this = value;
         m_parent = oldParent;
 
@@ -850,7 +850,7 @@ namespace tgui
                 if (!widgetName.empty())
                 {
                     // If the widget is a container, search in its children first
-                    Container* container = dynamic_cast<Container*>(widget);
+                    const Container* const container = dynamic_cast<Container*>(widget);
                     if (container != nullptr)
                     {
                         const auto& widgets = container->getWidgets();

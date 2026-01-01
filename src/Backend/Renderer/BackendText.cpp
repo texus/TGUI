@@ -376,8 +376,8 @@ namespace tgui
             {
                 const auto& glyph = m_font->getGlyph(curChar, m_characterSize, isBold, m_outlineThickness);
 
-                float top    = glyph.bounds.top;
-                float right  = glyph.bounds.left + glyph.bounds.width;
+                const float top   = glyph.bounds.top;
+                const float right = glyph.bounds.left + glyph.bounds.width;
 
                 // Add the outline glyph to the vertices
                 addGlyphQuad(*m_outlineVertices, {x, y}, vertexOutlineColor, glyph, fontScale, italicShear);

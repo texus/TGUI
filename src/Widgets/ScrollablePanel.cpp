@@ -651,7 +651,7 @@ namespace tgui
 
             mousePos -= getPosition() + getChildWidgetsOffset() - getContentOffset();
 
-            Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
+            const Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
             if (widget)
             {
                 toolTip = widget->askToolTip(mousePos);

@@ -520,10 +520,10 @@ namespace tgui
 
     void SpinButton::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall)
     {
-        std::weak_ptr<SpinButton> widgetPtr = std::static_pointer_cast<SpinButton>(shared_from_this());
+        const std::weak_ptr<SpinButton> widgetPtr = std::static_pointer_cast<SpinButton>(shared_from_this());
         Timer::scheduleCallback([widgetPtr, clickedTime]()
         {
-            SpinButton::Ptr spinButton = widgetPtr.lock();
+            const SpinButton::Ptr spinButton = widgetPtr.lock();
             if (spinButton)
             {
                 // Mouse still over and the mouse press is current

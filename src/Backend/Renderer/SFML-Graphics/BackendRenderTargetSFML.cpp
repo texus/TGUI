@@ -109,7 +109,7 @@ namespace tgui
         if (clippingRequired)
             addClippingLayer(transformedStates, {{visibleRect.left, visibleRect.top}, {visibleRect.width, visibleRect.height}});
 
-        std::shared_ptr<BackendTexture> texture = sprite.getTexture().getData()->backendTexture;
+        const std::shared_ptr<BackendTexture> texture = sprite.getTexture().getData()->backendTexture;
 
         sf::RenderStates sfStates = convertRenderStates(transformedStates, texture);
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture), "BackendRenderTargetSFML::drawSprite requires backend texture of type BackendTextureSFML");

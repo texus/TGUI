@@ -103,7 +103,7 @@ namespace tgui
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
          && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
-            Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
+            const Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
             if (getText().empty())
                 return getSize() + Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()), std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
             return getSize() + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max(0.f, std::max((m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()))};
@@ -260,7 +260,7 @@ namespace tgui
             // The image may need to be shifted when the check leaves the box
             if (getInnerSize().y != checkedSprite->getSize().y)
             {
-                float diff = getInnerSize().y - checkedSprite->getSize().y;
+                const float diff = getInnerSize().y - checkedSprite->getSize().y;
 
                 states.transform.translate({0, diff});
                 target.drawSprite(states, *checkedSprite);

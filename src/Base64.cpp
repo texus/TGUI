@@ -96,7 +96,7 @@ namespace tgui
 
         unsigned int val = 0;
         int valShift = -8;
-        for (char c : data)
+        for (const char c : data)
         {
             const std::uint8_t tableIndex = base64InverseCharactersTable[static_cast<std::uint8_t>(c)]; // NOLINT(cppcoreguidelines-pro-bounds-constant-array-index)
 

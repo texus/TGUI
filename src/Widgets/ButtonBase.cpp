@@ -578,7 +578,7 @@ namespace tgui
 
     void ButtonBase::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        for (auto& component : m_components)
+        for (const auto& component : m_components)
             component->draw(target, states);
     }
 

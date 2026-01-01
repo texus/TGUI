@@ -93,7 +93,7 @@ namespace tgui
 
         String serializeColor(ObjectConverter&& value)
         {
-            Color color = value.getColor();
+            const Color color = value.getColor();
 
             if (!color.isSet())
                 return "None";
@@ -173,7 +173,7 @@ namespace tgui
 
         String serializeTexture(ObjectConverter&& value)
         {
-            Texture texture = value.getTexture();
+            const Texture texture = value.getTexture();
             if (!texture.getData())
                 return "None";
 

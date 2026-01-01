@@ -376,7 +376,7 @@ namespace tgui
 
         if (node->propertyValuePairs[U"FillDirection"])
         {
-            String direction = node->propertyValuePairs[U"FillDirection"]->value.trim();
+            const String direction = node->propertyValuePairs[U"FillDirection"]->value.trim();
             if (direction == U"LeftToRight")
                 setFillDirection(ProgressBar::FillDirection::LeftToRight);
             else if (direction == U"RightToLeft")
@@ -512,7 +512,7 @@ namespace tgui
             target.drawSprite(states, m_spriteBackground);
         else
         {
-            Vector2f positionOffset = {m_backRect.left, m_backRect.top};
+            const Vector2f positionOffset = {m_backRect.left, m_backRect.top};
 
             states.transform.translate(positionOffset);
             target.drawFilledRect(states, {m_backRect.width, m_backRect.height}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
@@ -536,7 +536,7 @@ namespace tgui
         }
         else // Using colors instead of a texture
         {
-            Vector2f positionOffset = {m_frontRect.left, m_frontRect.top};
+            const Vector2f positionOffset = {m_frontRect.left, m_frontRect.top};
 
             states.transform.translate(positionOffset);
             target.drawFilledRect(states, {m_frontRect.width, m_frontRect.height}, Color::applyOpacity(m_fillColorCached, m_opacityCached));
