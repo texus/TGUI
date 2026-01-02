@@ -95,7 +95,7 @@ TEST_CASE("[HorizontalWrap]")
     testWidgetRenderer(wrap->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = wrap->getRenderer();
+        auto* renderer = wrap->getRenderer();
         REQUIRE(renderer->getSpaceBetweenWidgets() == 0);
 
         SECTION("set serialized property")

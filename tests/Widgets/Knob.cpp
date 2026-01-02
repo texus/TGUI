@@ -26,7 +26,7 @@
 
 TEST_CASE("[Knob]")
 {
-    tgui::Knob::Ptr knob = tgui::Knob::create();
+    const tgui::Knob::Ptr knob = tgui::Knob::create();
     knob->getRenderer()->setFont("resources/DejaVuSans.ttf");
     knob->setMinimum(10);
     knob->setMaximum(20);
@@ -68,7 +68,7 @@ TEST_CASE("[Knob]")
         knob->setStartRotation(-30);
         REQUIRE(knob->getStartRotation() == 330);
     }
-    
+
     SECTION("EndRotation")
     {
         knob->setEndRotation(50);
@@ -157,7 +157,7 @@ TEST_CASE("[Knob]")
     testWidgetRenderer(knob->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = knob->getRenderer();
+        auto* renderer = knob->getRenderer();
 
         SECTION("colored")
         {
@@ -193,8 +193,8 @@ TEST_CASE("[Knob]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/KnobBack.png");
-            tgui::Texture textureForeground("resources/KnobFront.png");
+            const tgui::Texture textureBackground("resources/KnobBack.png");
+            const tgui::Texture textureForeground("resources/KnobFront.png");
 
             SECTION("set serialized property")
             {

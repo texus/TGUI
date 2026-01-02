@@ -31,7 +31,7 @@
 
 TEST_CASE("[EditBox]")
 {
-    tgui::EditBox::Ptr editBox = tgui::EditBox::create();
+    const tgui::EditBox::Ptr editBox = tgui::EditBox::create();
     editBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -77,7 +77,7 @@ TEST_CASE("[EditBox]")
         editBox->setText("SomeText");
         REQUIRE(editBox->getText() == "SomeText");
     }
-    
+
     SECTION("DefaultText")
     {
         REQUIRE(editBox->getDefaultText() == "");
@@ -114,7 +114,7 @@ TEST_CASE("[EditBox]")
 
         editBox->setMaximumCharacters(0);
         REQUIRE(editBox->getText() == "09876");
-        
+
         editBox->setText("1234567890");
         REQUIRE(editBox->getText() == "1234567890");
     }
@@ -122,13 +122,13 @@ TEST_CASE("[EditBox]")
     SECTION("Alignment")
     {
         REQUIRE(editBox->getAlignment() == tgui::HorizontalAlignment::Left);
-        
+
         editBox->setAlignment(tgui::HorizontalAlignment::Center);
         REQUIRE(editBox->getAlignment() == tgui::HorizontalAlignment::Center);
-        
+
         editBox->setAlignment(tgui::HorizontalAlignment::Right);
         REQUIRE(editBox->getAlignment() == tgui::HorizontalAlignment::Right);
-        
+
         editBox->setAlignment(tgui::HorizontalAlignment::Left);
         REQUIRE(editBox->getAlignment() == tgui::HorizontalAlignment::Left);
     }
@@ -449,7 +449,7 @@ TEST_CASE("[EditBox]")
     testWidgetRenderer(editBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = editBox->getRenderer();
+        auto* renderer = editBox->getRenderer();
 
         SECTION("colored")
         {
@@ -580,10 +580,10 @@ TEST_CASE("[EditBox]")
 
         SECTION("textured")
         {
-            tgui::Texture textureNormal("resources/Texture1.png");
-            tgui::Texture textureHover("resources/Texture2.png");
-            tgui::Texture textureDisabled("resources/Texture3.png");
-            tgui::Texture textureFocused("resources/Texture4.png");
+            const tgui::Texture textureNormal("resources/Texture1.png");
+            const tgui::Texture textureHover("resources/Texture2.png");
+            const tgui::Texture textureDisabled("resources/Texture3.png");
+            const tgui::Texture textureFocused("resources/Texture4.png");
 
             SECTION("set serialized property")
             {

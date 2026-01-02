@@ -26,7 +26,7 @@
 
 TEST_CASE("[Tabs]")
 {
-    tgui::Tabs::Ptr tabs = tgui::Tabs::create();
+    const tgui::Tabs::Ptr tabs = tgui::Tabs::create();
     tabs->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -293,7 +293,7 @@ TEST_CASE("[Tabs]")
     testWidgetRenderer(tabs->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = tabs->getRenderer();
+        auto* renderer = tabs->getRenderer();
 
         SECTION("colored")
         {
@@ -357,11 +357,11 @@ TEST_CASE("[Tabs]")
 
         SECTION("textured")
         {
-            tgui::Texture textureNormal{"resources/Black.png", {0, 0, 60, 32}, {16, 0, 28, 32}};
-            tgui::Texture textureHover{"resources/Black.png", {0, 0, 60, 32}, {16, 0, 28, 32}};
-            tgui::Texture textureSelected{"resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32}};
-            tgui::Texture textureSelectedHover{"resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32}};
-            tgui::Texture textureDisabled{"resources/Texture1.png"};
+            const tgui::Texture textureNormal{"resources/Black.png", {0, 0, 60, 32}, {16, 0, 28, 32}};
+            const tgui::Texture textureHover{"resources/Black.png", {0, 0, 60, 32}, {16, 0, 28, 32}};
+            const tgui::Texture textureSelected{"resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32}};
+            const tgui::Texture textureSelectedHover{"resources/Black.png", {0, 32, 60, 32}, {16, 0, 28, 32}};
+            const tgui::Texture textureDisabled{"resources/Texture1.png"};
 
             SECTION("set serialized property")
             {

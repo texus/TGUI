@@ -90,7 +90,7 @@ TEST_CASE("[Texture]")
                 REQUIRE_NOTHROW(tgui::Texture("resources/image.bmp"));
                 REQUIRE_NOTHROW(tgui::Texture("resources/image.jpg"));
 
-                tgui::Texture texture{"resources/image.png"};
+                const tgui::Texture texture{"resources/image.png"};
                 REQUIRE(texture.getId() == "resources/image.png");
                 REQUIRE(texture.getData() != nullptr);
                 REQUIRE(texture.getData()->backendTexture != nullptr);
@@ -171,7 +171,7 @@ TEST_CASE("[Texture]")
             REQUIRE(copyCount == 0);
             REQUIRE(destructCount == 0);
             {
-                tgui::Texture textureCopy{texture}; // NOLINT(performance-unnecessary-copy-initialization)
+                const tgui::Texture textureCopy{texture}; // NOLINT(performance-unnecessary-copy-initialization)
                 REQUIRE(textureCopy.getId() == "resources/image.png");
                 REQUIRE(textureCopy.getData() != nullptr);
                 REQUIRE(textureCopy.getData()->backendTexture != nullptr);

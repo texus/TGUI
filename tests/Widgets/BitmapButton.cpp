@@ -26,7 +26,7 @@
 
 TEST_CASE("[BitmapButton]")
 {
-    tgui::BitmapButton::Ptr button = tgui::BitmapButton::create();
+    const tgui::BitmapButton::Ptr button = tgui::BitmapButton::create();
     button->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -152,7 +152,7 @@ TEST_CASE("[BitmapButton]")
     testWidgetRenderer(button->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = button->getRenderer();
+        auto* renderer = button->getRenderer();
 
         SECTION("colored")
         {
@@ -263,11 +263,11 @@ TEST_CASE("[BitmapButton]")
 
         SECTION("textured")
         {
-            tgui::Texture textureNormal("resources/Texture1.png");
-            tgui::Texture textureHover("resources/Texture2.png");
-            tgui::Texture textureDown("resources/Texture3.png");
-            tgui::Texture textureDisabled("resources/Texture4.png");
-            tgui::Texture textureFocused("resources/Texture5.png");
+            const tgui::Texture textureNormal("resources/Texture1.png");
+            const tgui::Texture textureHover("resources/Texture2.png");
+            const tgui::Texture textureDown("resources/Texture3.png");
+            const tgui::Texture textureDisabled("resources/Texture4.png");
+            const tgui::Texture textureFocused("resources/Texture5.png");
 
             SECTION("set serialized property")
             {

@@ -85,7 +85,7 @@ TEST_CASE("[ClickableWidget]")
 
     SECTION("Renderer")
     {
-        auto renderer = widget->getRenderer();
+        auto* renderer = widget->getRenderer();
 
         SECTION("set serialized property")
         {

@@ -26,7 +26,7 @@
 
 TEST_CASE("[ListBox]")
 {
-    tgui::ListBox::Ptr listBox = tgui::ListBox::create();
+    const tgui::ListBox::Ptr listBox = tgui::ListBox::create();
     listBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -570,7 +570,7 @@ TEST_CASE("[ListBox]")
     testWidgetRenderer(listBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = listBox->getRenderer();
+        auto* renderer = listBox->getRenderer();
 
         SECTION("colored")
         {
@@ -657,7 +657,7 @@ TEST_CASE("[ListBox]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
             SECTION("set serialized property")
             {

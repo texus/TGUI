@@ -41,7 +41,7 @@ TEST_CASE("[SignalManager]")
         REQUIRE(!manager->disconnect(id));
 
 
-        tgui::Widget::Ptr widget2 = tgui::Button::create();
+        const tgui::Widget::Ptr widget2 = tgui::Button::create();
         REQUIRE(manager->connect("NameOfWidget", "Pressed", [](){}) == ++id);
         REQUIRE(manager->connect("NameOfWidget", "Pressed", [](int){}, 5) == ++id);
         REQUIRE(manager->connect("NameOfWidget", "Pressed", [](auto){}, 10.f) == ++id);

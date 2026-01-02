@@ -26,7 +26,7 @@
 
 TEST_CASE("[ChatBox]")
 {
-    tgui::ChatBox::Ptr chatBox = tgui::ChatBox::create();
+    const tgui::ChatBox::Ptr chatBox = tgui::ChatBox::create();
     chatBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("WidgetType")
@@ -199,7 +199,7 @@ TEST_CASE("[ChatBox]")
     testWidgetRenderer(chatBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = chatBox->getRenderer();
+        auto* renderer = chatBox->getRenderer();
 
         SECTION("colored")
         {
@@ -250,7 +250,7 @@ TEST_CASE("[ChatBox]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
             SECTION("set serialized property") {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));

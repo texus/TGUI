@@ -26,7 +26,7 @@
 
 TEST_CASE("[CheckBox]")
 {
-    tgui::CheckBox::Ptr checkBox = tgui::CheckBox::create();
+    const tgui::CheckBox::Ptr checkBox = tgui::CheckBox::create();
     checkBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")

@@ -185,7 +185,7 @@ TEST_CASE("[ChildWindow]")
         childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::None);
         REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButton::None);
 
-        unsigned int buttons = tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize;
+        const unsigned int buttons = tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize;
         childWindow->setTitleButtons(buttons);
         REQUIRE(childWindow->getTitleButtons() == buttons);
     }
@@ -325,7 +325,7 @@ TEST_CASE("[ChildWindow]")
     testWidgetRenderer(childWindow->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = childWindow->getRenderer();
+        auto* renderer = childWindow->getRenderer();
 
         childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::None);
 
@@ -416,8 +416,8 @@ TEST_CASE("[ChildWindow]")
 
         SECTION("textured")
         {
-            tgui::Texture textureTitleBar("resources/Black.png", {48, 154, 75, 25}, {16, 16, 16, 16});
-            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureTitleBar("resources/Black.png", {48, 154, 75, 25}, {16, 16, 16, 16});
+            const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
             SECTION("set serialized property")
             {

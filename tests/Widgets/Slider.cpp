@@ -26,7 +26,7 @@
 
 TEST_CASE("[Slider]")
 {
-    tgui::Slider::Ptr slider = tgui::Slider::create();
+    const tgui::Slider::Ptr slider = tgui::Slider::create();
     slider->getRenderer()->setFont("resources/DejaVuSans.ttf");
     slider->setMinimum(10);
     slider->setMaximum(20);
@@ -54,8 +54,8 @@ TEST_CASE("[Slider]")
         {
             slider->setSize(150, 25);
 
-            float thumbHeight = slider->getSize().y * 1.6f;
-            float thumbWidth = thumbHeight / 2.f;
+            const float thumbHeight = slider->getSize().y * 1.6f;
+            const float thumbWidth = thumbHeight / 2.f;
             REQUIRE(slider->getSize() == tgui::Vector2f(150, 25));
             REQUIRE(slider->getFullSize() == tgui::Vector2f(slider->getSize().x + thumbWidth, thumbHeight));
             REQUIRE(slider->getWidgetOffset() == -tgui::Vector2f(thumbWidth / 2.f, (thumbHeight - slider->getSize().y) / 2.f));
@@ -69,8 +69,8 @@ TEST_CASE("[Slider]")
         {
             slider->setSize(20, 140);
 
-            float thumbWidth = slider->getSize().x * 1.6f;
-            float thumbHeight = thumbWidth / 2.f;
+            const float thumbWidth = slider->getSize().x * 1.6f;
+            const float thumbHeight = thumbWidth / 2.f;
 
             REQUIRE(slider->getSize() == tgui::Vector2f(20, 140));
             REQUIRE(slider->getFullSize() == tgui::Vector2f(thumbWidth, slider->getSize().y + thumbHeight));
@@ -127,13 +127,13 @@ TEST_CASE("[Slider]")
     SECTION("Value")
     {
         REQUIRE(slider->getValue() == 15);
-        
+
         slider->setValue(14);
         REQUIRE(slider->getValue() == 14);
-        
+
         slider->setValue(7);
         REQUIRE(slider->getValue() == 10);
-        
+
         slider->setValue(23);
         REQUIRE(slider->getValue() == 20);
     }
@@ -346,7 +346,7 @@ TEST_CASE("[Slider]")
     testWidgetRenderer(slider->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = slider->getRenderer();
+        auto* renderer = slider->getRenderer();
 
         SECTION("colored")
         {
@@ -407,10 +407,10 @@ TEST_CASE("[Slider]")
 
         SECTION("textured")
         {
-            tgui::Texture textureTrack("resources/Black.png", {203, 150, 20, 45}, {0, 15, 20, 15});
-            tgui::Texture textureTrackHover("resources/Black.png", {223, 150, 20, 45}, {0, 15, 20, 15});
-            tgui::Texture textureThumb("resources/Black.png", {243, 150, 30, 30});
-            tgui::Texture textureThumbHover("resources/Black.png", {243, 150, 30, 30});
+            const tgui::Texture textureTrack("resources/Black.png", {203, 150, 20, 45}, {0, 15, 20, 15});
+            const tgui::Texture textureTrackHover("resources/Black.png", {223, 150, 20, 45}, {0, 15, 20, 15});
+            const tgui::Texture textureThumb("resources/Black.png", {243, 150, 30, 30});
+            const tgui::Texture textureThumbHover("resources/Black.png", {243, 150, 30, 30});
 
             SECTION("set serialized property")
             {
@@ -569,13 +569,13 @@ TEST_CASE("[Slider]")
 
             SECTION("Non-square thumb texture")
             {
-                tgui::Texture texture("resources/TextureRect1.png");
+                const tgui::Texture texture("resources/TextureRect1.png");
 
                 renderer.setTextureThumb(texture);
                 TEST_DRAW("Slider_NonSquareThumbTexture.png")
 
                 const auto imageSize = texture.getImageSize();
-                const auto pixels = texture.getData()->backendTexture->getPixels();
+                const auto* const pixels = texture.getData()->backendTexture->getPixels();
 
                 auto rotatedImagePixels = tgui::MakeUniqueForOverwrite<std::uint8_t[]>(imageSize.x * imageSize.y * 4);
                 for (unsigned y = 0; y < imageSize.y; ++y)

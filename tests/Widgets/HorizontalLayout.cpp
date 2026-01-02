@@ -140,7 +140,7 @@ TEST_CASE("[HorizontalLayout]")
 
     SECTION("Saving and loading from file")
     {
-        std::shared_ptr<tgui::RendererData> oldButtonRenderer = tgui::Theme::getDefault()->getRendererNoThrow("Button");
+        const std::shared_ptr<tgui::RendererData> oldButtonRenderer = tgui::Theme::getDefault()->getRendererNoThrow("Button");
         tgui::Theme::getDefault()->addRenderer("Button", std::make_shared<tgui::RendererData>());
 
         layout->add(tgui::Button::create("Hello"));

@@ -150,7 +150,7 @@ TEST_CASE("[Panel]")
     testWidgetRenderer(panel->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = panel->getRenderer();
+        auto* renderer = panel->getRenderer();
 
         SECTION("colored")
         {
@@ -196,7 +196,7 @@ TEST_CASE("[Panel]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
             SECTION("set serialized property")
             {
@@ -231,7 +231,7 @@ TEST_CASE("[Panel]")
         SECTION("Only save contents")
         {
             REQUIRE_NOTHROW(panel->saveWidgetsToFile("PanelWidgetFile1.txt"));
-            
+
             panel->setSize(200, 100);
             REQUIRE_NOTHROW(panel->loadWidgetsFromFile("PanelWidgetFile1.txt"));
             REQUIRE(panel->getSize() == tgui::Vector2f(200, 100)); // The Panel itself is not saved, only its children

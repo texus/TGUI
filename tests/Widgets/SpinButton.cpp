@@ -26,7 +26,7 @@
 
 TEST_CASE("[SpinButton]")
 {
-    tgui::SpinButton::Ptr spinButton = tgui::SpinButton::create();
+    const tgui::SpinButton::Ptr spinButton = tgui::SpinButton::create();
     spinButton->getRenderer()->setFont("resources/DejaVuSans.ttf");
     spinButton->setMinimum(10);
     spinButton->setMaximum(20);
@@ -100,13 +100,13 @@ TEST_CASE("[SpinButton]")
     SECTION("Value")
     {
         REQUIRE(spinButton->getValue() == 15);
-        
+
         spinButton->setValue(14);
         REQUIRE(spinButton->getValue() == 14);
-        
+
         spinButton->setValue(7);
         REQUIRE(spinButton->getValue() == 10);
-        
+
         spinButton->setValue(23);
         REQUIRE(spinButton->getValue() == 20);
     }
@@ -258,7 +258,7 @@ TEST_CASE("[SpinButton]")
     testWidgetRenderer(spinButton->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = spinButton->getRenderer();
+        auto* renderer = spinButton->getRenderer();
 
         SECTION("Colored")
         {
@@ -314,10 +314,10 @@ TEST_CASE("[SpinButton]")
 
         SECTION("textured")
         {
-            tgui::Texture textureArrowUpNormal("resources/Black.png", {163, 154, 20, 20}, {0, 0, 20, 19});
-            tgui::Texture textureArrowUpHover("resources/Black.png", {183, 154, 20, 20}, {0, 0, 20, 19});
-            tgui::Texture textureArrowDownNormal("resources/Black.png", {163, 174, 20, 20}, {0, 1, 20, 19});
-            tgui::Texture textureArrowDownHover("resources/Black.png", {183, 174, 20, 20}, {0, 1, 20, 19});
+            const tgui::Texture textureArrowUpNormal("resources/Black.png", {163, 154, 20, 20}, {0, 0, 20, 19});
+            const tgui::Texture textureArrowUpHover("resources/Black.png", {183, 154, 20, 20}, {0, 0, 20, 19});
+            const tgui::Texture textureArrowDownNormal("resources/Black.png", {163, 174, 20, 20}, {0, 1, 20, 19});
+            const tgui::Texture textureArrowDownHover("resources/Black.png", {183, 174, 20, 20}, {0, 1, 20, 19});
 
             SECTION("set serialized property")
             {

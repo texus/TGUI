@@ -26,7 +26,7 @@
 
 TEST_CASE("[RichTextLabel]")
 {
-    tgui::RichTextLabel::Ptr label = tgui::RichTextLabel::create();
+    const tgui::RichTextLabel::Ptr label = tgui::RichTextLabel::create();
     label->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -215,9 +215,9 @@ TEST_CASE("[RichTextLabel]")
     testWidgetRenderer(label->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = label->getRenderer();
+        auto* renderer = label->getRenderer();
 
-        tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+        const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
         tgui::ScrollbarRenderer scrollbarRenderer;
         scrollbarRenderer.setTrackColor(tgui::Color::Red);

@@ -26,13 +26,13 @@
 
 TEST_CASE("[Animation]")
 {
-    tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
+    const tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
     widget->setPosition(30, 15);
     widget->setSize(120, 30);
     widget->setInheritedOpacity(0.9f);
     widget->getRenderer()->setOpacity(0.5f);
 
-    tgui::Panel::Ptr parent = tgui::Panel::create();
+    const tgui::Panel::Ptr parent = tgui::Panel::create();
     parent->setSize(480, 360);
     parent->add(widget);
 

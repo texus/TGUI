@@ -706,7 +706,7 @@ TEST_CASE("[TreeView]")
     testWidgetRenderer(treeView->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = treeView->getRenderer();
+        auto* renderer = treeView->getRenderer();
 
         SECTION("colored")
         {
@@ -785,10 +785,10 @@ TEST_CASE("[TreeView]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
-            tgui::Texture textureBranchExpanded("resources/TreeViewExpanded.png");
-            tgui::Texture textureBranchCollapsed("resources/TreeViewCollapsed.png");
-            tgui::Texture textureLeaf("resources/TreeViewLeaf.png");
+            const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureBranchExpanded("resources/TreeViewExpanded.png");
+            const tgui::Texture textureBranchCollapsed("resources/TreeViewCollapsed.png");
+            const tgui::Texture textureLeaf("resources/TreeViewLeaf.png");
 
             SECTION("set serialized property")
             {

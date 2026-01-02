@@ -26,7 +26,7 @@
 
 TEST_CASE("[MessageBox]")
 {
-    tgui::MessageBox::Ptr messageBox = tgui::MessageBox::create();
+    const tgui::MessageBox::Ptr messageBox = tgui::MessageBox::create();
     messageBox->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -155,7 +155,7 @@ TEST_CASE("[MessageBox]")
     testWidgetRenderer(messageBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = messageBox->getRenderer();
+        auto* renderer = messageBox->getRenderer();
 
         tgui::ButtonRenderer buttonsRenderer;
         buttonsRenderer.setBackgroundColor(tgui::Color::Cyan);

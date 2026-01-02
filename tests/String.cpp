@@ -45,15 +45,15 @@ TEST_CASE("[String]")
     std::u32string u32s(U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    std::string_view view_s(s);
-    std::wstring_view view_ws(ws);
-    std::u16string_view view_u16s(u16s);
-    std::u32string_view view_u32s(u32s);
+    const std::string_view view_s(s);
+    const std::wstring_view view_ws(ws);
+    const std::u16string_view view_u16s(u16s);
+    const std::u32string_view view_u32s(u32s);
 #else
-    tgui::CharStringView view_s(s);
-    tgui::StringViewImpl<wchar_t> view_ws(ws);
-    tgui::StringViewImpl<char16_t> view_u16s(u16s);
-    tgui::StringView view_u32s(u32s);
+    const tgui::CharStringView view_s(s);
+    const tgui::StringViewImpl<wchar_t> view_ws(ws);
+    const tgui::StringViewImpl<char16_t> view_u16s(u16s);
+    const tgui::StringView view_u32s(u32s);
 #endif
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
@@ -244,7 +244,7 @@ TEST_CASE("[String]")
         REQUIRE(str.assign(u16s) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
         REQUIRE(str.assign(u32s) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
-        tgui::String str2 = "abc";
+        const tgui::String str2 = "abc";
         REQUIRE(str.assign(str2) == "abc");
         REQUIRE(str.assign(tgui::String("xyz")) == "xyz");
         REQUIRE(str.assign(tgui::String("abcde"), 2, 2) == "cd");
@@ -955,8 +955,8 @@ TEST_CASE("[String]")
     {
         SECTION("ASCII strings")
         {
-            tgui::String str1 = "abc";
-            tgui::String str2 = "xyz";
+            const tgui::String str1 = "abc";
+            const tgui::String str2 = "xyz";
 
             SECTION("True")
             {
@@ -1039,8 +1039,8 @@ TEST_CASE("[String]")
 
         SECTION("Unicode strings")
         {
-            tgui::String str1 = U"\u03b1\u03b2";
-            tgui::String str2 = U"\u03b3\u03b4";
+            const tgui::String str1 = U"\u03b1\u03b2";
+            const tgui::String str2 = U"\u03b3\u03b4";
 
             SECTION("True")
             {
@@ -1280,7 +1280,7 @@ TEST_CASE("[String]")
 
     SECTION("operator+")
     {
-        tgui::String str2 = U"\u03b4";
+        const tgui::String str2 = U"\u03b4";
 
         str = "@"; REQUIRE(str + "xyz" == "@xyz");
         str = "@"; REQUIRE(str + L"\U00010348" == L"@\U00010348");

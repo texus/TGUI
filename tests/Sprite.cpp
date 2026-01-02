@@ -57,7 +57,7 @@ TEST_CASE("[Sprite]")
         sprite.setTexture({});
         REQUIRE(sprite.getSize() == tgui::Vector2f());
 
-        tgui::Texture texture{"resources/image.png"};
+        const tgui::Texture texture{"resources/image.png"};
         sprite.setTexture(texture);
         REQUIRE(sprite.getSize() == tgui::Vector2f(50, 50));
 
@@ -95,7 +95,7 @@ TEST_CASE("[Sprite]")
 
         SECTION("Invalid image")
         {
-            tgui::Sprite unloadedSprite;
+            const tgui::Sprite unloadedSprite;
             REQUIRE(unloadedSprite.isTransparentPixel({0, 0}) == true);
         }
 
@@ -479,7 +479,7 @@ TEST_CASE("[Sprite]")
     {
         SECTION("Wide")
         {
-            tgui::Picture::Ptr picture = tgui::Picture::create();
+            const tgui::Picture::Ptr picture = tgui::Picture::create();
             picture->setPosition(10, 5);
             picture->setSize(220, 150);
 
@@ -487,21 +487,21 @@ TEST_CASE("[Sprite]")
 
             SECTION("Stretched")
             {
-                tgui::Texture textureStretched("resources/9slice.png");
+                const tgui::Texture textureStretched("resources/9slice.png");
                 picture->getRenderer()->setTexture(textureStretched);
                 TEST_DRAW("Sprite_Wide_Stretched.png")
             }
 
             SECTION("Horizontal")
             {
-                tgui::Texture textureHorizontal("resources/9slice.png", {}, {30, 0, 40, 100});
+                const tgui::Texture textureHorizontal("resources/9slice.png", {}, {30, 0, 40, 100});
                 picture->getRenderer()->setTexture(textureHorizontal);
                 TEST_DRAW("Sprite_Wide_Horizontal.png")
             }
 
             SECTION("Vertical")
             {
-                tgui::Texture textureVertical("resources/9slice.png", {}, {0, 30, 100, 40});
+                const tgui::Texture textureVertical("resources/9slice.png", {}, {0, 30, 100, 40});
                 picture->getRenderer()->setTexture(textureVertical);
                 TEST_DRAW("Sprite_Wide_Vertical.png")
             }
@@ -510,7 +510,7 @@ TEST_CASE("[Sprite]")
             {
                 SECTION("Traditional / unscaled")
                 {
-                    tgui::Texture textureNineSlice("resources/9slice.png", {}, {30, 30, 40, 40});
+                    const tgui::Texture textureNineSlice("resources/9slice.png", {}, {30, 30, 40, 40});
                     picture->getRenderer()->setTexture(textureNineSlice);
                     TEST_DRAW("Sprite_Wide_NineSlice.png")
                 }
@@ -526,7 +526,7 @@ TEST_CASE("[Sprite]")
         }
         SECTION("Tall")
         {
-            tgui::Picture::Ptr picture = tgui::Picture::create();
+            const tgui::Picture::Ptr picture = tgui::Picture::create();
             picture->setPosition(10, 5);
             picture->setSize(150, 220);
 
@@ -534,21 +534,21 @@ TEST_CASE("[Sprite]")
 
             SECTION("Stretched")
             {
-                tgui::Texture textureStretched("resources/9slice.png");
+                const tgui::Texture textureStretched("resources/9slice.png");
                 picture->getRenderer()->setTexture(textureStretched);
                 TEST_DRAW("Sprite_Tall_Stretched.png")
             }
 
             SECTION("Horizontal")
             {
-                tgui::Texture textureHorizontal("resources/9slice.png", {}, {30, 0, 40, 100});
+                const tgui::Texture textureHorizontal("resources/9slice.png", {}, {30, 0, 40, 100});
                 picture->getRenderer()->setTexture(textureHorizontal);
                 TEST_DRAW("Sprite_Tall_Horizontal.png")
             }
 
             SECTION("Vertical")
             {
-                tgui::Texture textureVertical("resources/9slice.png", {}, {0, 30, 100, 40});
+                const tgui::Texture textureVertical("resources/9slice.png", {}, {0, 30, 100, 40});
                 picture->getRenderer()->setTexture(textureVertical);
                 TEST_DRAW("Sprite_Tall_Vertical.png")
             }
@@ -557,7 +557,7 @@ TEST_CASE("[Sprite]")
             {
                 SECTION("Traditional / unscaled")
                 {
-                    tgui::Texture textureNineSlice("resources/9slice.png", {}, {30, 30, 40, 40});
+                    const tgui::Texture textureNineSlice("resources/9slice.png", {}, {30, 30, 40, 40});
                     picture->getRenderer()->setTexture(textureNineSlice);
                     TEST_DRAW("Sprite_Tall_NineSlice.png")
                 }

@@ -26,7 +26,7 @@
 
 TEST_CASE("[editBoxSlider]")
 {
-    tgui::EditBoxSlider::Ptr editBoxSlider = tgui::EditBoxSlider::create(0, 10, 5);
+    const tgui::EditBoxSlider::Ptr editBoxSlider = tgui::EditBoxSlider::create(0, 10, 5);
 
     SECTION("Signals")
     {

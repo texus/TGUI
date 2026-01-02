@@ -175,9 +175,9 @@ TEST_CASE("[Picture]")
 
     SECTION("Renderer")
     {
-        auto renderer = picture->getRenderer();
+        auto* renderer = picture->getRenderer();
 
-        tgui::Texture texture("resources/Texture1.png");
+        const tgui::Texture texture("resources/Texture1.png");
 
         SECTION("set serialized property")
         {

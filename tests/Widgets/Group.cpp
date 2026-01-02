@@ -77,7 +77,7 @@ TEST_CASE("[Group]")
     testWidgetRenderer(group->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = group->getRenderer();
+        auto* renderer = group->getRenderer();
 
         SECTION("set serialized property")
         {
@@ -111,7 +111,7 @@ TEST_CASE("[Group]")
         SECTION("Only save contents")
         {
             REQUIRE_NOTHROW(group->saveWidgetsToFile("GroupWidgetFile1.txt"));
-            
+
             group->setSize(200, 100);
             REQUIRE_NOTHROW(group->loadWidgetsFromFile("GroupWidgetFile1.txt"));
             REQUIRE(group->getSize() == tgui::Vector2f(200, 100)); // The Group itself is not saved, only its children

@@ -26,7 +26,7 @@
 
 TEST_CASE("[SeparatorLine]")
 {
-    tgui::SeparatorLine::Ptr separator = tgui::SeparatorLine::create();
+    const tgui::SeparatorLine::Ptr separator = tgui::SeparatorLine::create();
     separator->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -55,7 +55,7 @@ TEST_CASE("[SeparatorLine]")
 
     SECTION("Renderer")
     {
-        auto renderer = separator->getRenderer();
+        auto* renderer = separator->getRenderer();
 
         SECTION("set serialized property")
         {

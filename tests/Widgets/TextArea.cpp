@@ -45,7 +45,7 @@ namespace
 
 TEST_CASE("[TextArea]")
 {
-    tgui::TextArea::Ptr textArea = tgui::TextArea::create();
+    const tgui::TextArea::Ptr textArea = tgui::TextArea::create();
     textArea->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -588,7 +588,7 @@ TEST_CASE("[TextArea]")
     testWidgetRenderer(textArea->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = textArea->getRenderer();
+        auto* renderer = textArea->getRenderer();
 
         SECTION("colored")
         {
@@ -663,7 +663,7 @@ TEST_CASE("[TextArea]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
+            const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
             SECTION("set serialized property")
             {

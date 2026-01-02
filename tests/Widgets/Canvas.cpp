@@ -36,22 +36,25 @@
 
 #include "Tests.hpp"
 
-static void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
+namespace
 {
-    SECTION("Ignore mouse events")
+    void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
     {
-        REQUIRE(!canvas->isIgnoringMouseEvents());
-        canvas->ignoreMouseEvents(true);
-        REQUIRE(canvas->isIgnoringMouseEvents());
-        canvas->ignoreMouseEvents(false);
-        REQUIRE(!canvas->isIgnoringMouseEvents());
-    }
+        SECTION("Ignore mouse events")
+        {
+            REQUIRE(!canvas->isIgnoringMouseEvents());
+            canvas->ignoreMouseEvents(true);
+            REQUIRE(canvas->isIgnoringMouseEvents());
+            canvas->ignoreMouseEvents(false);
+            REQUIRE(!canvas->isIgnoringMouseEvents());
+        }
 
-    SECTION("canGainFocus")
-    {
-        REQUIRE(!canvas->canGainFocus());
+        SECTION("canGainFocus")
+        {
+            REQUIRE(!canvas->canGainFocus());
+        }
     }
-}
+} // anonymous namespace
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
 
@@ -123,7 +126,7 @@ TEST_CASE("[CanvasSFML]")
         SECTION("internal render texture")
         {
             canvas = tgui::CanvasSFML::create({50, 50});
-            sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
+            const sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
 
             canvas->setSize({70, 80});
             canvas->setView(sf::View(sf::FloatRect{{20, 10}, {100, 50}}));

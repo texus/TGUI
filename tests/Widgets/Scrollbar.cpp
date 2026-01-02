@@ -26,7 +26,7 @@
 
 TEST_CASE("[Scrollbar]")
 {
-    tgui::Scrollbar::Ptr scrollbar = tgui::Scrollbar::create();
+    const tgui::Scrollbar::Ptr scrollbar = tgui::Scrollbar::create();
     scrollbar->getRenderer()->setFont("resources/DejaVuSans.ttf");
     scrollbar->setMaximum(20);
     scrollbar->setViewportSize(5);
@@ -116,10 +116,10 @@ TEST_CASE("[Scrollbar]")
     SECTION("Value")
     {
         REQUIRE(scrollbar->getValue() == 10);
-        
+
         scrollbar->setValue(13);
         REQUIRE(scrollbar->getValue() == 13);
-        
+
         scrollbar->setValue(18);
         REQUIRE(scrollbar->getValue() == 15);
     }
@@ -235,7 +235,7 @@ TEST_CASE("[Scrollbar]")
     testWidgetRenderer(scrollbar->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = scrollbar->getRenderer();
+        auto* renderer = scrollbar->getRenderer();
 
         SECTION("colored")
         {
@@ -296,14 +296,14 @@ TEST_CASE("[Scrollbar]")
 
         SECTION("textured")
         {
-            tgui::Texture textureTrackNormal("resources/Black.png", {123, 154, 20, 20});
-            tgui::Texture textureTrackHover("resources/Black.png", {123, 174, 20, 20});
-            tgui::Texture textureThumbNormal("resources/Black.png", {143, 154, 20, 20});
-            tgui::Texture textureThumbHover("resources/Black.png", {143, 174, 20, 20});
-            tgui::Texture textureArrowUpNormal("resources/Black.png", {163, 154, 20, 20}, {0, 0, 20, 19});
-            tgui::Texture textureArrowUpHover("resources/Black.png", {183, 154, 20, 20}, {0, 0, 20, 19});
-            tgui::Texture textureArrowDownNormal("resources/Black.png", {163, 174, 20, 20}, {0, 1, 20, 19});
-            tgui::Texture textureArrowDownHover("resources/Black.png", {183, 174, 20, 20}, {0, 1, 20, 19});
+            const tgui::Texture textureTrackNormal("resources/Black.png", {123, 154, 20, 20});
+            const tgui::Texture textureTrackHover("resources/Black.png", {123, 174, 20, 20});
+            const tgui::Texture textureThumbNormal("resources/Black.png", {143, 154, 20, 20});
+            const tgui::Texture textureThumbHover("resources/Black.png", {143, 174, 20, 20});
+            const tgui::Texture textureArrowUpNormal("resources/Black.png", {163, 154, 20, 20}, {0, 0, 20, 19});
+            const tgui::Texture textureArrowUpHover("resources/Black.png", {183, 154, 20, 20}, {0, 0, 20, 19});
+            const tgui::Texture textureArrowDownNormal("resources/Black.png", {163, 174, 20, 20}, {0, 1, 20, 19});
+            const tgui::Texture textureArrowDownHover("resources/Black.png", {183, 174, 20, 20}, {0, 1, 20, 19});
 
             SECTION("set serialized property")
             {

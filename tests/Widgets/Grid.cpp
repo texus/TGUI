@@ -26,7 +26,7 @@
 
 TEST_CASE("[Grid]")
 {
-    tgui::Grid::Ptr grid = tgui::Grid::create();
+    const tgui::Grid::Ptr grid = tgui::Grid::create();
 
     SECTION("WidgetType")
     {

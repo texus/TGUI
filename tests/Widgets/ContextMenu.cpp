@@ -26,7 +26,7 @@
 
 TEST_CASE("[ContextMenu]")
 {
-    tgui::ContextMenu::Ptr contextMenu = tgui::ContextMenu::create();
+    const tgui::ContextMenu::Ptr contextMenu = tgui::ContextMenu::create();
     contextMenu->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -267,7 +267,7 @@ TEST_CASE("[ContextMenu]")
     testWidgetRenderer(contextMenu->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = contextMenu->getRenderer();
+        auto* renderer = contextMenu->getRenderer();
 
         SECTION("colored")
         {
@@ -327,8 +327,8 @@ TEST_CASE("[ContextMenu]")
 
         SECTION("textured")
         {
-            tgui::Texture textureItemBackground("resources/Black.png", {115, 181, 8, 4}, {2, 0, 4, 2});
-            tgui::Texture textureSelectedItemBackground("resources/Black.png", {115, 185, 8, 6}, {2, 2, 4, 2});
+            const tgui::Texture textureItemBackground("resources/Black.png", {115, 181, 8, 4}, {2, 0, 4, 2});
+            const tgui::Texture textureSelectedItemBackground("resources/Black.png", {115, 185, 8, 6}, {2, 2, 4, 2});
 
             SECTION("set serialized property")
             {

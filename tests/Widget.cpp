@@ -28,7 +28,7 @@
 
 TEST_CASE("[Widget]")
 {
-    tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
+    const tgui::Widget::Ptr widget = tgui::ClickableWidget::create();
 
     SECTION("Visibile")
     {
@@ -59,9 +59,9 @@ TEST_CASE("[Widget]")
 
     SECTION("Parent")
     {
-        tgui::Panel::Ptr panel1 = tgui::Panel::create();
-        tgui::Panel::Ptr panel2 = tgui::Panel::create();
-        tgui::Panel::Ptr panel3 = tgui::Panel::create();
+        const tgui::Panel::Ptr panel1 = tgui::Panel::create();
+        const tgui::Panel::Ptr panel2 = tgui::Panel::create();
+        const tgui::Panel::Ptr panel3 = tgui::Panel::create();
 
         REQUIRE(widget->getParent() == nullptr);
         panel1->add(widget);
@@ -363,14 +363,14 @@ TEST_CASE("[Widget]")
 
     SECTION("Cast")
     {
-        auto button = tgui::Button::create();
-        tgui::Widget::Ptr widgetPtr{button};
+        const auto button = tgui::Button::create();
+        const tgui::Widget::Ptr widgetPtr{button};
 
         REQUIRE(widgetPtr->cast<tgui::EditBox>() == nullptr);
         REQUIRE(widgetPtr->cast<tgui::Button>() == button);
         REQUIRE(widgetPtr->cast<tgui::ButtonBase>() == button);
 
-        tgui::Widget::ConstPtr constWidgetPtr{button};
+        const tgui::Widget::ConstPtr constWidgetPtr{button};
         REQUIRE(constWidgetPtr->cast<tgui::Button>() == button);
     }
 
@@ -383,7 +383,7 @@ TEST_CASE("[Widget]")
         auto buttonBottom = tgui::Button::copy(buttonCenter);
 
         GuiNull gui;
-        for (auto& button : {buttonLeft, buttonRight, buttonTop, buttonBottom, buttonCenter})
+        for (const auto& button : {buttonLeft, buttonRight, buttonTop, buttonBottom, buttonCenter})
             gui.add(button);
 
         buttonCenter->setNavigationUp(buttonTop);
@@ -435,7 +435,7 @@ TEST_CASE("[Widget]")
 
     SECTION("Renderer")
     {
-        auto renderer = widget->getRenderer();
+        auto* renderer = widget->getRenderer();
 
         SECTION("Opacity")
         {
@@ -537,8 +537,8 @@ TEST_CASE("[Widget]")
             const auto& widgetTypes = tgui::WidgetFactory::getWidgetTypes();
             for (const auto& type : widgetTypes)
             {
-                tgui::Widget::Ptr widget2 = tgui::WidgetFactory::getConstructFunction(type)();
-                tgui::Widget::ConstPtr widget3 = widget2;
+                const tgui::Widget::Ptr widget2 = tgui::WidgetFactory::getConstructFunction(type)();
+                const tgui::Widget::ConstPtr widget3 = widget2;
 
                 REQUIRE(widget2->getSharedRenderer() == widget3->getSharedRenderer());
             }
@@ -558,7 +558,7 @@ TEST_CASE("[Widget]")
         widget->setPosition(50, "15%");
         widget->setSize("min(20% - (10 * 5), 100)", "70");
 
-        tgui::String userData = "Main Widget User Data .With:Special{Chars}";
+        const tgui::String userData = "Main Widget User Data .With:Special{Chars}";
         widget->setUserData(userData);
         REQUIRE(widget->getUserData<tgui::String>() == userData);
 
@@ -651,7 +651,7 @@ TEST_CASE("[Widget]")
 
             TEST_DRAW_INIT(400, 175, button)
 
-            std::shared_ptr<void> scopeExit(nullptr, [&](void*){
+            const std::shared_ptr<void> scopeExit(nullptr, [&](void*){
                 gui.setRelativeView({0, 0, 1, 1});
                 tgui::getBackend()->setFontScale(1);
             });
@@ -668,8 +668,8 @@ TEST_CASE("[Widget]")
     {
         SECTION("Disabled widgets should not be focusable (https://forum.tgui.eu/index.php?topic=384)")
         {
-            tgui::Panel::Ptr panel = tgui::Panel::create();
-            tgui::EditBox::Ptr editBox = tgui::EditBox::create();
+            const tgui::Panel::Ptr panel = tgui::Panel::create();
+            const tgui::EditBox::Ptr editBox = tgui::EditBox::create();
             panel->add(editBox);
 
             editBox->setFocused(true);
@@ -684,8 +684,8 @@ TEST_CASE("[Widget]")
 
         SECTION("Widgets should not be focusable if their parent is disabled (https://github.com/texus/TGUI/issues/226)")
         {
-            tgui::Panel::Ptr panel = tgui::Panel::create();
-            tgui::EditBox::Ptr editBox = tgui::EditBox::create();
+            const tgui::Panel::Ptr panel = tgui::Panel::create();
+            const tgui::EditBox::Ptr editBox = tgui::EditBox::create();
             panel->add(editBox);
 
             editBox->setFocused(true);

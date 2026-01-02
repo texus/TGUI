@@ -26,7 +26,7 @@
 
 TEST_CASE("[MenuBar]")
 {
-    tgui::MenuBar::Ptr menuBar = tgui::MenuBar::create();
+    const tgui::MenuBar::Ptr menuBar = tgui::MenuBar::create();
     menuBar->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -395,7 +395,7 @@ TEST_CASE("[MenuBar]")
     testWidgetRenderer(menuBar->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = menuBar->getRenderer();
+        auto* renderer = menuBar->getRenderer();
 
         SECTION("colored")
         {
@@ -455,9 +455,9 @@ TEST_CASE("[MenuBar]")
 
         SECTION("textured")
         {
-            tgui::Texture textureBackground("resources/Black.png", {115, 179, 8, 6}, {2, 2, 4, 2});
-            tgui::Texture textureItemBackground("resources/Black.png", {115, 181, 8, 4}, {2, 0, 4, 2});
-            tgui::Texture textureSelectedItemBackground("resources/Black.png", {115, 185, 8, 6}, {2, 2, 4, 2});
+            const tgui::Texture textureBackground("resources/Black.png", {115, 179, 8, 6}, {2, 2, 4, 2});
+            const tgui::Texture textureItemBackground("resources/Black.png", {115, 181, 8, 4}, {2, 0, 4, 2});
+            const tgui::Texture textureSelectedItemBackground("resources/Black.png", {115, 185, 8, 6}, {2, 2, 4, 2});
 
             SECTION("set serialized property")
             {

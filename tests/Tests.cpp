@@ -36,6 +36,108 @@
 
 #include "Tests.hpp"
 
+namespace
+{
+    template <typename T>
+    void testClickableWidgetSignalsImpl(T widget)
+    {
+        testWidgetSignals(widget);
+
+        unsigned int mousePressedCount = 0;
+        unsigned int mouseReleasedCount = 0;
+        unsigned int clickedCount = 0;
+        unsigned int rightMousePressedCount = 0;
+        unsigned int rightMouseReleasedCount = 0;
+        unsigned int rightClickedCount = 0;
+
+        widget->setPosition({40, 30});
+        widget->setSize({150, 100});
+
+        widget->onMousePress([&](tgui::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
+        widget->onMouseRelease([&](tgui::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
+        widget->onClick([&](tgui::Vector2f pos){ mouseCallback(clickedCount, pos); });
+        widget->onRightMousePress([&](tgui::Vector2f pos){ mouseCallback(rightMousePressedCount, pos); });
+        widget->onRightMouseRelease([&](tgui::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
+        widget->onRightClick([&](tgui::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
+
+        SECTION("isMouseOnWidget")
+        {
+            REQUIRE(!widget->isMouseOnWidget({39, 29}));
+            REQUIRE(widget->isMouseOnWidget({40, 30}));
+            REQUIRE(widget->isMouseOnWidget({115, 80}));
+            REQUIRE(widget->isMouseOnWidget({189, 129}));
+            REQUIRE(!widget->isMouseOnWidget({190, 130}));
+
+            REQUIRE(mousePressedCount == 0);
+            REQUIRE(mouseReleasedCount == 0);
+            REQUIRE(clickedCount == 0);
+            REQUIRE(rightMousePressedCount == 0);
+            REQUIRE(rightMouseReleasedCount == 0);
+            REQUIRE(rightClickedCount == 0);
+        }
+
+        auto parent = tgui::Panel::create({300, 200});
+        parent->setPosition({60, 55});
+        parent->add(widget);
+
+        SECTION("left mouse click")
+        {
+            parent->leftMouseReleased({175, 135});
+
+            REQUIRE(mousePressedCount == 0);
+            REQUIRE(mouseReleasedCount == 1);
+            REQUIRE(clickedCount == 0);
+
+            SECTION("mouse press")
+            {
+                parent->leftMousePressed({175, 135});
+
+                REQUIRE(mousePressedCount == 1);
+                REQUIRE(mouseReleasedCount == 1);
+                REQUIRE(clickedCount == 0);
+            }
+
+            parent->leftMouseReleased({175, 135});
+            parent->leftMouseButtonNoLongerDown();
+
+            REQUIRE(mousePressedCount == 1);
+            REQUIRE(mouseReleasedCount == 2);
+            REQUIRE(clickedCount == 1);
+            REQUIRE(rightMousePressedCount == 0);
+            REQUIRE(rightMouseReleasedCount == 0);
+            REQUIRE(rightClickedCount == 0);
+        }
+
+        SECTION("right mouse click")
+        {
+            parent->rightMouseReleased({175, 135});
+
+            REQUIRE(rightMousePressedCount == 0);
+            REQUIRE(rightMouseReleasedCount == 1);
+            REQUIRE(rightClickedCount == 0);
+
+            SECTION("mouse press")
+            {
+                parent->rightMousePressed({175, 135});
+
+                REQUIRE(rightMousePressedCount == 1);
+                REQUIRE(rightMouseReleasedCount == 1);
+                REQUIRE(rightClickedCount == 0);
+            }
+
+            parent->rightMouseReleased({175, 135});
+            parent->rightMouseButtonNoLongerDown();
+
+            REQUIRE(rightMousePressedCount == 1);
+            REQUIRE(rightMouseReleasedCount == 2);
+            REQUIRE(rightClickedCount == 1);
+            REQUIRE(mousePressedCount == 0);
+            REQUIRE(mouseReleasedCount == 0);
+            REQUIRE(clickedCount == 0);
+        }
+    }
+} // anonymous namespace
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool compareVector2f(tgui::Vector2f left, tgui::Vector2f right)
@@ -113,107 +215,6 @@ void testWidgetSignals(const tgui::Widget::Ptr& widget)
         REQUIRE(mouseLeftCount == 1);
 
         parent->remove(widget);
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template <typename T>
-void testClickableWidgetSignalsImpl(T widget)
-{
-    testWidgetSignals(widget);
-
-    unsigned int mousePressedCount = 0;
-    unsigned int mouseReleasedCount = 0;
-    unsigned int clickedCount = 0;
-    unsigned int rightMousePressedCount = 0;
-    unsigned int rightMouseReleasedCount = 0;
-    unsigned int rightClickedCount = 0;
-
-    widget->setPosition({40, 30});
-    widget->setSize({150, 100});
-
-    widget->onMousePress([&](tgui::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
-    widget->onMouseRelease([&](tgui::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
-    widget->onClick([&](tgui::Vector2f pos){ mouseCallback(clickedCount, pos); });
-    widget->onRightMousePress([&](tgui::Vector2f pos){ mouseCallback(rightMousePressedCount, pos); });
-    widget->onRightMouseRelease([&](tgui::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
-    widget->onRightClick([&](tgui::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
-
-    SECTION("isMouseOnWidget")
-    {
-        REQUIRE(!widget->isMouseOnWidget({39, 29}));
-        REQUIRE(widget->isMouseOnWidget({40, 30}));
-        REQUIRE(widget->isMouseOnWidget({115, 80}));
-        REQUIRE(widget->isMouseOnWidget({189, 129}));
-        REQUIRE(!widget->isMouseOnWidget({190, 130}));
-
-        REQUIRE(mousePressedCount == 0);
-        REQUIRE(mouseReleasedCount == 0);
-        REQUIRE(clickedCount == 0);
-        REQUIRE(rightMousePressedCount == 0);
-        REQUIRE(rightMouseReleasedCount == 0);
-        REQUIRE(rightClickedCount == 0);
-    }
-
-    auto parent = tgui::Panel::create({300, 200});
-    parent->setPosition({60, 55});
-    parent->add(widget);
-
-    SECTION("left mouse click")
-    {
-        parent->leftMouseReleased({175, 135});
-
-        REQUIRE(mousePressedCount == 0);
-        REQUIRE(mouseReleasedCount == 1);
-        REQUIRE(clickedCount == 0);
-
-        SECTION("mouse press")
-        {
-            parent->leftMousePressed({175, 135});
-
-            REQUIRE(mousePressedCount == 1);
-            REQUIRE(mouseReleasedCount == 1);
-            REQUIRE(clickedCount == 0);
-        }
-
-        parent->leftMouseReleased({175, 135});
-        parent->leftMouseButtonNoLongerDown();
-
-        REQUIRE(mousePressedCount == 1);
-        REQUIRE(mouseReleasedCount == 2);
-        REQUIRE(clickedCount == 1);
-        REQUIRE(rightMousePressedCount == 0);
-        REQUIRE(rightMouseReleasedCount == 0);
-        REQUIRE(rightClickedCount == 0);
-    }
-
-    SECTION("right mouse click")
-    {
-        parent->rightMouseReleased({175, 135});
-
-        REQUIRE(rightMousePressedCount == 0);
-        REQUIRE(rightMouseReleasedCount == 1);
-        REQUIRE(rightClickedCount == 0);
-
-        SECTION("mouse press")
-        {
-            parent->rightMousePressed({175, 135});
-
-            REQUIRE(rightMousePressedCount == 1);
-            REQUIRE(rightMouseReleasedCount == 1);
-            REQUIRE(rightClickedCount == 0);
-        }
-
-        parent->rightMouseReleased({175, 135});
-        parent->rightMouseButtonNoLongerDown();
-
-        REQUIRE(rightMousePressedCount == 1);
-        REQUIRE(rightMouseReleasedCount == 2);
-        REQUIRE(rightClickedCount == 1);
-        REQUIRE(mousePressedCount == 0);
-        REQUIRE(mouseReleasedCount == 0);
-        REQUIRE(clickedCount == 0);
     }
 }
 
@@ -375,14 +376,14 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         SDL_GPUTextureTransferInfo textureTransferInfo = {};
         textureTransferInfo.transfer_buffer = transferBuffer;
         textureTransferInfo.offset = 0;
-	    SDL_DownloadFromGPUTexture(copyPass, &textureRegion, &textureTransferInfo);
-	    SDL_EndGPUCopyPass(copyPass);
+        SDL_DownloadFromGPUTexture(copyPass, &textureRegion, &textureTransferInfo);
+        SDL_EndGPUCopyPass(copyPass);
 
-	    SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(cmdBuffer);
-	    SDL_WaitForGPUFences(device, true, &fence, 1);
-	    SDL_ReleaseGPUFence(device, fence);
+        SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(cmdBuffer);
+        SDL_WaitForGPUFences(device, true, &fence, 1);
+        SDL_ReleaseGPUFence(device, fence);
 
-	    void* pixelData = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
+        void* pixelData = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
 
         int dataLength = 0;
         unsigned char* pngData = stbi_write_png_to_mem(
@@ -401,8 +402,8 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         tgui::writeFile(filename, tgui::CharStringView(reinterpret_cast<const char*>(pngData), static_cast<std::size_t>(dataLength)));
         STBIW_FREE(pngData); // NOLINT(cppcoreguidelines-no-malloc)
 
-	    SDL_UnmapGPUTransferBuffer(device, transferBuffer);
-	    SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
+        SDL_UnmapGPUTransferBuffer(device, transferBuffer);
+        SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
         SDL_ReleaseGPUTexture(device, texture);
         return;
     }

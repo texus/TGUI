@@ -25,7 +25,7 @@
 
 TEST_CASE("[PanelListBox]")
 {
-    tgui::PanelListBox::Ptr panelListBox = tgui::PanelListBox::create();
+    const tgui::PanelListBox::Ptr panelListBox = tgui::PanelListBox::create();
 
     SECTION("Signals")
     {
@@ -370,7 +370,7 @@ TEST_CASE("[PanelListBox]")
     testWidgetRenderer(panelListBox->getRenderer());
     SECTION("Renderer")
     {
-        auto renderer = panelListBox->getRenderer();
+        auto* renderer = panelListBox->getRenderer();
 
         SECTION("colored")
         {
