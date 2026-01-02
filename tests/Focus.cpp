@@ -27,6 +27,7 @@
 #include <set>
 
 #include "Tests.hpp"
+#include "catch.hpp"
 
 namespace
 {

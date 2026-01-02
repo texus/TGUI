@@ -26,6 +26,7 @@
 
 #include <TGUI/Config.hpp>
 #include "Tests.hpp"
+#include "catch.hpp"
 #include <memory>
 #include <vector>
 

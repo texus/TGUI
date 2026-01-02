@@ -26,6 +26,7 @@
 #include <cstring>
 
 #include "Tests.hpp"
+#include "catch.hpp"
 
 #include <TGUI/Loading/ImageLoader.hpp>
 
