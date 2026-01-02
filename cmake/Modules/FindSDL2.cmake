@@ -1,7 +1,7 @@
 # Distributed under the OSI-approved BSD 3-Clause License.
 # See https://cmake.org/licensing for details.
 
-#  Copyright 2021-2025 Bruno Van de Velde <vdv_b@tgui.eu>
+#  Copyright 2021-2026 Bruno Van de Velde <vdv_b@tgui.eu>
 #  Copyright 2019 Amine Ben Hassouna <amine.benhassouna@gmail.com>
 #  Copyright 2000-2019 Kitware, Inc. and Contributors
 #  All rights reserved.
