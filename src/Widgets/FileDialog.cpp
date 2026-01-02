@@ -292,8 +292,7 @@ namespace tgui
     {
         if (dialog)
             return std::static_pointer_cast<FileDialog>(dialog->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -387,7 +386,7 @@ namespace tgui
             m_fileTypeFilters.emplace_back(filter.first, expressions);
         }
 
-        if (m_fileTypeFilters.size() == 0)
+        if (m_fileTypeFilters.empty())
             m_fileTypeFilters.emplace_back("All files (*)", std::vector<String>());
 
         m_comboBoxFileTypes->removeAllItems();
@@ -591,7 +590,7 @@ namespace tgui
         {
             if (m_createFolderDialogOpen)
             {
-                EditBox::Ptr folderNameEditBox = get<EditBox>("FolderNameEditBox");
+                const EditBox::Ptr folderNameEditBox = get<EditBox>("FolderNameEditBox");
                 createFolder(folderNameEditBox->getText());
                 destroyCreateFolderDialog();
                 return;
@@ -617,8 +616,7 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Enter) || (event.code == Event::KeyboardKey::Escape))
             return true;
-        else
-            return ChildWindow::canHandleKeyPress(event);
+        return ChildWindow::canHandleKeyPress(event);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -771,35 +769,26 @@ namespace tgui
             {
                 if (m_sortInversed)
                     return left.modificationTime < right.modificationTime;
-                else
-                    return left.modificationTime > right.modificationTime;
+                return left.modificationTime > right.modificationTime;
             }
-            else if (m_sortColumnIndex == 1) // Sort by file size
+            if (m_sortColumnIndex == 1) // Sort by file size
             {
                 if (left.directory != right.directory)
                     return right.directory; // Place directories at the end of the list
-                else if (left.directory) // Both are directories, sort them alphabetically by filename since they have no size
+                if (left.directory) // Both are directories, sort them alphabetically by filename since they have no size
                     return left.filename.toLower() < right.filename.toLower();
-                else // Both are files, sort them by file size
-                {
-                    if (m_sortInversed)
-                        return left.fileSize < right.fileSize;
-                    else
-                        return left.fileSize > right.fileSize;
-                }
+                // Both are files, sort them by file size
+                if (m_sortInversed)
+                    return left.fileSize < right.fileSize;
+                return left.fileSize > right.fileSize;
             }
-            else // Sort by filename
-            {
-                if (left.directory != right.directory)
-                    return left.directory; // Place directories in front of files
-                else // Both are directories or both are files, so sort alphabetically
-                {
-                    if (m_sortInversed)
-                        return left.filename.toLower() > right.filename.toLower();
-                    else
-                        return left.filename.toLower() < right.filename.toLower();
-                }
-            }
+            // Sort by filename
+            if (left.directory != right.directory)
+                return left.directory; // Place directories in front of files
+            // Both are directories or both are files, so sort alphabetically
+            if (m_sortInversed)
+                return left.filename.toLower() > right.filename.toLower();
+            return left.filename.toLower() < right.filename.toLower();
         });
 
         if (!m_listView->getHeaderVisible())
@@ -997,24 +986,24 @@ namespace tgui
     void FileDialog::createCreateFolderDialog()
     {
         // Create a transparent background
-        Panel::Ptr backgroundPanel = Panel::create({"100%", "100%"});
+        const Panel::Ptr backgroundPanel = Panel::create({"100%", "100%"});
         backgroundPanel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
 
-        ChildWindow::Ptr createFolderWindow = ChildWindow::create(m_buttonCreateFolder->getText(), TitleButton::None);
+        const ChildWindow::Ptr createFolderWindow = ChildWindow::create(m_buttonCreateFolder->getText(), TitleButton::None);
         createFolderWindow->setPositionLocked(true);
         createFolderWindow->setPosition("50%", "50%");
         createFolderWindow->setSize("50%", "25%");
         createFolderWindow->setOrigin(0.5f, 0.5f);
 
-        EditBox::Ptr folderNameEditBox = EditBox::create();
+        const EditBox::Ptr folderNameEditBox = EditBox::create();
         folderNameEditBox->setPosition("50%", "30%");
         folderNameEditBox->setOrigin(0.5f, 0.5f);
 
-        Button::Ptr cancelButton = Button::create("Cancel");
+        const Button::Ptr cancelButton = Button::create("Cancel");
         cancelButton->setPosition("25%", "75%");
         cancelButton->setOrigin(0.5f, 0.5f);
 
-        Button::Ptr confirmButton = Button::create("Confirm");
+        const Button::Ptr confirmButton = Button::create("Confirm");
         confirmButton->setPosition("75%", "75%");
         confirmButton->setOrigin(0.5f, 0.5f);
         confirmButton->setEnabled(false);
@@ -1207,10 +1196,9 @@ namespace tgui
     {
         if (signalName == onFileSelect.getName())
             return onFileSelect;
-        else if (signalName == onCancel.getName())
+        if (signalName == onCancel.getName())
             return onCancel;
-        else
-            return ChildWindow::getSignal(std::move(signalName));
+        return ChildWindow::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1382,7 +1370,7 @@ namespace tgui
             if (!childNode->propertyValuePairs[U"Pattern"]->listNode)
                 throw Exception{U"Failed to parse 'Pattern' property inside the 'FileTypeFilter' property, expected a list as value"};
 
-            String description = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Description"]->value).getString();
+            const String description = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Description"]->value).getString();
 
             std::vector<String> patterns;
             for (const auto& item : childNode->propertyValuePairs[U"Pattern"]->valueList)

@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/ProgressBar.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +67,7 @@ namespace tgui
     {
         if (progressBar)
             return std::static_pointer_cast<ProgressBar>(progressBar->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,12 +116,10 @@ namespace tgui
         m_minimum = minimum;
 
         // The minimum can never be greater than the maximum
-        if (m_minimum > m_maximum)
-            m_maximum = m_minimum;
+        m_maximum = std::max(m_minimum, m_maximum);
 
         // When the value is below the minimum then adjust it
-        if (m_value < m_minimum)
-            m_value = m_minimum;
+        m_value = std::max(m_value, m_minimum);
 
         // Recalculate the size of the front image (the size of the part that will be drawn)
         recalculateFillSize();
@@ -142,12 +140,10 @@ namespace tgui
         m_maximum = maximum;
 
         // The maximum can never be below the minimum
-        if (m_maximum < m_minimum)
-            m_minimum = m_maximum;
+        m_minimum = std::min(m_maximum, m_minimum);
 
         // When the value is above the maximum then adjust it
-        if (m_value > m_maximum)
-            m_value = m_maximum;
+        m_value = std::min(m_value, m_maximum);
 
         // Recalculate the size of the front image (the size of the part that will be drawn)
         recalculateFillSize();
@@ -254,10 +250,9 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else if (signalName == onFull.getName())
+        if (signalName == onFull.getName())
             return onFull;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -381,7 +376,7 @@ namespace tgui
 
         if (node->propertyValuePairs[U"FillDirection"])
         {
-            String direction = node->propertyValuePairs[U"FillDirection"]->value.trim();
+            const String direction = node->propertyValuePairs[U"FillDirection"]->value.trim();
             if (direction == U"LeftToRight")
                 setFillDirection(ProgressBar::FillDirection::LeftToRight);
             else if (direction == U"RightToLeft")
@@ -517,7 +512,7 @@ namespace tgui
             target.drawSprite(states, m_spriteBackground);
         else
         {
-            Vector2f positionOffset = {m_backRect.left, m_backRect.top};
+            const Vector2f positionOffset = {m_backRect.left, m_backRect.top};
 
             states.transform.translate(positionOffset);
             target.drawFilledRect(states, {m_backRect.width, m_backRect.height}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
@@ -541,7 +536,7 @@ namespace tgui
         }
         else // Using colors instead of a texture
         {
-            Vector2f positionOffset = {m_frontRect.left, m_frontRect.top};
+            const Vector2f positionOffset = {m_frontRect.left, m_frontRect.top};
 
             states.transform.translate(positionOffset);
             target.drawFilledRect(states, {m_frontRect.width, m_frontRect.height}, Color::applyOpacity(m_fillColorCached, m_opacityCached));
@@ -549,7 +544,7 @@ namespace tgui
         }
 
         // Draw the text
-        if (m_textBack.getString() != U"")
+        if (!m_textBack.getString().empty())
         {
             const Vector2f textTranslation = (getInnerSize() - m_textBack.getSize()) / 2.f;
 

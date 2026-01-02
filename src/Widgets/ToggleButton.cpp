@@ -59,8 +59,7 @@ namespace tgui
     {
         if (button)
             return std::static_pointer_cast<ToggleButton>(button->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,10 +117,9 @@ namespace tgui
     {
         if (m_ignoreKeyEvents)
             return false;
-        else if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
+        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             return true;
-        else
-            return ClickableWidget::canHandleKeyPress(event);
+        return ClickableWidget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,8 +128,7 @@ namespace tgui
     {
         if (signalName == onToggle.getName())
             return onToggle;
-        else
-            return ButtonBase::getSignal(std::move(signalName));
+        return ButtonBase::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

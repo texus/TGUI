@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/HorizontalWrap.hpp>
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,8 +60,7 @@ namespace tgui
     {
         if (layout)
             return std::static_pointer_cast<HorizontalWrap>(layout->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,8 +88,7 @@ namespace tgui
 
             currentHorizontalOffset += size.x + m_spaceBetweenWidgetsCached;
 
-            if (lineHeight < size.y)
-                lineHeight = size.y;
+            lineHeight = std::max(lineHeight, size.y);
         }
     }
 

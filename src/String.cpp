@@ -46,10 +46,9 @@ namespace tgui
     TGUI_NODISCARD static inline bool compareCharIgnoreCase(char32_t char1, char32_t char2) {
         if (char1 == char2)
             return true;
-        else if ((char1 < 128) && (char2 < 128))
+        if ((char1 < 128) && (char2 < 128))
             return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
-        else
-            return false;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,8 +166,7 @@ namespace tgui
         int result;
         if (attemptToInt(result))
             return result;
-        else
-            return defaultValue;
+        return defaultValue;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,8 +176,7 @@ namespace tgui
         unsigned int result;
         if (attemptToUInt(result))
             return result;
-        else
-            return defaultValue;
+        return defaultValue;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,8 +186,7 @@ namespace tgui
         float result;
         if (attemptToFloat(result))
             return result;
-        else
-            return defaultValue;
+        return defaultValue;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,7 +344,7 @@ namespace tgui
         }
         else // When the delimeter is empty, each character is put in its own part
         {
-            for (char32_t c : m_string)
+            for (const char32_t c : m_string)
                 substrings.push_back(c);
         }
 
@@ -1808,7 +1804,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void String::swap(String& other)
+    void String::swap(String& other) noexcept
     {
         m_string.swap(other.m_string);
     }

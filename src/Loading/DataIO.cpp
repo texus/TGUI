@@ -80,8 +80,7 @@
     { \
         if (ReturnErrorOnEOF) \
             return "Unexpected EOF while parsing."; \
-        else \
-            return ""; \
+        return ""; \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +105,7 @@ namespace tgui
                     stream.read(&c, 1);
                     return word;
                 }
-                else if (!std::isspace(static_cast<unsigned char>(c)) && (c != '=') && (c != ';') && (c != ':') && (c != '{') && (c != '}'))
+                if (!std::isspace(static_cast<unsigned char>(c)) && (c != '=') && (c != ';') && (c != ':') && (c != '{') && (c != '}'))
                 {
                     stream.read(&c, 1);
 
@@ -150,10 +149,7 @@ namespace tgui
                             if (c == '"' && !backslash)
                                 break;
 
-                            if (c == '\\' && !backslash)
-                                backslash = true;
-                            else
-                                backslash = false;
+                            backslash = c == '\\' && !backslash;
                         }
                     }
                     else
@@ -228,10 +224,7 @@ namespace tgui
                         if (c == '"' && !backslash)
                             break;
 
-                        if (c == '\\' && !backslash)
-                            backslash = true;
-                        else
-                            backslash = false;
+                        backslash = c == '\\' && !backslash;
                     }
 
                     if (stream.peek() == EOF)
@@ -242,13 +235,13 @@ namespace tgui
 
                 if ((c == '=') || (c == '{'))
                     return "";
-                else if ((c == ';') || (c == '}'))
+                if ((c == ';') || (c == '}'))
                 {
                     // Remove trailing whitespace before returning the line
                     line.erase(line.find_last_not_of(" \n\r\t")+1);
                     return line;
                 }
-                else if (::isspace(c))
+                if (::isspace(c))
                 {
                     stream.read(&c, 1);
                     if (!whitespaceFound)
@@ -327,10 +320,7 @@ namespace tgui
                                         break;
                                     }
 
-                                    if (line[i] == '\\' && !backslash)
-                                        backslash = true;
-                                    else
-                                        backslash = false;
+                                    backslash = line[i] == '\\' && !backslash;
 
                                     i++;
                                 }
@@ -349,21 +339,16 @@ namespace tgui
                 node->propertyValuePairs[key] = std::move(valueNode);
                 return "";
             }
-            else
-            {
-                if (stream.peek() == EOF)
-                    return "Found EOF while trying to read a value.";
-                else
-                {
-                    chr = static_cast<char>(stream.peek());
-                    if (chr == '=')
-                        return "Found '=' while trying to read a value.";
-                    else if (chr == '{')
-                        return "Found '{' while trying to read a value.";
-                    else
-                        return "Found empty value.";
-                }
-            }
+
+            if (stream.peek() == EOF)
+                return "Found EOF while trying to read a value.";
+
+            chr = static_cast<char>(stream.peek());
+            if (chr == '=')
+                return "Found '=' while trying to read a value.";
+            if (chr == '{')
+                return "Found '{' while trying to read a value.";
+            return "Found empty value.";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,7 +360,7 @@ namespace tgui
             stream.read(&chr, 1);
             REMOVE_WHITESPACE_AND_COMMENTS(true)
 
-            String baseSectionName = readWord(stream);
+            const String baseSectionName = readWord(stream);
             if (baseSectionName.empty())
                 return "Expected name of base section to inherit from after ':'.";
 
@@ -445,12 +430,12 @@ namespace tgui
             {
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
 
-                String word = readWord(stream);
-                if (word == U"")
+                const String word = readWord(stream);
+                if (word.empty())
                 {
                     if (stream.peek() == EOF)
                         return "Found EOF while trying to read property or nested section name.";
-                    else if (stream.peek() == '}')
+                    if (stream.peek() == '}')
                     {
                         node->children.push_back(std::move(sectionNode));
 
@@ -464,7 +449,7 @@ namespace tgui
                         REMOVE_WHITESPACE_AND_COMMENTS(false)
                         return "";
                     }
-                    else if (stream.peek() != '{')
+                    if (stream.peek() != '{')
                         return "Expected property or nested section name, found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
                 }
 
@@ -500,8 +485,8 @@ namespace tgui
         {
             REMOVE_WHITESPACE_AND_COMMENTS(false)
 
-            String word = readWord(stream);
-            if (word == U"")
+            const String word = readWord(stream);
+            if (word.empty())
             {
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
                 if (stream.peek() != '{')
@@ -511,12 +496,11 @@ namespace tgui
             REMOVE_WHITESPACE_AND_COMMENTS(true)
             if (stream.peek() == '{')
                 return parseSection(stream, root, word);
-            else if (stream.peek() == '=')
+            if (stream.peek() == '=')
                 return parseKeyValue(stream, root, word);
-            else if (stream.peek() == ':')
+            if (stream.peek() == ':')
                 return parseInheritance(stream, root, word);
-            else
-                return "Expected '{', '=' or ':', found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
+            return "Expected '{', '=' or ':', found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -535,7 +519,7 @@ namespace tgui
                     output.emplace_back("    " + pair.first + " = " + pair.second->value + ";");
             }
 
-            if (node->propertyValuePairs.size() > 0 && node->children.size() > 0)
+            if (!node->propertyValuePairs.empty() && !node->children.empty())
                 output.emplace_back("");
 
             if (!node->children.empty())
@@ -581,8 +565,7 @@ namespace tgui
                     auto lineNumber = std::count(str.begin(), str.begin() + static_cast<std::ptrdiff_t>(position), U'\n') + 1;
                     throw Exception{U"Error while parsing input at line " + String::fromNumber(lineNumber) + U". " + error};
                 }
-                else
-                    throw Exception{U"Error while parsing input. " + error};
+                throw Exception{U"Error while parsing input. " + error};
             }
         }
 
@@ -596,14 +579,14 @@ namespace tgui
         for (const auto& pair : rootNode->propertyValuePairs)
             stream << pair.first << " = " << pair.second->value << ";" << std::endl;
 
-        if (rootNode->propertyValuePairs.size() > 0 && rootNode->children.size() > 0)
+        if (!rootNode->propertyValuePairs.empty() && !rootNode->children.empty())
             stream << std::endl;
 
         std::vector<String> output;
         for (std::size_t i = 0; i < rootNode->children.size(); ++i)
         {
             for (const auto& line : convertNodesToLines(rootNode->children[i]))
-                output.emplace_back(std::move(line));
+                output.emplace_back(line);
 
             if (i < rootNode->children.size()-1)
                 output.emplace_back("");

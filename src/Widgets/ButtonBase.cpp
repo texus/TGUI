@@ -571,15 +571,14 @@ namespace tgui
         auto it = m_namedComponents.find(name);
         if (it != m_namedComponents.end())
             return it->second;
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void ButtonBase::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        for (auto& component : m_components)
+        for (const auto& component : m_components)
             component->draw(target, states);
     }
 

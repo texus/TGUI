@@ -59,8 +59,7 @@ namespace tgui
     {
         if (separator)
             return std::static_pointer_cast<SeparatorLine>(separator->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

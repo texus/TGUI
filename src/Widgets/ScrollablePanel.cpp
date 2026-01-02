@@ -26,6 +26,7 @@
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Keyboard.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,8 +171,7 @@ namespace tgui
     {
         if (panel)
             return std::static_pointer_cast<ScrollablePanel>(panel->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,10 +225,8 @@ namespace tgui
                 widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
                 widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y
             };
-            if (bottomRight.x > m_mostBottomRightPosition.x)
-                m_mostBottomRightPosition.x = bottomRight.x;
-            if (bottomRight.y > m_mostBottomRightPosition.y)
-                m_mostBottomRightPosition.y = bottomRight.y;
+            m_mostBottomRightPosition.x = std::max(bottomRight.x, m_mostBottomRightPosition.x);
+            m_mostBottomRightPosition.y = std::max(bottomRight.y, m_mostBottomRightPosition.y);
 
             connectPositionAndSize(widget);
             updateScrollbars();
@@ -324,10 +322,9 @@ namespace tgui
     {
         if (m_contentSize != Vector2f{0, 0})
             return m_contentSize;
-        else if (m_widgets.empty())
+        if (m_widgets.empty())
             return getInnerSize();
-        else
-            return m_mostBottomRightPosition;
+        return m_mostBottomRightPosition;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -654,7 +651,7 @@ namespace tgui
 
             mousePos -= getPosition() + getChildWidgetsOffset() - getContentOffset();
 
-            Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
+            const Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
             if (widget)
             {
                 toolTip = widget->askToolTip(mousePos);
@@ -908,10 +905,8 @@ namespace tgui
                 widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
                 widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y
             };
-            if (bottomRight.x > m_mostBottomRightPosition.x)
-                m_mostBottomRightPosition.x = bottomRight.x;
-            if (bottomRight.y > m_mostBottomRightPosition.y)
-                m_mostBottomRightPosition.y = bottomRight.y;
+            m_mostBottomRightPosition.x = std::max(bottomRight.x, m_mostBottomRightPosition.x);
+            m_mostBottomRightPosition.y = std::max(bottomRight.y, m_mostBottomRightPosition.y);
         }
     }
 

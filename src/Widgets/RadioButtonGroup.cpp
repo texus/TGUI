@@ -53,8 +53,7 @@ namespace tgui
     {
         if (group)
             return std::static_pointer_cast<RadioButtonGroup>(group->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

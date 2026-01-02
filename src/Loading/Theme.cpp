@@ -682,7 +682,7 @@ namespace tgui
             for (const auto& property : properties)
                 renderer->propertyValuePairs[property.first] = ObjectConverter(property.second);
 
-            for (auto& observer : renderer->observers)
+            for (const auto& observer : renderer->observers)
                 observer->setRenderer(renderer);
         }
     }
@@ -734,7 +734,7 @@ namespace tgui
         // We do this in a separate loop because all renderers need to be replaced before
         // we tell the observers (because e.g. an observer of the BitmapButton renderer might
         // want to access the Button renderer of the theme to inherit properties).
-        for (auto pair : m_renderers)
+        for (const auto& pair : m_renderers)
         {
             const auto& renderer = pair.second;
 
@@ -772,7 +772,7 @@ namespace tgui
 
         m_renderers[id] = RendererData::create();
         m_renderers[id]->connectedTheme = this;
-        auto& properties = m_themeLoader->load(m_primary, id);
+        const auto& properties = m_themeLoader->load(m_primary, id);
         for (const auto& property : properties)
             m_renderers[id]->propertyValuePairs[property.first] = ObjectConverter(property.second);
 
@@ -808,8 +808,7 @@ namespace tgui
         auto propertyIt = m_globalProperties.find(property);
         if (propertyIt != m_globalProperties.end())
             return propertyIt->second;
-        else
-            return {};
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -845,8 +844,7 @@ namespace tgui
             m_renderers.erase(it);
             return true;
         }
-        else
-            return false;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

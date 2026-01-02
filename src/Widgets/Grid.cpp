@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/Grid.hpp>
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,8 +157,7 @@ namespace tgui
     {
         if (grid)
             return std::static_pointer_cast<Grid>(grid->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,8 +240,7 @@ namespace tgui
                 if ((m_gridWidgets[r].size() <= col) || !m_gridWidgets[r][col])
                     continue;
 
-                if (m_columnWidth[col] < m_gridWidgets[r][col]->getFullSize().x + m_objPadding[r][col].getLeft() + m_objPadding[r][col].getRight())
-                    m_columnWidth[col] = m_gridWidgets[r][col]->getFullSize().x + m_objPadding[r][col].getLeft() + m_objPadding[r][col].getRight();
+                m_columnWidth[col] = std::max(m_columnWidth[col], m_gridWidgets[r][col]->getFullSize().x + m_objPadding[r][col].getLeft() + m_objPadding[r][col].getRight());
             }
 
             // Update the height of the row that used to contain the widget
@@ -251,16 +250,15 @@ namespace tgui
                 if (!m_gridWidgets[row][c])
                     continue;
 
-                if (m_rowHeight[row] < m_gridWidgets[row][c]->getFullSize().y + m_objPadding[row][c].getTop() + m_objPadding[row][c].getBottom())
-                    m_rowHeight[row] = m_gridWidgets[row][c]->getFullSize().y + m_objPadding[row][c].getTop() + m_objPadding[row][c].getBottom();
+                m_rowHeight[row] = std::max(m_rowHeight[row], m_gridWidgets[row][c]->getFullSize().y + m_objPadding[row][c].getTop() + m_objPadding[row][c].getBottom());
             }
 
             // If this was the last column and it is now empty then remove the empty columns at the end
             if (col + 1 == m_columnWidth.size())
             {
                 std::size_t nrUsedColumns = 0;
-                for (std::size_t r = 0; r < m_gridWidgets.size(); ++r)
-                    nrUsedColumns = std::max(nrUsedColumns, m_gridWidgets[r].size());
+                for (const auto& grid_widget : m_gridWidgets)
+                    nrUsedColumns = std::max(nrUsedColumns, grid_widget.size());
 
                 if (m_columnWidth.size() > nrUsedColumns)
                     m_columnWidth.resize(nrUsedColumns);
@@ -384,8 +382,7 @@ namespace tgui
     {
         if ((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size()))
             return m_gridWidgets[row][col];
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,8 +440,7 @@ namespace tgui
     {
         if (((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size())) && (m_gridWidgets[row][col] != nullptr))
             return m_objPadding[row][col];
-        else
-            return {};
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -492,8 +488,7 @@ namespace tgui
     {
         if (((row < m_gridWidgets.size()) && (col < m_gridWidgets[row].size())) && (m_gridWidgets[row][col] != nullptr))
             return m_objAlignment[row][col];
-        else
-            return Alignment::Center;
+        return Alignment::Center;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -558,8 +553,7 @@ namespace tgui
                          + ", " + alignmentToString(getWidgetAlignment(row, col))
                          + ")\"";
                 }
-                else
-                    return "\"()\"";
+                return "\"()\"";
             };
 
             String str = "[" + getWidgetsInGridString(children[0]);
@@ -651,7 +645,7 @@ namespace tgui
                 if (pos == String::npos)
                     throw Exception{U"Failed to parse 'GridWidgets' property. Expected list values to be in the form of '\"(row, column, (padding), alignment)\"'. Missing comma after padding."};
 
-                String alignmentStr = str.substr(pos + 1).trim();
+                const String alignmentStr = str.substr(pos + 1).trim();
                 if (alignmentStr == U"Center")
                     alignment = Grid::Alignment::Center;
                 else if (alignmentStr == U"UpperLeft")
@@ -686,11 +680,11 @@ namespace tgui
         Vector2f minSize;
 
         // Loop through all rows to find the minimum height required by the grid
-        for (float rowHeight : m_rowHeight)
+        for (const float rowHeight : m_rowHeight)
             minSize.y += rowHeight;
 
         // Loop through all columns to find the minimum width required by the grid
-        for (float columnWidth : m_columnWidth)
+        for (const float columnWidth : m_columnWidth)
             minSize.x += columnWidth;
 
         return minSize;
@@ -815,12 +809,10 @@ namespace tgui
                     continue;
 
                 // Remember the biggest column width
-                if (m_columnWidth[col] < m_gridWidgets[row][col]->getFullSize().x + m_objPadding[row][col].getLeft() + m_objPadding[row][col].getRight())
-                    m_columnWidth[col] = m_gridWidgets[row][col]->getFullSize().x + m_objPadding[row][col].getLeft() + m_objPadding[row][col].getRight();
+                m_columnWidth[col] = std::max(m_columnWidth[col], m_gridWidgets[row][col]->getFullSize().x + m_objPadding[row][col].getLeft() + m_objPadding[row][col].getRight());
 
                 // Remember the biggest row height
-                if (m_rowHeight[row] < m_gridWidgets[row][col]->getFullSize().y + m_objPadding[row][col].getTop() + m_objPadding[row][col].getBottom())
-                    m_rowHeight[row] = m_gridWidgets[row][col]->getFullSize().y + m_objPadding[row][col].getTop() + m_objPadding[row][col].getBottom();
+                m_rowHeight[row] = std::max(m_rowHeight[row], m_gridWidgets[row][col]->getFullSize().y + m_objPadding[row][col].getTop() + m_objPadding[row][col].getBottom());
             }
         }
 

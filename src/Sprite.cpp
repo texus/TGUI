@@ -293,8 +293,8 @@ namespace tgui
 
         // Find out on which pixel the mouse is standing
         Vector2f pixel;
-        FloatRect middleRect = FloatRect{m_texture.getMiddleRect()};
-        Vector2u imageSize = m_texture.getImageSize();
+        const FloatRect middleRect = FloatRect{m_texture.getMiddleRect()};
+        const Vector2u imageSize = m_texture.getImageSize();
         switch (m_scalingType)
         {
             case ScalingType::Normal:

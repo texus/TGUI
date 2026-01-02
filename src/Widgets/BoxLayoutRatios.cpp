@@ -154,7 +154,7 @@ namespace tgui
     {
         auto node = BoxLayout::save(renderers);
 
-        if (m_widgets.size() > 0)
+        if (!m_widgets.empty())
         {
             String ratioList = "[" + Serializer::serialize(m_ratios[0]);
             for (std::size_t i = 1; i < m_widgets.size(); ++i)

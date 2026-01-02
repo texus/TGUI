@@ -175,14 +175,14 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function used by updateVertices to add vertices for a glyph
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color,
-                          const FontGlyph& glyph, float fontScale, float italicShear);
+        static void addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color,
+                                 const FontGlyph& glyph, float fontScale, float italicShear);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function used by updateVertices to add vertices for a line
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color,
-                     float offset, float thickness, float outlineThickness, float fontScale);
+        static void addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color,
+                            float offset, float thickness, float outlineThickness, float fontScale);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

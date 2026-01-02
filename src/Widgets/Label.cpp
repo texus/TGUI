@@ -70,8 +70,7 @@ namespace tgui
     {
         if (label)
             return std::static_pointer_cast<Label>(label->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,8 +234,7 @@ namespace tgui
     {
         if (m_autoSize)
             return m_maximumTextWidth;
-        else
-            return getSize().x;
+        return getSize().x;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -376,8 +374,7 @@ namespace tgui
     {
         if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,7 +516,7 @@ namespace tgui
         if (node->propertyValuePairs[U"HorizontalAlignment"])
         {
             // TGUI_NEXT: Remove "tgui::" prefixes
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"HorizontalAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"HorizontalAlignment"]->value).getString();
             if (alignment == U"Right")
                 setHorizontalAlignment(tgui::HorizontalAlignment::Right);
             else if (alignment == U"Center")
@@ -531,7 +528,7 @@ namespace tgui
         if (node->propertyValuePairs[U"VerticalAlignment"])
         {
             // TGUI_NEXT: Remove "tgui::" prefixes
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"VerticalAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"VerticalAlignment"]->value).getString();
             if (alignment == U"Bottom")
                 setVerticalAlignment(tgui::VerticalAlignment::Bottom);
             else if (alignment == U"Center")
@@ -670,8 +667,7 @@ namespace tgui
             else
                 textPiece.setString(stringPtr->substr(searchPosStart));
 
-            if (textPiece.getSize().x > width)
-                width = textPiece.getSize().x;
+            width = std::max(textPiece.getSize().x, width);
 
             searchPosStart = newLinePos + 1;
         }
@@ -759,8 +755,8 @@ namespace tgui
             auto& line = m_lines[i];
 
             float maxHeight = 0;
-            for (std::size_t j = 0; j < line.size(); ++j)
-                maxHeight = std::max(maxHeight, line[j].getSize().y);
+            for (const auto& text : line)
+                maxHeight = std::max(maxHeight, text.getSize().y);
 
             Vector2f piecePos = pos;
             if ((m_horizontalAlignment != tgui::HorizontalAlignment::Left) && !line.empty()) // TGUI_NEXT: Remove "tgui::" prefix

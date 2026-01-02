@@ -26,6 +26,7 @@
 #include <TGUI/Keyboard.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
@@ -71,8 +72,7 @@ namespace tgui
     {
         if (listView)
             return std::static_pointer_cast<ListView>(listView->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,11 +164,9 @@ namespace tgui
     {
         if (index < m_columns.size())
             return m_columns[index].text.getString();
-        else
-        {
-            TGUI_PRINT_WARNING("getColumnText called with invalid index.");
-            return "";
-        }
+
+        TGUI_PRINT_WARNING("getColumnText called with invalid index.");
+        return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,11 +194,9 @@ namespace tgui
     {
         if (index < m_columns.size())
             return m_columns[index].width;
-        else
-        {
-            TGUI_PRINT_WARNING("getColumnWidth called with invalid index.");
-            return 0;
-        }
+
+        TGUI_PRINT_WARNING("getColumnWidth called with invalid index.");
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,11 +205,9 @@ namespace tgui
     {
         if (index < m_columns.size())
             return m_columns[index].designWidth;
-        else
-        {
-            TGUI_PRINT_WARNING("getColumnDesignWidth called with invalid index.");
-            return 0;
-        }
+
+        TGUI_PRINT_WARNING("getColumnDesignWidth called with invalid index.");
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,8 +243,7 @@ namespace tgui
     {
         if (m_requestedHeaderHeight > 0)
             return m_requestedHeaderHeight;
-        else
-            return std::round(m_itemHeight * 1.25f);
+        return std::round(m_itemHeight * 1.25f);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,8 +252,7 @@ namespace tgui
     {
         if (m_headerVisible && !m_columns.empty())
             return getHeaderHeight() + getHeaderSeparatorHeight();
-        else
-            return 0;
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,11 +273,9 @@ namespace tgui
     {
         if (columnIndex < m_columns.size())
             return m_columns[columnIndex].alignment;
-        else
-        {
-            TGUI_PRINT_WARNING("getColumnAlignment called with invalid columnIndex.");
-            return HorizontalAlignment::Left;
-        }
+
+        TGUI_PRINT_WARNING("getColumnAlignment called with invalid columnIndex.");
+        return HorizontalAlignment::Left;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,11 +300,9 @@ namespace tgui
     {
         if (index < m_columns.size())
             return m_columns[index].autoResize;
-        else
-        {
-            TGUI_PRINT_WARNING("getColumnAutoResize called with invalid index.");
-            return false;
-        }
+
+        TGUI_PRINT_WARNING("getColumnAutoResize called with invalid index.");
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -338,11 +326,9 @@ namespace tgui
     {
         if (index < m_columns.size())
             return m_columns[index].expanded;
-        else
-        {
-            TGUI_PRINT_WARNING("getColumnExpanded called with invalid index.");
-            return false;
-        }
+
+        TGUI_PRINT_WARNING("getColumnExpanded called with invalid index.");
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -789,8 +775,7 @@ namespace tgui
     {
         if (!m_selectedItems.empty())
             return static_cast<int>(*m_selectedItems.begin());
-        else
-            return -1;
+        return -1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -898,11 +883,9 @@ namespace tgui
     {
         if (index < m_items.size())
             return m_items[index].icon.getTexture();
-        else
-        {
-            TGUI_PRINT_WARNING("ListView::getItemIcon called with invalid index.");
-            return {};
-        }
+
+        TGUI_PRINT_WARNING("ListView::getItemIcon called with invalid index.");
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1002,6 +985,7 @@ namespace tgui
         for (const auto& item : m_items)
         {
             std::vector<String> row;
+            row.reserve(item.texts.size());
             for (const auto& text : item.texts)
                 row.push_back(text.getString());
 
@@ -1099,8 +1083,7 @@ namespace tgui
     {
         if (m_headerTextSize)
             return m_headerTextSize;
-        else
-            return m_textSizeCached;
+        return m_textSizeCached;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1526,8 +1509,7 @@ namespace tgui
             // Don't allow columns that are so small that we can't tell on which border the mouse is standing anymore.
             // If we allow 1 pixel columns then findBorderBelowMouse should be improved to not pick the first border it finds
             // but also check other borders and see which one is closest to the mouse.
-            if (newWidth < 5)
-                newWidth = 5;
+            newWidth = std::max<float>(newWidth, 5);
 
             m_columns[m_resizingColumn-1].expanded = false;
             m_columns[m_resizingColumn-1].autoResize = false;
@@ -1718,8 +1700,7 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Up) || (event.code == Event::KeyboardKey::Down) || keyboard::isKeyPressCopy(event))
             return true;
-        else
-            return Widget::canHandleKeyPress(event);
+        return Widget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1728,14 +1709,13 @@ namespace tgui
     {
         if (signalName == onItemSelect.getName())
             return onItemSelect;
-        else if (signalName == onDoubleClick.getName())
+        if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else if (signalName == onRightClick.getName())
+        if (signalName == onRightClick.getName())
             return onRightClick;
-        else if (signalName == onHeaderClick.getName())
+        if (signalName == onHeaderClick.getName())
             return onHeaderClick;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2013,7 +1993,7 @@ namespace tgui
 
             if (childNode->propertyValuePairs[U"Alignment"])
             {
-                String alignmentString = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Alignment"]->value).getString();
+                const String alignmentString = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Alignment"]->value).getString();
                 if (alignmentString == U"Right")
                     alignment = HorizontalAlignment::Right;
                 else if (alignmentString == U"Center")
@@ -2323,12 +2303,10 @@ namespace tgui
         {
             if (m_columns[columnIndex].widestItemIndex == std::numeric_limits<unsigned int>::max())
                 return false;
-            else
-            {
-                m_columns[columnIndex].widestItemWidth = 0;
-                m_columns[columnIndex].widestItemIndex = std::numeric_limits<unsigned int>::max();
-                return true;
-            }
+
+            m_columns[columnIndex].widestItemWidth = 0;
+            m_columns[columnIndex].widestItemIndex = std::numeric_limits<unsigned int>::max();
+            return true;
         }
 
         float& widestItemWidth = m_columns.empty() ? m_widestItemWidth : m_columns[columnIndex].widestItemWidth;
@@ -2375,7 +2353,7 @@ namespace tgui
             widestItemIndex = itemIndex;
             return true;
         }
-        else if ((widestItemIndex == itemIndex) && (itemWidth < widestItemWidth))
+        if ((widestItemIndex == itemIndex) && (itemWidth < widestItemWidth))
         {
             // If we shorten the length of the widest item then we need to go through all items again to find the new widest one
             return updateWidestItemInColumn(columnIndex);
@@ -2390,17 +2368,15 @@ namespace tgui
     {
         if (m_columns.empty())
             return updateWidestItemInColumn(0);
-        else
-        {
-            bool autoResizingColumnChanged = false;
-            for (unsigned int columnIndex = 0; columnIndex < m_columns.size(); ++columnIndex)
-            {
-                if (m_columns[columnIndex].autoResize || (m_expandLastColumn && (columnIndex + 1 == m_columns.size())))
-                    autoResizingColumnChanged |= updateWidestItemInColumn(columnIndex);
-            }
 
-            return autoResizingColumnChanged;
+        bool autoResizingColumnChanged = false;
+        for (unsigned int columnIndex = 0; columnIndex < m_columns.size(); ++columnIndex)
+        {
+            if (m_columns[columnIndex].autoResize || (m_expandLastColumn && (columnIndex + 1 == m_columns.size())))
+                autoResizingColumnChanged |= updateWidestItemInColumn(columnIndex);
         }
+
+        return autoResizingColumnChanged;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2409,17 +2385,15 @@ namespace tgui
     {
         if (m_columns.empty())
             return updateWidestItemInColumn(0, itemIndex);
-        else
-        {
-            bool autoResizingColumnChanged = false;
-            for (unsigned int columnIndex = 0; columnIndex < m_columns.size(); ++columnIndex)
-            {
-                if (m_columns[columnIndex].autoResize || (m_expandLastColumn && (columnIndex + 1 == m_columns.size())))
-                    autoResizingColumnChanged |= updateWidestItemInColumn(columnIndex, itemIndex);
-            }
 
-            return autoResizingColumnChanged;
+        bool autoResizingColumnChanged = false;
+        for (unsigned int columnIndex = 0; columnIndex < m_columns.size(); ++columnIndex)
+        {
+            if (m_columns[columnIndex].autoResize || (m_expandLastColumn && (columnIndex + 1 == m_columns.size())))
+                autoResizingColumnChanged |= updateWidestItemInColumn(columnIndex, itemIndex);
         }
+
+        return autoResizingColumnChanged;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2597,8 +2571,7 @@ namespace tgui
     {
         if (m_showVerticalGridLines && (m_gridLinesWidth > m_separatorWidth))
             return m_gridLinesWidth;
-        else
-            return m_separatorWidth;
+        return m_separatorWidth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2633,8 +2606,8 @@ namespace tgui
             {
                 if (leftPos < columnRight - separatorWidth)
                     return static_cast<int>(i);
-                else // Clicked on separator
-                    return -1;
+                // Clicked on separator
+                return -1;
             }
         }
 
@@ -2909,8 +2882,7 @@ namespace tgui
         {
             firstItem = m_verticalScrollbar->getValue() / totalItemHeight;
             lastItem = ((static_cast<std::size_t>(m_verticalScrollbar->getValue()) + m_verticalScrollbar->getViewportSize()) / totalItemHeight) + 1;
-            if (lastItem > m_items.size())
-                lastItem = m_items.size();
+            lastItem = std::min(lastItem, m_items.size());
         }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
@@ -2957,7 +2929,7 @@ namespace tgui
             // Draw the horizontal grid lines
             if (m_showHorizontalGridLines && (m_gridLinesWidth > 0) && !m_items.empty())
             {
-                Transform transformBeforeGridLines = states.transform;
+                const Transform transformBeforeGridLines = states.transform;
 
                 states.transform.translate({0, (totalItemHeight * firstItem) + m_itemHeight - static_cast<float>(m_verticalScrollbar->getValue())});
 

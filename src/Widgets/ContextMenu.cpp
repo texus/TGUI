@@ -67,8 +67,7 @@ namespace tgui
     {
         if (menuBar)
             return std::static_pointer_cast<ContextMenu>(menuBar->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,7 +331,7 @@ namespace tgui
         if (hierarchy.empty())
             return false;
 
-        auto* menuItem = findMenuItem(hierarchy, m_menu.menuItems);
+        const auto* menuItem = findMenuItem(hierarchy, m_menu.menuItems);
         if (!menuItem)
             return false;
 

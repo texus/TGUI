@@ -147,7 +147,7 @@ namespace tgui
 
                 if (event.type == Event::Type::MouseMoved)
                     return m_container->processMouseMoveEvent(mouseCoords);
-                else if (event.type == Event::Type::MouseWheelScrolled)
+                if (event.type == Event::Type::MouseWheelScrolled)
                 {
                     if (m_container->processScrollEvent(event.mouseWheel.delta, mouseCoords, false))
                         return true;
@@ -155,17 +155,15 @@ namespace tgui
                     // Even if no scrollbar moved, we will still absorb the scroll event when the mouse is on top of a widget
                     return m_container->getWidgetAtPos(mouseCoords, false) != nullptr;
                 }
-                else if (event.type == Event::Type::MouseButtonPressed)
+                if (event.type == Event::Type::MouseButtonPressed)
                     return m_container->processMousePressEvent(event.mouseButton.button, mouseCoords);
-                else // if (event.type == Event::Type::MouseButtonReleased)
-                {
-                    const bool eventHandled = m_container->processMouseReleaseEvent(event.mouseButton.button, mouseCoords);
-                    if (event.mouseButton.button == Event::MouseButton::Left)
-                        m_container->leftMouseButtonNoLongerDown();
-                    else if (event.mouseButton.button == Event::MouseButton::Right)
-                        m_container->rightMouseButtonNoLongerDown();
-                    return eventHandled;
-                }
+                // if (event.type == Event::Type::MouseButtonReleased)
+                const bool eventHandled = m_container->processMouseReleaseEvent(event.mouseButton.button, mouseCoords);
+                if (event.mouseButton.button == Event::MouseButton::Left)
+                    m_container->leftMouseButtonNoLongerDown();
+                else if (event.mouseButton.button == Event::MouseButton::Right)
+                    m_container->rightMouseButtonNoLongerDown();
+                return eventHandled;
             }
             case Event::Type::KeyPressed:
             {
@@ -178,8 +176,7 @@ namespace tgui
 
                     return true;
                 }
-                else
-                    return m_container->processKeyPressEvent(event.key);
+                return m_container->processKeyPressEvent(event.key);
             }
             case Event::Type::TextEntered:
             {
@@ -271,8 +268,7 @@ namespace tgui
     {
        if (m_container->getInheritedFont())
           return m_container->getInheritedFont();
-        else
-            return Font::getGlobalFont();
+       return Font::getGlobalFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -556,7 +552,7 @@ namespace tgui
             if (m_tooltipTime >= ToolTip::getInitialDelay())
             {
                 const Vector2f lastMousePos = mapPixelToCoords(m_lastMousePos);
-                Widget::Ptr tooltip = m_container->askToolTip(lastMousePos);
+                const Widget::Ptr tooltip = m_container->askToolTip(lastMousePos);
                 if (tooltip)
                 {
                     m_visibleToolTip = tooltip;

@@ -26,6 +26,7 @@
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Widget.hpp>
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 
@@ -455,10 +456,7 @@ namespace tgui
                                                    float radius, const Borders& borders, const Color& borderColor)
     {
         // Radius can never be larger than half the width or height
-        if (radius > size.x / 2)
-            radius = size.x / 2;
-        if (radius > size.y / 2)
-            radius = size.y / 2;
+        radius = std::min({radius, size.x / 2, size.y / 2});
 
         const unsigned int nrCornerPoints = std::max(1u, static_cast<unsigned int>(std::ceil(radius * 2)));
         const std::vector<Vector2f>& outerPoints = drawRoundedRectHelperGetPoints(nrCornerPoints, size, radius, 0);
@@ -468,10 +466,7 @@ namespace tgui
         {
             radius = std::max(0.f, radius - borderWidth);
             const Vector2f innerSize = {std::max(0.f, size.x - 2*borderWidth), std::max(0.f, size.y - 2*borderWidth)};
-            if (radius > innerSize.x / 2)
-                radius = innerSize.x / 2;
-            if (radius > innerSize.y / 2)
-                radius = innerSize.y / 2;
+            radius = std::min({radius, innerSize.x / 2, innerSize.y / 2});
 
             const std::vector<Vector2f>& innerPoints = drawRoundedRectHelperGetPoints(nrCornerPoints, innerSize, radius, borderWidth);
 

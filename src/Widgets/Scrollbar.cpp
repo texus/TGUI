@@ -67,8 +67,7 @@ namespace tgui
     {
         if (scrollbar)
             return std::static_pointer_cast<Scrollbar>(scrollbar->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,8 +186,7 @@ namespace tgui
     {
         if (m_maximum >= m_viewportSize)
             return m_maximum - m_viewportSize;
-        else
-            return 0;
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,10 +257,9 @@ namespace tgui
 
         if (m_policy == Policy::Never)
             return false;
-        else if (m_policy == Policy::Always)
+        if (m_policy == Policy::Always)
             return true;
-        else
-            return m_maximum > m_viewportSize;
+        return m_maximum > m_viewportSize;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,10 +303,9 @@ namespace tgui
     {
         if (m_spriteTrack.isSet())
             return static_cast<float>(m_spriteTrack.getTexture().getImageSize().x);
-        else if (m_spriteThumb.isSet())
+        if (m_spriteThumb.isSet())
             return static_cast<float>(m_spriteThumb.getTexture().getImageSize().x);
-        else
-            return 16;
+        return 16;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,11 +325,8 @@ namespace tgui
         pos -= getPosition();
         if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
-            if (m_transparentTextureCached && m_spriteArrowDown.isTransparentPixel(pos - m_arrowDown.getPosition())
-             && m_spriteTrack.isTransparentPixel(pos - m_track.getPosition()) && m_spriteArrowUp.isTransparentPixel(pos))
-                return false;
-
-            return true;
+            return !(m_transparentTextureCached && m_spriteArrowDown.isTransparentPixel(pos - m_arrowDown.getPosition())
+                     && m_spriteTrack.isTransparentPixel(pos - m_track.getPosition()) && m_spriteArrowUp.isTransparentPixel(pos));
         }
 
         return false;
@@ -845,8 +838,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -993,7 +985,7 @@ namespace tgui
 #endif
         if (node->propertyValuePairs[U"ScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
+            const String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
             if (policy == U"Automatic")
                 setPolicy(Policy::Automatic);
             else if (policy == U"Always")
@@ -1031,10 +1023,10 @@ namespace tgui
 
     void Scrollbar::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall)
     {
-        std::weak_ptr<Scrollbar> widgetPtr = std::static_pointer_cast<Scrollbar>(shared_from_this());
+        const std::weak_ptr<Scrollbar> widgetPtr = std::static_pointer_cast<Scrollbar>(shared_from_this());
         Timer::scheduleCallback([widgetPtr, clickedTime]()
         {
-            Scrollbar::Ptr scrollbar = widgetPtr.lock();
+            const Scrollbar::Ptr scrollbar = widgetPtr.lock();
             if (!scrollbar)
                 return;
 
@@ -1231,9 +1223,9 @@ namespace tgui
 
     ScrollbarAccessor::ScrollbarAccessor(ScrollbarChildWidget& scrollbar, std::function<void()> valueChangedCallback, std::function<void()> policyChangedCallback, std::function<void()> scrollAmountChangedCallback) :
         m_scrollbar(&scrollbar),
-        m_valueChangedCallback(valueChangedCallback),
-        m_policyChangedCallback(policyChangedCallback),
-        m_scrollAmountChangedCallback(scrollAmountChangedCallback)
+        m_valueChangedCallback(std::move(valueChangedCallback)),
+        m_policyChangedCallback(std::move(policyChangedCallback)),
+        m_scrollAmountChangedCallback(std::move(scrollAmountChangedCallback))
     {
     }
 
@@ -1319,8 +1311,7 @@ namespace tgui
     {
         if (m_scrollbar->getOrientation() == Orientation::Vertical)
             return m_scrollbar->getSize().x;
-        else
-            return m_scrollbar->getSize().y;
+        return m_scrollbar->getSize().y;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1425,7 +1416,7 @@ namespace tgui
     {
         if (node->propertyValuePairs[U"ScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
+            const String policy = node->propertyValuePairs[U"ScrollbarPolicy"]->value.trim();
             if (policy == U"Automatic")
                 m_scrollbar->setPolicy(Scrollbar::Policy::Automatic);
             else if (policy == U"Always")
@@ -1571,7 +1562,7 @@ namespace tgui
     {
         if (node->propertyValuePairs[U"VerticalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
+            const String policy = node->propertyValuePairs[U"VerticalScrollbarPolicy"]->value.trim();
             if (policy == U"Automatic")
                 m_verticalScrollbar->setPolicy(Scrollbar::Policy::Automatic);
             else if (policy == U"Always")
@@ -1584,7 +1575,7 @@ namespace tgui
 
         if (node->propertyValuePairs[U"HorizontalScrollbarPolicy"])
         {
-            String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
+            const String policy = node->propertyValuePairs[U"HorizontalScrollbarPolicy"]->value.trim();
             if (policy == U"Automatic")
                 m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Automatic);
             else if (policy == U"Always")

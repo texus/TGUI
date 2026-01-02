@@ -57,7 +57,7 @@ namespace tgui
     {
         Widget::setEnabled(enabled);
 
-        for (auto& widget : m_container->getWidgets())
+        for (const auto& widget : m_container->getWidgets())
             widget->setEnabled(enabled);
     }
 

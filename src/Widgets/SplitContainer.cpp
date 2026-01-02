@@ -65,8 +65,7 @@ namespace tgui
     {
         if (contaier)
             return std::static_pointer_cast<SplitContainer>(contaier->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,11 +229,10 @@ namespace tgui
 
             return true;
         }
-        else // The mouse is not on top of the thumb
-        {
-            m_mouseDownOnSplitter = false;
-            return Group::leftMousePressed(pos);
-        }
+        // The mouse is not on top of the thumb
+        m_mouseDownOnSplitter = false;
+        return Group::leftMousePressed(pos);
+
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -511,18 +509,16 @@ namespace tgui
             }
             return {left, m_paddingCached.getTop(), width, getInnerSize().y};
         }
-        else
+
+        float top = m_paddingCached.getTop() + m_currentSplitterOffset;
+        float height = m_splitterWidth;
+        if (m_minimumGrabWidth > m_splitterWidth)
         {
-            float top = m_paddingCached.getTop() + m_currentSplitterOffset;
-            float height = m_splitterWidth;
-            if (m_minimumGrabWidth > m_splitterWidth)
-            {
-                const float paddingAroundSplitter = (m_minimumGrabWidth - m_splitterWidth / 2.f);
-                top -= paddingAroundSplitter;
-                height += 2 * paddingAroundSplitter;
-            }
-            return {m_paddingCached.getLeft(), top, getInnerSize().x, height};
+            const float paddingAroundSplitter = (m_minimumGrabWidth - m_splitterWidth / 2.f);
+            top -= paddingAroundSplitter;
+            height += 2 * paddingAroundSplitter;
         }
+        return {m_paddingCached.getLeft(), top, getInnerSize().x, height};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

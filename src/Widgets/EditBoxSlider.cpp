@@ -127,8 +127,7 @@ namespace tgui
     {
         if (editBoxSlider)
             return std::static_pointer_cast<EditBoxSlider>(editBoxSlider->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,7 +328,7 @@ namespace tgui
 
         m_editBox->onTextChange.disconnectAll();
         m_editBox->onTextChange([this](const String &text) {
-            float value = text.toFloat();
+            const float value = text.toFloat();
 
             if (inRange(value))
                 m_slider->setValue(value);
@@ -368,8 +367,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

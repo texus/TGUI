@@ -258,8 +258,7 @@ namespace tgui
             Optional<Duration> duration = Timer::getNextScheduledTime();
             if (duration && (*duration < std::chrono::milliseconds(10)))
                 return *duration;
-            else
-                return Duration{std::chrono::milliseconds(10)};
+            return Duration{std::chrono::milliseconds(10)};
         };
 
         setDrawingUpdatesTime(false);

@@ -26,6 +26,7 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Keyboard.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,8 +83,7 @@ namespace tgui
     {
         if (editBox)
             return std::static_pointer_cast<EditBox>(editBox->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,8 +337,7 @@ namespace tgui
     void EditBox::setCaretPosition(std::size_t charactersBeforeCaret)
     {
         // The caret position has to stay inside the string
-        if (charactersBeforeCaret > m_text.length())
-            charactersBeforeCaret = m_text.length();
+        charactersBeforeCaret = std::min(charactersBeforeCaret, m_text.length());
 
         // Set the caret to the correct position
         m_selStart = charactersBeforeCaret;
@@ -656,8 +655,7 @@ namespace tgui
         {
             return true;
         }
-        else
-            return ClickableWidget::canHandleKeyPress(event);
+        return ClickableWidget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,14 +732,13 @@ namespace tgui
     {
         if (signalName == onTextChange.getName())
             return onTextChange;
-        else if (signalName == onReturnKeyPress.getName())
+        if (signalName == onReturnKeyPress.getName())
             return onReturnKeyPress;
-        else if (signalName == onReturnOrUnfocus.getName())
+        if (signalName == onReturnOrUnfocus.getName())
             return onReturnOrUnfocus;
-        else if (signalName == onCaretPositionChange.getName())
+        if (signalName == onCaretPositionChange.getName())
             return onCaretPositionChange;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1057,7 +1054,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
                 prevChar = 0;
                 continue;
             }
-            else if (curChar == '\t')
+            if (curChar == '\t')
                 charWidth = static_cast<float>(m_fontCached.getGlyph(' ', textSize, bold).advance) * 4;
             else
                 charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, textSize, bold).advance);
@@ -1498,7 +1495,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         // Only continue pasting if you actually have to do something
         const auto clipboardContents = getBackend()->getClipboard();
-        if ((m_selChars > 0) || (clipboardContents.length() > 0))
+        if ((m_selChars > 0) || (!clipboardContents.empty()))
         {
             deleteSelectedCharacters();
 
@@ -1677,8 +1674,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
                 {getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             const float textOffset = m_textFull.getExtraHorizontalPadding();
-            Vector2f offset{getInnerSize().x - m_paddingCached.getRight() - textOffset - m_textSuffix.getSize().x,
-                            m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_textSuffix.getSize().y) / 2.f)};
+            const Vector2f offset{getInnerSize().x - m_paddingCached.getRight() - textOffset - m_textSuffix.getSize().x,
+                                  m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_textSuffix.getSize().y) / 2.f)};
 
             states.transform.translate(offset);
             target.drawText(states, m_textSuffix);

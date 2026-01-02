@@ -124,8 +124,7 @@ namespace tgui
     {
         if (index < m_widgets.size())
             return m_widgets[index];
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

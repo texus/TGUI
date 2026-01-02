@@ -754,7 +754,7 @@ namespace tgui
         void resize(std::size_t count, char16_t ch);
         void resize(std::size_t count, char32_t ch);
 
-        void swap(String& other);
+        void swap(String& other) noexcept;
 
         TGUI_NODISCARD bool contains(char c) const noexcept;
         TGUI_NODISCARD bool contains(wchar_t c) const noexcept;

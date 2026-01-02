@@ -93,8 +93,7 @@ namespace tgui
         auto it = m_constructFunctions.find(type);
         if (it != m_constructFunctions.end())
             return it->second;
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

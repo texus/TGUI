@@ -26,6 +26,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,8 +152,7 @@ namespace tgui
     {
         if (signalName == onMenuItemClick.getName())
             return onMenuItemClick;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,8 +242,7 @@ namespace tgui
 
             if (parentIndex + 2 == hierarchy.size())
                 return &menu;
-            else
-                return findMenuItemParent(hierarchy, parentIndex + 1, menu.menuItems, createParents);
+            return findMenuItemParent(hierarchy, parentIndex + 1, menu.menuItems, createParents);
         }
 
         if (createParents)
@@ -251,8 +250,7 @@ namespace tgui
             createMenu(menus, hierarchy[parentIndex]);
             if (parentIndex + 2 == hierarchy.size())
                 return &menus.back();
-            else
-                return findMenuItemParent(hierarchy, parentIndex + 1, menus.back().menuItems, createParents);
+            return findMenuItemParent(hierarchy, parentIndex + 1, menus.back().menuItems, createParents);
         }
 
         return nullptr;
@@ -264,15 +262,14 @@ namespace tgui
     {
         TGUI_ASSERT(hierarchy.size() >= 2, "Hierarchy needs at least 2 elements in MenuWidgetBase::findMenuItemParent!");
 
-        for (auto& menu : menus)
+        for (const auto& menu : menus)
         {
             if (menu.text.getString() != hierarchy[parentIndex])
                 continue;
 
             if (parentIndex + 2 == hierarchy.size())
                 return &menu;
-            else
-                return findMenuItemParent(hierarchy, parentIndex + 1, menu.menuItems);
+            return findMenuItemParent(hierarchy, parentIndex + 1, menu.menuItems);
         }
 
         return nullptr;
@@ -327,7 +324,7 @@ namespace tgui
             menuItems = &menu->menuItems;
         }
 
-        for (auto& menuItem : *menuItems)
+        for (const auto& menuItem : *menuItems)
         {
             if (menuItem.text.getString() != hierarchy.back())
                 continue;
@@ -465,8 +462,7 @@ namespace tgui
             if (!item.menuItems.empty())
                 width += arrowSpace;
 
-            if (width > maxWidth)
-                maxWidth = width;
+            maxWidth = std::max(width, maxWidth);
         }
 
         return maxWidth;
@@ -478,8 +474,7 @@ namespace tgui
     {
         if (isSeparator(menuItem))
             return m_separatorThicknessCached + 2*m_separatorVerticalPaddingCached;
-        else
-            return getDefaultMenuItemHeight();
+        return getDefaultMenuItemHeight();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -559,22 +554,20 @@ namespace tgui
                 menus.erase(it);
                 return true;
             }
-            else
-            {
-                // Return false if some menu in the hierarchy couldn't be found
-                if (!removeMenuImpl(hierarchy, removeParentsWhenEmpty, parentIndex + 1, it->menuItems))
-                    return false;
 
-                // If parents don't have to be removed as well then we are done
-                if (!removeParentsWhenEmpty)
-                    return true;
+            // Return false if some menu in the hierarchy couldn't be found
+            if (!removeMenuImpl(hierarchy, removeParentsWhenEmpty, parentIndex + 1, it->menuItems))
+                return false;
 
-                // Also delete the parent if empty
-                if (it->menuItems.empty())
-                    menus.erase(it);
-
+            // If parents don't have to be removed as well then we are done
+            if (!removeParentsWhenEmpty)
                 return true;
-            }
+
+            // Also delete the parent if empty
+            if (it->menuItems.empty())
+                menus.erase(it);
+
+            return true;
         }
 
         // The hierarchy doesn't exist
@@ -595,8 +588,7 @@ namespace tgui
                 menu.menuItems.clear();
                 return true;
             }
-            else
-                return removeSubMenusImpl(hierarchy, parentIndex + 1, menu.menuItems);
+            return removeSubMenusImpl(hierarchy, parentIndex + 1, menu.menuItems);
         }
 
         // The hierarchy doesn't exist
@@ -813,7 +805,7 @@ namespace tgui
         if (menu.menuItems.empty())
             return;
 
-        Transform oldTransform = states.transform;
+        const Transform oldTransform = states.transform;
 
         // Draw the backgrounds
         Sprite backgroundSprite = m_spriteItemBackground;
@@ -873,7 +865,7 @@ namespace tgui
             // Draw an arrow next to the text if there is a submenu
             if (!menu.menuItems[j].menuItems.empty())
             {
-                Transform textTransform = states.transform;
+                const Transform textTransform = states.transform;
                 const float arrowHeight = itemHeight / 2.f;
                 const float arrowWidth = arrowHeight / 2.f;
                 states.transform.translate({menuWidth - 2*m_distanceToSideCached - arrowWidth, // 2x m_distanceToSideCached because we already translated once
@@ -974,8 +966,7 @@ namespace tgui
     {
         if (m_parent)
             return m_parent->getInnerSize() + getWidgetOffset();
-        else
-            return {0, 0};
+        return {0, 0};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -984,8 +975,7 @@ namespace tgui
     {
         if (m_parentGui)
             return m_parentGui->getView().getPosition() - getPosition();
-        else
-            return -getPosition();
+        return -getPosition();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/Knob.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
@@ -75,8 +76,7 @@ namespace tgui
     {
         if (knob)
             return std::static_pointer_cast<Knob>(knob->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,8 +172,7 @@ namespace tgui
             m_minimum = minimum;
 
             // The maximum can't be below the minimum
-            if (m_maximum < m_minimum)
-                m_maximum = m_minimum;
+            m_maximum = std::max(m_maximum, m_minimum);
 
             // When the value is below the minimum then adjust it
             if (m_value < m_minimum)
@@ -201,8 +200,7 @@ namespace tgui
             m_maximum = maximum;
 
             // The minimum can't be below the maximum
-            if (m_minimum > m_maximum)
-                m_minimum = m_maximum;
+            m_minimum = std::min(m_minimum, m_maximum);
 
             // When the value is above the maximum then adjust it
             if (m_value > m_maximum)
@@ -462,8 +460,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,9 +551,8 @@ namespace tgui
     {
         if (m_spriteBackground.isSet())
             return getSize();
-        else
-            return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
-                    std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
+        return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom())};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

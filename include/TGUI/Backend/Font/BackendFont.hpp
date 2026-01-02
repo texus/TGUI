@@ -275,7 +275,7 @@ namespace tgui
         ///
         /// Calling this function with the same parameters results in the same id, while other parameters result in another id.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::uint64_t constructGlyphKey(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const;
+        TGUI_NODISCARD static std::uint64_t constructGlyphKey(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:

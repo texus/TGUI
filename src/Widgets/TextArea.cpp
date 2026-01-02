@@ -26,6 +26,7 @@
 #include <TGUI/Widgets/TextArea.hpp>
 #include <TGUI/Keyboard.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,8 +78,7 @@ namespace tgui
     {
         if (textArea)
             return std::static_pointer_cast<TextArea>(textArea->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,8 +189,7 @@ namespace tgui
         const std::size_t selEnd = getSelectionEnd();
         if (selStart <= selEnd)
             return m_text.substr(selStart, selEnd - selStart);
-        else
-            return m_text.substr(selEnd, selStart - selEnd);
+        return m_text.substr(selEnd, selStart - selEnd);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,8 +210,7 @@ namespace tgui
 
     void TextArea::updateTextSize()
     {
-        if (m_textSizeCached < 1)
-            m_textSizeCached = 1;
+        m_textSizeCached = std::max<unsigned int>(m_textSizeCached, 1);
 
         // Change the text size
         m_textBeforeSelection.setCharacterSize(m_textSizeCached);
@@ -325,8 +323,7 @@ namespace tgui
         const auto caret = getCaretPosition();
         if (caret == 0)
             return 1;
-        else
-            return m_text.substr(0, caret).count('\n') + 1;
+        return m_text.substr(0, caret).count('\n') + 1;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -339,8 +336,7 @@ namespace tgui
         auto lineStart = m_text.rfind('\n', caret - 1);
         if (lineStart == String::npos)
             return caret + 1;
-        else
-            return caret - lineStart;
+        return caret - lineStart;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,11 +515,7 @@ namespace tgui
                     m_selEnd.x = m_selStart.x;
                 }
 
-                bool selectingWhitespace;
-                if (isWhitespace(m_lines[m_selStart.y][m_selStart.x]))
-                    selectingWhitespace = true;
-                else
-                    selectingWhitespace = false;
+                const bool selectingWhitespace = isWhitespace(m_lines[m_selStart.y][m_selStart.x]);
 
                 // Move start pointer to the beginning of the word/whitespace
                 for (std::size_t i = m_selStart.x; i > 0; --i)
@@ -533,8 +525,7 @@ namespace tgui
                         m_selStart.x = i;
                         break;
                     }
-                    else
-                        m_selStart.x = 0;
+                    m_selStart.x = 0;
                 }
 
                 // Move end pointer to the end of the word/whitespace
@@ -545,8 +536,7 @@ namespace tgui
                         m_selEnd.x = i;
                         break;
                     }
-                    else
-                        m_selEnd.x = m_lines[m_selEnd.y].length();
+                    m_selEnd.x = m_lines[m_selEnd.y].length();
                 }
             }
             else // No double clicking
@@ -779,8 +769,7 @@ namespace tgui
         {
             return true;
         }
-        else
-            return Widget::canHandleKeyPress(event);
+        return Widget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -938,8 +927,7 @@ namespace tgui
             {
                 if (position.x < width + kerning + (charWidth / 2.0f))
                     return {i, lineNumber};
-                else
-                    return {i + 1, lineNumber};
+                return {i + 1, lineNumber};
             }
 
             prevChar = curChar;
@@ -1354,7 +1342,7 @@ namespace tgui
         clipboardContents.replace('\r', U"");
 
         // Only continue pasting if you actually have to do something
-        if ((m_selStart != m_selEnd) || (clipboardContents != U""))
+        if ((m_selStart != m_selEnd) || (!clipboardContents.empty()))
         {
             deleteSelectedCharacters();
             insertTextAtCaretPosition(clipboardContents);
@@ -1428,9 +1416,8 @@ namespace tgui
                 }
                 else // Not using optimization for monospaced font, so really calculate the width of every line
                 {
-                    float lineWidth = Text::getLineWidth(m_lines.back(), m_fontCached, m_textSizeCached);
-                    if (lineWidth > m_maxLineWidth)
-                        m_maxLineWidth = lineWidth;
+                    const float lineWidth = Text::getLineWidth(m_lines.back(), m_fontCached, m_textSizeCached);
+                    m_maxLineWidth = std::max(lineWidth, m_maxLineWidth);
                 }
             }
 
@@ -1525,8 +1512,7 @@ namespace tgui
                 rearrangeText(true);
                 return;
             }
-            else
-                updateScrollbars();
+            updateScrollbars();
         }
         else // Horizontal scrollbar is enabled
         {
@@ -1668,16 +1654,16 @@ namespace tgui
             const unsigned int left = m_horizontalScrollbar->getValue();
             if (m_caretPosition.x <= left)
             {
-                unsigned int newValue =
+                const unsigned int newValue =
                     static_cast<unsigned int>(std::max(0, static_cast<int>(m_caretPosition.x
                                                                            - (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2))));
                 m_horizontalScrollbar->setValue(newValue);
             }
             else if (m_caretPosition.x > (left + m_horizontalScrollbar->getViewportSize()))
             {
-                unsigned int newValue = static_cast<unsigned int>(m_caretPosition.x
-                                                                  + (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2)
-                                                                  - m_horizontalScrollbar->getViewportSize());
+                const unsigned int newValue = static_cast<unsigned int>(m_caretPosition.x
+                                                                        + (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2)
+                                                                        - m_horizontalScrollbar->getViewportSize());
                 m_horizontalScrollbar->setValue(newValue);
             }
         }
@@ -1812,7 +1798,7 @@ namespace tgui
                 {
                     m_selectionRects.back().width += textOffset;
 
-                    if (m_textSelection2.getString() != U"")
+                    if (!m_textSelection2.getString().empty())
                     {
                         tempText.setString(m_lines[selectionEnd.y].substr(0, selectionEnd.x));
                         m_selectionRects.emplace_back(m_textSelection2.getPosition().x - textOffset, static_cast<float>(selectionEnd.y) * m_lineHeight,
@@ -1876,12 +1862,11 @@ namespace tgui
     {
         if (signalName == onTextChange.getName())
             return onTextChange;
-        else if (signalName == onSelectionChange.getName())
+        if (signalName == onSelectionChange.getName())
             return onSelectionChange;
-        else if (signalName == onCaretPositionChange.getName())
+        if (signalName == onCaretPositionChange.getName())
             return onCaretPositionChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2120,8 +2105,7 @@ namespace tgui
     void TextArea::setCaretPositionImpl(std::size_t charactersBeforeCaret, bool selEndNeedUpdate, bool emitCaretChangedPosition)
     {
         // The caret position has to stay inside the string
-        if (charactersBeforeCaret > m_text.length())
-            charactersBeforeCaret = m_text.length();
+        charactersBeforeCaret = std::min(charactersBeforeCaret, m_text.length());
 
         // Find the line and position on that line on which the caret is located
         std::size_t count = 0;

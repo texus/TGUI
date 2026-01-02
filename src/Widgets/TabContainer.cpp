@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/TabContainer.hpp>
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -144,8 +145,7 @@ namespace tgui
     {
         if (tabContainer)
             return std::static_pointer_cast<TabContainer>(tabContainer->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,8 +214,7 @@ namespace tgui
 
     Panel::Ptr TabContainer::insertTab(std::size_t index, const String& name, bool selectPanel)
     {
-        if (index > m_panels.size())
-            index = m_panels.size();
+        index = std::min(index, m_panels.size());
 
         auto panel = Panel::create();
         panel->setSize({getSize().x, getSize().y - m_tabs->getSize().y});
@@ -472,7 +471,7 @@ namespace tgui
         auto tabAlign = TabContainer::TabAlign::Top;
         if (node->propertyValuePairs[U"TabAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TabAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TabAlignment"]->value).getString();
             if (alignment == U"Bottom")
                 tabAlign = TabContainer::TabAlign::Bottom;
             else if (alignment != U"Top")
@@ -529,10 +528,9 @@ namespace tgui
     {
         if (signalName == onSelectionChange.getName())
             return onSelectionChange;
-        else if (signalName == onSelectionChanging.getName())
+        if (signalName == onSelectionChanging.getName())
             return onSelectionChanging;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

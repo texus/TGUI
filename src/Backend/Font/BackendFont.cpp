@@ -116,7 +116,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::uint64_t BackendFont::constructGlyphKey(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness) const
+    std::uint64_t BackendFont::constructGlyphKey(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
         // Create a unique key for every character.
         // Technically it would be possible to specify character sizes and outline thicknesses that can't uniquely be mapped

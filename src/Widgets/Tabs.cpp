@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Optional.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,8 +65,7 @@ namespace tgui
     {
         if (tabs)
             return std::static_pointer_cast<Tabs>(tabs->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,8 +142,7 @@ namespace tgui
     void Tabs::insert(std::size_t index, const String& text, bool selectTab)
     {
         // If the index is too high then just insert at the end
-        if (index > m_tabs.size())
-            index = m_tabs.size();
+        index = std::min(index, m_tabs.size());
 
         // Create the new tab
         Tab newTab;
@@ -176,8 +175,7 @@ namespace tgui
     {
         if (index >= m_tabs.size())
             return "";
-        else
-            return m_tabs[index].text.getString();
+        return m_tabs[index].text.getString();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,8 +293,7 @@ namespace tgui
     {
         if (m_selectedTab >= 0)
             return m_tabs[static_cast<std::size_t>(m_selectedTab)].text.getString();
-        else
-            return "";
+        return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -563,10 +560,9 @@ namespace tgui
     {
         if (signalName == onTabSelect.getName())
             return onTabSelect;
-        else if (signalName == onTabRightClick.getName())
+        if (signalName == onTabRightClick.getName())
             return onTabRightClick;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -704,7 +700,7 @@ namespace tgui
     {
         auto node = Widget::save(renderers);
 
-        if (m_tabs.size() > 0)
+        if (!m_tabs.empty())
         {
             bool allTabsVisible = true;
             bool allTabsEnabled = true;

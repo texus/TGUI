@@ -83,7 +83,7 @@ namespace tgui
         else // Not an svg
         {
             data->backendTexture = getBackend()->createTexture();
-            if (texture.getBackendTextureLoader()(*data->backendTexture, filename, smooth))
+            if (tgui::Texture::getBackendTextureLoader()(*data->backendTexture, filename, smooth))
                 return data;
         }
 

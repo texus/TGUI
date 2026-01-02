@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/MessageBox.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +138,7 @@ namespace tgui
         auto messageBox = std::make_shared<MessageBox>();
         messageBox->setTitle(title);
         messageBox->setText(text);
-        for (auto& buttonText : buttons)
+        for (const auto& buttonText : buttons)
             messageBox->addButton(std::move(buttonText));
 
         return messageBox;
@@ -149,8 +150,7 @@ namespace tgui
     {
         if (messageBox)
             return std::static_pointer_cast<MessageBox>(messageBox->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,6 +280,7 @@ namespace tgui
     std::vector<String> MessageBox::getButtons() const
     {
         std::vector<String> buttonTexts;
+        buttonTexts.reserve(m_buttons.size());
         for (const auto& button : m_buttons)
             buttonTexts.emplace_back(button->getText());
 
@@ -337,8 +338,7 @@ namespace tgui
                 tempText.setCharacterSize(m_textSizeCached);
                 tempText.setString(button->getText());
                 const float width = tempText.getSize().x;
-                if (buttonWidth < width * 10.0f / 9.0f)
-                    buttonWidth = width * 10.0f / 9.0f;
+                buttonWidth = std::max(buttonWidth, width * 10.0f / 9.0f);
             }
         }
 
@@ -355,8 +355,7 @@ namespace tgui
         Vector2f size = {2*distance + m_label->getSize().x, 3*distance + m_label->getSize().y + buttonHeight};
 
         // Make sure the buttons fit inside the message box
-        if (buttonsAreaWidth > size.x)
-            size.x = buttonsAreaWidth;
+        size.x = std::max(buttonsAreaWidth, size.x);
 
         // Set the size of the window
         if (m_autoSize)
@@ -417,8 +416,7 @@ namespace tgui
     {
         if (signalName == onButtonPress.getName())
             return onButtonPress;
-        else
-            return ChildWindow::getSignal(std::move(signalName));
+        return ChildWindow::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

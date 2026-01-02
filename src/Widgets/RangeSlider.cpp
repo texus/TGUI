@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/RangeSlider.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +67,7 @@ namespace tgui
     {
         if (slider)
             return std::static_pointer_cast<RangeSlider>(slider->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,8 +205,7 @@ namespace tgui
     {
         if (m_orientation == Orientation::Vertical)
             return {std::max(getSize().x, m_thumbs.first.width), getSize().y + m_thumbs.first.height};
-        else
-            return {getSize().x + m_thumbs.first.width, std::max(getSize().y, m_thumbs.first.height)};
+        return {getSize().x + m_thumbs.first.width, std::max(getSize().y, m_thumbs.first.height)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -215,8 +214,7 @@ namespace tgui
     {
         if (m_orientation == Orientation::Vertical)
             return {std::min(0.f, getSize().x - m_thumbs.first.width), -m_thumbs.first.height / 2.f};
-        else
-            return {-m_thumbs.first.width / 2.f, std::min(0.f, getSize().y - m_thumbs.first.height)};
+        return {-m_thumbs.first.width / 2.f, std::min(0.f, getSize().y - m_thumbs.first.height)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,8 +227,7 @@ namespace tgui
         m_minimum = minimum;
 
         // The maximum can't be below the minimum
-        if (m_maximum < m_minimum)
-            m_maximum = m_minimum;
+        m_maximum = std::max(m_maximum, m_minimum);
 
         // When the selection start equaled the minimum, move it as well, otherwise set it again to make sure it is still within minimum and maximum
         if (oldMinimum == m_selectionStart)
@@ -296,8 +293,7 @@ namespace tgui
             m_selectionStart = value;
 
             // Update the selection end when the selection start passed it
-            if (m_selectionEnd < value)
-                m_selectionEnd = value;
+            m_selectionEnd = std::max(m_selectionEnd, value);
 
             onRangeChange.emit(this, m_selectionStart, m_selectionEnd);
 
@@ -331,8 +327,7 @@ namespace tgui
             m_selectionEnd = value;
 
             // Update the selection start when the selection end passed it
-            if (m_selectionStart > value)
-                m_selectionStart = value;
+            m_selectionStart = std::min(m_selectionStart, value);
 
             onRangeChange.emit(this, m_selectionStart, m_selectionEnd);
 
@@ -514,8 +509,7 @@ namespace tgui
     {
         if (signalName == onRangeChange.getName())
             return onRangeChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

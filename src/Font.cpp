@@ -137,11 +137,9 @@ namespace tgui
     {
         if (m_backendFont != nullptr)
             return m_backendFont->getGlyph(codePoint, characterSize, bold, outlineThickness);
-        else
-        {
-            TGUI_PRINT_WARNING("Font::getGlyph called on font that wasn't initialized");
-            return {};
-        }
+
+        TGUI_PRINT_WARNING("Font::getGlyph called on font that wasn't initialized");
+        return {};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,8 +148,7 @@ namespace tgui
     {
         if (m_backendFont)
             return m_backendFont->getKerning(first, second, characterSize, bold);
-        else
-            return 0;
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,8 +157,7 @@ namespace tgui
     {
         if (m_backendFont)
             return m_backendFont->getLineSpacing(characterSize);
-        else
-            return 0;
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,8 +166,7 @@ namespace tgui
     {
         if (m_backendFont)
             return m_backendFont->getFontHeight(characterSize);
-        else
-            return 0;
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,8 +183,7 @@ namespace tgui
     {
         if (m_backendFont)
             return m_backendFont->isSmooth();
-        else
-            return true;
+        return true;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

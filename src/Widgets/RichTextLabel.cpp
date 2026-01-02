@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/RichTextLabel.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +67,7 @@ namespace tgui
     {
         if (label)
             return std::static_pointer_cast<RichTextLabel>(label->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +85,7 @@ namespace tgui
                     auto linkIt = m_links.find({i, j});
                     if (linkIt != m_links.end())
                         return linkIt->second;
-                    else
-                        return "";
+                    return "";
                 }
             }
         }
@@ -99,8 +98,7 @@ namespace tgui
                 auto linkIt = m_imageLinks.find(i);
                 if (linkIt != m_imageLinks.end())
                     return linkIt->second;
-                else
-                    return "";
+                return "";
             }
         }
 
@@ -215,11 +213,10 @@ namespace tgui
         float width = 0;
         std::size_t imageIndex = 0;
         Vector2f pos{m_paddingCached.getLeft() + textOffset, m_paddingCached.getTop()};
-        for (std::size_t i = 0; i < textPiecesLinesPtr->size(); ++i)
+        for (const auto& textPiecesLine : *textPiecesLinesPtr)
         {
-            std::size_t imageIndexBeforeLine = imageIndex;
+            const std::size_t imageIndexBeforeLine = imageIndex;
 
-            const auto& textPiecesLine = (*textPiecesLinesPtr)[i];
             TGUI_EMPLACE_BACK(line, m_lines)
 
             float lineWidth = 0;
@@ -267,8 +264,7 @@ namespace tgui
             }
 
             lineWidths.push_back(lineWidth);
-            if (lineWidth > width)
-                width = lineWidth;
+            width = std::max(lineWidth, width);
 
             // If a line contains pieces of multiple sizes then align their bottom position
             for (auto& textPiece : line)
@@ -330,9 +326,9 @@ namespace tgui
                 for (auto& textPiece : m_lines[i])
                     textPiece.setPosition({textPiece.getPosition().x + horizontalOffset, textPiece.getPosition().y});
 
-                for (std::size_t j = 0; j < textPiecesLine.size(); ++j)
+                for (const auto& piece : textPiecesLine)
                 {
-                    if (textPiecesLine[j].gapSize != Vector2u{})
+                    if (piece.gapSize != Vector2u{})
                     {
                         auto& image = m_images[imageIndex];
                         image.setPosition({image.getPosition().x + horizontalOffset, image.getPosition().y});
@@ -400,8 +396,7 @@ namespace tgui
         }
 
         float lineSpacing = (lineMaxTextSize > 0) ? m_fontCached.getLineSpacing(lineMaxTextSize) : 0;
-        if (static_cast<float>(maxGapHeight) > lineSpacing)
-            lineSpacing = static_cast<float>(maxGapHeight);
+        lineSpacing = std::max(static_cast<float>(maxGapHeight), lineSpacing);
 
         return lineSpacing;
     }
@@ -738,7 +733,7 @@ namespace tgui
         }
         else
         {
-            Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight(),
+            const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight(),
                                   getSize().y - m_bordersCached.getTopPlusBottom() - m_paddingCached.getTopPlusBottom()};
 
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize});

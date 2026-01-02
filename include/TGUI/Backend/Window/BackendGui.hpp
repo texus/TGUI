@@ -663,7 +663,7 @@ namespace tgui
         // The key parameter should be a value from Numpad0 to Numpad9 and the output is the key code that corresponds to the
         // wanted functionality (e.g. for Numpad0 we return the Insert key). Unknown is returned for Numpad5.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Event::KeyboardKey translateKeypadKey(Event::KeyboardKey key);
+        static Event::KeyboardKey translateKeypadKey(Event::KeyboardKey key);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public:

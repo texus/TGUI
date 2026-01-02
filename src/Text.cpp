@@ -291,9 +291,9 @@ namespace tgui
             float charWidth;
             if (curChar == '\n')
                 break;
-            else if (curChar == U'\r')
+            if (curChar == U'\r')
                 continue; // Skip carriage return characters which aren't rendered (we only use line feed characters to indicate a new line)
-            else if (curChar == '\t')
+            if (curChar == '\t')
                 charWidth = font.getGlyph(' ', characterSize, bold).advance * 4.0f;
             else
                 charWidth = font.getGlyph(curChar, characterSize, bold).advance;
@@ -335,15 +335,13 @@ namespace tgui
 
         if (fit < 0)
             return *low;
-        else if (fit > 0)
+        if (fit > 0)
             return *high;
-        else
-        {
-            if (std::abs(height - lowLineSpacing) < std::abs(height - highLineSpacing))
-                return *low;
-            else
-                return *high;
-        }
+
+        if (std::abs(height - lowLineSpacing) < std::abs(height - highLineSpacing))
+            return *low;
+
+        return *high;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -371,13 +369,13 @@ namespace tgui
                     index++;
                     break;
                 }
-                else if (curChar == U'\r')
+                if (curChar == U'\r')
                 {
                     // Skip carriage return characters which aren't rendered (we only use line feed characters to indicate a new line)
                     index++;
                     continue;
                 }
-                else if (curChar == U'\t')
+                if (curChar == U'\t')
                     charWidth = font.getGlyph(U' ', textSize, bold).advance * 4;
                 else
                     charWidth = font.getGlyph(curChar, textSize, bold).advance;

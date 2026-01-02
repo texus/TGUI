@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/Slider.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +67,7 @@ namespace tgui
     {
         if (slider)
             return std::static_pointer_cast<Slider>(slider->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,16 +190,11 @@ namespace tgui
         {
             if (m_orientation == Orientation::Vertical)
                 return {std::max(getSize().x, m_thumb.width), getSize().y};
-            else
-                return {getSize().x, std::max(getSize().y, m_thumb.height)};
+            return {getSize().x, std::max(getSize().y, m_thumb.height)};
         }
-        else
-        {
-            if (m_orientation == Orientation::Vertical)
-                return {std::max(getSize().x, m_thumb.width), getSize().y + m_thumb.height};
-            else
-                return {getSize().x + m_thumb.width, std::max(getSize().y, m_thumb.height)};
-        }
+        if (m_orientation == Orientation::Vertical)
+            return {std::max(getSize().x, m_thumb.width), getSize().y + m_thumb.height};
+        return {getSize().x + m_thumb.width, std::max(getSize().y, m_thumb.height)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,16 +205,11 @@ namespace tgui
         {
             if (m_orientation == Orientation::Vertical)
                 return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), 0};
-            else
-                return {0, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
+            return {0, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
         }
-        else
-        {
-            if (m_orientation == Orientation::Vertical)
-                return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), -m_thumb.height / 2.f};
-            else
-                return {-m_thumb.width / 2.f, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
-        }
+        if (m_orientation == Orientation::Vertical)
+            return {std::min(0.f, (getSize().x - m_thumb.width) / 2.f), -m_thumb.height / 2.f};
+        return {-m_thumb.width / 2.f, std::min(0.f, (getSize().y - m_thumb.height) / 2.f)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,8 +220,7 @@ namespace tgui
         m_minimum = minimum;
 
         // The maximum can't be below the minimum
-        if (m_maximum < m_minimum)
-            m_maximum = m_minimum;
+        m_maximum = std::max(m_maximum, m_minimum);
 
         // When the value is below the minimum then adjust it
         if (m_value < m_minimum)
@@ -550,8 +539,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

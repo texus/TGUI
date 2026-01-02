@@ -114,8 +114,7 @@ namespace tgui
     {
         if (canvas)
             return std::static_pointer_cast<CanvasSFML>(canvas->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

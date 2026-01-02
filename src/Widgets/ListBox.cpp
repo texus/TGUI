@@ -64,8 +64,7 @@ namespace tgui
     {
         if (listBox)
             return std::static_pointer_cast<ListBox>(listBox->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -412,6 +411,7 @@ namespace tgui
     std::vector<String> ListBox::getItems() const
     {
         std::vector<String> items;
+        items.reserve(m_items.size());
         for (const auto& item : m_items)
             items.push_back(item.text.getString());
 
@@ -423,6 +423,7 @@ namespace tgui
     std::vector<String> ListBox::getItemIds() const
     {
         std::vector<String> ids;
+        ids.reserve(m_items.size());
         for (const auto& item : m_items)
             ids.push_back(item.id);
 
@@ -822,8 +823,7 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Up) || (event.code == Event::KeyboardKey::Down))
             return true;
-        else
-            return Widget::canHandleKeyPress(event);
+        return Widget::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -832,18 +832,17 @@ namespace tgui
     {
         if (signalName == onItemSelect.getName())
             return onItemSelect;
-        else if (signalName == onMousePress.getName())
+        if (signalName == onMousePress.getName())
             return onMousePress;
-        else if (signalName == onMouseRelease.getName())
+        if (signalName == onMouseRelease.getName())
             return onMouseRelease;
-        else if (signalName == onDoubleClick.getName())
+        if (signalName == onDoubleClick.getName())
             return onDoubleClick;
-        else if (signalName == onRightClick.getName())
+        if (signalName == onRightClick.getName())
             return onRightClick;
-        else if (signalName == onScroll.getName())
+        if (signalName == onScroll.getName())
             return onScroll;
-        else
-            return Widget::getSignal(std::move(signalName));
+        return Widget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1061,7 +1060,7 @@ namespace tgui
 
         if (node->propertyValuePairs[U"TextAlignment"])
         {
-            String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TextAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TextAlignment"]->value).getString();
             if (alignment == U"Right")
                 setTextAlignment(HorizontalAlignment::Right);
             else if (alignment == U"Center")

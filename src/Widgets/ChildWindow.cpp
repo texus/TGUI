@@ -281,8 +281,7 @@ namespace tgui
     {
         if (childWindow)
             return std::static_pointer_cast<ChildWindow>(childWindow->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -364,7 +363,7 @@ namespace tgui
         }
 
         buttonOffsetX = m_distanceToSideCached;
-        for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+        for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
             if (button->isVisible())
             {
@@ -782,7 +781,7 @@ namespace tgui
                 setFocused(true);
 
             // Send the mouse press event to the title buttons
-            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+            for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
                 if (button->isVisible() && button->isMouseOnWidget(pos))
                 {
@@ -827,7 +826,7 @@ namespace tgui
             if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(pos))
             {
                 // Send the mouse release event to the title buttons
-                for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+                for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
                 {
                     if (button->isVisible() && button->isMouseOnWidget(pos))
                     {
@@ -953,7 +952,7 @@ namespace tgui
                 if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(pos))
                 {
                     // Send the hover event to the buttons inside the title bar
-                    for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+                    for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
                     {
                         if (button->isVisible())
                         {
@@ -966,7 +965,7 @@ namespace tgui
                 }
                 else // When the mouse is not on the title bar, the mouse can't be on the buttons inside it
                 {
-                    for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+                    for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
                     {
                         if (button->isVisible())
                             button->mouseNoLongerOnWidget();
@@ -995,8 +994,7 @@ namespace tgui
     {
         if (event.code == Event::KeyboardKey::Escape)
             return true;
-        else
-            return Container::canHandleKeyPress(event);
+        return Container::canHandleKeyPress(event);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1032,7 +1030,7 @@ namespace tgui
         m_spriteTitleBar.setSize({getInnerTitleBarSize().x, m_titleBarHeightCached});
 
         // Set the size of the buttons in the title bar
-        for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+        for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
             if (button->isVisible())
             {
@@ -1106,18 +1104,17 @@ namespace tgui
     {
         if (signalName == onMousePress.getName())
             return onMousePress;
-        else if (signalName == onClose.getName())
+        if (signalName == onClose.getName())
             return onClose;
-        else if (signalName == onClosing.getName())
+        if (signalName == onClosing.getName())
             return onClosing;
-        else if (signalName == onMinimize.getName())
+        if (signalName == onMinimize.getName())
             return onMinimize;
-        else if (signalName == onMaximize.getName())
+        if (signalName == onMaximize.getName())
             return onMaximize;
-        else if (signalName == onEscapeKeyPress.getName())
+        if (signalName == onEscapeKeyPress.getName())
             return onEscapeKeyPress;
-        else
-            return Container::getSignal(std::move(signalName));
+        return Container::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1251,7 +1248,7 @@ namespace tgui
         {
             Container::rendererChanged(property);
 
-            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+            for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
                 button->setInheritedOpacity(m_opacityCached);
 
             m_titleText.setOpacity(m_opacityCached);
@@ -1262,7 +1259,7 @@ namespace tgui
         {
             Container::rendererChanged(property);
 
-            for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+            for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
             {
                 if (button->isVisible())
                     button->setInheritedFont(m_fontCached);
@@ -1291,7 +1288,7 @@ namespace tgui
         else if (m_titleAlignment == HorizontalAlignment::Right)
             node->propertyValuePairs[U"TitleAlignment"] = std::make_unique<DataIO::ValueNode>("Right");
 
-        if (getTitle().length() > 0)
+        if (!getTitle().empty())
             node->propertyValuePairs[U"Title"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getTitle()));
 
         if (m_titleTextSize != 0)
@@ -1356,10 +1353,10 @@ namespace tgui
         if (node->propertyValuePairs[U"TitleButtons"])
         {
             unsigned int decodedTitleButtons = TitleButton::None;
-            std::vector<String> titleButtons = Deserializer::split(node->propertyValuePairs[U"TitleButtons"]->value, '|');
+            const std::vector<String> titleButtons = Deserializer::split(node->propertyValuePairs[U"TitleButtons"]->value, '|');
             for (const auto& elem : titleButtons)
             {
-                String requestedTitleButton = elem.trim();
+                const String requestedTitleButton = elem.trim();
                 if (requestedTitleButton == U"Close")
                     decodedTitleButtons |= TitleButton::Close;
                 else if (requestedTitleButton == U"Maximize")
@@ -1487,7 +1484,7 @@ namespace tgui
 
         // Draw the buttons
         states.transform.translate({-m_bordersCached.getLeft(), -m_bordersCached.getTop()});
-        for (auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
+        for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
         {
             if (!button->isVisible())
                 continue;

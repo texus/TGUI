@@ -148,10 +148,10 @@ namespace tgui
         if (m_renderer)
             m_renderer->unsubscribe(this);
 
-        for (auto& layout : m_boundPositionLayouts)
+        for (const auto& layout : m_boundPositionLayouts)
             layout->unbindWidget();
 
-        for (auto& layout : m_boundSizeLayouts)
+        for (const auto& layout : m_boundSizeLayouts)
             layout->unbindWidget();
 
         SignalManager::getSignalManager()->remove(this);
@@ -495,7 +495,7 @@ namespace tgui
             rendererData->themePropertiesInherited = true;
         }
 
-        std::shared_ptr<RendererData> oldData = m_renderer->getData();
+        const std::shared_ptr<RendererData> oldData = m_renderer->getData();
 
         // Update the data
         m_renderer->unsubscribe(this);
@@ -652,8 +652,7 @@ namespace tgui
 
         if (m_parent)
             return m_parent->getAbsolutePosition(pos + m_parent->getChildWidgetsOffset());
-        else
-            return pos;
+        return pos;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -708,8 +707,7 @@ namespace tgui
     {
         if (m_scaleOrigin)
             return *m_scaleOrigin;
-        else
-            return m_origin;
+        return m_origin;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,8 +732,7 @@ namespace tgui
     {
         if (m_rotationOrigin)
             return *m_rotationOrigin;
-        else
-            return m_origin;
+        return m_origin;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1472,10 +1469,7 @@ namespace tgui
         // This behavior can be disabled by calling gui.setKeyboardNavigationEnabled(true).
         // TGUI_NEXT: Always return false here, irrelevant of whether keyboard navigation is enabled.
         // TGUI_NEXT: Deprecate or remove this function and let keyPressed return a bool value.
-        if (m_parentGui && m_parentGui->isKeyboardNavigationEnabled())
-            return false;
-        else
-            return true;
+        return !(m_parentGui && m_parentGui->isKeyboardNavigationEnabled());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1518,8 +1512,7 @@ namespace tgui
     {
         if (m_toolTip && isMouseOnWidget(mousePos))
             return getToolTip();
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1556,19 +1549,19 @@ namespace tgui
     {
         if (signalName == onPositionChange.getName())
             return onPositionChange;
-        else if (signalName == onSizeChange.getName())
+        if (signalName == onSizeChange.getName())
             return onSizeChange;
-        else if (signalName == onFocus.getName())
+        if (signalName == onFocus.getName())
             return onFocus;
-        else if (signalName == onUnfocus.getName())
+        if (signalName == onUnfocus.getName())
             return onUnfocus;
-        else if (signalName == onMouseEnter.getName())
+        if (signalName == onMouseEnter.getName())
             return onMouseEnter;
-        else if (signalName == onMouseLeave.getName())
+        if (signalName == onMouseLeave.getName())
             return onMouseLeave;
-        else if (signalName == onAnimationFinish.getName())
+        if (signalName == onAnimationFinish.getName())
             return onAnimationFinish;
-        else if (signalName == onShowEffectFinish.getName())
+        if (signalName == onShowEffectFinish.getName())
             return onShowEffectFinish;
 
         throw Exception{U"No signal exists with name '" + std::move(signalName) + U"'."};
@@ -1798,7 +1791,7 @@ namespace tgui
 
         if (node->propertyValuePairs[U"MouseCursor"])
         {
-            String cursorStr = node->propertyValuePairs[U"MouseCursor"]->value.trim();
+            const String cursorStr = node->propertyValuePairs[U"MouseCursor"]->value.trim();
             if (cursorStr == U"Text")
                 m_mouseCursor = Cursor::Type::Text;
             else if (cursorStr == U"Hand")
@@ -1870,7 +1863,7 @@ namespace tgui
                     const auto& constructor = WidgetFactory::getConstructFunction(toolTipWidgetNode->name);
                     if (constructor)
                     {
-                        Widget::Ptr toolTip = constructor();
+                        const Widget::Ptr toolTip = constructor();
                         toolTip->load(toolTipWidgetNode, renderers);
                         setToolTip(toolTip);
                     }

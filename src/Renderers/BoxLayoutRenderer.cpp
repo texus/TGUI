@@ -43,17 +43,13 @@ namespace tgui
         auto it = m_data->propertyValuePairs.find("SpaceBetweenWidgets");
         if (it != m_data->propertyValuePairs.end())
             return it->second.getNumber();
-        else
+        it = m_data->propertyValuePairs.find("Padding");
+        if (it != m_data->propertyValuePairs.end())
         {
-            it = m_data->propertyValuePairs.find("Padding");
-            if (it != m_data->propertyValuePairs.end())
-            {
-                const Padding padding = it->second.getOutline();
-                return std::max(std::min(padding.getLeft(), padding.getRight()), std::min(padding.getTop(), padding.getBottom()));
-            }
-            else
-                return 0;
+            const Padding padding = it->second.getOutline();
+            return std::max(std::min(padding.getLeft(), padding.getRight()), std::min(padding.getTop(), padding.getBottom()));
         }
+        return 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

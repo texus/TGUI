@@ -164,7 +164,7 @@ namespace tgui
             return std::sqrt(x.x * x.x + x.y * x.y);
         };
 
-        float s = length(position);
+        const float s = length(position);
 
         float h = std::atan2(position.y, -position.x);
 
@@ -392,8 +392,7 @@ namespace tgui
     {
         if (colorPicker)
             return std::static_pointer_cast<ColorPicker>(colorPicker->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -585,10 +584,9 @@ namespace tgui
     {
         if (signalName == onColorChange.getName())
             return onColorChange;
-        else if (signalName == onOkPress.getName())
+        if (signalName == onOkPress.getName())
             return onOkPress;
-        else
-            return ChildWindow::getSignal(std::move(signalName));
+        return ChildWindow::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

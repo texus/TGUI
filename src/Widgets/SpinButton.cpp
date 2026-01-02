@@ -64,8 +64,7 @@ namespace tgui
     {
         if (spinButton)
             return std::static_pointer_cast<SpinButton>(spinButton->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,17 +234,11 @@ namespace tgui
             // Check if the mouse is on top of the upper/right arrow
             if (m_orientation == Orientation::Vertical)
             {
-                if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos))
-                    m_mouseDownOnTopArrow = true;
-                else
-                    m_mouseDownOnTopArrow = false;
+                m_mouseDownOnTopArrow = FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos);
             }
             else
             {
-                if (FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos))
-                    m_mouseDownOnTopArrow = false;
-                else
-                    m_mouseDownOnTopArrow = true;
+                m_mouseDownOnTopArrow = !FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos);
             }
 
             if (m_mouseDownOnTopArrow && m_value < m_maximum)
@@ -277,17 +270,11 @@ namespace tgui
         // Check if the mouse is on top of the upper/right arrow
         if (m_orientation == Orientation::Vertical)
         {
-            if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos))
-                m_mouseHoverOnTopArrow = true;
-            else
-                m_mouseHoverOnTopArrow = false;
+            m_mouseHoverOnTopArrow = FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y / 2.0f}.contains(pos);
         }
         else
         {
-            if (FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos))
-                m_mouseHoverOnTopArrow = true;
-            else
-                m_mouseHoverOnTopArrow = false;
+            m_mouseHoverOnTopArrow = FloatRect{getPosition().x, getPosition().y, getSize().x / 2.0f, getSize().y}.contains(pos);
         }
 
         if (!m_mouseHover)
@@ -300,8 +287,7 @@ namespace tgui
     {
         if (signalName == onValueChange.getName())
             return onValueChange;
-        else
-            return ClickableWidget::getSignal(std::move(signalName));
+        return ClickableWidget::getSignal(std::move(signalName));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -402,9 +388,8 @@ namespace tgui
         if (m_orientation == Orientation::Vertical)
             return {getSize().x - m_bordersCached.getLeftPlusRight(),
                     (getSize().y - m_bordersCached.getTopPlusBottom() - m_borderBetweenArrowsCached) / 2.0f};
-        else
-            return {getSize().y - m_bordersCached.getTopPlusBottom(),
-                    (getSize().x - m_bordersCached.getLeftPlusRight() - m_borderBetweenArrowsCached) / 2.0f};
+        return {getSize().y - m_bordersCached.getTopPlusBottom(),
+                (getSize().x - m_bordersCached.getLeftPlusRight() - m_borderBetweenArrowsCached) / 2.0f};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -535,10 +520,10 @@ namespace tgui
 
     void SpinButton::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall)
     {
-        std::weak_ptr<SpinButton> widgetPtr = std::static_pointer_cast<SpinButton>(shared_from_this());
+        const std::weak_ptr<SpinButton> widgetPtr = std::static_pointer_cast<SpinButton>(shared_from_this());
         Timer::scheduleCallback([widgetPtr, clickedTime]()
         {
-            SpinButton::Ptr spinButton = widgetPtr.lock();
+            const SpinButton::Ptr spinButton = widgetPtr.lock();
             if (spinButton)
             {
                 // Mouse still over and the mouse press is current

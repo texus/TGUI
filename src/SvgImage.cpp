@@ -84,8 +84,7 @@ namespace tgui
     {
         if (m_data->svg)
             return {static_cast<float>(m_data->svg->width), static_cast<float>(m_data->svg->height)};
-        else
-            return {0, 0};
+        return {0, 0};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

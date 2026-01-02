@@ -24,6 +24,7 @@
 
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,8 +194,7 @@ namespace tgui
         if (!m_font)
             return {};
 
-        if (index > m_string.length())
-            index = m_string.length();
+        index = std::min(index, m_string.length());
 
         const bool isBold           = static_cast<unsigned int>(m_style) & TextStyle::Bold;
         const float whitespaceWidth = m_font->getGlyph(U' ', m_characterSize, isBold).advance;
@@ -376,8 +376,8 @@ namespace tgui
             {
                 const auto& glyph = m_font->getGlyph(curChar, m_characterSize, isBold, m_outlineThickness);
 
-                float top    = glyph.bounds.top;
-                float right  = glyph.bounds.left + glyph.bounds.width;
+                const float top   = glyph.bounds.top;
+                const float right = glyph.bounds.left + glyph.bounds.width;
 
                 // Add the outline glyph to the vertices
                 addGlyphQuad(*m_outlineVertices, {x, y}, vertexOutlineColor, glyph, fontScale, italicShear);

@@ -67,8 +67,7 @@ namespace tgui
     {
         if (menuBar)
             return std::static_pointer_cast<MenuBar>(menuBar->clone());
-        else
-            return nullptr;
+        return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,8 +128,7 @@ namespace tgui
     {
         if (!m_menus.empty())
             return addMenuItem(m_menus.back().text.getString(), text);
-        else
-            return false;
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +251,7 @@ namespace tgui
 
     bool MenuBar::getMenuEnabled(const String& menuText) const
     {
-        for (auto& menu : m_menus)
+        for (const auto& menu : m_menus)
         {
             if (menu.text.getString() == menuText)
                 return menu.enabled;
@@ -311,7 +309,7 @@ namespace tgui
         if (hierarchy.size() < 2)
             return false;
 
-        auto* menuItem = findMenuItem(hierarchy, m_menus);
+        const auto* menuItem = findMenuItem(hierarchy, m_menus);
         if (!menuItem)
             return false;
 
@@ -700,7 +698,7 @@ namespace tgui
 
     void MenuBar::drawMenusOnBar(BackendRenderTarget& target, RenderStates states) const
     {
-        Transform oldTransform = states.transform;
+        const Transform oldTransform = states.transform;
 
         // Draw the backgrounds
         Sprite backgroundSprite = m_spriteItemBackground;

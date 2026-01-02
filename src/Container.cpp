@@ -64,7 +64,7 @@ namespace tgui
                 if (child->getToolTip())
                     addRenderer(child->getToolTip()->getSharedRenderer()->getData().get(), child->getToolTip().get());
 
-                Container* childContainer = dynamic_cast<Container*>(child.get());
+                const Container* const childContainer = dynamic_cast<Container*>(child.get());
                 if (childContainer)
                     getAllRenderers(orderedRenderers, rendererToWidgetsMap, childContainer);
                 else
@@ -101,7 +101,7 @@ namespace tgui
                 }
                 else
                 {
-                    String value = ObjectConverter{pair.second}.getString();
+                    const String value = ObjectConverter{pair.second}.getString();
 
                     // Skip empty values
                     if (value.empty())
@@ -236,10 +236,10 @@ namespace tgui
             // They all need to be in m_widgets before setParent is called on the first widget,
             // which is why we can't just use call add(widget) for each widget.
             m_widgets.reserve(right.m_widgets.size());
-            for (auto& widget : right.m_widgets)
+            for (const auto& widget : right.m_widgets)
                 m_widgets.emplace_back(widget->clone());
 
-            for (auto& widget : m_widgets)
+            for (const auto& widget : m_widgets)
                 widgetAdded(widget);
 
             updateChildrenWithAutoLayout();
@@ -358,7 +358,7 @@ namespace tgui
         // If we still couldn't find it then check if there are any SubwidgetContainer widgets and search their subwidgets
         for (const auto& child : m_widgets)
         {
-            auto subWidgetContainer = dynamic_cast<const SubwidgetContainer*>(child.get());
+            const auto* const subWidgetContainer = dynamic_cast<const SubwidgetContainer*>(child.get());
             if (subWidgetContainer)
             {
                 Widget::Ptr widget = subWidgetContainer->getContainer()->get(widgetName);
@@ -547,7 +547,7 @@ namespace tgui
         if (replaceExisting)
             removeAllWidgets();
 
-        if (rootNode->propertyValuePairs.size() != 0)
+        if (!rootNode->propertyValuePairs.empty())
             Widget::load(rootNode, {});
 
         std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
@@ -571,7 +571,7 @@ namespace tgui
                 const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
                 if (constructor)
                 {
-                    Widget::Ptr widget = constructor();
+                    const Widget::Ptr widget = constructor();
                     add(widget, objectName);
 
                     // We delay loading of widgets until they have all been added to the container.
@@ -586,7 +586,7 @@ namespace tgui
 
         for (auto& pair : widgetsToLoad)
         {
-            Widget::Ptr& widget = pair.first;
+            const Widget::Ptr& widget = pair.first;
             const auto& node = pair.second.get();
             widget->load(node, availableRenderers);
         }
@@ -724,7 +724,7 @@ namespace tgui
         // insert first to avoid the widget being destroyed before it is copied, but that could lead
         // to an unnecessary reallocation and we would still need to be careful with using the widget
         // reference in the lines below the erase. So we make a copy of the shared_ptr to avoid issues.
-        Widget::Ptr widgetToMove = widget;
+        const Widget::Ptr widgetToMove = widget;
 
         // Move the widget to the new index
         m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(currentWidgetIndex));
@@ -802,7 +802,7 @@ namespace tgui
             // If the widget is a container then look inside it if we are looking for the leaf widget
             if (recursive && widget->isContainer())
             {
-                Container::Ptr container = std::static_pointer_cast<Container>(widget);
+                const Container::Ptr container = std::static_pointer_cast<Container>(widget);
                 auto childWidget = container->getWidgetAtPos(transformMousePos(widget, pos) - container->getPosition(), true);
                 if (childWidget)
                     return childWidget;
@@ -1065,7 +1065,7 @@ namespace tgui
 
         mousePos -= getPosition() + getChildWidgetsOffset();
 
-        Widget::Ptr widget = getWidgetBelowMouse(mousePos);
+        const Widget::Ptr widget = getWidgetBelowMouse(mousePos);
         if (widget && (widget->isEnabled() || ToolTip::getShowOnDisabledWidget()))
         {
             toolTip = widget->askToolTip(transformMousePos(widget, mousePos));
@@ -1131,7 +1131,7 @@ namespace tgui
                 if (nameSeparator != String::npos)
                     className = Deserializer::deserialize(ObjectConverter::Type::String, childNode->name.substr(nameSeparator + 1)).getString();
 
-                Widget::Ptr childWidget = constructor();
+                const Widget::Ptr childWidget = constructor();
                 add(childWidget, className);
 
                 // We delay loading of widgets until they have all been added to the container.
@@ -1143,9 +1143,9 @@ namespace tgui
                 throw Exception{U"No construct function exists for widget type '" + widgetType + U"'."};
         }
 
-        for (auto& pair : widgetsToLoad)
+        for (const auto& pair : widgetsToLoad)
         {
-            Widget::Ptr& childWidget = pair.first;
+            const Widget::Ptr& childWidget = pair.first;
             const auto& childNode = pair.second.get();
             childWidget->load(childNode, renderers);
         }
@@ -1162,10 +1162,10 @@ namespace tgui
             return true;
         }
 
-        const auto oldWidgetBelowMouse = m_widgetBelowMouse.get();
+        const auto* const oldWidgetBelowMouse = m_widgetBelowMouse.get();
 
         // Check if the mouse is on top of a widget
-        Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
+        const Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
         if (widget != nullptr)
         {
             // Send the event to the widget
@@ -1187,7 +1187,7 @@ namespace tgui
     bool Container::processMousePressEvent(Event::MouseButton button, Vector2f mousePos)
     {
         // Check if the mouse is on top of a widget
-        Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
+        const Widget::Ptr widget = updateWidgetBelowMouse(mousePos);
         if (widget)
         {
             if (button == Event::MouseButton::Left)
@@ -1211,22 +1211,20 @@ namespace tgui
 
             return true;
         }
-        else // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
+        // The mouse did not went down on a widget, so unfocus the focused child widget, but keep ourselves focused
+        if (button == Event::MouseButton::Left)
         {
-            if (button == Event::MouseButton::Left)
-            {
-                m_widgetWithLeftMouseDown = nullptr;
-                m_draggingWidget = false;
-            }
-            else if (button == Event::MouseButton::Right)
-                m_widgetWithRightMouseDown = nullptr;
-
-            if (m_focusedWidget)
-                m_focusedWidget->setFocused(false);
-
-            m_focusedWidget = nullptr;
-            setFocused(true);
+            m_widgetWithLeftMouseDown = nullptr;
+            m_draggingWidget = false;
         }
+        else if (button == Event::MouseButton::Right)
+            m_widgetWithRightMouseDown = nullptr;
+
+        if (m_focusedWidget)
+            m_focusedWidget->setFocused(false);
+
+        m_focusedWidget = nullptr;
+        setFocused(true);
 
         return false;
     }
@@ -1235,7 +1233,7 @@ namespace tgui
 
     bool Container::processMouseReleaseEvent(Event::MouseButton button, Vector2f mousePos)
     {
-        Widget::Ptr widgetBelowMouse = updateWidgetBelowMouse(mousePos);
+        const Widget::Ptr widgetBelowMouse = updateWidgetBelowMouse(mousePos);
         if (widgetBelowMouse != nullptr)
             widgetBelowMouse->mouseReleased(button, transformMousePos(widgetBelowMouse, mousePos));
 
@@ -1246,7 +1244,7 @@ namespace tgui
             m_draggingWidget = false;
             return true;
         }
-        else if ((button == Event::MouseButton::Right) && m_widgetWithRightMouseDown)
+        if ((button == Event::MouseButton::Right) && m_widgetWithRightMouseDown)
         {
             m_widgetWithRightMouseDown->rightMouseButtonNoLongerDown();
             m_widgetWithRightMouseDown = nullptr;
@@ -1261,7 +1259,7 @@ namespace tgui
     bool Container::processScrollEvent(float delta, Vector2f pos, bool touch)
     {
         // Send the event to the widget below the mouse
-        Widget::Ptr widget = updateWidgetBelowMouse(pos);
+        const Widget::Ptr widget = updateWidgetBelowMouse(pos);
 
         if (widget != nullptr)
             return widget->scrolled(delta, transformMousePos(widget, pos), touch);
@@ -1290,17 +1288,17 @@ namespace tgui
                     m_focusedWidget->getNavigationUp()->setFocused(true);
                     return true;
                 }
-                else if ((event.code == Event::KeyboardKey::Down) && m_focusedWidget->getNavigationDown())
+                if ((event.code == Event::KeyboardKey::Down) && m_focusedWidget->getNavigationDown())
                 {
                     m_focusedWidget->getNavigationDown()->setFocused(true);
                     return true;
                 }
-                else if ((event.code == Event::KeyboardKey::Left) && m_focusedWidget->getNavigationLeft())
+                if ((event.code == Event::KeyboardKey::Left) && m_focusedWidget->getNavigationLeft())
                 {
                     m_focusedWidget->getNavigationLeft()->setFocused(true);
                     return true;
                 }
-                else if ((event.code == Event::KeyboardKey::Right) && m_focusedWidget->getNavigationRight())
+                if ((event.code == Event::KeyboardKey::Right) && m_focusedWidget->getNavigationRight())
                 {
                     m_focusedWidget->getNavigationRight()->setFocused(true);
                     return true;
@@ -1565,7 +1563,7 @@ namespace tgui
             // Try to focus the first focusable widget in the container
             auto oldUnfocusedWidget = container->m_focusedWidget;
             container->m_focusedWidget = nullptr;
-            bool childFocused = reverseWidgetOrder ? container->focusPreviousWidget(true) : container->focusNextWidget(true);
+            const bool childFocused = reverseWidgetOrder ? container->focusPreviousWidget(true) : container->focusNextWidget(true);
 
             if (oldUnfocusedWidget && (oldUnfocusedWidget != container->m_focusedWidget))
                 oldUnfocusedWidget->setFocused(false);
@@ -1587,7 +1585,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Vector2f Container::transformMousePos(const Widget::Ptr& widget, Vector2f mousePos) const
+    Vector2f Container::transformMousePos(const Widget::Ptr& widget, Vector2f mousePos)
     {
         const bool defaultOrigin = (widget->getOrigin().x == 0) && (widget->getOrigin().y == 0);
         const bool scaledOrRotated = (widget->getScale().x != 1) || (widget->getScale().y != 1) || (widget->getRotation() != 0);
