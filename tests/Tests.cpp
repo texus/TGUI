@@ -375,14 +375,14 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         SDL_GPUTextureTransferInfo textureTransferInfo = {};
         textureTransferInfo.transfer_buffer = transferBuffer;
         textureTransferInfo.offset = 0;
-	    SDL_DownloadFromGPUTexture(copyPass, &textureRegion, &textureTransferInfo);
-	    SDL_EndGPUCopyPass(copyPass);
+        SDL_DownloadFromGPUTexture(copyPass, &textureRegion, &textureTransferInfo);
+        SDL_EndGPUCopyPass(copyPass);
 
-	    SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(cmdBuffer);
-	    SDL_WaitForGPUFences(device, true, &fence, 1);
-	    SDL_ReleaseGPUFence(device, fence);
+        SDL_GPUFence* fence = SDL_SubmitGPUCommandBufferAndAcquireFence(cmdBuffer);
+        SDL_WaitForGPUFences(device, true, &fence, 1);
+        SDL_ReleaseGPUFence(device, fence);
 
-	    void* pixelData = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
+        void* pixelData = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
 
         int dataLength = 0;
         unsigned char* pngData = stbi_write_png_to_mem(
@@ -401,8 +401,8 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         tgui::writeFile(filename, tgui::CharStringView(reinterpret_cast<const char*>(pngData), static_cast<std::size_t>(dataLength)));
         STBIW_FREE(pngData); // NOLINT(cppcoreguidelines-no-malloc)
 
-	    SDL_UnmapGPUTransferBuffer(device, transferBuffer);
-	    SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
+        SDL_UnmapGPUTransferBuffer(device, transferBuffer);
+        SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
         SDL_ReleaseGPUTexture(device, texture);
         return;
     }
