@@ -28,6 +28,7 @@
 #include <SFML/Config.hpp>
 #include <SFML/Graphics/Image.hpp>
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdint>

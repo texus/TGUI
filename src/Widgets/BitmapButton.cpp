@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/BitmapButton.hpp>
 #include <TGUI/Config.hpp>
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 

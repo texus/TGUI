@@ -26,6 +26,7 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <algorithm>
 #include <memory>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML

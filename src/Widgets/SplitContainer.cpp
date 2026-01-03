@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/SplitContainer.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/Config.hpp>
+#include <algorithm>
 #include <cmath> // floor
 #include <memory>
 

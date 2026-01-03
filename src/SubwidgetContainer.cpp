@@ -24,6 +24,7 @@
 
 #include <TGUI/SubwidgetContainer.hpp>
 #include <TGUI/Config.hpp>
+#include <algorithm>
 #include <memory>
 #include <vector>
 

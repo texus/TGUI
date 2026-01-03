@@ -30,6 +30,7 @@
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/SignalManager.hpp>
 #include <TGUI/Config.hpp>
+#include <algorithm>
 #include <memory>
 #include <vector>
 

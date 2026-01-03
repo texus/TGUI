@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Config.hpp>
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 #include <vector>

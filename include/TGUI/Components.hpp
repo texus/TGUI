@@ -31,6 +31,7 @@
 #include <TGUI/Outline.hpp>
 #include <TGUI/Config.hpp>
 
+#include <algorithm>
 #include <cstdint>
 #include <unordered_map>
 #include <memory>

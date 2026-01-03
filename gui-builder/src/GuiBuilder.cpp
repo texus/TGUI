@@ -61,6 +61,7 @@
 #include "WidgetProperties/TreeViewProperties.hpp"
 #include "WidgetProperties/VerticalLayoutProperties.hpp"
 #include <TGUI/Config.hpp>
+#include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <memory>

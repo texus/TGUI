@@ -27,6 +27,7 @@
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <TGUI/Config.hpp>
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 #include <vector>

@@ -28,6 +28,7 @@
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Timer.hpp>
 #include <TGUI/Config.hpp>
+#include <algorithm>
 #include <memory>
 #include <vector>
 
