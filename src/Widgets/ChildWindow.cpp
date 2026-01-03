@@ -310,23 +310,24 @@ namespace tgui
     void ChildWindow::setPosition(const Layout2d& position)
     {
         bool positionMovedToKeepInParent = false;
-        if (m_keepInParent && m_parent && (m_parent->getSize().x > 0) && (m_parent->getSize().y > 0))
+        if (m_keepInParent && m_parent && (m_parent->getInnerSize().x > 0) && (m_parent->getInnerSize().y > 0))
         {
+            const Vector2f parentSize = m_parent->getInnerSize();
             const Vector2f origin{getOrigin().x * getSize().x, getOrigin().y * getSize().y};
             float x = position.getValue().x - origin.x;
             float y = position.getValue().y - origin.y;
 
-            if ((y < 0) || (y > m_parent->getSize().y - getSize().y) || (x < 0) || (x > m_parent->getSize().x - getSize().x))
+            if ((y < 0) || (y > parentSize.y - getSize().y) || (x < 0) || (x > parentSize.x - getSize().x))
             {
                 if (y < 0)
                     y = 0;
-                else if (y > m_parent->getSize().y - getSize().y)
-                    y = std::max(0.f, m_parent->getSize().y - getSize().y);
+                else if (y > parentSize.y - getSize().y)
+                    y = std::max(0.f, parentSize.y - getSize().y);
 
                 if (x < 0)
                     x = 0;
-                else if (x > m_parent->getSize().x - getSize().x)
-                    x = std::max(0.f, m_parent->getSize().x - getSize().x);
+                else if (x > parentSize.x - getSize().x)
+                    x = std::max(0.f, parentSize.x - getSize().x);
 
                 positionMovedToKeepInParent = true;
                 Container::setPosition({x + origin.x, y + origin.y});
