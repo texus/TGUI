@@ -31,6 +31,7 @@
 #include <TGUI/Config.hpp>
 
 #include <cstdint>
+#include <utility>
 #include <vector>
 
 namespace tgui

@@ -31,6 +31,7 @@
 #include <TGUI/TextureManager.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Loading/ImageLoader.hpp>
+#include <utility>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/Image.hpp>

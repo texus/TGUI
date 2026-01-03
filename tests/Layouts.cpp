@@ -27,6 +27,7 @@
 #include "Tests.hpp"
 #include "catch.hpp"
 #include <memory>
+#include <utility>
 
 using namespace tgui::bind_functions;
 using tgui::Layout;

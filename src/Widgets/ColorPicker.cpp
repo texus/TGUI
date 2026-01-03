@@ -30,6 +30,7 @@
 #include <cmath>
 #include <cstdint>
 #include <memory>
+#include <utility>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
     #include <numbers>

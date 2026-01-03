@@ -32,6 +32,7 @@
 #include <cmath>
 #include <memory>
 #include <set>
+#include <utility>
 #include <vector>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML

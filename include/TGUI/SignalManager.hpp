@@ -28,6 +28,7 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Config.hpp>
 
+#include <utility>
 #include <unordered_map>
 #include <memory>
 #include <vector>

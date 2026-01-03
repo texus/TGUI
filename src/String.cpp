@@ -29,6 +29,7 @@
 #include <cctype> // tolower, toupper, isspace
 #include <cwctype> // iswspace, iswalpha
 #include <iterator> // distance
+#include <utility>
 #include <vector>
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17

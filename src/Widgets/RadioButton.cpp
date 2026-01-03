@@ -27,6 +27,7 @@
 #include <TGUI/Container.hpp>
 #include <algorithm>
 #include <memory>
+#include <utility>
 
 namespace tgui
 {

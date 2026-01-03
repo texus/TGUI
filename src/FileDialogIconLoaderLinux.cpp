@@ -26,6 +26,7 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/Exception.hpp>
 #include <memory>
+#include <utility>
 
 #if defined(TGUI_SYSTEM_LINUX)
 

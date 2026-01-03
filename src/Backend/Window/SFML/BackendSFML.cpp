@@ -32,6 +32,7 @@
 #include <SFML/Window/Clipboard.hpp>
 #include <cstdint>
 #include <memory>
+#include <utility>
 
 #if defined(TGUI_SYSTEM_LINUX) && (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) && defined(TGUI_USE_X11)
     #include <X11/Xlib.h>

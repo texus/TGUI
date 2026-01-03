@@ -28,6 +28,7 @@
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <algorithm>
 #include <memory>
+#include <utility>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/Config.hpp>
