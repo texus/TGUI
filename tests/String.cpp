@@ -24,6 +24,7 @@
 
 #include "catch.hpp"
 #include <TGUI/Config.hpp>
+#include <cstdint>
 #include <vector>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML

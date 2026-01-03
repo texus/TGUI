@@ -30,6 +30,7 @@
 #include <SFML/Window/Window.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Clipboard.hpp>
+#include <cstdint>
 #include <memory>
 
 #if defined(TGUI_SYSTEM_LINUX) && (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) && defined(TGUI_USE_X11)

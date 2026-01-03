@@ -28,6 +28,7 @@
 #include <TGUI/Config.hpp>
 
 #include <cmath>
+#include <cstdint>
 #include <memory>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)

@@ -29,6 +29,7 @@
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Components.hpp>
 #include <TGUI/Config.hpp>
+#include <cstdint>
 #include <memory>
 #include <vector>
 

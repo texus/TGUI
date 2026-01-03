@@ -29,6 +29,7 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstdint>
 #include <unordered_map>
 #include <map>
 

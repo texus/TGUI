@@ -31,6 +31,7 @@
 
 #include <SFML/Window.hpp>
 
+#include <cstdint>
 #include <memory>
 #include <unordered_map>
 #include <map>

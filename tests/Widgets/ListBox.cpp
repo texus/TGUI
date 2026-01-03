@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include "catch.hpp"
+#include <cstdint>
 
 TEST_CASE("[ListBox]")
 {

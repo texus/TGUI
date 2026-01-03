@@ -26,6 +26,7 @@
 #include <TGUI/FileDialogIconLoader.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstdint>
 #include <memory>
 #include <vector>
 #include <map>

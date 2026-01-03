@@ -28,6 +28,7 @@
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstdint>
 #include <memory>
 #include <unordered_map>
 #include <vector>
