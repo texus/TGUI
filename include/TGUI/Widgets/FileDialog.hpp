@@ -36,6 +36,7 @@
 #include <TGUI/Filesystem.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstddef>
 #include <memory>
 #include <tuple>
 #include <utility>

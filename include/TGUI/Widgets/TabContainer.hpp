@@ -29,6 +29,7 @@
 #include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Config.hpp>
+#include <cstddef>
 #include <memory>
 #include <vector>
 

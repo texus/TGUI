@@ -27,6 +27,7 @@
 
 #include <algorithm>
 #include <cctype> // tolower, toupper, isspace
+#include <cstddef>
 #include <cwctype> // iswspace, iswalpha
 #include <iterator> // distance
 #include <utility>

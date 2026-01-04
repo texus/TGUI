@@ -24,6 +24,7 @@
 
 #include <fstream>
 #include <cstring>
+#include <cstddef>
 
 #include "Tests.hpp"
 #include "catch.hpp"

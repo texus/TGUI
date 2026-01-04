@@ -29,6 +29,7 @@
 #include <TGUI/Renderers/ListBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
 #include <TGUI/Config.hpp>
+#include <cstddef>
 #include <memory>
 #include <vector>
 

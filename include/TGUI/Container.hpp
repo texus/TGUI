@@ -28,6 +28,7 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstddef>
 #include <list>
 #include <memory>
 #include <vector>

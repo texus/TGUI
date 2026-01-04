@@ -29,6 +29,7 @@
 #include <array>
 #include <cassert>
 #include <cmath>
+#include <cstddef>
 #include <memory>
 #include <utility>
 #include <vector>

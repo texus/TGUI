@@ -33,6 +33,7 @@
 #include <TGUI/Config.hpp>
 
 #include <chrono>
+#include <cstddef>
 #include <memory>
 #include <stack>
 #include <vector>

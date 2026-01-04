@@ -28,6 +28,7 @@
 #include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Config.hpp>
+#include <cstddef>
 #include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

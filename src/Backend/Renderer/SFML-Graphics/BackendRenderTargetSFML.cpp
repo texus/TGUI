@@ -31,6 +31,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <cmath>
+#include <cstddef>
 #include <array>
 #include <memory>
 #include <vector>

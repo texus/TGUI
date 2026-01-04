@@ -27,6 +27,7 @@
 
 #include <TGUI/Widgets/BoxLayout.hpp>
 #include <TGUI/Config.hpp>
+#include <cstddef>
 #include <memory>
 #include <vector>
 

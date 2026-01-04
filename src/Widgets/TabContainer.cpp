@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/TabContainer.hpp>
 #include <TGUI/Config.hpp>
 #include <algorithm>
+#include <cstddef>
 #include <memory>
 #include <utility>
 

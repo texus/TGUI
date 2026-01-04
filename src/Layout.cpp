@@ -27,6 +27,7 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <algorithm>
+#include <cstddef>
 #include <memory>
 #include <utility>
 #include <vector>

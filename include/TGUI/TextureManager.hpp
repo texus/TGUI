@@ -30,6 +30,7 @@
 #include <TGUI/TextureData.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstddef>
 #include <memory>
 #include <list>
 #include <map>

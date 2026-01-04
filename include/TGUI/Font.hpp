@@ -28,6 +28,7 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Rect.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <cstddef>

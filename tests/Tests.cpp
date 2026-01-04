@@ -34,6 +34,7 @@
 #if TGUI_HAS_BACKEND_SDL_GPU
     #include <TGUI/Backend/SDL-GPU.hpp>
     #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
+    #include <cstddef>
 #endif
 
 #include "Tests.hpp"

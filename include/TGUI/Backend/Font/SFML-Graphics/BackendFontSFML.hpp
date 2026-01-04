@@ -30,6 +30,7 @@
 
 #include <SFML/Graphics/Font.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <unordered_set>
 #include <memory>

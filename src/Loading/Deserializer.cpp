@@ -30,6 +30,7 @@
 #include <TGUI/Global.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <unordered_map>
 #include <utility>

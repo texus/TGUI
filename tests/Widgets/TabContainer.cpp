@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include "catch.hpp"
+#include <cstddef>
 
 TEST_CASE("[tabContainer]")
 {

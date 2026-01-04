@@ -40,6 +40,7 @@
 #endif
 
 #include <memory>
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 

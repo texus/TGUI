@@ -31,6 +31,7 @@
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 

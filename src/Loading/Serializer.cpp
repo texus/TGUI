@@ -31,6 +31,7 @@
 
 #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <cassert>

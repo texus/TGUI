@@ -30,6 +30,7 @@
 #include <TGUI/Config.hpp>
 #include <algorithm>
 #include <chrono>
+#include <cstddef>
 #include <memory>
 #include <vector>
 

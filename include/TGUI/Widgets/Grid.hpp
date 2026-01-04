@@ -28,6 +28,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstddef>
 #include <memory>
 #include <unordered_map>
 #include <utility>

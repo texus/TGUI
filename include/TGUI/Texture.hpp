@@ -34,6 +34,7 @@
 #include <TGUI/Color.hpp>
 #include <TGUI/Rect.hpp>
 
+#include <cstddef>
 #include <functional>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS

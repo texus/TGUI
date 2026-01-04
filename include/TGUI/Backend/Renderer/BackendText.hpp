@@ -29,6 +29,7 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <cstddef>
 #include <memory>
 #include <utility>
 #include <vector>

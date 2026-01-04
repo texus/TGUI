@@ -27,6 +27,7 @@
 
 #include <TGUI/Widgets/Label.hpp>
 #include <TGUI/Config.hpp>
+#include <cstddef>
 #include <memory>
 #include <utility>
 #include <vector>

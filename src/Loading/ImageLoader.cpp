@@ -27,6 +27,7 @@
 
 #include <TGUI/extlibs/IncludeStbImage.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <cstring> // memcpy
 #include <memory>

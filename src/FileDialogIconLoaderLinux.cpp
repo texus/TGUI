@@ -34,6 +34,7 @@
 #include <vector>
 #include <atomic>
 #include <thread>
+#include <cstddef>
 #include <cstdlib> // getenv
 #include <dlfcn.h> // dlopen, dlsym, dlclose
 

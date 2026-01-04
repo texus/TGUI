@@ -30,6 +30,7 @@
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Renderers/MessageBoxRenderer.hpp>
 #include <TGUI/Config.hpp>
+#include <cstddef>
 #include <memory>
 #include <vector>
 

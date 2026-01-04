@@ -31,6 +31,7 @@
 
 #include <string>
 #include <vector>
+#include <cstddef>
 #include <cstring>
 #include <locale>
 #include <iomanip>

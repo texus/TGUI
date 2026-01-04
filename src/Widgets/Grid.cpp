@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/Grid.hpp>
 #include <TGUI/Config.hpp>
 #include <algorithm>
+#include <cstddef>
 #include <memory>
 #include <unordered_map>
 #include <utility>

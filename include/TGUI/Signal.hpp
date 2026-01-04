@@ -34,6 +34,7 @@
 #include <TGUI/Animation.hpp>
 #include <TGUI/Filesystem.hpp>
 
+#include <cstddef>
 #include <unordered_map>
 #include <type_traits>
 #include <functional>

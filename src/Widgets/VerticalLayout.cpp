@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/VerticalLayout.hpp>
 #include <TGUI/Config.hpp>
 
+#include <cstddef>
 #include <memory>
 #include <numeric>
 

@@ -32,6 +32,7 @@
 #include <TGUI/Filesystem.hpp>
 
 #include <cassert>
+#include <cstddef>
 #include <fstream>
 #include <memory>
 #include <utility>

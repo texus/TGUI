@@ -27,6 +27,7 @@
 #include <TGUI/Config.hpp>
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <utility>

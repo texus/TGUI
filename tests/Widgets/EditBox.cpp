@@ -30,6 +30,7 @@
 
 #include "Tests.hpp"
 #include <chrono>
+#include <cstddef>
 
 TEST_CASE("[EditBox]")
 {

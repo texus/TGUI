@@ -45,6 +45,7 @@
     #include <android/asset_manager.h>
     #include <android/native_activity.h>
     #include <android/configuration.h>
+#include <cstddef>
 #endif
 
 #if SFML_VERSION_MAJOR < 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5)

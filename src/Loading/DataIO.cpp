@@ -28,6 +28,7 @@
 #include <TGUI/Config.hpp>
 
 #include <cctype> // isspace
+#include <cstddef>
 #include <algorithm>
 #include <memory>
 #include <utility>

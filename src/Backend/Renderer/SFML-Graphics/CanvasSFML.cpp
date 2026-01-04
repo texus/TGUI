@@ -28,6 +28,7 @@
 #include <TGUI/Config.hpp>
 
 #include <array>
+#include <cstddef>
 #include <memory>
 #include <utility>
 #include <vector>

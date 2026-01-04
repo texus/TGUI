@@ -27,6 +27,7 @@
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Config.hpp>
+#include <cstddef>
 #include <memory>
 #include <utility>
 

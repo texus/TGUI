@@ -53,6 +53,7 @@
 #include "WidgetProperties/TreeViewProperties.hpp"
 #include <algorithm>
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <memory>

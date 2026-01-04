@@ -36,6 +36,7 @@
 #include <TGUI/Config.hpp>
 
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <set>

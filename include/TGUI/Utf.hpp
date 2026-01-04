@@ -27,6 +27,7 @@
 
 #include <TGUI/Config.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <array>

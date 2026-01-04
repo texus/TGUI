@@ -30,6 +30,7 @@
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     #include <optional>
 #else
+    #include <cstddef>
     #include <memory>
 #endif
 

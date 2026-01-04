@@ -28,6 +28,7 @@
 #include "Tests.hpp"
 #include "catch.hpp"
 #include <chrono>
+#include <cstddef>
 #include <memory>
 #include <vector>
 
