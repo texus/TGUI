@@ -31,6 +31,7 @@
 #include <TGUI/Config.hpp>
 
 #include <cstdint>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 

@@ -26,6 +26,7 @@
 #include <TGUI/Config.hpp>
 #include <algorithm>
 #include <memory>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
