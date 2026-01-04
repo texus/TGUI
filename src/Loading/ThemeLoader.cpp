@@ -27,6 +27,7 @@
 #include <TGUI/Loading/WidgetFactory.hpp>
 
 #include <cstddef>
+#include <map>
 #include <memory>
 #include <sstream>
 #include <fstream>

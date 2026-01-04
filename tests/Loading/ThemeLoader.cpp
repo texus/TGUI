@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include "catch.hpp"
+#include <map>
 #include <memory>
 
 // Ignore warning "C4503: decorated name length exceeded, name was truncated" in Visual Studio

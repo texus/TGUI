@@ -25,6 +25,7 @@
 #include <TGUI/FileDialogIconLoader.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/Exception.hpp>
+#include <map>
 #include <memory>
 #include <utility>
 

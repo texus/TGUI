@@ -45,6 +45,7 @@
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 
+#include <map>
 #include <unordered_set>
 #include <vector>
 

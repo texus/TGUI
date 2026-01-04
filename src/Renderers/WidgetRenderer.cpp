@@ -25,6 +25,7 @@
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/RendererDefines.hpp>
 #include <TGUI/Widget.hpp>
+#include <map>
 #include <memory>
 #include <utility>
 

@@ -30,6 +30,7 @@
 #include <TGUI/String.hpp>
 
 #include <sstream>
+#include <map>
 #include <memory>
 #include <vector>
 #include <string>

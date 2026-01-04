@@ -25,6 +25,7 @@
 #include "Tests.hpp"
 #include <TGUI/Color.hpp>
 #include "catch.hpp"
+#include <map>
 #include <memory>
 
 // TODO: Reloading theme

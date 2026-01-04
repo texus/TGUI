@@ -27,6 +27,7 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Color.hpp>
 #include <cstddef>
+#include <map>
 #include <memory>
 #include <utility>
 

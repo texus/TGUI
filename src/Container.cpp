@@ -34,6 +34,7 @@
 #include <cassert>
 #include <cstddef>
 #include <fstream>
+#include <map>
 #include <memory>
 #include <utility>
 #include <vector>

@@ -30,6 +30,7 @@
 #include <TGUI/Components.hpp>
 #include <TGUI/Config.hpp>
 #include <cstdint>
+#include <map>
 #include <memory>
 #include <vector>
 
