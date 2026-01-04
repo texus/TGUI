@@ -28,6 +28,7 @@
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <algorithm>
 #include <cstddef>
+#include <list>
 #include <memory>
 #include <utility>
 #include <vector>
