@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Timer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <algorithm>
 #include <chrono>

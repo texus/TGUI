@@ -28,6 +28,7 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/TextAreaRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <cstddef>
 #include <memory>

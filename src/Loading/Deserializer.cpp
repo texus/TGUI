@@ -28,6 +28,7 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Global.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/TextStyle.hpp>
 

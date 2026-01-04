@@ -30,6 +30,7 @@
 #include <TGUI/Texture.hpp>
 #include <TGUI/Outline.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/Color.hpp>
 
 #include <algorithm>
 #include <cstdint>

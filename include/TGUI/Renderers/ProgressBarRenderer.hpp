@@ -26,6 +26,7 @@
 #define TGUI_PROGRESS_BAR_RENDERER_HPP
 
 #include <TGUI/Renderers/WidgetRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/TextStyle.hpp>
 

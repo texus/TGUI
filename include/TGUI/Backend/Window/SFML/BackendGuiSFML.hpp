@@ -27,6 +27,7 @@
 
 #include <TGUI/Config.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Color.hpp>
 
 #include <SFML/Window.hpp>
 

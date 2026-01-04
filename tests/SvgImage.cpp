@@ -26,6 +26,7 @@
 #include "catch.hpp"
 
 #include <TGUI/SvgImage.hpp>
+#include <TGUI/Color.hpp>
 
 TEST_CASE("[SvgImage]")
 {

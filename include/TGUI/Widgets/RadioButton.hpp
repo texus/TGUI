@@ -29,6 +29,7 @@
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Text.hpp>
 #include <TGUI/TextStyle.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <memory>
 

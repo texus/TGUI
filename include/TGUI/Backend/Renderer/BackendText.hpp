@@ -30,6 +30,7 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/Color.hpp>
 #include <cstddef>
 #include <memory>
 #include <utility>

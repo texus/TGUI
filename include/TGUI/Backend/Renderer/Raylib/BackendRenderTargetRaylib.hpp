@@ -27,6 +27,7 @@
 
 #include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Color.hpp>
 #include <cstddef>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

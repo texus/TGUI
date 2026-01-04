@@ -27,6 +27,7 @@
 
 #include <TGUI/Widgets/ScrollablePanel.hpp>
 #include <TGUI/Renderers/PanelListBoxRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <cstddef>
 #include <memory>

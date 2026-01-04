@@ -27,6 +27,7 @@
 
 #include <TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Color.hpp>
 #include <cstddef>
 #include <vector>
 

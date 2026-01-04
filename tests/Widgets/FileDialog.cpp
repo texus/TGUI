@@ -26,6 +26,7 @@
 #include "catch.hpp"
 
 #include <TGUI/FileDialogIconLoader.hpp>
+#include <TGUI/Color.hpp>
 
 #include <memory>
 #include <vector>

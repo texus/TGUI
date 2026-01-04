@@ -26,6 +26,7 @@
 #define TGUI_BACKEND_GUI_RAYLIB_HPP
 
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Color.hpp>
 
 #include <raylib.h>
 #include <vector>

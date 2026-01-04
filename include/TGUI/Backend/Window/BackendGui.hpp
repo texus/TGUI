@@ -31,6 +31,7 @@
 #include <TGUI/Cursor.hpp>
 #include <TGUI/TwoFingerScrollDetect.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/Color.hpp>
 
 #include <chrono>
 #include <cstddef>

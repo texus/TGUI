@@ -25,6 +25,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/Color.hpp>
 
 #include <algorithm>
 #include <cmath>

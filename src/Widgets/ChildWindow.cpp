@@ -26,6 +26,7 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Color.hpp>
 #include <algorithm>
 #include <limits>
 #include <memory>

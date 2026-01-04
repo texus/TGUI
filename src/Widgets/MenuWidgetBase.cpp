@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/MenuWidgetBase.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>

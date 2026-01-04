@@ -25,6 +25,7 @@
 #include <TGUI/ObjectConverter.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/TextStyle.hpp>
 #include <memory>

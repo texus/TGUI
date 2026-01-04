@@ -24,6 +24,7 @@
 
 #include <set>
 
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include "Tests.hpp"
 #include "catch.hpp"

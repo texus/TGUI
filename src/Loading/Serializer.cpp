@@ -27,6 +27,7 @@
 #include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Exception.hpp>
 #include <TGUI/Base64.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/TextStyle.hpp>
 

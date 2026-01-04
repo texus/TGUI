@@ -33,6 +33,7 @@
 #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp>
 #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
+#include <TGUI/Color.hpp>
 
 namespace tgui
 {

@@ -33,6 +33,7 @@
 #include "Tests.hpp"
 
 #include <TGUI/TextureManager.hpp>
+#include <TGUI/Color.hpp>
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>

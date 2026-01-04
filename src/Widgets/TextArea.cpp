@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/TextArea.hpp>
 #include <TGUI/Keyboard.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 
 #include <algorithm>

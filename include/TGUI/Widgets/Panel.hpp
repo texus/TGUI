@@ -27,6 +27,7 @@
 
 #include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Renderers/PanelRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <memory>
 

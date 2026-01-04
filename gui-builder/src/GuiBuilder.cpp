@@ -62,6 +62,7 @@
 #include "WidgetProperties/VerticalLayoutProperties.hpp"
 #include <TGUI/Config.hpp>
 #include <TGUI/TextStyle.hpp>
+#include <TGUI/Color.hpp>
 #include <algorithm>
 #include <cassert>
 #include <chrono>

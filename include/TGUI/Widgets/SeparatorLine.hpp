@@ -27,6 +27,7 @@
 
 #include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Renderers/SeparatorLineRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <memory>
 

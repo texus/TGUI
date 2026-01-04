@@ -28,6 +28,7 @@
 #include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/TabsRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <cstddef>
 #include <memory>

@@ -27,6 +27,7 @@
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/TextStyle.hpp>
+#include <TGUI/Color.hpp>
 
 #include <algorithm>
 #include <cstddef>

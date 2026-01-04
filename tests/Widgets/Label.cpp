@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include <TGUI/TextStyle.hpp>
+#include <TGUI/Color.hpp>
 #include "catch.hpp"
 
 TEST_CASE("[Label]")

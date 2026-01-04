@@ -29,6 +29,7 @@
 #include <TGUI/Widgets/Slider.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Renderers/ColorPickerRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <memory>
 

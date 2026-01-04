@@ -28,6 +28,7 @@
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/Color.hpp>
 #include <cstddef>
 #include <memory>
 

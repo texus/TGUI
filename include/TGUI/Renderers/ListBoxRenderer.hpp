@@ -26,6 +26,7 @@
 #define TGUI_LIST_BOX_RENDERER_HPP
 
 #include <TGUI/Renderers/WidgetRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/TextStyle.hpp>
 #include <memory>

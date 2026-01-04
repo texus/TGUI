@@ -30,6 +30,7 @@
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Renderers/ChildWindowRenderer.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/Color.hpp>
 
 #include <limits>
 #include <memory>

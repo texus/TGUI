@@ -27,6 +27,7 @@
 
 #include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/SliderRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <memory>
 

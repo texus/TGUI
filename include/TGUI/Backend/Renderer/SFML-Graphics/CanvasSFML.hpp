@@ -29,6 +29,7 @@
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Widgets/CanvasBase.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/Color.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/Sprite.hpp>

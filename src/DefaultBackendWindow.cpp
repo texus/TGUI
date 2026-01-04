@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/DefaultBackendWindow.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <TGUI/Loading/ImageLoader.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>

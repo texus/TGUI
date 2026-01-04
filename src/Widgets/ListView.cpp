@@ -25,6 +25,7 @@
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Keyboard.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 
 #include <algorithm>

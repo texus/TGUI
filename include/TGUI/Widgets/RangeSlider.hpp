@@ -27,6 +27,7 @@
 
 #include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/RangeSliderRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <memory>
 #include <utility>

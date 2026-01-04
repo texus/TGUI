@@ -26,6 +26,7 @@
 #define TGUI_MESSAGE_BOX_RENDERER_HPP
 
 #include <TGUI/Renderers/ChildWindowRenderer.hpp>
+#include <TGUI/Color.hpp>
 #include <TGUI/Config.hpp>
 #include <memory>
 

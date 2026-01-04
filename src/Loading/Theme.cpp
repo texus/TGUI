@@ -25,6 +25,7 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Widget.hpp>
+#include <TGUI/Color.hpp>
 #include <cstddef>
 #include <memory>
 #include <utility>
