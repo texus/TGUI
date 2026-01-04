@@ -24,6 +24,7 @@
 
 #include "catch.hpp"
 #include <TGUI/Config.hpp>
+#include <TGUI/TextStyle.hpp>
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif

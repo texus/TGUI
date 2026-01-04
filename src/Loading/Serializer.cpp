@@ -28,6 +28,7 @@
 #include <TGUI/Exception.hpp>
 #include <TGUI/Base64.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/TextStyle.hpp>
 
 #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
 

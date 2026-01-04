@@ -24,6 +24,7 @@
 
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/TextStyle.hpp>
 
 #include <algorithm>
 #include <cmath>

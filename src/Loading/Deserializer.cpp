@@ -29,6 +29,7 @@
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Global.hpp>
 #include <TGUI/Config.hpp>
+#include <TGUI/TextStyle.hpp>
 
 #include <cstddef>
 #include <cstdint>
