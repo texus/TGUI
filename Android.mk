@@ -61,7 +61,6 @@ endif
 
 include $(BUILD_SHARED_LIBRARY)
 
-
 ###########################
 #
 # TGUI static library
@@ -74,8 +73,7 @@ LOCAL_MODULE_FILENAME := libtgui-s
 
 LOCAL_CPP_FEATURES := rtti exceptions
 
-LOCAL_LDLIBS := 
+LOCAL_LDLIBS :=
 LOCAL_EXPORT_LDLIBS := -landroid -lGLESv1_CM -lGLESv2 -llog
 
 include $(BUILD_STATIC_LIBRARY)
-
