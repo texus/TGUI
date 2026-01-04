@@ -28,6 +28,7 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Vertex.hpp>
 
+#include <array>
 #include <cstdint>
 #include <string>
 #include <map>

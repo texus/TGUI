@@ -26,6 +26,7 @@
 #include <TGUI/Config.hpp>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <memory>
 

@@ -26,6 +26,7 @@
 #include "catch.hpp"
 
 #include <TGUI/Loading/ImageLoader.hpp>
+#include <array>
 
 TEST_CASE("[Mouse cursors]")
 {

@@ -25,6 +25,7 @@
 #include <TGUI/Transform.hpp>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
