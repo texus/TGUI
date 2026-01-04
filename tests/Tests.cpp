@@ -22,6 +22,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "Tests.hpp"
 #include "catch.hpp"
 #include <algorithm>
 #include <cmath>
@@ -36,8 +37,6 @@
     #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
     #include <cstddef>
 #endif
-
-#include "Tests.hpp"
 
 namespace
 {
