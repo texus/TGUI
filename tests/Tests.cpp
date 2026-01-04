@@ -39,7 +39,7 @@
 namespace
 {
     template <typename T>
-    void testClickableWidgetSignalsImpl(T widget)
+    void testClickableWidgetSignalsImpl(const T& widget)
     {
         testWidgetSignals(widget);
 
