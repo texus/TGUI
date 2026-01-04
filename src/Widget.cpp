@@ -1664,7 +1664,7 @@ namespace tgui
             }
             else if (m_userData.is<std::string>())
             {
-                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(String(m_userData.as<std::string>()))) ;
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(String(m_userData.as<std::string>())));
             }
             else if (m_userData.is<const char*>())
             {
