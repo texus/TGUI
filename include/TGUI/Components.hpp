@@ -476,7 +476,7 @@ namespace dev
     {
     public:
 
-        BackgroundComponent(StylePropertyBackground* backgroundStyle);
+        explicit BackgroundComponent(StylePropertyBackground* backgroundStyle);
 
         ~BackgroundComponent() override;
 
@@ -538,7 +538,7 @@ namespace dev
     {
     public:
 
-        TextComponent(StylePropertyText* textStyle);
+        explicit TextComponent(StylePropertyText* textStyle);
 
         ~TextComponent() override;
 
@@ -596,7 +596,7 @@ namespace dev
     {
     public:
 
-        ImageComponent(StyleProperty<Texture>* textureStyle);
+        explicit ImageComponent(StyleProperty<Texture>* textureStyle);
 
         ~ImageComponent() override;
 

@@ -41,7 +41,7 @@ namespace tgui
     public:
 
         template <typename... Args>
-        CopiedSharedPtr(Args&&... args) noexcept
+        explicit CopiedSharedPtr(Args&&... args) noexcept
             : m_WidgetPtr{std::make_shared<WidgetType>(std::forward<Args>(args)...)}
         {
         }
@@ -72,7 +72,7 @@ namespace tgui
             return *this;
         }
 
-        operator bool() const noexcept
+        explicit operator bool() const noexcept
         {
             return (m_WidgetPtr != nullptr);
         }

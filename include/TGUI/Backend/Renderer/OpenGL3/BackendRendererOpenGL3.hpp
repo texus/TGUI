@@ -60,7 +60,7 @@ namespace tgui
         /// backend->setRenderer(std::make_shared<BackendRendererOpenGL3>(glfwGetProcAddress));
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendRendererOpenGL3(ContextLoadFuncType contextLoadFunction);
+        explicit BackendRendererOpenGL3(ContextLoadFuncType contextLoadFunction);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Helper constructor so that you can pass SDL_GL_GetProcAddress without needing to cast the type
@@ -68,7 +68,7 @@ namespace tgui
         ///
         /// @param contextLoadFunction  Function that gets the address of an OpenGL function
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendRendererOpenGL3(SDLContextLoadFuncType contextLoadFunction);
+        explicit BackendRendererOpenGL3(SDLContextLoadFuncType contextLoadFunction);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new empty texture object
