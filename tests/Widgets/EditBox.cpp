@@ -29,6 +29,7 @@
 #endif
 
 #include "Tests.hpp"
+#include <chrono>
 
 TEST_CASE("[EditBox]")
 {

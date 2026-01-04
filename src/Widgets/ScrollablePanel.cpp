@@ -28,6 +28,7 @@
 #include <TGUI/Keyboard.hpp>
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <memory>
 #include <utility>

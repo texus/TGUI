@@ -63,6 +63,7 @@
 #include <TGUI/Config.hpp>
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <utility>

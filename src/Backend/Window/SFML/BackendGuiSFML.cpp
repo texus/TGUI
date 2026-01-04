@@ -27,6 +27,7 @@
 #include <TGUI/Config.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Timer.hpp>
+#include <chrono>
 #include <cstdint>
 
 #ifdef TGUI_SYSTEM_WINDOWS

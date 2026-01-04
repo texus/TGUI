@@ -29,6 +29,7 @@
 #include <TGUI/Timer.hpp>
 #include <TGUI/Config.hpp>
 #include <algorithm>
+#include <chrono>
 #include <memory>
 #include <vector>
 

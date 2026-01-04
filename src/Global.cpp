@@ -26,6 +26,7 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Config.hpp>
 
+#include <chrono>
 #include <cstdint>
 #include <functional>
 #include <sstream>

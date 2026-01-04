@@ -30,6 +30,7 @@
 #include <TGUI/Timer.hpp>
 #include <TGUI/Config.hpp>
 
+#include <chrono>
 #include <cmath>
 #include <memory>
 

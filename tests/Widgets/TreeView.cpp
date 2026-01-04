@@ -24,6 +24,7 @@
 
 #include "Tests.hpp"
 #include "catch.hpp"
+#include <chrono>
 #include <memory>
 #include <vector>
 

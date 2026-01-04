@@ -31,6 +31,7 @@
 #include <TGUI/SignalManager.hpp>
 #include <TGUI/Config.hpp>
 #include <algorithm>
+#include <chrono>
 #include <memory>
 #include <unordered_set>
 #include <utility>
