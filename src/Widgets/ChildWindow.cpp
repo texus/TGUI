@@ -27,6 +27,7 @@
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 #include <algorithm>
+#include <limits>
 #include <memory>
 #include <utility>
 
