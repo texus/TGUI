@@ -47,7 +47,7 @@ namespace tgui
         ///
         /// @param target  The SFML render target (typically sf::RenderWindow) on which the gui should be drawn
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendRenderTargetSFML(sf::RenderTarget& target);
+        explicit BackendRenderTargetSFML(sf::RenderTarget& target);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the SFML render target on which the gui is being drawn

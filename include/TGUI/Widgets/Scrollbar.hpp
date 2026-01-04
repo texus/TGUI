@@ -62,7 +62,7 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Scrollbar(const char* typeName = StaticWidgetType, bool initRenderer = true);
+        explicit Scrollbar(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new scrollbar widget
@@ -464,7 +464,7 @@ namespace tgui
         /// @brief Default constructor
         /// @param orientation  Whether the scrollbar lies horizontally or vertically
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ScrollbarChildWidget(Orientation orientation = Orientation::Vertical); // TGUI_NEXT: No more default option
+        explicit ScrollbarChildWidget(Orientation orientation = Orientation::Vertical); // TGUI_NEXT: No more default option
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the left mouse button has been pressed on top of the thumb of the scrollbar

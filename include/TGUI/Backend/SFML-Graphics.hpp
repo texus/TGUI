@@ -63,7 +63,7 @@ namespace tgui
             ///
             /// @param window  The SFML window that will be used by the gui
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            Gui(sf::RenderWindow& window)
+            explicit Gui(sf::RenderWindow& window)
             {
                 setWindow(window);
             }
@@ -78,7 +78,7 @@ namespace tgui
             ///          regular sf::Window (not an sf::RenderWindow) to enable this functionality while still rendering to the
             ///          target that is passed here.
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            Gui(sf::RenderTarget& target)
+            explicit Gui(sf::RenderTarget& target)
             {
                 setTarget(target);
             }

@@ -1008,7 +1008,7 @@ namespace tgui
         confirmButton->setOrigin(0.5f, 0.5f);
         confirmButton->setEnabled(false);
 
-        folderNameEditBox->onTextChange([this, editBox=folderNameEditBox.get(), button=confirmButton.get()] {
+        folderNameEditBox->onTextChange([editBox=folderNameEditBox.get(), button=confirmButton.get()] {
             const bool isValid = isValidFolderName(editBox->getText());
             button->setEnabled(isValid);
         });
