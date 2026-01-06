@@ -916,9 +916,9 @@ namespace tgui
             //    return Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextArea strips newlines but this code is kept for when this function is generalized
             //else
             if (curChar == U'\t')
-                charWidth = static_cast<float>(m_fontCached.getGlyph(' ', getTextSize(), false).advance) * 4;
+                charWidth = m_fontCached.getGlyph(' ', getTextSize(), false).advance * 4;
             else
-                charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, getTextSize(), false).advance);
+                charWidth = m_fontCached.getGlyph(curChar, getTextSize(), false).advance;
 
             const float kerning = m_fontCached.getKerning(prevChar, curChar, getTextSize(), false);
             if (width + charWidth + kerning <= position.x)

@@ -1055,9 +1055,9 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
                 continue;
             }
             if (curChar == '\t')
-                charWidth = static_cast<float>(m_fontCached.getGlyph(' ', textSize, bold).advance) * 4;
+                charWidth = m_fontCached.getGlyph(' ', textSize, bold).advance * 4;
             else
-                charWidth = static_cast<float>(m_fontCached.getGlyph(curChar, textSize, bold).advance);
+                charWidth = m_fontCached.getGlyph(curChar, textSize, bold).advance;
 
             const float kerning = m_fontCached.getKerning(prevChar, curChar, textSize, bold);
             if (width + charWidth < posX)
