@@ -7,11 +7,11 @@ val NDK_VERSION by extra(project.properties["NDK_VERSION"] as? String ?: "28.0.1
 android {
     namespace = "org.libsdl.app"
     ndkVersion = NDK_VERSION
-    compileSdk = 34
+    compileSdk = 36
     defaultConfig {
         applicationId = "eu.tgui.app"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         ndk {
