@@ -22,6 +22,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "Tests.hpp"
 #include <cmath>
 
 #include <TGUI/Config.hpp>
@@ -33,8 +34,6 @@
     #include <TGUI/Backend/SDL-GPU.hpp>
     #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
 #endif
-
-#include "Tests.hpp"
 
 namespace
 {
