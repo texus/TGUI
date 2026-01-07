@@ -27,7 +27,6 @@
 
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 
-#include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
