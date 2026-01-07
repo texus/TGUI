@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Global.hpp>
 #include <TGUI/SvgImage.hpp>
+#include <TGUI/Global.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
 
