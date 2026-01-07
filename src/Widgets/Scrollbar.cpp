@@ -24,6 +24,7 @@
 
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Timer.hpp>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -478,8 +479,8 @@ namespace tgui
                     if ((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height) > 0)
                     {
                         // Calculate the new value
-                        const unsigned int value = static_cast<unsigned int>((((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
-                            / (getSize().y - m_arrowUp.height - m_arrowDown.height - m_thumb.height)) * (m_maximum - m_viewportSize)) + 0.5f);
+                        const unsigned int value = std::lround(((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
+                            / (getSize().y - m_arrowUp.height - m_arrowDown.height - m_thumb.height)) * (m_maximum - m_viewportSize));
 
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_viewportSize))
@@ -520,7 +521,7 @@ namespace tgui
                                 // Try to place the thumb on 2/3 of the clicked position
                                 const float subtractValue = (m_thumb.height / 3.0f) * scaleFactor;
                                 if (value >= subtractValue)
-                                    setValue(static_cast<unsigned int>(value - subtractValue + 0.5f));
+                                    setValue(std::lround(value - subtractValue));
                                 else
                                     setValue(0);
                             }
@@ -529,7 +530,7 @@ namespace tgui
                                 // Try to place the thumb on 2/3 of the clicked position
                                 const float subtractValue = (m_thumb.height * 2.0f / 3.0f) * scaleFactor;
                                 if (value <= (m_maximum - m_viewportSize + subtractValue))
-                                    setValue(static_cast<unsigned int>(value - subtractValue + 0.5f));
+                                    setValue(std::lround(value - subtractValue));
                                 else
                                     setValue(m_maximum - m_viewportSize);
                             }
@@ -550,8 +551,8 @@ namespace tgui
                     if (pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width > 0)
                     {
                         // Calculate the new value
-                        const unsigned int value = static_cast<unsigned int>((((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
-                            / (getSize().x - m_arrowUp.width - m_arrowDown.width - m_thumb.width)) * (m_maximum - m_viewportSize)) + 0.5f);
+                        const unsigned int value = std::lround(((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
+                            / (getSize().x - m_arrowUp.width - m_arrowDown.width - m_thumb.width)) * (m_maximum - m_viewportSize));
 
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_viewportSize))
@@ -593,7 +594,7 @@ namespace tgui
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value >= subtractValue)
-                                    setValue(static_cast<unsigned int>(value - subtractValue + 0.5f));
+                                    setValue(std::lround(value - subtractValue));
                                 else
                                     setValue(0);
                             }
@@ -603,7 +604,7 @@ namespace tgui
 
                                 // Try to place the thumb on 2/3 of the clicked position
                                 if (value <= (m_maximum - m_viewportSize + subtractValue))
-                                    setValue(static_cast<unsigned int>(value - subtractValue + 0.5f));
+                                    setValue(std::lround(value - subtractValue));
                                 else
                                     setValue(m_maximum - m_viewportSize);
                             }
