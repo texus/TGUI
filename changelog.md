@@ -1,3 +1,11 @@
+TGUI 1.12  (TBD)
+----------------
+
+- ChildWindow's KeepInParent property didn't take parent borders into account
+- Fixed Gui Builder crash when attempting to open form while current form wasn't saved yet
+- Support more Android devices with SDL_GPU backend
+
+
 TGUI 1.11  (18 September 2025)
 ------------------------------
 

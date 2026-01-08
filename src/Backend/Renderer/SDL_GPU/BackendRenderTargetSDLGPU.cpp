@@ -449,6 +449,7 @@ namespace tgui
         pipelineCreateInfo.vertex_input_state.vertex_attributes = vertexAttributes.data();
         pipelineCreateInfo.vertex_input_state.num_vertex_attributes = static_cast<std::uint32_t>(vertexAttributes.size());
         pipelineCreateInfo.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
+        pipelineCreateInfo.rasterizer_state.enable_depth_clip = true; // Select depth clip because depth clamp has limited support on Android devices
         pipelineCreateInfo.target_info.has_depth_stencil_target = false;
         pipelineCreateInfo.target_info.color_target_descriptions = colorTargetDescriptions.data();
         pipelineCreateInfo.target_info.num_color_targets = static_cast<std::uint32_t>(colorTargetDescriptions.size());

@@ -90,11 +90,39 @@ void run_application(SDL_Window* window, SDL_GPUDevice* device)
     gui.mainLoop();
 }
 
+// On Android you will probably need some additional properties compared to just calling SDL_CreateGPUDevice
+SDL_GPUDevice* createGpuDevice()
+{
+    SDL_PropertiesID props = SDL_CreateProperties();
+
+    // Use Vulkan with SPIR-V shaders
+    SDL_SetStringProperty(props, SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING, "vulkan");
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_SHADERS_SPIRV_BOOLEAN, true);
+
+    // Choose whether you want to enable debug information
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN, true);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_VERBOSE_BOOLEAN, true);
+
+    // Many Android devices don't fully support the Vulkan requirements of SDL's GPU API.
+    // Since TGUI doesn't require them, we can disable some optional Vulkan features in order to
+    // allow using SDL_GPUDevice on older Android devices.
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_CLIP_DISTANCE_BOOLEAN, false);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_DEPTH_CLAMPING_BOOLEAN, false);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_INDIRECT_DRAW_FIRST_INSTANCE_BOOLEAN, false);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_ANISOTROPY_BOOLEAN, false);
+
+    SDL_GPUDevice *device = SDL_CreateGPUDeviceWithProperties(props);
+    SDL_DestroyProperties(props);
+
+    return device;
+}
+
 int main(int, char**)
 {
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
-    SDL_GPUDevice* device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, false, nullptr);
+
+    SDL_GPUDevice* device = createGpuDevice();
     SDL_Window* window = SDL_CreateWindow("TGUI window with SDL",
                                           800, 600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
                                           SDL_WINDOW_FULLSCREEN | SDL_WINDOW_RESIZABLE);
