@@ -9,9 +9,19 @@ set(SDL3_TTF_BUILD_DIR SDL_ttf-build)
 
 set(TGUI_ROOT_DIR "../../../../../")
 
-# Build SDL and SDL_ttf
-add_subdirectory("${TGUI_ROOT_DIR}/../SDL3" ${SDL3_BUILD_DIR})
-add_subdirectory("${TGUI_ROOT_DIR}/../SDL3_ttf" ${SDL3_TTF_BUILD_DIR})
+# Download and build SDL and SDL_ttf
+include(FetchContent)
+FetchContent_Declare(
+  SDL
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+  GIT_TAG        release-3.4.0
+)
+FetchContent_Declare(
+  SDL_ttf
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL_ttf.git
+  GIT_TAG        release-3.2.2
+)
+FetchContent_MakeAvailable(SDL SDL_ttf)
 
 # Build TGUI
 add_subdirectory("${TGUI_ROOT_DIR}" TGUI-build)
