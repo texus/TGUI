@@ -553,7 +553,7 @@ if(TGUI_OS_ANDROID)
     target_link_libraries(tgui PRIVATE android)
 
     # Always use position-independent code on Android, even when linking statically.
-    # This is needed because all c++ code is placed in a shared library on Android.
+    # This is needed because all C++ code is placed in a shared library on Android.
     set_target_properties(tgui PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()
 

@@ -1218,7 +1218,7 @@ namespace tgui
     TGUI_API std::wistream& operator>>(std::wistream& os, String& str);
 
     // UTF-8 function are defined in the header so that they can be enabled/disabled based on
-    // the compiler settings without having to recompile TGUI with a different c++ standard.
+    // the compiler settings without having to recompile TGUI with a different C++ standard.
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
     inline String::String(const std::u8string& str) :
         m_string(utf::convertUtf8toUtf32(str.begin(), str.end()))

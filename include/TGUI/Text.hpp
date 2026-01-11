@@ -40,7 +40,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 20
-    // Inline is needed here if we want to build a c++20 module
+    // Inline is needed here if we want to build a C++20 module
     inline constexpr unsigned int AutoTextSize = 0xFFFFFFFF;
 #else
     constexpr unsigned int AutoTextSize = 0xFFFFFFFF;

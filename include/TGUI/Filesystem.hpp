@@ -42,7 +42,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Helper functionality for filesystem access
     ///
-    /// When TGUI is built with c++17 support then std::filesystem is used on newer compilers.
+    /// When TGUI is built with C++17 support then std::filesystem is used on newer compilers.
     /// Otherwise, POSIX or Windows-specific code is used to implement the functionality.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API Filesystem

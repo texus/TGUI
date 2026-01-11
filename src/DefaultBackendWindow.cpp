@@ -595,7 +595,7 @@ namespace tgui
             if (!pixelPtr)
                 return;
 
-            static_assert(sizeof(Image) == sizeof(void*) + 4*sizeof(int), "Assuming layout of Image class (c++20 aggregate initialization would solve this)");
+            static_assert(sizeof(Image) == sizeof(void*) + 4*sizeof(int), "Assuming layout of Image class (C++20 aggregate initialization would solve this)");
             Image icon = {
                 const_cast<std::uint8_t*>(pixelPtr.get()),
                 static_cast<int>(iconSize.x),
