@@ -109,25 +109,25 @@ namespace tgui
 
             return {x, y};
         }
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD static Vector2f parseVector2f(String str)
-    {
-        if (str.empty())
-            throw Exception{U"Failed to parse Vector2f string. String was empty."};
+        TGUI_NODISCARD Vector2f parseVector2f(String str)
+        {
+            if (str.empty())
+                throw Exception{U"Failed to parse Vector2f string. String was empty."};
 
-        // Remove the brackets around the value
-        if ((str.front() == '(') && (str.back() == ')'))
-            str = str.substr(1, str.length() - 2);
+                   // Remove the brackets around the value
+            if ((str.front() == '(') && (str.back() == ')'))
+                str = str.substr(1, str.length() - 2);
 
-        const auto commaPos = str.find(',');
-        if (commaPos == String::npos)
-            throw Exception{U"Failed to parse Vector2f string '" + str + U"'. No comma found."};
+            const auto commaPos = str.find(',');
+            if (commaPos == String::npos)
+                throw Exception{U"Failed to parse Vector2f string '" + str + U"'. No comma found."};
 
-        return {str.substr(0, commaPos).trim().toFloat(), str.substr(commaPos + 1).trim().toFloat()};
-    }
+            return {str.substr(0, commaPos).trim().toFloat(), str.substr(commaPos + 1).trim().toFloat()};
+        }
+    } // anonymous namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

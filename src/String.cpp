@@ -33,6 +33,20 @@
     #include <charconv> // from_chars
 #endif
 
+namespace
+{
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD inline bool compareCharIgnoreCase(char32_t char1, char32_t char2) {
+        if (char1 == char2)
+            return true;
+        if ((char1 < 128) && (char2 < 128))
+            return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
+        return false;
+    }
+
+} // anonymous namespace
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -40,16 +54,6 @@ namespace tgui
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     const decltype(std::u32string::npos) String::npos = std::u32string::npos;
 #endif
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_NODISCARD static inline bool compareCharIgnoreCase(char32_t char1, char32_t char2) {
-        if (char1 == char2)
-            return true;
-        if ((char1 < 128) && (char2 < 128))
-            return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
-        return false;
-    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -34,20 +34,16 @@
     #include <numbers>
 #endif
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace tgui
+namespace
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_NODISCARD static std::vector<Vector2f> drawCircleHelperGetPoints(unsigned int nrPoints, float radius, float offset)
+    TGUI_NODISCARD std::vector<tgui::Vector2f> drawCircleHelperGetPoints(unsigned int nrPoints, float radius, float offset)
     {
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
         const float twoPi = 2.f * std::numbers::pi_v<float>;
 #else
         const float twoPi = 2.f * 3.14159265359f;
 #endif
-        std::vector<Vector2f> points;
+        std::vector<tgui::Vector2f> points;
         points.reserve(nrPoints);
 
         for (unsigned int i = 0; i < nrPoints; ++i)
@@ -61,7 +57,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD static std::vector<Vector2f> drawRoundedRectHelperGetPoints(unsigned int nrCornerPoints, const Vector2f& size, float radius, float offset)
+    TGUI_NODISCARD std::vector<tgui::Vector2f> drawRoundedRectHelperGetPoints(unsigned int nrCornerPoints, const tgui::Vector2f& size, float radius, float offset)
     {
         assert(nrCornerPoints != 0);
 
@@ -70,7 +66,7 @@ namespace tgui
 #else
         const float twoPi = 2.f * 3.14159265359f;
 #endif
-        std::vector<Vector2f> points;
+        std::vector<tgui::Vector2f> points;
         points.reserve(nrCornerPoints * 4);
 
         const unsigned int nrPointsInCircle = 4 * (nrCornerPoints - 1);
@@ -108,18 +104,18 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static void drawBordersAroundShape(BackendRenderTarget* renderTarget, const RenderStates& states,
-                                       const std::vector<Vector2f>& outerPoints, const std::vector<Vector2f>& innerPoints, const Color& color)
+    void drawBordersAroundShape(tgui::BackendRenderTarget* renderTarget, const tgui::RenderStates& states,
+                                const std::vector<tgui::Vector2f>& outerPoints, const std::vector<tgui::Vector2f>& innerPoints, const tgui::Color& color)
     {
         TGUI_ASSERT(outerPoints.size() == innerPoints.size(), "Inner and outer ring of cicle border should have the same amount of points");
 
         // Create the vertices
-        std::vector<Vertex> vertices;
+        std::vector<tgui::Vertex> vertices;
         vertices.reserve(outerPoints.size() + innerPoints.size());
         for (const auto& point : outerPoints)
-            vertices.emplace_back(point, Vertex::Color(color));
+            vertices.emplace_back(point, tgui::Vertex::Color(color));
         for (const auto& point : innerPoints)
-            vertices.emplace_back(point, Vertex::Color(color));
+            vertices.emplace_back(point, tgui::Vertex::Color(color));
 
         // Create the indices
         std::vector<unsigned int> indices;
@@ -146,17 +142,17 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static void drawInnerShape(BackendRenderTarget* renderTarget, const RenderStates& states, const std::vector<Vector2f>& points, const Vector2f& centerPoint, const Color& color)
+    void drawInnerShape(tgui::BackendRenderTarget* renderTarget, const tgui::RenderStates& states, const std::vector<tgui::Vector2f>& points, const tgui::Vector2f& centerPoint, const tgui::Color& color)
     {
         if (points.empty())
             return;
 
         // Create the vertices (one point in the middle of the circle and the others as provided in the 'points' parameter)
-        std::vector<Vertex> vertices;
+        std::vector<tgui::Vertex> vertices;
         vertices.reserve(1 + points.size());
-        vertices.emplace_back(centerPoint, Vertex::Color(color));
+        vertices.emplace_back(centerPoint, tgui::Vertex::Color(color));
         for (const auto& point : points)
-            vertices.emplace_back(point, Vertex::Color(color));
+            vertices.emplace_back(point, tgui::Vertex::Color(color));
 
         // Create the indices
         std::vector<unsigned int> indices;
@@ -169,10 +165,15 @@ namespace tgui
         }
         indices.back() = 1; // Last index was one too far and should use the first point again, to close the circle
 
-        // Draw the triangles
+               // Draw the triangles
         renderTarget->drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
     }
+} // anonymous namespace
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace tgui
+{
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendRenderTarget::setView(FloatRect view, FloatRect viewport, Vector2f targetSize)

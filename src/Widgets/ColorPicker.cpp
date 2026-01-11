@@ -34,9 +34,89 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+namespace
 {
-    const unsigned int colorWheelSize = 200;
+    TGUI_NODISCARD tgui::Color hsv2rgb(float h, float s, float v)
+    {
+        /// vec3 hsv2rgb(vec3 c)
+        /// {
+        ///     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+        ///     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+        ///     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        /// }
+
+        const auto fract = [](float x) { return x - std::floor(x); };
+        const auto mix = [](float x, float y, float a) { return x * (1.0f - a) + y * a; };
+
+        h = tgui::clamp(h, 0.f, 1.f);
+        s = tgui::clamp(s, 0.f, 1.f);
+        v = tgui::clamp(v, 0.f, 1.f);
+
+        const float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
+
+        const float p[] = {std::abs(fract(h + K[0]) * 6.0f - K[3]),
+                           std::abs(fract(h + K[1]) * 6.0f - K[3]),
+                           std::abs(fract(h + K[2]) * 6.0f - K[3])};
+
+        const float C[] = {v * mix(K[0], tgui::clamp(p[0] - K[0], 0.f, 1.f), s),
+                           v * mix(K[0], tgui::clamp(p[1] - K[0], 0.f, 1.f), s),
+                           v * mix(K[0], tgui::clamp(p[2] - K[0], 0.f, 1.f), s)};
+
+        return {static_cast<std::uint8_t>(tgui::clamp(255.f * C[0], 0.f, 255.f)),
+                static_cast<std::uint8_t>(tgui::clamp(255.f * C[1], 0.f, 255.f)),
+                static_cast<std::uint8_t>(tgui::clamp(255.f * C[2], 0.f, 255.f))};
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD tgui::Color calculateColor(tgui::Vector2f position, float v, float a)
+    {
+        /// vec2 position = ( gl_FragCoord.xy / resolution.xy );
+        /// vec2 p2 = position - vec2(0.5, 0.5);
+        ///
+        /// float S = length(p2*2.0);
+        /// if(S > 1. && S < 1.01){
+        ///     discard;
+        /// }
+        ///
+        /// float V = 1.;
+        /// float H = atan(-p2.y, -p2.x);
+        ///
+        /// H /= 2.*Pi;
+        /// H += 0.5;
+        /// gl_FragColor.rgb = hsv2rgb(vec3(H, S, V));
+        /// gl_FragColor.a = 1.0;
+
+#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+        const float pi = std::numbers::pi_v<float>;
+#else
+        const float pi = 3.14159265359f;
+#endif
+
+        auto length = [](tgui::Vector2f x) {
+            return std::sqrt(x.x * x.x + x.y * x.y);
+        };
+
+        const float s = length(position);
+
+        float h = std::atan2(position.y, -position.x);
+
+        h /= 2.f * pi;
+        h += 0.5f;
+
+        return tgui::Color::applyOpacity(hsv2rgb(h, s, v), a);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    TGUI_NODISCARD float logInvCurve(float x)
+    {
+        /// 0.1  - normal curve
+        /// e-1  - e curve (e^x-1)/(e-1)
+        /// +    - bigger curve
+        const double a = std::expm1(1.0);
+        return static_cast<float>(std::expm1(std::log1p(a) * static_cast<double>(x)) / a);
+    }
 
 #if 0 // The code below is unused for now but shows how to calculate the location in the color wheel for a given color
     struct ColorHSV
@@ -46,7 +126,7 @@ namespace tgui
         float v = 0;
     };
 
-    static ColorHSV rgb2hsv(Color color)
+    static ColorHSV rgb2hsv(tgui::Color color)
     {
         const float r = color.getRed();
         const float g = color.getGreen();
@@ -82,7 +162,7 @@ namespace tgui
         return {h, s, v};
     }
 
-    TGUI_NODISCARD static Vector2f colorToPosition(Color color)
+    TGUI_NODISCARD Vector2f colorToPosition(tgui::Color color)
     {
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
         const float pi = std::numbers::pi_v<float>;
@@ -100,90 +180,13 @@ namespace tgui
         return {(x + 1) / 2.f, (-y + 1) / 2.f};
     }
 #endif
+} // anonymous namespace
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD static Color hsv2rgb(float h, float s, float v)
-    {
-        /// vec3 hsv2rgb(vec3 c)
-        /// {
-        ///     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-        ///     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-        ///     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-        /// }
-
-        const auto fract = [](float x) { return x - std::floor(x); };
-        const auto mix = [](float x, float y, float a) { return x * (1.0f - a) + y * a; };
-
-        h = clamp(h, 0.f, 1.f);
-        s = clamp(s, 0.f, 1.f);
-        v = clamp(v, 0.f, 1.f);
-
-        const float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
-
-        const float p[] = {std::abs(fract(h + K[0]) * 6.0f - K[3]),
-                           std::abs(fract(h + K[1]) * 6.0f - K[3]),
-                           std::abs(fract(h + K[2]) * 6.0f - K[3])};
-
-        const float C[] = {v * mix(K[0], clamp(p[0] - K[0], 0.f, 1.f), s),
-                           v * mix(K[0], clamp(p[1] - K[0], 0.f, 1.f), s),
-                           v * mix(K[0], clamp(p[2] - K[0], 0.f, 1.f), s)};
-
-        return {static_cast<std::uint8_t>(clamp(255.f * C[0], 0.f, 255.f)),
-                static_cast<std::uint8_t>(clamp(255.f * C[1], 0.f, 255.f)),
-                static_cast<std::uint8_t>(clamp(255.f * C[2], 0.f, 255.f))};
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_NODISCARD static Color calculateColor(Vector2f position, float v, float a)
-    {
-        /// vec2 position = ( gl_FragCoord.xy / resolution.xy );
-        /// vec2 p2 = position - vec2(0.5, 0.5);
-        ///
-        /// float S = length(p2*2.0);
-        /// if(S > 1. && S < 1.01){
-        ///     discard;
-        /// }
-        ///
-        /// float V = 1.;
-        /// float H = atan(-p2.y, -p2.x);
-        ///
-        /// H /= 2.*Pi;
-        /// H += 0.5;
-        /// gl_FragColor.rgb = hsv2rgb(vec3(H, S, V));
-        /// gl_FragColor.a = 1.0;
-
-#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
-        const float pi = std::numbers::pi_v<float>;
-#else
-        const float pi = 3.14159265359f;
-#endif
-
-        auto length = [](Vector2f x) {
-            return std::sqrt(x.x * x.x + x.y * x.y);
-        };
-
-        const float s = length(position);
-
-        float h = std::atan2(position.y, -position.x);
-
-        h /= 2.f * pi;
-        h += 0.5f;
-
-        return Color::applyOpacity(hsv2rgb(h, s, v), a);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    TGUI_NODISCARD static float logInvCurve(float x)
-    {
-        /// 0.1  - normal curve
-        /// e-1  - e curve (e^x-1)/(e-1)
-        /// +    - bigger curve
-        const double a = std::expm1(1.0);
-        return static_cast<float>(std::expm1(std::log1p(a) * static_cast<double>(x)) / a);
-    }
+namespace tgui
+{
+    const unsigned int colorWheelSize = 200;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
