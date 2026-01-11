@@ -532,7 +532,7 @@ namespace tgui
 
         for (const auto& widget : m_widgets)
         {
-            if ((widget->getWidgetName().length() >= 32) && (widget->getWidgetName().substr(0, 32) == U"#TGUI_INTERNAL$MessageBoxButton:"))
+            if ((widget->getWidgetName().length() >= 32) && (widget->getWidgetName().starts_with(U"#TGUI_INTERNAL$MessageBoxButton:")))
             {
                 auto button = std::dynamic_pointer_cast<Button>(widget);
                 m_buttons.push_back(button);

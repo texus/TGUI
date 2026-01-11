@@ -198,9 +198,9 @@ namespace tgui
             }
 
             // The string can optionally start with "rgb" or "rgba", but this is ignored
-            if (str.substr(0, 4) == U"rgba")
+            if (str.starts_with(U"rgba"))
                 str.erase(0, 4);
-            else if (str.substr(0, 3) == U"rgb")
+            else if (str.starts_with(U"rgb"))
                 str.erase(0, 3);
 
             // Remove the first and last characters when they are brackets

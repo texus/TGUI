@@ -107,7 +107,7 @@ namespace
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == U"Texture"))
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture")))
                 || (pair.first == U"Font") || (pair.first == U"Image")) {
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
                     || pair.second->value.equalIgnoreCase(U"null")
@@ -182,7 +182,7 @@ namespace
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == U"Texture"))
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture")))
                 || (pair.first == U"Font") || (pair.first == U"Image")) {
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
                     || pair.second->value.equalIgnoreCase(U"null")

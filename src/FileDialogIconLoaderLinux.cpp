@@ -444,8 +444,8 @@ namespace tgui
                 if (iconFile.directory || (iconFile.filename.length() <= 4))
                     continue;
 
-                const bool isSvg = iconFile.filename.compare(iconFile.filename.length() - 4, 4, U".svg") == 0;
-                const bool isPng = iconFile.filename.compare(iconFile.filename.length() - 4, 4, U".png") == 0;
+                const bool isSvg = iconFile.filename.ends_with(U".svg");
+                const bool isPng = iconFile.filename.ends_with(U".png");
                 if (!isSvg && !isPng)
                     continue;
 
