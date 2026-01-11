@@ -38,7 +38,7 @@
 
 namespace
 {
-    void testCanvasCommon(tgui::CanvasBase::Ptr canvas)
+    void testCanvasCommon(const tgui::CanvasBase::Ptr& canvas)
     {
         SECTION("Ignore mouse events")
         {
