@@ -62,7 +62,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD static Layout2d parseLayout(String str)
+        TGUI_NODISCARD Layout2d parseLayout(String str)
         {
             if (str.empty())
                 throw Exception{U"Failed to parse layout. String was empty."};

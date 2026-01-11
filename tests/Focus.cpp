@@ -29,7 +29,7 @@
 
 namespace
 {
-    static tgui::Container::Ptr rootContainer;
+    tgui::Container::Ptr rootContainer;
 
     bool noWidgetsFocused(const tgui::Container::Ptr& root)
     {
