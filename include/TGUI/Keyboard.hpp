@@ -78,7 +78,7 @@ namespace tgui
                 {
                     inputRect.setPosition(inputRect.getPosition() + parent->getChildWidgetsOffset());
 
-                    const ScrollablePanel* panel = dynamic_cast<const ScrollablePanel*>(parent);
+                    const auto* panel = dynamic_cast<const ScrollablePanel*>(parent);
                     if (panel)
                         inputRect.setPosition(inputRect.getPosition() - panel->getContentOffset());
                 }

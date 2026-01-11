@@ -2045,7 +2045,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
         };
 
         buttonArrowUp->onPress([updateValue,lb=listBox.get()]{
-            const std::size_t index = static_cast<std::size_t>(lb->getSelectedItemIndex());
+            const auto index = static_cast<std::size_t>(lb->getSelectedItemIndex());
             const tgui::String value1 = lb->getItemByIndex(index - 1);
             const tgui::String value2 = lb->getItemByIndex(index);
             lb->changeItemByIndex(index - 1, value2);
@@ -2055,7 +2055,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
         });
 
         buttonArrowDown->onPress([updateValue,lb=listBox.get()]{
-            const std::size_t index = static_cast<std::size_t>(lb->getSelectedItemIndex());
+            const auto index = static_cast<std::size_t>(lb->getSelectedItemIndex());
             const tgui::String value1 = lb->getItemByIndex(index);
             const tgui::String value2 = lb->getItemByIndex(index + 1);
             lb->changeItemByIndex(index, value2);
@@ -2065,7 +2065,7 @@ void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const 
         });
 
         buttonRemove->onPress([updateValue,lb=listBox.get()]{
-            const std::size_t index = static_cast<std::size_t>(lb->getSelectedItemIndex());
+            const auto index = static_cast<std::size_t>(lb->getSelectedItemIndex());
             lb->removeItemByIndex(index);
             if (lb->getItemCount() > 0)
             {
@@ -2374,7 +2374,7 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
         };
 
         buttonArrowUp->onPress([updateValue,lv=listView.get()]{
-            const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
+            const auto index = static_cast<std::size_t>(lv->getSelectedItemIndex());
             const std::vector<tgui::String> value1 = lv->getItemRow(index - 1);
             const std::vector<tgui::String> value2 = lv->getItemRow(index);
             lv->changeItem(index - 1, value2);
@@ -2384,7 +2384,7 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
         });
 
         buttonArrowDown->onPress([updateValue,lv=listView.get()]{
-            const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
+            const auto index = static_cast<std::size_t>(lv->getSelectedItemIndex());
             const std::vector<tgui::String> value1 = lv->getItemRow(index);
             const std::vector<tgui::String> value2 = lv->getItemRow(index + 1);
             lv->changeItem(index, value2);
@@ -2394,7 +2394,7 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
         });
 
         buttonRemove->onPress([updateValue,lv=listView.get()]{
-            const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
+            const auto index = static_cast<std::size_t>(lv->getSelectedItemIndex());
             lv->removeItem(index);
             if (lv->getItemCount() > 0)
             {
@@ -2415,7 +2415,7 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
                                 cbxAutoResize=checkBoxAutoResize.get(),
                                 cbxExpanded=checkBoxExpanded.get()]
         {
-            const std::size_t index = static_cast<std::size_t>(lv->getSelectedItemIndex());
+            const auto index = static_cast<std::size_t>(lv->getSelectedItemIndex());
             lv->changeItem(index, {ebCaption->getText(),
                                    tgui::Serializer::serialize(scWidth->getValue()),
                                    cbAlign->getSelectedItem(),

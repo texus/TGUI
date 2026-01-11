@@ -1642,7 +1642,7 @@ namespace tgui
         {
             if (m_userData.type() == typeid(String))
             {
-                const String string = std::any_cast<String>(m_userData);
+                const auto string = std::any_cast<String>(m_userData);
                 node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
             }
             else if (m_userData.type() == typeid(std::string))

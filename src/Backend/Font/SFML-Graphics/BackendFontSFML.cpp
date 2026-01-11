@@ -78,7 +78,7 @@ namespace tgui
         if (!m_font)
             return glyph;
 
-        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        const auto scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
         const float scaledOutlineThickness = outlineThickness * m_fontScale;
 
         // If this is the first time requesting the glyph then mark the texture as outdated
@@ -173,7 +173,7 @@ namespace tgui
         // With the built-in DejaVuSans font, ascent should be 15 for a text size of 16.
         if (!m_font->hasGlyph(U'\u00CA'))
         {
-            const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+            const auto scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
             return static_cast<float>(scaledTextSize) / m_fontScale;
         }
 
@@ -233,7 +233,7 @@ namespace tgui
         if (!m_font)
             return nullptr;
 
-        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        const auto scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
         if (m_textures[scaledTextSize])
         {
@@ -263,7 +263,7 @@ namespace tgui
         if (!m_font)
             return {0, 0};
 
-        const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
+        const auto scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
         const auto size = m_font->getTexture(scaledTextSize).getSize();
         return {size.x, size.y};
     }

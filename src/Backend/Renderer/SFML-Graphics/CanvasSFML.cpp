@@ -296,7 +296,7 @@ namespace tgui
         }
 
         static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
-        const sf::Vertex* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.get());
+        const auto* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.get());
         m_renderTexture.draw(sfmlVertices, indices.size(), sf::PrimitiveType::Triangles, statesSFML);
     }
 

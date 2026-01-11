@@ -296,7 +296,7 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()) && targetPtr) \
     {
-        sf::RenderTexture* target = reinterpret_cast<sf::RenderTexture*>(targetPtr);
+        auto* target = reinterpret_cast<sf::RenderTexture*>(targetPtr);
         target->clear({25, 130, 10});
         gui.draw();
         target->display();
