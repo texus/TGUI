@@ -85,7 +85,7 @@ macro(tgui_find_dependency_sfml component optional_quiet)
                 "If searching for SFML 2 found an SFML 3 config, but searching for SFML 3 failed to find it's Shared/Static configuration, then you are probably attempting to import SFML from its build directory. This is no longer supported in SFML 3, you must install SFML.\n")
         endif()
 
-        if (SFML_VERSION VERSION_LESS "2.5.0")
+        if(SFML_VERSION VERSION_LESS "2.5.0")
             message(FATAL_ERROR "SFML 2.5 or higher is required")
         endif()
     endif()
@@ -96,7 +96,7 @@ macro(tgui_add_dependency_sfml component)
     tgui_find_dependency_sfml(${component} "")
 
     # Link to SFML and set include and library search directories
-    if (SFML_VERSION VERSION_GREATER_EQUAL 3 OR TARGET SFML::${component}) # SFML_VERSION can be undefined if target already existed and wasn't searched by TGUI
+    if(SFML_VERSION VERSION_GREATER_EQUAL 3 OR TARGET SFML::${component}) # SFML_VERSION can be undefined if target already existed and wasn't searched by TGUI
         target_link_libraries(tgui PUBLIC SFML::${component})
     else()
         string(TOLOWER ${component} lowercase_component)
@@ -201,7 +201,7 @@ macro(tgui_find_dependency_sdl)
         if(DEFINED SDL3_VERSION)
             # Check that the minimum SDL version is met when using the SDL GPU API
             if(TGUI_HAS_BACKEND_SDL_GPU OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_GPU)
-                if (SDL3_VERSION VERSION_LESS 3.2.0)
+                if(SDL3_VERSION VERSION_LESS 3.2.0)
                     message(FATAL_ERROR "SDL 3.2.0 or higher is required for SDL_GPU backend")
                 endif()
             endif()
@@ -256,19 +256,19 @@ macro(tgui_find_dependency_sdl)
             if(DEFINED SDL2_VERSION)
                 # The minimum SDL version for using the SDL_RENDERER backend renderer lies a lot higher than what
                 # the rest of the SDL code requires.
-                if (TGUI_HAS_BACKEND_SDL_RENDERER OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_RENDERER)
-                    if (SDL2_VERSION VERSION_LESS 2.0.18)
+                if(TGUI_HAS_BACKEND_SDL_RENDERER OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_RENDERER)
+                    if(SDL2_VERSION VERSION_LESS 2.0.18)
                         message(FATAL_ERROR "SDL 2.0.18 or higher is required for SDL_RENDERER backend")
                     endif()
                 else()
-                    if (SDL2_VERSION VERSION_LESS 2.0.6)
+                    if(SDL2_VERSION VERSION_LESS 2.0.6)
                         message(FATAL_ERROR "SDL 2.0.6 or higher is required")
                     endif()
                 endif()
             endif()
 
             # SDL2main should appear before SDL2 in the linker options, at least for MinGW
-            if (TARGET SDL2::SDL2main)
+            if(TARGET SDL2::SDL2main)
                 if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS) AND TARGET SDL2::SDL2-static)
                     target_link_libraries(SDL2::SDL2main INTERFACE SDL2::SDL2-static)
                 else()
@@ -331,7 +331,7 @@ macro(tgui_add_dependency_sdl)
             if(TGUI_SHARED_LIBS)
                 # When possible, verify that the library really isn't a static library. The SDL2::SDL2 target may be a static library if SDL was only build statically.
                 get_target_property(sdl_target_type SDL2::SDL2 TYPE)
-                if (TGUI_USE_STATIC_SDL OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+                if(TGUI_USE_STATIC_SDL OR sdl_target_type STREQUAL "STATIC_LIBRARY")
                     # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
                     message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library.")
                 endif()
@@ -383,7 +383,7 @@ macro(tgui_add_dependency_glfw)
         endif()
 
         if(DEFINED glfw3_VERSION)
-            if (${glfw3_VERSION} VERSION_LESS "3.2")
+            if(${glfw3_VERSION} VERSION_LESS "3.2")
                 message(FATAL_ERROR "GLFW 3.2 or higher is required")
             endif()
         endif()
@@ -391,7 +391,7 @@ macro(tgui_add_dependency_glfw)
 
     if(TGUI_SHARED_LIBS)
         get_target_property(glfw_target_type glfw TYPE)
-        if (glfw_target_type STREQUAL "STATIC_LIBRARY")
+        if(glfw_target_type STREQUAL "STATIC_LIBRARY")
             # The user has to link GLFW in his own program, which would conflict with the one already inside the TGUI dll.
             # Note that we might not always detect this, glfw_target_type could be unknown, e.g. when manually specifying the library via GLFW_LIBRARY.
             message(FATAL_ERROR "Linking statically to GLFW isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic GLFW library.")
@@ -501,7 +501,7 @@ macro(tgui_add_dependency_sdl_ttf)
             unset(SDL3_ttf_DIR CACHE)
 
             if(DEFINED sdl2_ttf_VERSION)
-                if (${sdl2_ttf_VERSION} VERSION_LESS "2.0.14")
+                if(${sdl2_ttf_VERSION} VERSION_LESS "2.0.14")
                     message(FATAL_ERROR "SDL_ttf 2.0.14 or higher is required")
                 endif()
             endif()
@@ -529,7 +529,7 @@ macro(tgui_add_dependency_sdl_ttf)
             if(TGUI_SHARED_LIBS)
                 # When possible, verify that the library really isn't a static library. The SDL2_ttf::SDL2_ttf target may be a static library if SDL_ttf was only build statically.
                 get_target_property(sdl_target_type SDL2_ttf::SDL2_ttf TYPE)
-                if (TGUI_USE_STATIC_SDL_TTF OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+                if(TGUI_USE_STATIC_SDL_TTF OR sdl_target_type STREQUAL "STATIC_LIBRARY")
                     # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
                     message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library.")
                 endif()
@@ -627,7 +627,7 @@ macro(tgui_add_dependency_raylib)
         # If raylib_INCLUDE_DIR and raylib_LIBRARY were previously created as CACHE variables by the Findraylib.cmake file,
         # then they might interfere with the code in raylib-config.cmake when it is found (e.g. user filled in raylib_DIR).
         # So we remove these variables when they are empty (they will be set again by either the config file or find module).
-        if (NOT raylib_INCLUDE_DIR AND NOT raylib_LIBRARY)
+        if(NOT raylib_INCLUDE_DIR AND NOT raylib_LIBRARY)
             unset(raylib_INCLUDE_DIR CACHE)
             unset(raylib_LIBRARY CACHE)
         endif()
@@ -653,14 +653,14 @@ macro(tgui_add_dependency_raylib)
             endif()
         endif()
 
-        if (raylib_VERSION VERSION_LESS "4")
+        if(raylib_VERSION VERSION_LESS "4")
             message(FATAL_ERROR "raylib 4 or higher is required")
         endif()
     endif()
 
     if(TGUI_SHARED_LIBS)
         get_target_property(raylib_target_type raylib TYPE)
-        if (raylib_target_type STREQUAL "STATIC_LIBRARY")
+        if(raylib_target_type STREQUAL "STATIC_LIBRARY")
             # The user has to link raylib in his own program, which would conflict with the one already inside the TGUI dll.
             # Note that we might not always detect this, raylib_target_type could be unknown, e.g. when manually specifying the library via raylib_LIBRARY.
             message(FATAL_ERROR "Linking statically to raylib isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic raylib library.")

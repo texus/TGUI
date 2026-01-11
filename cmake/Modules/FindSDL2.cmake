@@ -349,7 +349,7 @@ if(SDL2_FOUND)
                           INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}")
 
     if(APPLE)
-      if (NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
+      if(NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
         # For OS X, SDL2 uses Cocoa as a backend so it must link to Cocoa.
         # For more details, please see above.
         set_property(TARGET SDL2::SDL2 APPEND PROPERTY
@@ -368,7 +368,7 @@ if(SDL2_FOUND)
                             IMPORTED_LOCATION "${SDL2_LIBRARY}"
                             INTERFACE_INCLUDE_DIRECTORIES "${SDL2_INCLUDE_DIR}")
       if(APPLE)
-        if (NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
+        if(NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
           set_property(TARGET SDL2::Core APPEND PROPERTY INTERFACE_LINK_OPTIONS -framework Cocoa)
         endif()
       else()

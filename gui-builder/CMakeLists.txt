@@ -66,8 +66,8 @@ set(target_install_dir "${TGUI_MISC_INSTALL_PREFIX}/gui-builder")
 copy_dlls_to_exe("${PROJECT_SOURCE_DIR}/gui-builder/" "${target_install_dir}" gui-builder)
 
 # Set the RPATH of the executable on Linux (and BSD)
-if (TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
-    if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
+if(TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
         cmake_path(SET lib_dir NORMALIZE "${CMAKE_INSTALL_PREFIX}")
         cmake_path(APPEND lib_dir "${CMAKE_INSTALL_LIBDIR}")
 
@@ -88,9 +88,9 @@ if (TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
                           INSTALL_RPATH_USE_LINK_PATH TRUE)       # RPATH will contain paths to our dependencies
 endif()
 
-if (TGUI_INSTALL)
+if(TGUI_INSTALL)
     # Install a .desktop file on Linux (and its icon)
-    if (TGUI_OS_LINUX)
+    if(TGUI_OS_LINUX)
         set(TGUI_GUI_BUILDER_INSTALL_EXE_PATH "${CMAKE_INSTALL_PREFIX}/${target_install_dir}/gui-builder")
         configure_file("${PROJECT_SOURCE_DIR}/cmake/gui-builder/tgui-gui-builder.desktop.in" "tgui-gui-builder.desktop" @ONLY)
         install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tgui-gui-builder.desktop"
