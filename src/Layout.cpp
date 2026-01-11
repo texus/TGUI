@@ -29,13 +29,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+namespace
 {
-    TGUI_NODISCARD static std::pair<String, String> parseMinMaxExpresssion(const String& expression)
+    TGUI_NODISCARD std::pair<tgui::String, tgui::String> parseMinMaxExpresssion(const tgui::String& expression)
     {
         unsigned int bracketCount = 0;
         auto commaOrBracketPos = expression.find_first_of(",()");
-        while (commaOrBracketPos != String::npos)
+        while (commaOrBracketPos != tgui::String::npos)
         {
             if (expression[commaOrBracketPos] == '(')
                 bracketCount++;
@@ -58,7 +58,12 @@ namespace tgui
         TGUI_PRINT_WARNING("bracket mismatch while parsing min or max in layout string '" << expression << "'.");
         return {};
     }
+} // anonymous namespace
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace tgui
+{
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Layout::Layout(RelativeValue ratio) :

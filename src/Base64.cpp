@@ -28,7 +28,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-static const char* base64CharactersTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+namespace
+{
+    const char* base64CharactersTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+} // anonymous namespace
 
 // The following table maps each character from base64CharactersTable to its index in the table.
 // All characters that don't appear in base64CharactersTable are mapped to 255. Valid indices are in range [0,63]
