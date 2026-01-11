@@ -62,7 +62,7 @@ namespace tgui
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Clamps a value between two boundries. This function exists because std::clamp was only added with c++17
+    /// @brief Clamps a value between two boundries. This function exists because std::clamp was only added with C++17
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename T>
     TGUI_NODISCARD constexpr const T& clamp(const T& v, const T& lo, const T& hi)

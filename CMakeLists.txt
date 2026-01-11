@@ -72,19 +72,19 @@ if(NOT DEFINED TGUI_SHARED_LIBS)
     set(TGUI_SHARED_LIBS ${BUILD_SHARED_LIBS})
 endif()
 
-# Use c++17 by default on GCC >= 11, Clang >= 16 and IntelLLVM
+# Use C++17 by default on GCC >= 11, Clang >= 16 and IntelLLVM
 if ((TGUI_COMPILER_GCC AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "11")
  OR (TGUI_COMPILER_LLVM_CLANG AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "16")
  OR TGUI_COMPILER_INTEL_ONEAPI)
     set(TGUI_DEFAULT_CXX_STANDARD "17")
-else() # Use c++14 by default on all other compilers
+else() # Use C++14 by default on all other compilers
     set(TGUI_DEFAULT_CXX_STANDARD "14")
 endif()
 
-set(TGUI_CXX_STANDARD_docstring "C++ standard version to build TGUI with. Possible values: 14, 17, 20 or 23. Projects using TGUI must use a c++ version equal or higher to this")
+set(TGUI_CXX_STANDARD_docstring "C++ standard version to build TGUI with. Possible values: 14, 17, 20 or 23. Projects using TGUI must use a C++ version equal or higher to this")
 tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING ${TGUI_CXX_STANDARD_docstring})
 
-# At least c++14 has to be used
+# At least C++14 has to be used
 if(TGUI_CXX_STANDARD LESS "14")
     message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 14")
 endif()
@@ -157,15 +157,15 @@ endif()
 
 string(TOUPPER "${TGUI_BACKEND}" TGUI_BACKEND_UPPERCASE)
 
-# Add an option to build TGUI as a c++20 module (when using CMake >= 3.28)
+# Add an option to build TGUI as a C++20 module (when using CMake >= 3.28)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.28)
     # We currently don't create the option as it is still too experimental,
     # it can still be used if the user manually specifies the option though.
     if (DEFINED TGUI_BUILD_AS_CXX_MODULE)
         message(WARNING "Warning: TGUI_BUILD_AS_CXX_MODULE was renamed to TGUI_BUILD_CXX20_MODULE")
-        option(TGUI_BUILD_CXX20_MODULE "ON to build TGUI as a c++20 module that can be used as alternative to using header files" ${TGUI_BUILD_AS_CXX_MODULE})
+        option(TGUI_BUILD_CXX20_MODULE "ON to build TGUI as a C++20 module that can be used as alternative to using header files" ${TGUI_BUILD_AS_CXX_MODULE})
     else()
-        option(TGUI_BUILD_CXX20_MODULE "ON to build TGUI as a c++20 module that can be used as alternative to using header files" OFF)
+        option(TGUI_BUILD_CXX20_MODULE "ON to build TGUI as a C++20 module that can be used as alternative to using header files" OFF)
     endif()
     mark_as_advanced(TGUI_BUILD_CXX20_MODULE)
     if(TGUI_BUILD_CXX20_MODULE)

@@ -38,7 +38,7 @@
 namespace
 {
     // Many compilers don't seem to support std::stringstream::view() yet, but I don't want to
-    // limit the use of other c++20 features. So in c++20 mode we just check if the function exists.
+    // limit the use of other C++20 features. So in C++20 mode we just check if the function exists.
 
     // This struct will be used when the view() member doesn't exist.
     template <typename StreamType, typename = void>
