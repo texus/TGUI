@@ -44,6 +44,10 @@ namespace tgui
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
         TGUI_DEPRECATED("Use BackendGui::startTextInput instead") inline void openVirtualKeyboard(const Widget* requestingWidget, FloatRect inputRect)
         {
+            TGUI_ASSERT(requestingWidget != nullptr, "requestingWidget must not be nullptr");
+            if (!requestingWidget)
+                return;
+
             const Widget* widget = requestingWidget;
             while (widget)
             {
