@@ -396,7 +396,7 @@ if(TGUI_HAS_BACKEND_RAYLIB)
     list(APPEND module_src_files "Backend/raylib.cppm")
 endif()
 
-if (TGUI_BUILD_CXX20_MODULE)
+if(TGUI_BUILD_CXX20_MODULE)
     target_sources(tgui PUBLIC FILE_SET tgui_cxx_module_files TYPE CXX_MODULES FILES ${module_src_files})
     set_source_files_properties(${module_src_files} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
     set_source_files_properties(${module_src_files} PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)

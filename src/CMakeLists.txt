@@ -370,7 +370,7 @@ endif()
 # so this should only be enabled in places where the TGUI is build only once.
 # For CMake 3.18 and newer, TGUI supports the CMAKE_UNITY_BUILD option and this code should no longer be used.
 if(TGUI_OPTIMIZE_SINGLE_BUILD)
-    if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18")
+    if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18")
         # The only reason this code still exists is so that the CI can continue to do unity builds with an
         # older CMake version. Once the CMake version is updated, we should fail here to prevent keeping the old code.
         message(FATAL_ERROR "TGUI_OPTIMIZE_SINGLE_BUILD has been replaced with CMAKE_UNITY_BUILD")
@@ -404,12 +404,12 @@ if(TGUI_OPTIMIZE_SINGLE_BUILD)
 endif()
 
 set(TGUI_SRC_MODULES "")
-if (TGUI_BUILD_CXX20_MODULE)
+if(TGUI_BUILD_CXX20_MODULE)
     list(APPEND TGUI_SRC_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/TGUI.cppm")
 endif()
 
 list(APPEND TGUI_SRC_WITHOUT_UNITY DefaultBackendWindow.cpp)
-if (TGUI_BUILD_CXX20_MODULE)
+if(TGUI_BUILD_CXX20_MODULE)
     list(APPEND TGUI_SRC_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/DefaultBackendWindow.cppm")
 endif()
 
@@ -441,7 +441,7 @@ else()
     set_target_properties(tgui PROPERTIES RELWITHDEBINFO_POSTFIX -s)
 endif()
 
-if (TGUI_BUILD_CXX20_MODULE)
+if(TGUI_BUILD_CXX20_MODULE)
     target_sources(tgui
                    PUBLIC
                    FILE_SET tgui_cxx_module_files
@@ -454,7 +454,7 @@ endif()
 target_sources(tgui PRIVATE ${TGUI_SRC} ${TGUI_SRC_WITHOUT_UNITY})
 target_sources(tgui PRIVATE ${TGUI_HEADERS})
 
-if (${CMAKE_VERSION} VERSION_LESS "3.18")
+if(${CMAKE_VERSION} VERSION_LESS "3.18")
     # We don't support using CMAKE_UNITY_BUILD in CMake < 3.18 (because we need UNITY_BUILD_MODE)
     set_target_properties(tgui PROPERTIES UNITY_BUILD OFF)
 else()
@@ -463,7 +463,7 @@ else()
     set_target_properties(tgui PROPERTIES UNITY_BUILD_MODE GROUP)
 
     # Enable unity build by default
-    if (NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
+    if(NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
         set_target_properties(tgui PROPERTIES UNITY_BUILD ON)
     endif()
 
@@ -476,14 +476,14 @@ else()
     # Reduce size of batches if we have sufficient cores
     include(ProcessorCount)
     ProcessorCount(nr_threads)
-    if (NOT nr_threads EQUAL 0)
+    if(NOT nr_threads EQUAL 0)
         list(LENGTH TGUI_SRC file_count)
         math(EXPR max_batch_size "${file_count} / ${nr_threads}")
-        if (max_batch_size EQUAL 1)
+        if(max_batch_size EQUAL 1)
             # Disable unity build if we have more threads than files
             set_target_properties(tgui PROPERTIES UNITY_BUILD OFF)
         endif()
-        if (max_batch_size LESS batch_size)
+        if(max_batch_size LESS batch_size)
             set(batch_size ${max_batch_size})
         endif()
     endif()
@@ -495,7 +495,7 @@ else()
         list(GET TGUI_SRC ${i} input_file)
         set_source_files_properties(${input_file} PROPERTIES UNITY_GROUP "batch-${batch_id}")
         math(EXPR files_in_bucket "${files_in_bucket} + 1")
-        if (files_in_bucket GREATER_EQUAL batch_size)
+        if(files_in_bucket GREATER_EQUAL batch_size)
             set(files_in_bucket 0)
             math(EXPR batch_id "${batch_id} + 1")
         endif()
@@ -542,7 +542,7 @@ endif()
 
 # Add <project>/include as public include directory
 target_include_directories(tgui PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
-if (TGUI_BUILD_FRAMEWORK)
+if(TGUI_BUILD_FRAMEWORK)
     target_include_directories(tgui INTERFACE $<INSTALL_INTERFACE:TGUI.framework>)
 else()
     target_include_directories(tgui INTERFACE $<INSTALL_INTERFACE:include>)
@@ -632,7 +632,7 @@ if(NOT TGUI_DISABLE_PRECOMPILED_HEADER)
     target_precompile_headers(tgui PRIVATE "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp")
 endif()
 
-if (TGUI_BUILD_FRAMEWORK)
+if(TGUI_BUILD_FRAMEWORK)
     set(config_package_location "TGUI.framework/Resources/CMake")
 else()
     set(config_package_location ${CMAKE_INSTALL_LIBDIR}/cmake/TGUI)
@@ -650,13 +650,13 @@ write_basic_package_version_file("${PROJECT_BINARY_DIR}/TGUIConfigVersion.cmake"
                                  VERSION ${TGUI_VERSION_MAJOR}.${TGUI_VERSION_MINOR}.${TGUI_VERSION_PATCH}
                                  COMPATIBILITY SameMajorVersion)
 
-if (TGUI_SHARED_LIBS)
+if(TGUI_SHARED_LIBS)
     set(targets_config_filename TGUISharedTargets.cmake)
 else()
     set(targets_config_filename TGUIStaticTargets.cmake)
 endif()
 
-if (CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
     # When building TGUI alongside its dependencies, the export is only possible when all dependencies also do the export.
     # To keep the code simple, we will never create the config file in our build folder when TGUI is build as a subdirectory.
     # At the time of writing, the following dependencies have or lack the export call:
@@ -667,9 +667,9 @@ if (CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
            FILE "${PROJECT_BINARY_DIR}/${targets_config_filename}")
 endif()
 
-if (TGUI_INSTALL)
+if(TGUI_INSTALL)
     # Install library
-    if (TGUI_BUILD_CXX20_MODULE)
+    if(TGUI_BUILD_CXX20_MODULE)
         install(TARGETS tgui EXPORT TGUIConfigExport
                 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT bin
                 LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT bin

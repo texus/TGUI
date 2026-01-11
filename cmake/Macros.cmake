@@ -85,7 +85,7 @@ function(tgui_set_global_compile_flags target)
         endif()
     endif()
 
-    if (NOT TGUI_BUILD_CXX20_MODULE)
+    if(NOT TGUI_BUILD_CXX20_MODULE)
         # We turn GNU extensions off to make sure that our code doesn't rely on them.
         # This isn't done when building TGUI as a module though. At least when using Clang 18, doing so required that the set_target_properties
         # function is also called on the user's target to avoid the "GNU extensions was enabled in PCH file but is currently disabled" error.
@@ -133,7 +133,7 @@ function(copy_dlls_to_exe post_build_destination install_destination target)
         if(TGUI_HAS_FONT_BACKEND_FREETYPE AND FREETYPE_WINDOWS_BINARIES_PATH AND NOT TGUI_USE_STATIC_STD_LIBS)
             # Turn backslashes into slashes on Windows, because the install() command can fail if the
             # FREETYPE_WINDOWS_BINARIES_PATH variable was initialized with an environment variable that contains backslashes.
-            if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
+            if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
                 cmake_path(SET FREETYPE_WINDOWS_BINARIES_PATH "${FREETYPE_WINDOWS_BINARIES_PATH}")
             else()
                 file(TO_CMAKE_PATH "${FREETYPE_WINDOWS_BINARIES_PATH}" FREETYPE_WINDOWS_BINARIES_PATH)
@@ -168,7 +168,7 @@ function(copy_dlls_to_exe post_build_destination install_destination target)
                                COMMAND ${CMAKE_COMMAND} -E copy "${file_to_copy}" "${post_build_destination}"
                                VERBATIM)
 
-            if (TGUI_INSTALL)
+            if(TGUI_INSTALL)
                 install(FILES "${file_to_copy}"
                         DESTINATION "${install_destination}"
                         COMPONENT ${target})

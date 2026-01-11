@@ -10,7 +10,7 @@ set(TGUI_DIR "${CMAKE_ANDROID_NDK}/sources/third_party/tgui/lib/${CMAKE_ANDROID_
 add_library(app SHARED)
 
 # Find and link the dependencies
-if (sfml_version EQUAL 3)
+if(sfml_version EQUAL 3)
     target_sources(app PRIVATE main-sfml3.cpp)
 
     find_package(SFML 3 REQUIRED COMPONENTS Graphics Main CONFIG)

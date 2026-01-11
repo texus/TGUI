@@ -73,7 +73,7 @@ if(NOT DEFINED TGUI_SHARED_LIBS)
 endif()
 
 # Use C++17 by default on GCC >= 11, Clang >= 16 and IntelLLVM
-if ((TGUI_COMPILER_GCC AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "11")
+if((TGUI_COMPILER_GCC AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "11")
  OR (TGUI_COMPILER_LLVM_CLANG AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "16")
  OR TGUI_COMPILER_INTEL_ONEAPI)
     set(TGUI_DEFAULT_CXX_STANDARD "17")
@@ -161,7 +161,7 @@ string(TOUPPER "${TGUI_BACKEND}" TGUI_BACKEND_UPPERCASE)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.28)
     # We currently don't create the option as it is still too experimental,
     # it can still be used if the user manually specifies the option though.
-    if (DEFINED TGUI_BUILD_AS_CXX_MODULE)
+    if(DEFINED TGUI_BUILD_AS_CXX_MODULE)
         message(WARNING "Warning: TGUI_BUILD_AS_CXX_MODULE was renamed to TGUI_BUILD_CXX20_MODULE")
         option(TGUI_BUILD_CXX20_MODULE "ON to build TGUI as a C++20 module that can be used as alternative to using header files" ${TGUI_BUILD_AS_CXX_MODULE})
     else()
@@ -200,7 +200,7 @@ if(TGUI_OS_MACOS OR TGUI_OS_IOS)
     # Add an option to build framework instead of dylib (release only)
     option(TGUI_BUILD_FRAMEWORK "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS" ${TGUI_SHARED_LIBS})
 
-    if (TGUI_OS_IOS AND TGUI_SHARED_LIBS AND NOT TGUI_BUILD_FRAMEWORK)
+    if(TGUI_OS_IOS AND TGUI_SHARED_LIBS AND NOT TGUI_BUILD_FRAMEWORK)
         message(FATAL_ERROR "Naked dynamic libs not supported for iOS, build static or frameworks instead")
     endif()
 
@@ -240,8 +240,8 @@ set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 
 # Don't create an install target if we detect a dependency that is being build without an install target,
 # of if TGUI is being built as a subdirectory.
-if (NOT DEFINED TGUI_INSTALL)
-    if ((CMAKE_VERSION VERSION_GREATER_EQUAL 3.21 AND NOT PROJECT_IS_TOP_LEVEL)
+if(NOT DEFINED TGUI_INSTALL)
+    if((CMAKE_VERSION VERSION_GREATER_EQUAL 3.21 AND NOT PROJECT_IS_TOP_LEVEL)
      OR (DEFINED SDL2_DISABLE_INSTALL AND SDL2_DISABLE_INSTALL)
      OR (DEFINED SDL_DISABLE_INSTALL AND SDL_DISABLE_INSTALL)
      OR (DEFINED SDL_INSTALL AND NOT SDL_INSTALL)
@@ -287,7 +287,7 @@ target_link_libraries(tgui-console-app-interface INTERFACE tgui)
 if(TGUI_DEFAULT_BACKEND STREQUAL "SFML_GRAPHICS" OR TGUI_DEFAULT_BACKEND STREQUAL "SFML_OPENGL3")
     if(TGUI_OS_IOS)
         tgui_find_dependency_sfml(Main QUIET)
-        if (${SFML_VERSION} VERSION_GREATER_EQUAL 3)
+        if(${SFML_VERSION} VERSION_GREATER_EQUAL 3)
             target_link_libraries(tgui-console-app-interface INTERFACE SFML::Main)
         else()
             target_link_libraries(tgui-console-app-interface INTERFACE sfml-main)
@@ -297,7 +297,7 @@ elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_GPU" OR TGUI_DEFAULT_BACKEND STREQUAL 
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_GLES2")
     tgui_find_dependency_sdl()
-    if (NOT TGUI_USE_SDL3 AND TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
+    if(NOT TGUI_USE_SDL3 AND TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
         target_link_libraries(tgui-console-app-interface INTERFACE SDL2::SDL2main)
     endif()
 elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "GLFW_GLES2" OR TGUI_DEFAULT_BACKEND STREQUAL "RAYLIB")
@@ -310,7 +310,7 @@ target_link_libraries(tgui-gui-app-interface INTERFACE tgui)
 if(TGUI_DEFAULT_BACKEND STREQUAL "SFML_GRAPHICS" OR TGUI_DEFAULT_BACKEND STREQUAL "SFML_OPENGL3")
     if(TGUI_OS_WINDOWS OR TGUI_OS_IOS)
         tgui_find_dependency_sfml(Main QUIET)
-        if (SFML_VERSION VERSION_GREATER_EQUAL 3)
+        if(SFML_VERSION VERSION_GREATER_EQUAL 3)
             target_link_libraries(tgui-gui-app-interface INTERFACE SFML::Main)
         else()
             target_link_libraries(tgui-gui-app-interface INTERFACE sfml-main)
@@ -320,7 +320,7 @@ elseif(TGUI_DEFAULT_BACKEND STREQUAL "SDL_GPU" OR TGUI_DEFAULT_BACKEND STREQUAL 
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_GLES2"
        OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_TTF_GLES2")
     tgui_find_dependency_sdl()
-    if (NOT TGUI_USE_SDL3 AND TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
+    if(NOT TGUI_USE_SDL3 AND TARGET SDL2::SDL2main) # This target is only required on Windows or iOS
         target_link_libraries(tgui-gui-app-interface INTERFACE SDL2::SDL2main)
     endif()
 elseif(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_OPENGL3" OR TGUI_DEFAULT_BACKEND STREQUAL "GLFW_GLES2" OR TGUI_DEFAULT_BACKEND STREQUAL "RAYLIB")
@@ -378,13 +378,13 @@ if(TGUI_BUILD_DOC)
     add_subdirectory(doc)
 endif()
 
-if (TGUI_INSTALL)
+if(TGUI_INSTALL)
     # Install pkg-config files by default on Linux (and BSD)
     tgui_assign_bool(TGUI_INSTALL_PKGCONFIG_DEFAULT TGUI_OS_LINUX)
     option(TGUI_INSTALL_PKGCONFIG_FILES "TRUE to automatically install pkg-config files so other projects can find TGUI" ${TGUI_INSTALL_PKGCONFIG_DEFAULT})
 
-    if (TGUI_INSTALL_PKGCONFIG_FILES)
-        if (TGUI_OS_BSD)
+    if(TGUI_INSTALL_PKGCONFIG_FILES)
+        if(TGUI_OS_BSD)
             set(default_pkgconfig_dir "libdata/pkgconfig")
         else()
             set(default_pkgconfig_dir "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
@@ -393,7 +393,7 @@ if (TGUI_INSTALL)
 
         configure_file("cmake/pkgconfig/tgui.pc.in" "pkgconfig/tgui.pc" @ONLY)
 
-        if (TGUI_PKGCONFIG_INSTALL_PREFIX)
+        if(TGUI_PKGCONFIG_INSTALL_PREFIX)
             message(WARNING "TGUI_PKGCONFIG_INSTALL_PREFIX is deprecated, use TGUI_PKGCONFIG_INSTALL_DIR instead (which is a relative instead of an absolute path by default)")
             install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pkgconfig/tgui.pc" DESTINATION "${TGUI_PKGCONFIG_INSTALL_PREFIX}")
         else()
@@ -419,7 +419,7 @@ if (TGUI_INSTALL)
             install(FILES $<TARGET_PDB_FILE:tgui> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL COMPONENT devel)
         else()
             # TODO: Find a reliable way to know whether the file has a "-d" postfix instead of trying to install both. OPTIONAL is also required when config is Release.
-            if (MSVC_IDE)
+            if(MSVC_IDE)
                 install(FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
                 install(FILES "${PROJECT_BINARY_DIR}/lib/\${CMAKE_INSTALL_CONFIG_NAME}/tgui-s-d.pdb" DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT devel OPTIONAL)
             else()
