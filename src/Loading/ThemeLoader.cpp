@@ -62,7 +62,7 @@ namespace tgui
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.substr(0, 7) == U"Texture")) || (pair.first == U"Font") || (pair.first == U"Image") || (pair.first == U"Icon"))
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font") || (pair.first == U"Image") || (pair.first == U"Icon"))
             {
                 if (pair.second->value.empty() || viewEqualIgnoreCase(pair.second->value, U"none") || viewEqualIgnoreCase(pair.second->value, U"null") || viewEqualIgnoreCase(pair.second->value, U"nullptr"))
                     continue;

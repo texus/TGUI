@@ -1286,7 +1286,7 @@ void GuiBuilder::addPropertyValueWidgets(float& topPosition, const PropertyValue
         addPropertyValueEditBoxInputValidator(property, value, onChange, topPosition);
     else if (type == "ChildWindowTitleButtons")
         addPropertyValueChildWindowTitleButtons(property, value, onChange, topPosition);
-    else if (type.substr(0, 5) == "Enum{")
+    else if (type.starts_with("Enum{"))
     {
         const std::vector<tgui::String> enumValues = tgui::Deserializer::split(type.substr(5, type.size() - 6), ',');
         addPropertyValueEnum(property, value, onChange, topPosition, enumValues);
@@ -1388,7 +1388,7 @@ void GuiBuilder::createNewForm(tgui::String filename)
 {
     // If the filename is an absolute path that contains the resource path then make it relative
     const tgui::String basePath = tgui::getResourcePath().asString();
-    if (filename.find(basePath) == 0)
+    if (filename.starts_with(basePath))
     {
         filename.erase(0, basePath.length());
         if ((filename[0] == '/') || (filename[0] == '\\'))
@@ -1429,7 +1429,7 @@ bool GuiBuilder::loadForm(tgui::String filename, bool loadingFromFile)
 {
     // If the filename is an absolute path that contains the resource path then make it relative
     const tgui::String basePath = tgui::getResourcePath().getNormalForm().asString();
-    if (filename.find(basePath) == 0)
+    if (filename.starts_with(basePath))
     {
         filename.erase(0, basePath.length());
         if ((filename[0] == '/') || (filename[0] == '\\'))
