@@ -785,7 +785,7 @@ namespace tgui
         });
 
         auto valueChangeFunc = [this](float value){
-            const std::uint8_t factor = static_cast<std::uint8_t>(255 * logInvCurve(value / m_value->getMaximum()));
+            const auto factor = static_cast<std::uint8_t>(255 * logInvCurve(value / m_value->getMaximum()));
             m_colorWheelTexture.setColor({factor, factor, factor});
             m_colorWheelSprite.setTexture(m_colorWheelTexture);
         };

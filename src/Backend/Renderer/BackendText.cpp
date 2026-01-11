@@ -429,8 +429,8 @@ namespace tgui
         const Vector2u textureSize = m_font->getTextureSize(m_characterSize);
         if ((textureSize.x > 0) && (textureSize.y > 0))
         {
-            const float textureWidth = static_cast<float>(textureSize.x);
-            const float textureHeight = static_cast<float>(textureSize.y);
+            const auto textureWidth = static_cast<float>(textureSize.x);
+            const auto textureHeight = static_cast<float>(textureSize.y);
 
             for (auto& vertex : *m_vertices)
             {

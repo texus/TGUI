@@ -2729,7 +2729,7 @@ namespace tgui
     {
         const bool verticalScrollbarAtBottom = (m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize() >= m_verticalScrollbar->getMaximum());
 
-        unsigned int maximum = static_cast<unsigned int>(m_items.size() * m_itemHeight);
+        auto maximum = static_cast<unsigned int>(m_items.size() * m_itemHeight);
         if (m_showHorizontalGridLines && (m_gridLinesWidth > 0) && !m_items.empty())
             maximum += static_cast<unsigned int>((m_items.size() - 1) * m_gridLinesWidth);
 

@@ -1654,16 +1654,16 @@ namespace tgui
             const unsigned int left = m_horizontalScrollbar->getValue();
             if (m_caretPosition.x <= left)
             {
-                const unsigned int newValue =
+                const auto newValue =
                     static_cast<unsigned int>(std::max(0, static_cast<int>(m_caretPosition.x
                                                                            - (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2))));
                 m_horizontalScrollbar->setValue(newValue);
             }
             else if (m_caretPosition.x > (left + m_horizontalScrollbar->getViewportSize()))
             {
-                const unsigned int newValue = static_cast<unsigned int>(m_caretPosition.x
-                                                                        + (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2)
-                                                                        - m_horizontalScrollbar->getViewportSize());
+                const auto newValue = static_cast<unsigned int>(m_caretPosition.x
+                                                                + (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2)
+                                                                - m_horizontalScrollbar->getViewportSize());
                 m_horizontalScrollbar->setValue(newValue);
             }
         }

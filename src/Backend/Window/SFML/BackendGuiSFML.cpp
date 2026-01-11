@@ -182,8 +182,8 @@ namespace tgui
         if (const auto* sfmlTouchBegan = sfmlEvent.getIf<sf::Event::TouchBegan>())
         {
             const auto fingerId = static_cast<std::intptr_t>(sfmlTouchBegan->finger);
-            const float x = static_cast<float>(sfmlTouchBegan->position.x);
-            const float y = static_cast<float>(sfmlTouchBegan->position.y);
+            const auto x = static_cast<float>(sfmlTouchBegan->position.x);
+            const auto y = static_cast<float>(sfmlTouchBegan->position.y);
             m_twoFingerScroll.reportFingerDown(fingerId, x, y);
         }
 
@@ -196,8 +196,8 @@ namespace tgui
         if (const auto* sfmlTouchMoved = sfmlEvent.getIf<sf::Event::TouchMoved>())
         {
             const auto fingerId = static_cast<std::intptr_t>(sfmlTouchMoved->finger);
-            const float x = static_cast<float>(sfmlTouchMoved->position.x);
-            const float y = static_cast<float>(sfmlTouchMoved->position.y);
+            const auto x = static_cast<float>(sfmlTouchMoved->position.x);
+            const auto y = static_cast<float>(sfmlTouchMoved->position.y);
 
             const bool wasScrolling = m_twoFingerScroll.isScrolling();
             m_twoFingerScroll.reportFingerMotion(fingerId, x, y);

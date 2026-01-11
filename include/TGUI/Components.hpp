@@ -154,7 +154,7 @@ namespace dev
 
             const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
             const std::uint64_t oldBaseIndex = other.m_propertyData & 0xFFFFFFFFFFFF0000;
-            const std::uint16_t oldStoredStates = static_cast<std::uint16_t>(other.m_propertyData & 0xFFFF);
+            const auto oldStoredStates = static_cast<std::uint16_t>(other.m_propertyData & 0xFFFF);
 
             std::uint16_t total = 0;
             std::uint8_t bitIndex = 0;
@@ -250,7 +250,7 @@ namespace dev
         TGUI_NODISCARD const ValueType& getValue(ComponentState state = ComponentState::Normal) const
         {
             const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-            const std::uint16_t storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
+            const auto storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
 
             // If we don't have a value for any state then we can just return the default value
             if (storedStates == 0)
@@ -326,7 +326,7 @@ namespace dev
         void unsetValueImpl()
         {
             const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-            const std::uint16_t storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
+            const auto storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
 
             std::uint16_t total = 0;
             std::uint8_t bitIndex = 0;

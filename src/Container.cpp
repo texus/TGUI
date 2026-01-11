@@ -69,7 +69,7 @@ namespace tgui
                     getAllRenderers(orderedRenderers, rendererToWidgetsMap, childContainer);
                 else
                 {
-                    SubwidgetContainer* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get());
+                    auto* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get());
                     if (subWidgetContainer)
                     {
                         addRenderer(subWidgetContainer->getContainer()->getSharedRenderer()->getData().get(), subWidgetContainer->getContainer());

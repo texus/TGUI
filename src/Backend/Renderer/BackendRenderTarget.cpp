@@ -427,7 +427,7 @@ namespace tgui
     void BackendRenderTarget::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness, const Color& borderColor)
     {
         const float radius = size / 2.f;
-        const unsigned int nrPoints = static_cast<unsigned int>(std::ceil((radius + std::abs(borderThickness)) * 4));
+        const auto nrPoints = static_cast<unsigned int>(std::ceil((radius + std::abs(borderThickness)) * 4));
         if (borderThickness > 0)
         {
             const std::vector<Vector2f>& outerPoints = drawCircleHelperGetPoints(nrPoints, radius + borderThickness, -borderThickness);
