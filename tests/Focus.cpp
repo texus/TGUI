@@ -54,8 +54,8 @@ namespace
         if (!widget->isFocused())
             return false;
 
-        std::set<tgui::Container*> parents;
-        tgui::Container* parent = widget->getParent();
+        std::set<const tgui::Container*> parents;
+        const tgui::Container* parent = widget->getParent();
         while (parent)
         {
             parents.insert(parent);
