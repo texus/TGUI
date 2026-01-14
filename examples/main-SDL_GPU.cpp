@@ -68,8 +68,8 @@ int main(int, char **)
     TTF_Quit();
 
     SDL_ReleaseWindowFromGPUDevice(device, window);
-	SDL_DestroyWindow(window);
-	SDL_DestroyGPUDevice(device);
+    SDL_DestroyWindow(window);
+    SDL_DestroyGPUDevice(device);
     SDL_Quit();
     return 0;
 }
