@@ -500,7 +500,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::saveWidgetsToFile(const String& filename)
+    void Container::saveWidgetsToFile(const String& filename) const
     {
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
         String filenameInResources = filename;
