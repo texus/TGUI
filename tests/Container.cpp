@@ -69,7 +69,7 @@ TEST_CASE("[Container]")
 
         REQUIRE(container->getWidgets().size() == 3);
         REQUIRE(container->getWidgets()[0]->getWidgetName() == "widget1");
-        REQUIRE(container->getWidgets()[1]->getWidgetName() == "");
+        REQUIRE(container->getWidgets()[1]->getWidgetName().empty());
         REQUIRE(container->getWidgets()[2]->getWidgetName() == "widget3");
     }
 

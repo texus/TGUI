@@ -281,7 +281,7 @@ TEST_CASE("[DataIO]")
 
         // Check that emit function works correctly by parsing the result and check if it equals the input
         auto parsedRoot = tgui::DataIO::parse(stream);
-        REQUIRE(parsedRoot->name == ""); // Root node name is ignored when saving
+        REQUIRE(parsedRoot->name.empty()); // Root node name is ignored when saving
         REQUIRE(parsedRoot->parent == nullptr);
         REQUIRE(parsedRoot->children.size() == 2);
         REQUIRE(parsedRoot->propertyValuePairs.size() == 2);
@@ -310,7 +310,7 @@ TEST_CASE("[DataIO]")
         REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->valueList[0] == "X");
         REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->valueList[1] == "Y");
         REQUIRE(parsedRoot->children[0]->children[0]->propertyValuePairs["PropertyC"]->valueList[2] == "Z");
-        REQUIRE(parsedRoot->children[1]->name == "");
+        REQUIRE(parsedRoot->children[1]->name.empty());
         REQUIRE(parsedRoot->children[1]->parent == parsedRoot.get());
         REQUIRE(parsedRoot->children[1]->children.empty());
         REQUIRE(parsedRoot->children[1]->propertyValuePairs.empty());

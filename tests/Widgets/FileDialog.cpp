@@ -63,7 +63,7 @@ TEST_CASE("[FileDialog]")
 
     SECTION("Filename")
     {
-        REQUIRE(dialog->getFilename() == "");
+        REQUIRE(dialog->getFilename().empty());
         dialog->setFilename("Config.txt");
         REQUIRE(dialog->getFilename() == "Config.txt");
     }

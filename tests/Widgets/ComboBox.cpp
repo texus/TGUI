@@ -71,13 +71,13 @@ TEST_CASE("[ComboBox]")
 
         REQUIRE(comboBox->getItemById("1") == "Item 1");
         REQUIRE(comboBox->getItemById("2") == "Item 2");
-        REQUIRE(comboBox->getItemById("3") == "");
+        REQUIRE(comboBox->getItemById("3").empty());
 
         comboBox->addMultipleItems({"Item 4", "Item 5", "Item 6", "Item 7"});
         REQUIRE(comboBox->getItemCount() == 7);
         REQUIRE(comboBox->getItems()[3] == "Item 4");
         REQUIRE(comboBox->getItems()[6] == "Item 7");
-        REQUIRE(comboBox->getIdByIndex(6) == "");
+        REQUIRE(comboBox->getIdByIndex(6).empty());
 
         comboBox->addMultipleItems({});
         REQUIRE(comboBox->getItemCount() == 7);
@@ -91,16 +91,16 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getItems()[0] == "Item 1");
 
         REQUIRE(comboBox->getItemById("1") == "Item 1");
-        REQUIRE(comboBox->getItemById("3") == "");
+        REQUIRE(comboBox->getItemById("3").empty());
 
         REQUIRE(comboBox->getItemByIndex(1) == "Item 2");
-        REQUIRE(comboBox->getItemByIndex(2) == "");
+        REQUIRE(comboBox->getItemByIndex(2).empty());
 
         REQUIRE(comboBox->getIndexById("1") == 0);
         REQUIRE(comboBox->getIndexById("3") == -1);
 
         REQUIRE(comboBox->getIdByIndex(1) == "2");
-        REQUIRE(comboBox->getIdByIndex(2) == "");
+        REQUIRE(comboBox->getIdByIndex(2).empty());
     }
 
     SECTION("Removing items")
@@ -188,8 +188,8 @@ TEST_CASE("[ComboBox]")
         comboBox->addItem("Item 2", "2");
         comboBox->addItem("Item 3", "3");
 
-        REQUIRE(comboBox->getSelectedItem() == "");
-        REQUIRE(comboBox->getSelectedItemId() == "");
+        REQUIRE(comboBox->getSelectedItem().empty());
+        REQUIRE(comboBox->getSelectedItemId().empty());
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
 
         REQUIRE(!comboBox->setSelectedItem("Item 0"));
@@ -214,8 +214,8 @@ TEST_CASE("[ComboBox]")
         REQUIRE(comboBox->getSelectedItemIndex() == 2);
 
         comboBox->deselectItem();
-        REQUIRE(comboBox->getSelectedItem() == "");
-        REQUIRE(comboBox->getSelectedItemId() == "");
+        REQUIRE(comboBox->getSelectedItem().empty());
+        REQUIRE(comboBox->getSelectedItemId().empty());
         REQUIRE(comboBox->getSelectedItemIndex() == -1);
     }
 

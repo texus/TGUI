@@ -75,7 +75,7 @@ TEST_CASE("[Picture]")
                 tguiTexture.loadFromPixelData(sfTexture.getSize(), sfTexture.copyToImage().getPixelsPtr());
 
                 REQUIRE_NOTHROW(picture = tgui::Picture::create(tguiTexture));
-                REQUIRE(picture->getRenderer()->getTexture().getId() == "");
+                REQUIRE(picture->getRenderer()->getTexture().getId().empty());
             }
         }
 #endif

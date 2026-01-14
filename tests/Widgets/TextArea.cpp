@@ -78,7 +78,7 @@ TEST_CASE("[TextArea]")
 
     SECTION("Text")
     {
-        REQUIRE(textArea->getText() == "");
+        REQUIRE(textArea->getText().empty());
 
         textArea->setText("Hello");
         REQUIRE(textArea->getText() == "Hello");
@@ -96,7 +96,7 @@ TEST_CASE("[TextArea]")
 
     SECTION("DefaultText")
     {
-        REQUIRE(textArea->getDefaultText() == "");
+        REQUIRE(textArea->getDefaultText().empty());
         textArea->setDefaultText("SomeDefaultText");
         REQUIRE(textArea->getDefaultText() == "SomeDefaultText");
     }
@@ -104,7 +104,7 @@ TEST_CASE("[TextArea]")
     SECTION("Selected text")
     {
         textArea->setText("SomeText");
-        REQUIRE(textArea->getSelectedText() == "");
+        REQUIRE(textArea->getSelectedText().empty());
         REQUIRE(textArea->getSelectionStart() == textArea->getSelectionEnd());
 
         textArea->setSelectedText(3, 6);
@@ -118,7 +118,7 @@ TEST_CASE("[TextArea]")
         REQUIRE(textArea->getSelectionEnd() == 1);
 
         textArea->setSelectedText(2, 2);
-        REQUIRE(textArea->getSelectedText() == "");
+        REQUIRE(textArea->getSelectedText().empty());
         REQUIRE(textArea->getSelectionStart() == 2);
         REQUIRE(textArea->getSelectionEnd() == 2);
 
@@ -128,7 +128,7 @@ TEST_CASE("[TextArea]")
         REQUIRE(textArea->getSelectionEnd() == 8);
 
         textArea->setSelectedText(10, 20);
-        REQUIRE(textArea->getSelectedText() == "");
+        REQUIRE(textArea->getSelectedText().empty());
         REQUIRE(textArea->getSelectionStart() == 8);
         REQUIRE(textArea->getSelectionEnd() == 8);
     }
@@ -193,7 +193,7 @@ TEST_CASE("[TextArea]")
         {
             textArea->setReadOnly(true);
             textArea->textEntered('x');
-            REQUIRE(textArea->getText() == "");
+            REQUIRE(textArea->getText().empty());
 
             textArea->setReadOnly(false);
             textArea->textEntered('x');
@@ -289,7 +289,7 @@ TEST_CASE("[TextArea]")
         REQUIRE(textArea->getTabString() == "\n");
 
         textArea->setTabString("\r");
-        REQUIRE(textArea->getTabString() == "");
+        REQUIRE(textArea->getTabString().empty());
 
         textArea->setTabString("a\rb\rc\u20AC\r");
         REQUIRE(textArea->getTabString() == "abc\u20AC");
@@ -324,7 +324,7 @@ TEST_CASE("[TextArea]")
 
             SECTION("Selecting text")
             {
-                REQUIRE(textArea->getSelectedText() == "");
+                REQUIRE(textArea->getSelectedText().empty());
 
                 // Move the caret
                 for (unsigned int i = 0; i < 5; ++i)
@@ -336,7 +336,7 @@ TEST_CASE("[TextArea]")
                 for (unsigned int i = 0; i < 1; ++i)
                     textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Down, false, false));
 
-                REQUIRE(textArea->getSelectedText() == "");
+                REQUIRE(textArea->getSelectedText().empty());
 
                 // Move the caret while the shift key is pressed (text will be selected)
                 for (unsigned int i = 0; i < 2; ++i)
@@ -357,10 +357,10 @@ TEST_CASE("[TextArea]")
                 REQUIRE(textArea->getSelectedText() == "PQRSTUVWXYZ");
 
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::PageUp, false, false));
-                REQUIRE(textArea->getSelectedText() == "");
+                REQUIRE(textArea->getSelectedText().empty());
 
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::PageDown, false, false));
-                REQUIRE(textArea->getSelectedText() == "");
+                REQUIRE(textArea->getSelectedText().empty());
 
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
@@ -372,10 +372,10 @@ TEST_CASE("[TextArea]")
                 REQUIRE(textArea->getSelectedText() == "YZ");
 
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Home, false, false));
-                REQUIRE(textArea->getSelectedText() == "");
+                REQUIRE(textArea->getSelectedText().empty());
 
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::End, false, false));
-                REQUIRE(textArea->getSelectedText() == "");
+                REQUIRE(textArea->getSelectedText().empty());
 
                 // CTRL+A selects the whole text
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::A, true, false));
@@ -401,7 +401,7 @@ TEST_CASE("[TextArea]")
                 REQUIRE(textArea->getSelectedText() == "LMN");
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
                 REQUIRE(textArea->getText() == "ABCDEFGHIJKOPQRSTXYZ");
-                REQUIRE(textArea->getSelectedText() == "");
+                REQUIRE(textArea->getSelectedText().empty());
 
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Up, false, false));
                 for (unsigned int i = 0; i < 3; ++i)
@@ -410,7 +410,7 @@ TEST_CASE("[TextArea]")
                 REQUIRE(textArea->getSelectedText() == "BCD");
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Delete, false, false));
                 REQUIRE(textArea->getText() == "AEFGHIJKOPQRSTXYZ");
-                REQUIRE(textArea->getSelectedText() == "");
+                REQUIRE(textArea->getSelectedText().empty());
 
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Enter, false, false));
                 textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Enter, false, false));
@@ -506,7 +506,7 @@ TEST_CASE("[TextArea]")
                 textArea->setText("");
                 textArea->setFocused(true);
                 sendTabEventToGui(gui);
-                REQUIRE(textArea->getText() == "");
+                REQUIRE(textArea->getText().empty());
 
                 gui.setTabKeyUsageEnabled(false);
                 textArea->setText("");
@@ -518,7 +518,7 @@ TEST_CASE("[TextArea]")
                 textArea->setText("");
                 textArea->setFocused(true);
                 sendTabEventToGui(gui);
-                REQUIRE(textArea->getText() == "");
+                REQUIRE(textArea->getText().empty());
 
                 gui.setTabKeyUsageEnabled(false);
                 textArea->setText("");
@@ -548,7 +548,7 @@ TEST_CASE("[TextArea]")
                 textArea->setTabString("");
                 textArea->setMaximumCharacters(0);
                 sendTabEventToGui(gui);
-                REQUIRE(textArea->getText() == "");
+                REQUIRE(textArea->getText().empty());
             }
         }
 
@@ -797,12 +797,12 @@ TEST_CASE("[TextArea]")
             REQUIRE(textArea->getSelectedText() == "Test");
 
             textArea->setText("Test");
-            REQUIRE(textArea->getSelectedText() == "");
+            REQUIRE(textArea->getSelectedText().empty());
 
             // ctrl+alt+A must not function as ctrl+A
             event.alt = true;
             textArea->keyPressed(event);
-            REQUIRE(textArea->getSelectedText() == "");
+            REQUIRE(textArea->getSelectedText().empty());
         }
     }
 }

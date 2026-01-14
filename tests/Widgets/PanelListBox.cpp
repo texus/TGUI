@@ -102,7 +102,7 @@ TEST_CASE("[PanelListBox]")
         REQUIRE(panelListBox->getIndexById("3") == -1);
 
         REQUIRE(panelListBox->getIdByIndex(1) == "2");
-        REQUIRE(panelListBox->getIdByIndex(2) == "");
+        REQUIRE(panelListBox->getIdByIndex(2).empty());
     }
 
     SECTION("Removing items")
@@ -169,7 +169,7 @@ TEST_CASE("[PanelListBox]")
         const auto item3 = panelListBox->addItem("3");
 
         REQUIRE(panelListBox->getSelectedItem() == nullptr);
-        REQUIRE(panelListBox->getSelectedItemId() == "");
+        REQUIRE(panelListBox->getSelectedItemId().empty());
         REQUIRE(panelListBox->getSelectedItemIndex() == -1);
 
         REQUIRE(!panelListBox->setSelectedItem(item0));
@@ -195,7 +195,7 @@ TEST_CASE("[PanelListBox]")
 
         panelListBox->deselectItem();
         REQUIRE(panelListBox->getSelectedItem() == nullptr);
-        REQUIRE(panelListBox->getSelectedItemId() == "");
+        REQUIRE(panelListBox->getSelectedItemId().empty());
         REQUIRE(panelListBox->getSelectedItemIndex() == -1);
     }
 

@@ -30,7 +30,7 @@ TEST_CASE("[Text]")
 
     SECTION("String")
     {
-        REQUIRE(text.getString() == "");
+        REQUIRE(text.getString().empty());
         text.setString("MyString");
         REQUIRE(text.getString() == "MyString");
     }

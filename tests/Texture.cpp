@@ -76,7 +76,7 @@ TEST_CASE("[Texture]")
                 REQUIRE_THROWS_AS(texture.loadFromBase64("aW52YWxpZA=="), tgui::Exception);
             }
 
-            REQUIRE(texture.getId() == "");
+            REQUIRE(texture.getId().empty());
             REQUIRE(texture.getData() == nullptr);
             REQUIRE(texture.getImageSize() == tgui::Vector2u(0, 0));
             REQUIRE(texture.getMiddleRect() == tgui::UIntRect());
@@ -131,7 +131,7 @@ TEST_CASE("[Texture]")
                 "4HlUEWCC5RnkpQCuR5SusF3k2bBZ5Vvb6g3fRYlPFx/HVi+GVuyp/xGBYCeingL7Z7eXxcGPU7nQnkd1Wpa2KGFVVzwP0He9jbbHIs1F92izF1"
                 "DgX82Wtol69PFp4HdDFeP52wO7DyejNXUryK3Qc1fC2yLPNP07syl9AO0Z/M+q1lNhW2sSkyLPhrNifn2O2xjCyiUUAAAAASUVORK5CYII=",
                 {2, 1, 6, 5}, {1, 2, 4, 1}, false);
-            REQUIRE(texture.getId() == "");
+            REQUIRE(texture.getId().empty());
             REQUIRE(texture.getData() != nullptr);
             REQUIRE(texture.getData()->backendTexture != nullptr);
             REQUIRE(texture.getPartRect() == tgui::UIntRect(2, 1, 6, 5));

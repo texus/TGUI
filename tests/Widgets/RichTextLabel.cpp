@@ -56,7 +56,7 @@ TEST_CASE("[RichTextLabel]")
 
     SECTION("Text")
     {
-        REQUIRE(label->getText() == "");
+        REQUIRE(label->getText().empty());
         label->setText("SomeText");
         REQUIRE(label->getText() == "SomeText");
     }

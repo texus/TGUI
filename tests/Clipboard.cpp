@@ -29,5 +29,5 @@ TEST_CASE("[Clipboard]")
     tgui::getBackend()->setClipboard("Some text");
     REQUIRE(getClipboardContents() == "Some text");
     tgui::getBackend()->setClipboard("");
-    REQUIRE(getClipboardContents() == "");
+    REQUIRE(getClipboardContents().empty());
 }

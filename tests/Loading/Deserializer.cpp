@@ -89,7 +89,7 @@ TEST_CASE("[Deserializer]")
 
     SECTION("deserialize string")
     {
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\"").getString() == "");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\"").getString().empty());
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"Just a string.\"").getString() == "Just a string.");
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\\\\"").getString() == "\\");
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\n\"").getString() == "\n");
@@ -98,7 +98,7 @@ TEST_CASE("[Deserializer]")
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"\\\"\"").getString() == "\"");
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\"a\\t\\\"str\\\"?\\nYES!\"").getString() == "a\t\"str\"?\nYES!");
 
-        REQUIRE(tgui::Deserializer::deserialize(Type::String, "").getString() == "");
+        REQUIRE(tgui::Deserializer::deserialize(Type::String, "").getString().empty());
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\\").getString() == "\\");
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "\\n").getString() == "\\n");
         REQUIRE(tgui::Deserializer::deserialize(Type::String, "str").getString() == "str");

@@ -159,7 +159,7 @@ TEST_CASE("[ChildWindow]")
 
     SECTION("Title")
     {
-        REQUIRE(childWindow->getTitle() == "");
+        REQUIRE(childWindow->getTitle().empty());
         childWindow->setTitle("Title Text");
         REQUIRE(childWindow->getTitle() == "Title Text");
     }
@@ -239,7 +239,7 @@ TEST_CASE("[ChildWindow]")
         childWindow->setCloseBehavior(tgui::ChildWindow::CloseBehavior::Remove);
         REQUIRE(childWindow->getCloseBehavior() == tgui::ChildWindow::CloseBehavior::Remove);
         childWindow->close();
-        REQUIRE(parent->getWidgets().size() == 0);
+        REQUIRE(parent->getWidgets().empty());
         REQUIRE(childWindow->isVisible());
         parent->add(childWindow);
 

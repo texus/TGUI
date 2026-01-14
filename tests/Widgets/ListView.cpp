@@ -283,18 +283,18 @@ TEST_CASE("[ListView]")
         listView->addItem({ "2,1", "2,2" });
 
         REQUIRE(listView->getItemCell(0, 0) == "1,1");
-        REQUIRE(listView->getItemCell(0, 1) == "");
+        REQUIRE(listView->getItemCell(0, 1).empty());
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1"}, { "2,1" }});
 
         listView->addColumn("Col 1");
         REQUIRE(listView->getItemCell(1, 0) == "2,1");
-        REQUIRE(listView->getItemCell(0, 1) == "");
-        REQUIRE(listView->getItemCell(2, 1) == "");
+        REQUIRE(listView->getItemCell(0, 1).empty());
+        REQUIRE(listView->getItemCell(2, 1).empty());
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1"}, { "2,1" }});
 
         listView->addColumn("Col 2");
         REQUIRE(listView->getItemCell(1, 1) == "2,2");
-        REQUIRE(listView->getItemCell(0, 2) == "");
+        REQUIRE(listView->getItemCell(0, 2).empty());
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1", "1,2"}, { "2,1", "2,2" }});
     }
 
@@ -313,7 +313,7 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getSelectedItemIndex() == -1);
 
         listView->setMultiSelect(true);
-        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ });
+        REQUIRE(listView->getSelectedItemIndices().empty());
         listView->setSelectedItems({ 0, 2 });
         REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ 0, 2 });
 
@@ -322,7 +322,7 @@ TEST_CASE("[ListView]")
         listView->setSelectedItems({ 1, 2 });
         REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ 1 });
         listView->deselectItems();
-        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ });
+        REQUIRE(listView->getSelectedItemIndices().empty());
     }
 
     SECTION("Header height")

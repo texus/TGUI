@@ -133,9 +133,9 @@ TEST_CASE("[TreeView]")
                 REQUIRE(treeView->getNode({"Vehicles", "Whole"}).nodes[1].text == "Car");
 
                 // Testing invalid getNode calls
-                REQUIRE(treeView->getNode({}).text == "");
+                REQUIRE(treeView->getNode({}).text.empty());
                 REQUIRE(treeView->getNode({}).nodes.empty());
-                REQUIRE(treeView->getNode({"Vehicles", "Train"}).text == "");
+                REQUIRE(treeView->getNode({"Vehicles", "Train"}).text.empty());
                 REQUIRE(treeView->getNode({"Vehicles", "Train"}).nodes.empty());
             }
 
@@ -181,7 +181,7 @@ TEST_CASE("[TreeView]")
                 {
                     treeView->removeItem({"Vehicles", "Whole", "Truck"}, false);
                     REQUIRE(treeView->getNodes()[1].nodes[0].text == "Whole");
-                    REQUIRE(treeView->getNodes()[1].nodes[0].nodes.size() == 0);
+                    REQUIRE(treeView->getNodes()[1].nodes[0].nodes.empty());
                 }
             }
 

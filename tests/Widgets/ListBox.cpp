@@ -93,13 +93,13 @@ TEST_CASE("[ListBox]")
 
         REQUIRE(listBox->getItemById("1") == "Item 1");
         REQUIRE(listBox->getItemById("2") == "Item 2");
-        REQUIRE(listBox->getItemById("3") == "");
+        REQUIRE(listBox->getItemById("3").empty());
 
         listBox->addMultipleItems({"Item 4", "Item 5", "Item 6", "Item 7"});
         REQUIRE(listBox->getItemCount() == 7);
         REQUIRE(listBox->getItems()[3] == "Item 4");
         REQUIRE(listBox->getItems()[6] == "Item 7");
-        REQUIRE(listBox->getIdByIndex(6) == "");
+        REQUIRE(listBox->getIdByIndex(6).empty());
 
         listBox->addMultipleItems({});
         REQUIRE(listBox->getItemCount() == 7);
@@ -113,16 +113,16 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getItems()[0] == "Item 1");
 
         REQUIRE(listBox->getItemById("1") == "Item 1");
-        REQUIRE(listBox->getItemById("3") == "");
+        REQUIRE(listBox->getItemById("3").empty());
 
         REQUIRE(listBox->getItemByIndex(1) == "Item 2");
-        REQUIRE(listBox->getItemByIndex(2) == "");
+        REQUIRE(listBox->getItemByIndex(2).empty());
 
         REQUIRE(listBox->getIndexById("1") == 0);
         REQUIRE(listBox->getIndexById("3") == -1);
 
         REQUIRE(listBox->getIdByIndex(1) == "2");
-        REQUIRE(listBox->getIdByIndex(2) == "");
+        REQUIRE(listBox->getIdByIndex(2).empty());
     }
 
     SECTION("Removing items")
@@ -210,8 +210,8 @@ TEST_CASE("[ListBox]")
         listBox->addItem("Item 2", "2");
         listBox->addItem("Item 3", "3");
 
-        REQUIRE(listBox->getSelectedItem() == "");
-        REQUIRE(listBox->getSelectedItemId() == "");
+        REQUIRE(listBox->getSelectedItem().empty());
+        REQUIRE(listBox->getSelectedItemId().empty());
         REQUIRE(listBox->getSelectedItemIndex() == -1);
 
         REQUIRE(!listBox->setSelectedItem("Item 0"));
@@ -236,8 +236,8 @@ TEST_CASE("[ListBox]")
         REQUIRE(listBox->getSelectedItemIndex() == 2);
 
         listBox->deselectItem();
-        REQUIRE(listBox->getSelectedItem() == "");
-        REQUIRE(listBox->getSelectedItemId() == "");
+        REQUIRE(listBox->getSelectedItem().empty());
+        REQUIRE(listBox->getSelectedItemId().empty());
         REQUIRE(listBox->getSelectedItemIndex() == -1);
     }
 

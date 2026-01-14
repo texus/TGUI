@@ -128,7 +128,7 @@ TEST_CASE("[ProgressBar]")
 
     SECTION("Text")
     {
-        REQUIRE(progressBar->getText() == "");
+        REQUIRE(progressBar->getText().empty());
         progressBar->setText("SomeText");
         REQUIRE(progressBar->getText() == "SomeText");
     }

@@ -162,7 +162,7 @@ TEST_CASE("[MenuBar]")
                 REQUIRE(menuBar->getMenus()[1].menuItems[0].text == "Redo");
                 REQUIRE(menuBar->getMenus()[1].menuItems[1].text == "Copy");
                 REQUIRE(menuBar->getMenus()[2].text == "Help");
-                REQUIRE(menuBar->getMenus()[2].menuItems.size() == 0);
+                REQUIRE(menuBar->getMenus()[2].menuItems.empty());
             }
 
             SECTION("Removing menu")
