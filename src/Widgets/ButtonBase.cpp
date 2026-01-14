@@ -64,12 +64,8 @@ namespace tgui
         m_textOrigin                  {other.m_textOrigin},
         background                    {other.background},
         text                          {other.text},
-        m_stylePropertiesNames        {},
-        m_stylePropertiesGlobalNames  {},
-        m_namedComponents             {},
         m_backgroundComponent         {std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background)},
-        m_textComponent               {std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)},
-        m_components                  {}
+        m_textComponent               {std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)}
     {
         ButtonBase::initComponents();
     }
@@ -87,12 +83,8 @@ namespace tgui
         m_textOrigin                  {std::move(other.m_textOrigin)},
         background                    {std::move(other.background)},
         text                          {std::move(other.text)},
-        m_stylePropertiesNames        {},
-        m_stylePropertiesGlobalNames  {},
-        m_namedComponents             {},
         m_backgroundComponent         {std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background)},
-        m_textComponent               {std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)},
-        m_components                  {}
+        m_textComponent               {std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)}
     {
         ButtonBase::initComponents();
     }

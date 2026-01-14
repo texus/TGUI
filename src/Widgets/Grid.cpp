@@ -44,14 +44,7 @@ namespace tgui
 
     Grid::Grid(const Grid& gridToCopy) :
         Container     {gridToCopy},
-        m_autoSize    {gridToCopy.m_autoSize},
-        m_gridWidgets {},
-        m_objPadding  {},
-        m_objAlignment{},
-        m_rowHeight   {},
-        m_columnWidth {},
-        m_widgetCells {},
-        m_connectedSizeCallbacks{}
+        m_autoSize    {gridToCopy.m_autoSize}
     {
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {

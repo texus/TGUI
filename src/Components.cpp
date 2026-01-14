@@ -251,7 +251,6 @@ namespace dev
 
     GroupComponent::GroupComponent(const GroupComponent& other) :
         Component{other},
-        m_children{},
         m_clientSize(other.m_clientSize)
     {
         /// TODO: If this GroupComponent is a BackgroundComponent which contains a TextComponent, and this group is being copied

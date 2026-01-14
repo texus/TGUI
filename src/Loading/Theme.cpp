@@ -585,7 +585,6 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Theme::Theme(const Theme& other) :
-        m_renderers       {},
         m_globalProperties{other.m_globalProperties},
         m_primary         {other.m_primary}
     {

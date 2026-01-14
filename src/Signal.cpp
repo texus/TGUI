@@ -40,8 +40,8 @@ namespace tgui
 
     Signal::Signal(const Signal& other) :
         m_enabled {other.m_enabled},
-        m_name    {other.m_name},
-        m_handlers{} // signal handlers are not copied with the widget
+        m_name    {other.m_name}
+        // signal handlers are not copied with the widget
     {
     }
 

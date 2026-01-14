@@ -59,11 +59,7 @@ namespace tgui
         m_verticalScrollAmount      {other.m_verticalScrollAmount},
         m_horizontalScrollAmount    {other.m_horizontalScrollAmount},
         m_verticalScrollbarWasVisibleOnSizeUpdate{other.m_verticalScrollbarWasVisibleOnSizeUpdate},
-        m_horizontalScrollbarWasVisibleOnSizeUpdate{other.m_horizontalScrollbarWasVisibleOnSizeUpdate},
-        m_recalculatingSizeDuringUpdateScrollbars{false},
-        m_stuckInUpdateScrollbars   {false},
-        m_connectedPositionCallbacks{},
-        m_connectedSizeCallbacks    {}
+        m_horizontalScrollbarWasVisibleOnSizeUpdate{other.m_horizontalScrollbarWasVisibleOnSizeUpdate}
     {
         if (m_contentSize == Vector2f{0, 0})
         {
@@ -83,8 +79,6 @@ namespace tgui
         m_horizontalScrollAmount    {std::move(other.m_horizontalScrollAmount)},
         m_verticalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_verticalScrollbarWasVisibleOnSizeUpdate)},
         m_horizontalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_horizontalScrollbarWasVisibleOnSizeUpdate)},
-        m_recalculatingSizeDuringUpdateScrollbars{false},
-        m_stuckInUpdateScrollbars   {false},
         m_connectedPositionCallbacks{std::move(other.m_connectedPositionCallbacks)},
         m_connectedSizeCallbacks    {std::move(other.m_connectedSizeCallbacks)}
     {

@@ -47,8 +47,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     GrowHorizontalLayout::GrowHorizontalLayout(const GrowHorizontalLayout& other) :
-        BoxLayout      {other},
-        m_widgetLayouts{}
+        BoxLayout      {other}
     {
         GrowHorizontalLayout::updateWidgets();
     }
@@ -56,8 +55,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     GrowHorizontalLayout::GrowHorizontalLayout(GrowHorizontalLayout&& other) noexcept :
-        BoxLayout      {std::move(other)},
-        m_widgetLayouts{}
+        BoxLayout      {std::move(other)}
     {
         GrowHorizontalLayout::updateWidgets();
     }
