@@ -30,20 +30,10 @@
 
 #include <cassert>
 #include <functional>
-#include <algorithm>
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 #include <memory>
-#include <string>
-#include <thread> // this_thread::sleep_for
-#include <cctype> // isdigit
-#include <cmath> // max
-#include <stack>
-#include <array>
 #include <map>
-#include <set>
 
 #ifdef TGUI_SYSTEM_LINUX
     #include <cstdio> // FILENAME_MAX

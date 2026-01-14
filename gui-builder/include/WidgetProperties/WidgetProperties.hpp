@@ -27,6 +27,7 @@
 #define TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP
 
 #include <TGUI/TGUI.hpp>
+#include <iostream>
 
 using PropertyValueMap = std::map<tgui::String, std::pair<tgui::String, tgui::String>>;
 using PropertyValueMapPair = std::pair<PropertyValueMap, PropertyValueMap>;
