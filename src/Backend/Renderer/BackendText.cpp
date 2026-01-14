@@ -220,6 +220,7 @@ namespace tgui
                 case ' ':  position.x += whitespaceWidth;             continue;
                 case '\t': position.x += whitespaceWidth * 4;         continue;
                 case '\n': position.y += lineSpacing; position.x = 0; continue;
+                default:                                              break;
             }
 
             // For regular characters, add the advance offset of the glyph
@@ -364,6 +365,8 @@ namespace tgui
                     case U'\n':
                         x = 0;
                         y += lineSpacing;
+                        break;
+                    default:
                         break;
                 }
 
