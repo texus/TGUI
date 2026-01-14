@@ -65,12 +65,12 @@ void compareImageFiles(const tgui::String& filename1, const tgui::String& filena
 
 // The compareFiles can't be used to compare empty files because it uses readFileToMemory which
 // requires the file to have some contents.
-bool compareFiles(const tgui::String& filename1, const tgui::String& filename2)
+bool compareFiles(const tgui::String& leftFileName, const tgui::String& rightFileName)
 {
     std::size_t fileSize1;
     std::size_t fileSize2;
-    auto fileContents1 = tgui::readFileToMemory(filename1, fileSize1);
-    auto fileContents2 = tgui::readFileToMemory(filename2, fileSize2);
+    auto fileContents1 = tgui::readFileToMemory(leftFileName, fileSize1);
+    auto fileContents2 = tgui::readFileToMemory(rightFileName, fileSize2);
     if (!fileContents1 || !fileContents2)
         return false;
 

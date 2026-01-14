@@ -113,9 +113,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Label::setText(const String& string)
+    void Label::setText(const String& text)
     {
-        m_string = string;
+        m_string = text;
         rearrangeText();
     }
 
