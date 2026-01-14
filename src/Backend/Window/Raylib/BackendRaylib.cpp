@@ -83,6 +83,9 @@ namespace tgui
         case Cursor::Type::NotAllowed:
             typeRaylib = MOUSE_CURSOR_NOT_ALLOWED;
             break;
+        case Cursor::Type::Move:
+            typeRaylib = MOUSE_CURSOR_RESIZE_ALL;
+            break;
         }
 
         SetMouseCursor(typeRaylib);

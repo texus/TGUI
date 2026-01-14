@@ -30,7 +30,7 @@ TEST_CASE("[Mouse cursors]")
 {
     SECTION("All cursor types")
     {
-        const std::array<tgui::Cursor::Type, 16> cursors = {{
+        const std::array<tgui::Cursor::Type, 17> cursors = {{
             tgui::Cursor::Type::Arrow,
             tgui::Cursor::Type::Text,
             tgui::Cursor::Type::Hand,
@@ -46,7 +46,8 @@ TEST_CASE("[Mouse cursors]")
             tgui::Cursor::Type::SizeVertical,
             tgui::Cursor::Type::Crosshair,
             tgui::Cursor::Type::Help,
-            tgui::Cursor::Type::NotAllowed
+            tgui::Cursor::Type::NotAllowed,
+            tgui::Cursor::Type::Move
         }};
 
         bool customCursors = false;

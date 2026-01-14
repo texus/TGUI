@@ -361,6 +361,9 @@ namespace tgui
         case Cursor::Type::NotAllowed:
             typeSDL = SDL_SYSTEM_CURSOR_NOT_ALLOWED;
             break;
+        case Cursor::Type::Move:
+            typeSDL = SDL_SYSTEM_CURSOR_MOVE;
+            break;
         }
 #else
         SDL_SystemCursor typeSDL = SDL_SYSTEM_CURSOR_ARROW;
@@ -399,6 +402,9 @@ namespace tgui
             break;
         case Cursor::Type::NotAllowed:
             typeSDL = SDL_SYSTEM_CURSOR_NO;
+            break;
+        case Cursor::Type::Move:
+            typeSDL = SDL_SYSTEM_CURSOR_SIZEALL;
             break;
         }
 #endif

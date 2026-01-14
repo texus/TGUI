@@ -203,6 +203,9 @@ namespace tgui
         case Cursor::Type::NotAllowed:
             typeGLFW = GLFW_NOT_ALLOWED_CURSOR;
             break;
+        case Cursor::Type::Move:
+            typeGLFW = GLFW_RESIZE_ALL_CURSOR;
+            break;
         }
 #else
         switch (type)
@@ -231,6 +234,7 @@ namespace tgui
         case Cursor::Type::SizeVertical:
             typeGLFW = GLFW_VRESIZE_CURSOR;
             break;
+        case Cursor::Type::Move: // GLFW_RESIZE_ALL_CURSOR was only added in GLFW 3.4
         case Cursor::Type::Crosshair:
             typeGLFW = GLFW_CROSSHAIR_CURSOR;
             break;

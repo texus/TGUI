@@ -61,7 +61,8 @@ namespace tgui
             SizeVertical,           //!< Vertical double arrow cursor
             Crosshair,              //!< Crosshair cursor
             Help,                   //!< Help cursor
-            NotAllowed              //!< Action not allowed cursor
+            NotAllowed,             //!< Action not allowed cursor
+            Move,                   //!< Move cursor / omnidirectional resize cursor. Usually displayed as a grabbing hand on macOS.
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

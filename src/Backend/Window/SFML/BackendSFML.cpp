@@ -308,6 +308,15 @@ namespace tgui
         case Cursor::Type::NotAllowed:
             typeSFML = sf::Cursor::Type::NotAllowed;
             break;
+        case Cursor::Type::Move:
+#ifdef TGUI_SYSTEM_MACOS
+            // SFML does not support the SizeAll cursor on macOS. Other backends use a grabbing hand cursor on macOS,
+            // but SFML does not support this so we fall back to the crosshair cursor to at least show something.
+            typeSFML = sf::Cursor::Type::Cross;
+#else
+            typeSFML = sf::Cursor::Type::SizeAll;
+#endif
+            break;
         }
 
 #if SFML_VERSION_MAJOR >= 3

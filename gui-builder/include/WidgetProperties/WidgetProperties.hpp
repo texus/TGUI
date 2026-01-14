@@ -80,7 +80,7 @@ struct WidgetProperties
         pairs["NavigationDown"] = {"String", widget->getNavigationDown() ? widget->getNavigationDown()->getWidgetName() : U""};
         pairs["NavigationLeft"] = {"String", widget->getNavigationLeft() ? widget->getNavigationLeft()->getWidgetName() : U""};
         pairs["NavigationRight"] = {"String", widget->getNavigationRight() ? widget->getNavigationRight()->getWidgetName() : U""};
-        pairs["MouseCursor"] = {"Enum{Arrow,Text,Hand,SizeLeft,SizeRight,SizeTop,SizeBottom,SizeBottomRight,SizeTopLeft,SizeBottomLeft,SizeTopRight,Cross,Help,NotAllowed}", serializeMouseCursor(widget->getMouseCursor())};
+        pairs["MouseCursor"] = {"Enum{Arrow,Text,Hand,SizeLeft,SizeRight,SizeTop,SizeBottom,SizeBottomRight,SizeTopLeft,SizeBottomLeft,SizeTopRight,Cross,Help,NotAllowed,Move}", serializeMouseCursor(widget->getMouseCursor())};
         pairs["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(widget->getIgnoreMouseEvents())};
         try
         {
@@ -200,6 +200,8 @@ struct WidgetProperties
             return tgui::Cursor::Type::Help;
         else if (value == "notallowed")
             return tgui::Cursor::Type::NotAllowed;
+        else if (value == "move")
+            return tgui::Cursor::Type::Move;
         else
             return tgui::Cursor::Type::Arrow;
     }
@@ -221,6 +223,7 @@ struct WidgetProperties
             case tgui::Cursor::Type::Crosshair:       return "Crosshair";
             case tgui::Cursor::Type::Help:            return "Help";
             case tgui::Cursor::Type::NotAllowed:      return "NotAllowed";
+            case tgui::Cursor::Type::Move:            return "Move";
             default:                                  return "Arrow";
         }
     }

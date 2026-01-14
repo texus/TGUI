@@ -1709,6 +1709,7 @@ namespace tgui
             case Cursor::Type::Crosshair:       mouseCursorStr = "Crosshair"; break;
             case Cursor::Type::Help:            mouseCursorStr = "Help"; break;
             case Cursor::Type::NotAllowed:      mouseCursorStr = "NotAllowed"; break;
+            case Cursor::Type::Move:            mouseCursorStr = "Move"; break;
             case Cursor::Type::Arrow:           break; // We don't save the cursor if it has the default value
         }
         if (!mouseCursorStr.empty())
@@ -1823,6 +1824,8 @@ namespace tgui
                 m_mouseCursor = Cursor::Type::Help;
             else if (cursorStr == U"NotAllowed")
                 m_mouseCursor = Cursor::Type::NotAllowed;
+            else if (cursorStr == U"Move")
+                m_mouseCursor = Cursor::Type::Move;
             else if (cursorStr == U"Arrow")
                 m_mouseCursor = Cursor::Type::Arrow;
             else
