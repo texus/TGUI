@@ -27,7 +27,6 @@
 #include <TGUI/Loading/WidgetFactory.hpp>
 
 #include <sstream>
-#include <fstream>
 
 // Ignore warning "C4503: decorated name length exceeded, name was truncated" in Visual Studio
 #if defined _MSC_VER
