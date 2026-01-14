@@ -263,20 +263,20 @@ TEST_CASE("[DataIO]")
 
         SECTION("direct stream")
         {
-            stream << "GlobalProperty1 = GlobalValue1;" << std::endl;
-            stream << "GlobalProperty2 = GlobalValue2;" << std::endl;
-            stream << "Child1" << std::endl;
-            stream << "{" << std::endl;
-            stream << "Property = Value;" << std::endl;
-            stream << "NestedChild" << std::endl;
-            stream << "{" << std::endl;
-            stream << "PropertyA = ValueA;" << std::endl;
-            stream << "PropertyB = [];" << std::endl;
-            stream << "PropertyC = [X, Y, Z];" << std::endl;
-            stream << "}" << std::endl;
-            stream << "}" << std::endl;
-            stream << "{" << std::endl;
-            stream << "}" << std::endl;
+            stream << "GlobalProperty1 = GlobalValue1;\n";
+            stream << "GlobalProperty2 = GlobalValue2;\n";
+            stream << "Child1\n";
+            stream << "{\n";
+            stream << "Property = Value;\n";
+            stream << "NestedChild\n";
+            stream << "{\n";
+            stream << "PropertyA = ValueA;\n";
+            stream << "PropertyB = [];\n";
+            stream << "PropertyC = [X, Y, Z];\n";
+            stream << "}\n";
+            stream << "}\n";
+            stream << "{\n";
+            stream << "}\n";
         }
 
         // Check that emit function works correctly by parsing the result and check if it equals the input

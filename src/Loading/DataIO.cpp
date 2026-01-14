@@ -577,10 +577,10 @@ namespace tgui
     void DataIO::emit(const std::unique_ptr<Node>& rootNode, std::stringstream& stream)
     {
         for (const auto& pair : rootNode->propertyValuePairs)
-            stream << pair.first << " = " << pair.second->value << ";" << std::endl;
+            stream << pair.first << " = " << pair.second->value << ";\n";
 
         if (!rootNode->propertyValuePairs.empty() && !rootNode->children.empty())
-            stream << std::endl;
+            stream << '\n';
 
         std::vector<String> output;
         for (std::size_t i = 0; i < rootNode->children.size(); ++i)
@@ -593,7 +593,7 @@ namespace tgui
         }
 
         for (const auto& line : output)
-            stream << line << std::endl;
+            stream << line << '\n';
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
