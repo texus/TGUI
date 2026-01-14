@@ -2479,13 +2479,8 @@ namespace tgui
         if (m_columns.empty() || m_expandLastColumn)
             return true;
 
-        for (const auto& column : m_columns)
-        {
-            if (column.expanded)
-                return true;
-        }
-
-        return false;
+        return std::any_of(m_columns.cbegin(), m_columns.cend(),
+                           [](const auto& column) { return column.expanded; });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
