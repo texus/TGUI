@@ -81,7 +81,7 @@ TEST_CASE("[Widget]")
         panel2->add(widget);
         std::cerr.rdbuf(oldbuf);
         REQUIRE(widget->getParent() == panel2.get());
-        REQUIRE(panel1->getWidgets().size() == 0);
+        REQUIRE(panel1->getWidgets().empty());
     }
 
     SECTION("ParentGui")
@@ -346,7 +346,7 @@ TEST_CASE("[Widget]")
         auto w2 = tgui::ClickableWidget::create();
         auto w3 = tgui::ClickableWidget::create();
 
-        REQUIRE(w1->getWidgetName() == "");
+        REQUIRE(w1->getWidgetName().empty());
 
         w1->setWidgetName("Nr_1");
         w2->setWidgetName("Nr_2");

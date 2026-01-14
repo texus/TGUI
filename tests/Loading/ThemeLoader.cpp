@@ -46,7 +46,7 @@ TEST_CASE("[ThemeLoader]")
 
     SECTION("load black theme")
     {
-        REQUIRE(loader->load("resources/Black.txt", "EditBox").size() > 0);
+        REQUIRE(!loader->load("resources/Black.txt", "EditBox").empty());
     }
 
     SECTION("load nonexistent theme")
@@ -112,7 +112,7 @@ TEST_CASE("[ThemeLoader]")
 
     SECTION("cache")
     {
-        REQUIRE(loader->getPropertiesCache().size() == 0);
+        REQUIRE(loader->getPropertiesCache().empty());
 
         SECTION("with preload")
         {
@@ -152,7 +152,7 @@ TEST_CASE("[ThemeLoader]")
             REQUIRE(propertyCache.size() == 2);
 
             tgui::DefaultThemeLoader::flushCache();
-            REQUIRE(propertyCache.size() == 0);
+            REQUIRE(propertyCache.empty());
         }
 
         SECTION("without preload")
@@ -183,7 +183,7 @@ TEST_CASE("[ThemeLoader]")
             REQUIRE(loader->getPropertiesCache().size() == 2);
 
             tgui::DefaultThemeLoader::flushCache();
-            REQUIRE(loader->getPropertiesCache().size() == 0);
+            REQUIRE(loader->getPropertiesCache().empty());
         }
     }
 }

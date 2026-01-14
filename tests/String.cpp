@@ -1390,7 +1390,7 @@ TEST_CASE("[String]")
         istream >> str1 >> str2 >> str3;
         REQUIRE(str1 == "abc1");
         REQUIRE(str2 == "2");
-        REQUIRE(str3 == "");
+        REQUIRE(str3.empty());
 
         std::wstringbuf wstreambuf;
         std::wostream wostream(&wstreambuf);
@@ -1402,7 +1402,7 @@ TEST_CASE("[String]")
         wistream >> str1 >> str2 >> str3;
         REQUIRE(str1 == L"\u03b1\u03b2\u03b3\u03b4\u03b53");
         REQUIRE(str2 == "4");
-        REQUIRE(str3 == "");
+        REQUIRE(str3.empty());
     }
 
     SECTION("attemptToInt")
@@ -1495,7 +1495,7 @@ TEST_CASE("[String]")
         REQUIRE(str.trim() == "a");
 
         str = "";
-        REQUIRE(str.trim() == "");
+        REQUIRE(str.trim().empty());
     }
 
     SECTION("toLower")
@@ -1546,7 +1546,7 @@ TEST_CASE("[String]")
 
         parts = tgui::String("").split(',');
         REQUIRE(parts.size() == 1);
-        REQUIRE(parts[0] == "");
+        REQUIRE(parts[0].empty());
 
         parts = tgui::String("a|b").split('|');
         REQUIRE(parts.size() == 2);
@@ -1569,8 +1569,8 @@ TEST_CASE("[String]")
     {
         REQUIRE(tgui::String::join({"alpha", "bravo", "charlie"}, ", ") == "alpha, bravo, charlie");
         REQUIRE(tgui::String::join({"xyz"}, ", ") == "xyz");
-        REQUIRE(tgui::String::join({""}, ", ") == "");
-        REQUIRE(tgui::String::join({}, ", ") == "");
+        REQUIRE(tgui::String::join({""}, ", ").empty());
+        REQUIRE(tgui::String::join({}, ", ").empty());
     }
 
     SECTION("starts_with")
@@ -1664,21 +1664,21 @@ TEST_CASE("[String]")
 
     SECTION("Invalid characters")
     {
-        REQUIRE(tgui::String(U"\x200000").toUtf16() == u"");
-        REQUIRE(tgui::String(U"\xDBFF").toUtf16() == u"");
+        REQUIRE(tgui::String(U"\x200000").toUtf16().empty());
+        REQUIRE(tgui::String(U"\xDBFF").toUtf16().empty());
 
         TGUI_IF_CONSTEXPR (sizeof(wchar_t) == 2)
         {
-            REQUIRE(tgui::String(U"\x200000").toWideString() == L"");
-            REQUIRE(tgui::String(U"\xDBFF").toWideString() == L"");
+            REQUIRE(tgui::String(U"\x200000").toWideString().empty());
+            REQUIRE(tgui::String(U"\xDBFF").toWideString().empty());
         }
 
-        REQUIRE(tgui::String(U"\x200000").toStdString() == "");
-        REQUIRE(tgui::String(U"\xDBFF").toStdString() == "");
+        REQUIRE(tgui::String(U"\x200000").toStdString().empty());
+        REQUIRE(tgui::String(U"\xDBFF").toStdString().empty());
 
-        REQUIRE(tgui::String(u"\xDBFF") == u"");
-        REQUIRE(tgui::String(u"\xDBFF\x1234") == u"");
+        REQUIRE(tgui::String(u"\xDBFF").empty());
+        REQUIRE(tgui::String(u"\xDBFF\x1234").empty());
 
-        REQUIRE(tgui::String("\xE2\x82") == "");
+        REQUIRE(tgui::String("\xE2\x82").empty());
     }
 }

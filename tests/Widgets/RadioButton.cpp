@@ -112,7 +112,7 @@ TEST_CASE("[RadioButton]")
 
     SECTION("Text")
     {
-        REQUIRE(radioButton->getText() == "");
+        REQUIRE(radioButton->getText().empty());
         radioButton->setText("SomeText");
         REQUIRE(radioButton->getText() == "SomeText");
     }

@@ -73,14 +73,14 @@ TEST_CASE("[EditBox]")
 
     SECTION("Text")
     {
-        REQUIRE(editBox->getText() == "");
+        REQUIRE(editBox->getText().empty());
         editBox->setText("SomeText");
         REQUIRE(editBox->getText() == "SomeText");
     }
 
     SECTION("DefaultText")
     {
-        REQUIRE(editBox->getDefaultText() == "");
+        REQUIRE(editBox->getDefaultText().empty());
         editBox->setDefaultText("SomeDefaultText");
         REQUIRE(editBox->getDefaultText() == "SomeDefaultText");
     }
@@ -215,7 +215,7 @@ TEST_CASE("[EditBox]")
         {
             REQUIRE(editBox->setInputValidator(tgui::EditBox::Validator::Int));
             REQUIRE(editBox->getInputValidator() == tgui::EditBox::Validator::Int);
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setText("-5");
             REQUIRE(editBox->getText() == "-5");
@@ -224,10 +224,10 @@ TEST_CASE("[EditBox]")
             REQUIRE(editBox->getText() == "642");
 
             editBox->setText("1.5");
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setText("text");
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setInputValidator(".*");
             editBox->setText("+25");
@@ -255,19 +255,19 @@ TEST_CASE("[EditBox]")
         {
             REQUIRE(editBox->setInputValidator(tgui::EditBox::Validator::UInt));
             REQUIRE(editBox->getInputValidator() == tgui::EditBox::Validator::UInt);
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setText("-5");
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setText("642");
             REQUIRE(editBox->getText() == "642");
 
             editBox->setText("1.5");
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setText("text");
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setInputValidator(".*");
             editBox->setText("10");
@@ -287,7 +287,7 @@ TEST_CASE("[EditBox]")
 
                 editBox->setText("");
                 editBox->textEntered('-');
-                REQUIRE(editBox->getText() == "");
+                REQUIRE(editBox->getText().empty());
             }
         }
 
@@ -295,7 +295,7 @@ TEST_CASE("[EditBox]")
         {
             REQUIRE(editBox->setInputValidator(tgui::EditBox::Validator::Float));
             REQUIRE(editBox->getInputValidator() == tgui::EditBox::Validator::Float);
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setText("-5");
             REQUIRE(editBox->getText() == "-5");
@@ -313,7 +313,7 @@ TEST_CASE("[EditBox]")
             REQUIRE(editBox->getText() == ".001");
 
             editBox->setText("text");
-            REQUIRE(editBox->getText() == "");
+            REQUIRE(editBox->getText().empty());
 
             editBox->setInputValidator(".*");
             editBox->setText("-2.5");
@@ -777,7 +777,7 @@ TEST_CASE("[EditBox]")
         SECTION("Selected text")
         {
             editBox->setText("Hello");
-            REQUIRE(editBox->getSelectedText() == "");
+            REQUIRE(editBox->getSelectedText().empty());
 
             editBox->selectText(1, 3);
             REQUIRE(editBox->getSelectedText() == "ell");
@@ -786,7 +786,7 @@ TEST_CASE("[EditBox]")
             REQUIRE(editBox->getSelectedText() == "lo");
 
             editBox->selectText(2, 0);
-            REQUIRE(editBox->getSelectedText() == "");
+            REQUIRE(editBox->getSelectedText().empty());
 
             editBox->selectText();
             REQUIRE(editBox->getSelectedText() == "Hello");
@@ -853,12 +853,12 @@ TEST_CASE("[EditBox]")
             REQUIRE(editBox->getSelectedText() == "Test");
 
             editBox->setText("Test");
-            REQUIRE(editBox->getSelectedText() == "");
+            REQUIRE(editBox->getSelectedText().empty());
 
             // ctrl+alt+A must not function as ctrl+A
             event.alt = true;
             editBox->keyPressed(event);
-            REQUIRE(editBox->getSelectedText() == "");
+            REQUIRE(editBox->getSelectedText().empty());
         }
     }
 }

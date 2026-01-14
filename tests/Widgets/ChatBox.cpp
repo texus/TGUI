@@ -163,7 +163,7 @@ TEST_CASE("[ChatBox]")
         chatBox->setTextColor(tgui::Color::Yellow);
 
         chatBox->addLine("Text", tgui::Color::Blue);
-        REQUIRE(chatBox->getLine(1) == "");
+        REQUIRE(chatBox->getLine(1).empty());
         REQUIRE(chatBox->getLineColor(1) == tgui::Color::Yellow);
     }
 

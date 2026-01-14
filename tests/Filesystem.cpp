@@ -39,7 +39,7 @@ TEST_CASE("[Filesystem]")
 
         REQUIRE(tgui::Filesystem::Path("/x").getParentPath().asString() == "/");
         REQUIRE(tgui::Filesystem::Path("/").getParentPath().asString() == "/");
-        REQUIRE(tgui::Filesystem::Path("x").getParentPath().asString() == "");
+        REQUIRE(tgui::Filesystem::Path("x").getParentPath().asString().empty());
 
         REQUIRE(!tgui::Filesystem::Path("/a/b/c").isEmpty());
         REQUIRE(tgui::Filesystem::Path("").isEmpty());

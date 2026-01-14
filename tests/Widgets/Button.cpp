@@ -56,7 +56,7 @@ TEST_CASE("[Button]")
 
     SECTION("Text")
     {
-        REQUIRE(button->getText() == "");
+        REQUIRE(button->getText().empty());
         button->setText("SomeText");
         REQUIRE(button->getText() == "SomeText");
     }

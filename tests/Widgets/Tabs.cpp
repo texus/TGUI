@@ -130,7 +130,7 @@ TEST_CASE("[Tabs]")
     SECTION("Selecting items")
     {
         tabs->add("Item 1", false);
-        REQUIRE(tabs->getSelected() == "");
+        REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
 
         tabs->add("Item 2", true);
@@ -146,7 +146,7 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getSelectedIndex() == 3);
 
         REQUIRE(!tabs->select("Item 0"));
-        REQUIRE(tabs->getSelected() == "");
+        REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
 
         REQUIRE(tabs->select("Item 1"));
@@ -154,7 +154,7 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getSelectedIndex() == 0);
 
         REQUIRE(!tabs->select(4));
-        REQUIRE(tabs->getSelected() == "");
+        REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
 
         REQUIRE(tabs->select(2));
@@ -162,7 +162,7 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getSelectedIndex() == 2);
 
         tabs->deselect();
-        REQUIRE(tabs->getSelected() == "");
+        REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
     }
 

@@ -33,7 +33,7 @@ TEST_CASE("[Theme]")
         SECTION("Renderers are shared")
         {
             tgui::Theme theme;
-            REQUIRE(theme.getPrimary() == "");
+            REQUIRE(theme.getPrimary().empty());
             REQUIRE_NOTHROW(theme.getRenderer("Button"));
 
             REQUIRE_NOTHROW(theme.load("resources/Black.txt"));
@@ -199,7 +199,7 @@ TEST_CASE("[Theme]")
 
             const std::map<tgui::String, tgui::String>& load(const tgui::String& one, const tgui::String& two) override
             {
-                if (one != "")
+                if (!one.empty())
                 {
                     REQUIRE(one == "resources/Black.txt");
                     REQUIRE(two == "EditBox");

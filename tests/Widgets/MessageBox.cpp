@@ -44,7 +44,7 @@ TEST_CASE("[MessageBox]")
 
     SECTION("Text")
     {
-        REQUIRE(messageBox->getText() == "");
+        REQUIRE(messageBox->getText().empty());
         messageBox->setText("Some text");
         REQUIRE(messageBox->getText() == "Some text");
     }
@@ -57,7 +57,7 @@ TEST_CASE("[MessageBox]")
 
     SECTION("Buttons")
     {
-        REQUIRE(messageBox->getButtons().size() == 0);
+        REQUIRE(messageBox->getButtons().empty());
 
         messageBox->addButton("First");
         REQUIRE(messageBox->getButtons().size() == 1);
@@ -71,11 +71,11 @@ TEST_CASE("[MessageBox]")
 
     SECTION("ChangeButtons")
     {
-        REQUIRE(messageBox->getButtons().size() == 0);
+        REQUIRE(messageBox->getButtons().empty());
 
         // Empty captions on empty MessageBox does nothing.
         messageBox->changeButtons({});
-        REQUIRE(messageBox->getButtons().size() == 0);
+        REQUIRE(messageBox->getButtons().empty());
 
         // Adding a single caption from empty.
         messageBox->changeButtons({ "First" });
@@ -84,7 +84,7 @@ TEST_CASE("[MessageBox]")
 
         // Empty captions on MessageBox removes single buttons.
         messageBox->changeButtons({});
-        REQUIRE(messageBox->getButtons().size() == 0);
+        REQUIRE(messageBox->getButtons().empty());
 
         // Adding a multiple captions from empty.
         messageBox->changeButtons({ "First", "Second", "Third" });
@@ -95,7 +95,7 @@ TEST_CASE("[MessageBox]")
 
         // Empty captions on MessageBox also removes mutliple buttons.
         messageBox->changeButtons({});
-        REQUIRE(messageBox->getButtons().size() == 0);
+        REQUIRE(messageBox->getButtons().empty());
 
         // Changing with a single caption will rename existing button.
         messageBox->addButton("First");
