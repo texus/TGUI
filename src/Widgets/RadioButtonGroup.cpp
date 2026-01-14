@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/RadioButtonGroup.hpp>
+#include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -95,13 +96,8 @@ namespace tgui
             return false;
 
         const Vector2f offset = getChildWidgetsOffset();
-        for (const auto& widget : m_widgets)
-        {
-            if (widget->isVisible() && widget->isMouseOnWidget(transformMousePos(widget, pos - offset)))
-                return true;
-        }
-
-        return false;
+        return std::any_of(m_widgets.cbegin(), m_widgets.cend(),
+                           [&](const auto& widget) { return widget->isVisible() && widget->isMouseOnWidget(transformMousePos(widget, pos - offset)); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
