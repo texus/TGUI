@@ -455,7 +455,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGui::saveWidgetsToFile(const String& filename)
+    void BackendGui::saveWidgetsToFile(const String& filename) const
     {
         m_container->saveWidgetsToFile(filename);
     }
