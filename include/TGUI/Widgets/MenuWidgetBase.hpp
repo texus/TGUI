@@ -314,7 +314,6 @@ namespace tgui
         friend class OpenMenuPlaceholder;
     };
 
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Widget that is added to a container when the user clicks on the menu bar. This widget will be added in front of
     ///        all other widgets to ensure that the menus from the menu bar are always drawn in front of other widgets.
