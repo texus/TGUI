@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef TGUI_GUI_BUILDER_CHILD_WINDOW_PROPERTIES_HPP
 #define TGUI_GUI_BUILDER_CHILD_WINDOW_PROPERTIES_HPP
 
@@ -93,7 +92,6 @@ struct ChildWindowProperties : WidgetProperties
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         return pair;
     }
-
 
 private:
 

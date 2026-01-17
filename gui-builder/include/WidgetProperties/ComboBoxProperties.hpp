@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef TGUI_GUI_BUILDER_COMBO_BOX_PROPERTIES_HPP
 #define TGUI_GUI_BUILDER_COMBO_BOX_PROPERTIES_HPP
 
@@ -98,7 +97,6 @@ struct ComboBoxProperties : WidgetProperties
         pair.second["RoundedBorderRadius"] = {"Float", tgui::String::fromNumber(renderer->getRoundedBorderRadius())};
         return pair;
     }
-
 
 private:
 

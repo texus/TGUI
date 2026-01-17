@@ -22,7 +22,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP
 #define TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP
 
@@ -92,7 +91,6 @@ struct WidgetProperties
             pairs["UserData"] = {"String", ""};
         }
 
-
         PropertyValueMap rendererPairs;
         const auto renderer = widget->getSharedRenderer();
         rendererPairs["Opacity"] = {"Float", tgui::String::fromNumber(renderer->getOpacity())};
@@ -101,7 +99,6 @@ struct WidgetProperties
         rendererPairs["TransparentTexture"] = {"Bool", tgui::Serializer::serialize(renderer->getTransparentTexture())};
         return {pairs, rendererPairs};
     }
-
 
     TGUI_NODISCARD static bool parseBoolean(tgui::String str, bool defaultValue)
     {
