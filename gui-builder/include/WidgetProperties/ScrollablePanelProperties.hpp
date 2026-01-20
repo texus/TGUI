@@ -27,7 +27,7 @@
 
 #include "PanelProperties.hpp"
 
-struct ScrollablePanelProperties : PanelProperties
+struct ScrollablePanelProperties : public PanelProperties
 {
     // TODO: Scrollbar renderer
 

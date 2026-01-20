@@ -27,7 +27,7 @@
 
 #include "ButtonProperties.hpp"
 
-struct ToggleButtonProperties : ButtonProperties
+struct ToggleButtonProperties : public ButtonProperties
 {
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {

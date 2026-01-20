@@ -27,7 +27,7 @@
 
 #include "RadioButtonProperties.hpp"
 
-struct CheckBoxProperties : RadioButtonProperties
+struct CheckBoxProperties : public RadioButtonProperties
 {
 };
 

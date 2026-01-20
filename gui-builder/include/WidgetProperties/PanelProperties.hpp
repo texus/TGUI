@@ -27,7 +27,7 @@
 
 #include "GroupProperties.hpp"
 
-struct PanelProperties : GroupProperties
+struct PanelProperties : public GroupProperties
 {
     TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {

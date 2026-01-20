@@ -27,7 +27,7 @@
 
 #include "ClickableWidgetProperties.hpp"
 
-struct SeparatorLineProperties : ClickableWidgetProperties
+struct SeparatorLineProperties : public ClickableWidgetProperties
 {
 };
 

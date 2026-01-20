@@ -27,7 +27,7 @@
 
 #include "ScrollablePanelProperties.hpp"
 
-struct PanelListBoxProperties : ScrollablePanelProperties
+struct PanelListBoxProperties : public ScrollablePanelProperties
 {
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {

@@ -22,7 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/Tabs.hpp>
+#include <TGUI/Widgets/VerticalTabs.hpp>
+#include <TGUI/Optional.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -32,12 +33,12 @@
 namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char Tabs::StaticWidgetType[];
+    constexpr const char VerticalTabs::StaticWidgetType[];
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tabs::Tabs(const char* typeName, bool initRenderer) :
+    VerticalTabs::VerticalTabs(const char* typeName, bool initRenderer) :
         TabsBase{typeName, false}
     {
         if (initRenderer)
@@ -45,62 +46,51 @@ namespace tgui
             m_renderer = makeCopied<TabsRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
+            m_distanceToSideCached = 0;
             setTextSize(getGlobalTextSize());
             setTabHeight(std::round(Text::getLineHeight(m_fontCached, m_textSizeCached) * 1.25f) + m_bordersCached.getTopPlusBottom());
+            setTabWidth(Text::getLineHeight(m_fontCached, m_textSizeCached) * 10);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tabs::Ptr Tabs::create()
+    VerticalTabs::Ptr VerticalTabs::create()
     {
-        return std::make_shared<Tabs>();
+        return std::make_shared<VerticalTabs>();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Tabs::Ptr Tabs::copy(const Tabs::ConstPtr& tabs)
+    VerticalTabs::Ptr VerticalTabs::copy(const VerticalTabs::ConstPtr& tabs)
     {
         if (tabs)
-            return std::static_pointer_cast<Tabs>(tabs->clone());
+            return std::static_pointer_cast<VerticalTabs>(tabs->clone());
         return nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::setSize(const Layout2d& size)
+    void VerticalTabs::setSize(const Layout2d& size)
     {
         TabsBase::setSize(size);
-
-        // Tabs is no longer auto-sizing
-        m_autoSize = false;
         recalculateTabsSize();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::setAutoSize(bool autoSize)
+    void VerticalTabs::setTabWidth(float width)
     {
-        if (m_autoSize != autoSize)
-        {
-            m_autoSize = autoSize;
-            recalculateTabsSize();
-        }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Tabs::getAutoSize() const
-    {
-        return m_autoSize;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tabs::setTabHeight(float height)
-    {
-        TabsBase::setSize({m_size.x, height});
+        setSize({width, m_size.y});
         m_bordersCached.updateParentSize(getSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void VerticalTabs::setTabHeight(float height)
+    {
+        m_tabHeight = height;
+        recalculateTabsSize();
 
         // Recalculate the size when the text is auto sizing
         if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
@@ -109,53 +99,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::setMaximumTabWidth(float maximumWidth)
+    float VerticalTabs::getTabHeight() const
     {
-        m_maximumTabWidth = maximumWidth;
-
-        recalculateTabsSize();
+        return m_tabHeight;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Tabs::getMaximumTabWidth() const
-    {
-        return m_maximumTabWidth;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Tabs::setMinimumTabWidth(float minimumWidth)
-    {
-        m_minimumTabWidth = minimumWidth;
-
-        recalculateTabsSize();
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    float Tabs::getMinimumTabWidth() const
-    {
-        return m_minimumTabWidth;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    bool Tabs::leftMousePressed(Vector2f pos)
+    bool VerticalTabs::leftMousePressed(Vector2f pos)
     {
         pos -= getPosition();
 
-        float width = m_bordersCached.getLeft() / 2.f;
+        float height = m_bordersCached.getTop() / 2.f;
         for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (!m_tabs[i].visible)
                 continue;
 
             // Append the width of the tab
-            width += (m_bordersCached.getLeft() / 2.f) + m_tabs[i].width + (m_bordersCached.getRight() / 2.0f);
+            height += (m_bordersCached.getTop() / 2.f) + m_tabHeight + (m_bordersCached.getBottom() / 2.0f);
 
             // If the mouse went down on this tab then select it
-            if (pos.x < width)
+            if (pos.y < height)
             {
                 select(i);
                 break;
@@ -167,7 +132,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::mouseMoved(Vector2f pos)
+    void VerticalTabs::mouseMoved(Vector2f pos)
     {
         TabsBase::mouseMoved(pos);
 
@@ -175,7 +140,7 @@ namespace tgui
 
         pos -= getPosition();
         m_hoveringTab = -1;
-        float width = m_bordersCached.getLeft() / 2.f;
+        float height = m_bordersCached.getTop() / 2.f;
 
         for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
@@ -183,10 +148,10 @@ namespace tgui
                 continue;
 
             // Append the width of the tab
-            width += (m_bordersCached.getLeft() / 2.f) + m_tabs[i].width + (m_bordersCached.getRight() / 2.0f);
+            height += (m_bordersCached.getTop() / 2.f) + m_tabHeight + (m_bordersCached.getBottom() / 2.0f);
 
             // If the mouse is on top of this tab then remember it
-            if (pos.x < width)
+            if (pos.y < height)
             {
                 if (m_tabs[i].enabled)
                     m_hoveringTab = static_cast<int>(i);
@@ -201,7 +166,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::recalculateTabsSize()
+    void VerticalTabs::recalculateTabsSize()
     {
         std::size_t visibleTabs = 0;
         for (const auto& tab : m_tabs)
@@ -210,41 +175,13 @@ namespace tgui
                 visibleTabs++;
         }
 
-        if (m_autoSize)
+        m_autoLayout = AutoLayout::Manual;
+        if (visibleTabs == 0)
+            TabsBase::setSize({getSizeLayout().x, m_bordersCached.getTopPlusBottom()});
+        else
         {
-            m_autoLayout = AutoLayout::Manual;
-            if (visibleTabs == 0)
-                TabsBase::setSize({m_bordersCached.getLeftPlusRight(), getSizeLayout().y});
-            else
-            {
-                // First calculate the width of the tabs as if there aren't any borders
-                float totalWidth = 0;
-                for (auto& tab : m_tabs)
-                {
-                    if (!tab.visible)
-                        continue;
-
-                    tab.width = tab.text.getSize().x + std::max(m_minimumTabWidth, 2 * m_distanceToSideCached);
-                    if ((m_maximumTabWidth > 0) && (m_maximumTabWidth < tab.width))
-                        tab.width = m_maximumTabWidth;
-
-                    totalWidth += tab.width;
-                }
-
-                // Now add the borders to the tabs
-                totalWidth += (visibleTabs + 1) * ((m_bordersCached.getLeftPlusRight()) / 2.f);
-
-                TabsBase::setSize({totalWidth, getSizeLayout().y});
-            }
-        }
-        else // A size was provided
-        {
-            if (visibleTabs > 0)
-            {
-                const float tabWidth = (getSize().x - ((visibleTabs + 1) * ((m_bordersCached.getLeftPlusRight()) / 2.f))) / visibleTabs;
-                for (auto& tab : m_tabs)
-                    tab.width = tabWidth;
-            }
+            const float totalHeight = (visibleTabs * m_tabHeight) + ((visibleTabs + 1) * m_bordersCached.getTopPlusBottom() / 2.f);
+            TabsBase::setSize({getSizeLayout().x, totalHeight});
         }
 
         m_bordersCached.updateParentSize(getSize());
@@ -252,43 +189,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::unique_ptr<DataIO::Node> Tabs::save(SavingRenderersMap& renderers) const
+    std::unique_ptr<DataIO::Node> VerticalTabs::save(SavingRenderersMap& renderers) const
     {
         auto node = TabsBase::save(renderers);
-
-        if (m_maximumTabWidth > 0)
-            node->propertyValuePairs[U"MaximumTabWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_maximumTabWidth));
-
-        if (m_autoSize)
-        {
-            node->propertyValuePairs.erase("Size");
-            node->propertyValuePairs[U"TabHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSize().y));
-        }
-
-        node->propertyValuePairs[U"AutoSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_autoSize));
-
+        node->propertyValuePairs[U"TabHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getTabHeight()));
         return node;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    void VerticalTabs::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
         TabsBase::load(node, renderers);
 
-        if (node->propertyValuePairs[U"MaximumTabWidth"])
-            setMaximumTabWidth(node->propertyValuePairs[U"MaximumTabWidth"]->value.toFloat());
         if (node->propertyValuePairs[U"TabHeight"])
             setTabHeight(node->propertyValuePairs[U"TabHeight"]->value.toFloat());
-        if (node->propertyValuePairs[U"AutoSize"])
-            setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoSize"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Tabs::draw(BackendRenderTarget& target, RenderStates states) const
+    void VerticalTabs::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        const float borderWidth = (m_bordersCached.getLeftPlusRight()) / 2.f;
+        const float borderHeight = (m_bordersCached.getTopPlusBottom()) / 2.f;
         const bool roundedCorners = (m_roundedBorderRadiusCached > 0) && !m_spriteTab.isSet();
         if (!roundedCorners)
         {
@@ -300,9 +222,9 @@ namespace tgui
             }
         }
         else
-            states.transform.translate({borderWidth, 0});
+            states.transform.translate({0, borderHeight});
 
-        const float usableHeight = getSize().y - m_bordersCached.getTopPlusBottom();
+        const float usableWidth = getSize().x - m_bordersCached.getLeftPlusRight();
         for (std::size_t i = 0; i < m_tabs.size(); ++i)
         {
             if (!m_tabs[i].visible)
@@ -310,7 +232,7 @@ namespace tgui
 
             RenderStates textStates = states;
             if (roundedCorners)
-                textStates.transform.translate({0, m_bordersCached.getTop()});
+                textStates.transform.translate({m_bordersCached.getLeft(), 0});
 
             Color backgroundColor;
             if ((!m_enabled || !m_tabs[i].enabled) && m_backgroundColorDisabledCached.isSet())
@@ -345,28 +267,28 @@ namespace tgui
 
             if (roundedCorners)
             {
-                states.transform.translate({-borderWidth, 0});
-                target.drawRoundedRectangle(states, {m_tabs[i].width + (2 * borderWidth), getSize().y}, Color::applyOpacity(backgroundColor, m_opacityCached),
+                states.transform.translate({0, -borderHeight});
+                target.drawRoundedRectangle(states, {getSize().x, m_tabHeight + (2 * borderHeight)}, Color::applyOpacity(backgroundColor, m_opacityCached),
                                             m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
-                states.transform.translate({m_tabs[i].width + 2*borderWidth, 0});
+                states.transform.translate({0, m_tabHeight + 2*borderHeight});
             }
             else
             {
                 if (spriteTab)
                 {
                     Sprite spriteTabCopy = *spriteTab;
-                    spriteTabCopy.setSize({m_tabs[i].width, usableHeight});
+                    spriteTabCopy.setSize({usableWidth, m_tabHeight});
                     target.drawSprite(states, spriteTabCopy);
                 }
                 else // No texture was loaded
-                    target.drawFilledRect(states, {m_tabs[i].width, usableHeight}, Color::applyOpacity(backgroundColor, m_opacityCached));
+                    target.drawFilledRect(states, {usableWidth, m_tabHeight}, Color::applyOpacity(backgroundColor, m_opacityCached));
 
                 // Draw the borders between the tabs
-                states.transform.translate({m_tabs[i].width, 0});
-                if ((borderWidth != 0) && (i < m_tabs.size() - 1))
+                states.transform.translate({0, m_tabHeight});
+                if ((borderHeight != 0) && (i < m_tabs.size() - 1))
                 {
-                    target.drawFilledRect(states, {borderWidth, usableHeight}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
-                    states.transform.translate({borderWidth, 0});
+                    target.drawFilledRect(states, {usableWidth, borderHeight}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                    states.transform.translate({0, borderHeight});
                 }
             }
 
@@ -386,39 +308,40 @@ namespace tgui
 
                 if (highlightColor.isSet())
                 {
-                    float leftBorderWidth = borderWidth;
-                    float rightBorderWidth = borderWidth;
+                    float topBorderHeight = borderHeight;
+                    float bottomBorderHeight = borderHeight;
                     if (i == 0)
-                        leftBorderWidth = m_bordersCached.getLeft();
+                        topBorderHeight = m_bordersCached.getTop();
                     if (i == m_tabs.size() - 1)
-                        rightBorderWidth = m_bordersCached.getRight();
+                        bottomBorderHeight = m_bordersCached.getBottom();
 
                     if ((m_selectedTab >= 0) && (m_hoveringTab >= 0) && (m_borderColorHoverCached.isSet()
                         && (m_selectedBorderColorCached.isSet() || m_selectedBorderColorHoverCached.isSet())))
                     {
                         if ((m_selectedTab == static_cast<int>(i - 1)) || (m_hoveringTab == static_cast<int>(i - 1)))
-                            leftBorderWidth /= 2;
+                            topBorderHeight /= 2;
                         else if ((m_selectedTab == static_cast<int>(i + 1)) || (m_hoveringTab == static_cast<int>(i + 1)))
-                            rightBorderWidth /= 2;
+                            bottomBorderHeight /= 2;
                     }
 
                     RenderStates highlightStates = states;
                     if (i < m_tabs.size() - 1)
-                        highlightStates.transform.translate({-borderWidth, 0});
-                    highlightStates.transform.translate({-m_tabs[i].width - leftBorderWidth, -m_bordersCached.getTop()});
-                    target.drawBorders(highlightStates, {leftBorderWidth, m_bordersCached.getTop(), rightBorderWidth, m_bordersCached.getBottom()},
-                                       {m_tabs[i].width + leftBorderWidth + rightBorderWidth, getSize().y}, highlightColor);
+                        highlightStates.transform.translate({0, -borderHeight});
+                    highlightStates.transform.translate({-m_bordersCached.getLeft(), -m_tabHeight - topBorderHeight});
+                    target.drawBorders(highlightStates, {m_bordersCached.getLeft(), topBorderHeight, m_bordersCached.getRight(), bottomBorderHeight},
+                                       {getSize().x, m_tabHeight + topBorderHeight + bottomBorderHeight}, highlightColor);
                 }
             }
 
             // Apply clipping if required for the text in this tab
-            const float usableWidth = m_tabs[i].width - (2 * m_distanceToSideCached);
-            const bool clippingRequired = (m_tabs[i].text.getSize().x > usableWidth);
+            const float usableHeight = m_tabHeight - m_bordersCached.getTopPlusBottom();
+            const float usableTextWidth = usableWidth - (2 * m_distanceToSideCached);
+            const bool clippingRequired = (m_tabs[i].text.getSize().x > usableTextWidth);
             if (clippingRequired)
-                target.addClippingLayer(textStates, {{m_distanceToSideCached, 0}, {usableWidth, usableHeight}});
+                target.addClippingLayer(textStates, {{m_distanceToSideCached, 0}, {usableTextWidth, usableHeight}});
 
             // Draw the text
-            textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabs[i].text.getSize().x) / 2.f), ((usableHeight - m_tabs[i].text.getSize().y) / 2.f)});
+            textStates.transform.translate({m_distanceToSideCached + ((usableTextWidth - m_tabs[i].text.getSize().x) / 2.f), ((usableHeight - m_tabs[i].text.getSize().y) / 2.f)});
             target.drawText(textStates, m_tabs[i].text);
 
             if (clippingRequired)
@@ -428,9 +351,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Widget::Ptr Tabs::clone() const
+    Widget::Ptr VerticalTabs::clone() const
     {
-        return std::make_shared<Tabs>(*this);
+        return std::make_shared<VerticalTabs>(*this);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

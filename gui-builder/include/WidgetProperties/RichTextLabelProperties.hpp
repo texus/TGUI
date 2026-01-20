@@ -27,7 +27,7 @@
 
 #include "LabelProperties.hpp"
 
-struct RichTextLabelProperties : LabelProperties
+struct RichTextLabelProperties : public LabelProperties
 {
 };
 

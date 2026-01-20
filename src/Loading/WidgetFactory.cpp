@@ -75,7 +75,8 @@ namespace tgui
         {"TextArea", std::make_shared<TextArea>},
         {"ToggleButton", std::make_shared<ToggleButton>},
         {"TreeView", std::make_shared<TreeView>},
-        {"VerticalLayout", std::make_shared<VerticalLayout>}
+        {"VerticalLayout", std::make_shared<VerticalLayout>},
+        {"VerticalTabs", std::make_shared<VerticalTabs>},
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

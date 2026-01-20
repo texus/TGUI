@@ -27,7 +27,7 @@
 
 #include "GroupProperties.hpp"
 
-struct GrowHorizontalLayoutProperties : GroupProperties
+struct GrowHorizontalLayoutProperties : public GroupProperties
 {
 };
 

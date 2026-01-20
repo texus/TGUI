@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct ChatBoxProperties : WidgetProperties
+struct ChatBoxProperties : public WidgetProperties
 {
     // TODO: Scrollbar renderer
 

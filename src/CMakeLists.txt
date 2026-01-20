@@ -140,10 +140,12 @@ set(TGUI_SRC
     Widgets/SplitContainer.cpp
     Widgets/TabContainer.cpp
     Widgets/Tabs.cpp
+    Widgets/TabsBase.cpp
     Widgets/TextArea.cpp
     Widgets/ToggleButton.cpp
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
+    Widgets/VerticalTabs.cpp
     WindowsIMM.cpp
 )
 
@@ -346,10 +348,12 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/SplitContainer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/TabContainer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/Tabs.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/TabsBase.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/TextArea.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ToggleButton.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/TreeView.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/VerticalLayout.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/VerticalTabs.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/WindowsIMM.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/extlibs/IncludeNanoSVG.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/extlibs/IncludeSDL.hpp"

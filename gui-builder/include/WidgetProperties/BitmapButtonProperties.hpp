@@ -27,7 +27,7 @@
 
 #include "ButtonProperties.hpp"
 
-struct BitmapButtonProperties : ButtonProperties
+struct BitmapButtonProperties : public ButtonProperties
 {
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {

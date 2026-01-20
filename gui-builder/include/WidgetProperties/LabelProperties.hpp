@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct LabelProperties : WidgetProperties
+struct LabelProperties : public WidgetProperties
 {
     // TODO: Scrollbar renderer
 

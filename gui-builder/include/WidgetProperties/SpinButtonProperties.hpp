@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct SpinButtonProperties : WidgetProperties
+struct SpinButtonProperties : public WidgetProperties
 {
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {

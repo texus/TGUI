@@ -24,9 +24,9 @@
 
 #include "Tests.hpp"
 
-TEST_CASE("[Tabs]")
+TEST_CASE("[VerticalTabs]")
 {
-    const tgui::Tabs::Ptr tabs = tgui::Tabs::create();
+    const tgui::VerticalTabs::Ptr tabs = tgui::VerticalTabs::create();
     tabs->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -39,24 +39,31 @@ TEST_CASE("[Tabs]")
 
     SECTION("WidgetType")
     {
-        REQUIRE(tabs->getWidgetType() == "Tabs");
+        REQUIRE(tabs->getWidgetType() == "VerticalTabs");
     }
 
     SECTION("Position and Size")
     {
         tabs->setPosition(40, 30);
+        tabs->setTabWidth(82);
         tabs->setTabHeight(24);
         tabs->getRenderer()->setBorders(2);
 
         REQUIRE(tabs->getPosition() == tgui::Vector2f(40, 30));
-        REQUIRE(tabs->getSize() == tgui::Vector2f(4, 24));
+        REQUIRE(tabs->getSize() == tgui::Vector2f(82, 4));
         REQUIRE(tabs->getFullSize() == tabs->getSize());
         REQUIRE(tabs->getWidgetOffset() == tgui::Vector2f(0, 0));
 
         tabs->add("TabText");
-        REQUIRE(tabs->getSize().x > 4);
-        REQUIRE(tabs->getSize().y == 24);
+        REQUIRE(tabs->getSize().x == 82);
+        REQUIRE(tabs->getSize().y == 28);
         REQUIRE(tabs->getFullSize() == tabs->getSize());
+
+        // Height can't be changed directly
+        const auto oldHeight = tabs->getSize().y;
+        tabs->setSize({100, 100});
+        REQUIRE(tabs->getSize().x == 100);
+        REQUIRE(tabs->getSize().y == oldHeight);
     }
 
     SECTION("Adding items")
@@ -167,15 +174,6 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getSelectedIndex() == -1);
     }
 
-    SECTION("AutoSize")
-    {
-        REQUIRE(tabs->getAutoSize());
-        tabs->setAutoSize(false);
-        REQUIRE(!tabs->getAutoSize());
-        tabs->setAutoSize(true);
-        REQUIRE(tabs->getAutoSize());
-    }
-
     SECTION("TabVisible")
     {
         REQUIRE(!tabs->getTabVisible(0)); // Tab that doesn't exist can't be visible
@@ -220,36 +218,44 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getTextSize() == 12);
     }
 
+    SECTION("TabWidth")
+    {
+        tabs->setTabWidth(80);
+        tabs->getRenderer()->setBorders(2);
+        REQUIRE(tabs->getSize().x == 80);
+
+        tabs->add("0");
+        tabs->add("1");
+        REQUIRE(tabs->getSize().x == 80);
+    }
+
     SECTION("TabHeight")
     {
         tabs->setTabHeight(20);
-        REQUIRE(tabs->getSize().y == 20);
-    }
+        tabs->getRenderer()->setBorders(2);
+        REQUIRE(tabs->getTabHeight() == 20);
+        REQUIRE(tabs->getSize().y == 4);
 
-    SECTION("MinimumTabWidth")
-    {
-        REQUIRE(tabs->getMinimumTabWidth() == 0);
-        tabs->setMinimumTabWidth(30);
-        REQUIRE(tabs->getMinimumTabWidth() == 30);
-    }
-
-    SECTION("MaximumTabWidth")
-    {
-        REQUIRE(tabs->getMaximumTabWidth() == 0);
-        tabs->setMaximumTabWidth(60);
-        REQUIRE(tabs->getMaximumTabWidth() == 60);
+        tabs->add("0");
+        tabs->add("1");
+        REQUIRE(tabs->getSize().y == 46);
     }
 
     SECTION("Events / Signals")
     {
         SECTION("Widget")
         {
+            tabs->setTabHeight(50);
+            tabs->getRenderer()->setBorders(0);
+            tabs->add("0");
+            tabs->add("1");
             testWidgetSignals(tabs);
         }
 
         SECTION("TabSelected")
         {
-            tabs->setSize({300, 20});
+            tabs->setTabHeight(20);
+            tabs->setSize({300, 0});
 
             unsigned int tabSelectedCount = 0;
             tabs->onTabSelect(&genericCallback, std::ref(tabSelectedCount));
@@ -269,7 +275,7 @@ TEST_CASE("[Tabs]")
 
             REQUIRE(tabs->getHoveredIndex() == -1);
 
-            const tgui::Vector2f mousePos1{200, 10};
+            const tgui::Vector2f mousePos1{150, 50};
             tabs->mouseMoved(mousePos1);
             REQUIRE(tabs->getHoveredIndex() == 2);
             tabs->leftMousePressed(mousePos1);
@@ -277,7 +283,7 @@ TEST_CASE("[Tabs]")
             REQUIRE(tabs->getSelected() == "3");
             REQUIRE(tabSelectedCount == 5);
 
-            const tgui::Vector2f mousePos2{199, 10};
+            const tgui::Vector2f mousePos2{150, 30};
             tabs->mouseMoved(mousePos2);
             REQUIRE(tabs->getHoveredIndex() == 1);
             tabs->leftMousePressed(mousePos2);
@@ -413,21 +419,22 @@ TEST_CASE("[Tabs]")
         tabs->add("3");
         tabs->select("2");
         tabs->setTextSize(20);
+        tabs->setTabWidth(45);
         tabs->setTabHeight(26);
-        tabs->setMaximumTabWidth(100);
         tabs->setTabVisible(2, false);
         tabs->setTabEnabled(3, false);
 
-        testSavingWidget("Tabs", tabs);
+        testSavingWidget("VerticalTabs", tabs);
     }
 
     SECTION("Draw")
     {
-        TEST_DRAW_INIT(120, 40, tabs)
+        TEST_DRAW_INIT(60, 82, tabs)
 
         tabs->setEnabled(true);
         tabs->setPosition({10, 5});
-        tabs->setSize({100, 30});
+        tabs->setTabWidth(40);
+        tabs->setTabHeight(20);
         tabs->setTextSize(16);
         tabs->add("1");
         tabs->add("2");
@@ -462,12 +469,12 @@ TEST_CASE("[Tabs]")
         {
             SECTION("NormalState")
             {
-                TEST_DRAW("Tabs_Normal_NormalSet.png")
+                TEST_DRAW("VerticalTabs_Normal_NormalSet.png")
 
                 SECTION("HoverSet")
                 {
                     setHoverRenderer(false);
-                    TEST_DRAW("Tabs_Normal_HoverSet.png")
+                    TEST_DRAW("VerticalTabs_Normal_HoverSet.png")
                 }
             }
 
@@ -475,12 +482,12 @@ TEST_CASE("[Tabs]")
             {
                 tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() / 2.f));
 
-                TEST_DRAW("Tabs_Hover_NormalSet.png")
+                TEST_DRAW("VerticalTabs_Hover_NormalSet.png")
 
                 SECTION("HoverSet")
                 {
                     setHoverRenderer(false);
-                    TEST_DRAW("Tabs_Hover_HoverSet.png")
+                    TEST_DRAW("VerticalTabs_Hover_HoverSet.png")
                 }
             }
 
@@ -488,12 +495,12 @@ TEST_CASE("[Tabs]")
             {
                 tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() * (2.f / 3.f)));
 
-                TEST_DRAW("Tabs_HoverSelected_NormalSet.png")
+                TEST_DRAW("VerticalTabs_HoverSelected_NormalSet.png")
 
                 SECTION("HoverSet")
                 {
                     setHoverRenderer(false);
-                    TEST_DRAW("Tabs_HoverSelected_HoverSet.png")
+                    TEST_DRAW("VerticalTabs_HoverSelected_HoverSet.png")
                 }
             }
         }
@@ -505,12 +512,12 @@ TEST_CASE("[Tabs]")
 
             SECTION("NormalState")
             {
-                TEST_DRAW("Tabs_Normal_TextureNormalSet.png")
+                TEST_DRAW("VerticalTabs_Normal_TextureNormalSet.png")
 
                 SECTION("HoverSet")
                 {
                     setHoverRenderer(true);
-                    TEST_DRAW("Tabs_Normal_TextureHoverSet.png")
+                    TEST_DRAW("VerticalTabs_Normal_TextureHoverSet.png")
                 }
             }
 
@@ -518,12 +525,12 @@ TEST_CASE("[Tabs]")
             {
                 tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() / 2.f));
 
-                TEST_DRAW("Tabs_Hover_TextureNormalSet.png")
+                TEST_DRAW("VerticalTabs_Hover_TextureNormalSet.png")
 
                 SECTION("HoverSet")
                 {
                     setHoverRenderer(true);
-                    TEST_DRAW("Tabs_Hover_TextureHoverSet.png")
+                    TEST_DRAW("VerticalTabs_Hover_TextureHoverSet.png")
                 }
             }
 
@@ -531,12 +538,12 @@ TEST_CASE("[Tabs]")
             {
                 tabs->mouseMoved(tabs->getPosition() + (tabs->getSize() * (2.f / 3.f)));
 
-                TEST_DRAW("Tabs_HoverSelected_TextureNormalSet.png")
+                TEST_DRAW("VerticalTabs_HoverSelected_TextureNormalSet.png")
 
                 SECTION("HoverSet")
                 {
                     setHoverRenderer(true);
-                    TEST_DRAW("Tabs_HoverSelected_TextureHoverSet.png")
+                    TEST_DRAW("VerticalTabs_HoverSelected_TextureHoverSet.png")
                 }
             }
         }

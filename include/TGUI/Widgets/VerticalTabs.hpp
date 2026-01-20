@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_TABS_HPP
-#define TGUI_TABS_HPP
+#ifndef TGUI_VERTICAL_TABS_HPP
+#define TGUI_VERTICAL_TABS_HPP
 
 #include <TGUI/Widgets/TabsBase.hpp>
 #include <TGUI/Text.hpp>
@@ -33,21 +33,20 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Tabs widget
+    /// @brief VerticalTabs widget
     ///
-    /// If you are looking for something that allow holds multiple panels,
-    /// displayed one panel at a time then check out the TabContainer class.
+    /// For horizontal tabs (tabs displayed next to each other instead of below each other), check out the Tabs widget.
     ///
-    /// If the tabs need to be placed below each other then check out the VerticalTabs widget.
+    /// @since TGUI 1.12
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    class TGUI_API Tabs : public TabsBase
+    class TGUI_API VerticalTabs : public TabsBase
     {
     public:
 
-        using Ptr = std::shared_ptr<Tabs>; //!< Shared widget pointer
-        using ConstPtr = std::shared_ptr<const Tabs>; //!< Shared constant widget pointer
+        using Ptr = std::shared_ptr<VerticalTabs>; //!< Shared widget pointer
+        using ConstPtr = std::shared_ptr<const VerticalTabs>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "Tabs"; //!< Type name of the widget
+        static constexpr const char StaticWidgetType[] = "VerticalTabs"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -56,14 +55,14 @@ namespace tgui
         /// @param initRenderer Should the renderer be initialized? Should be true unless a derived class initializes it.
         /// @see create
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        explicit Tabs(const char* typeName = StaticWidgetType, bool initRenderer = true);
+        explicit VerticalTabs(const char* typeName = StaticWidgetType, bool initRenderer = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new tabs widget
         ///
         /// @return The new tabs
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Tabs::Ptr create();
+        TGUI_NODISCARD static VerticalTabs::Ptr create();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another tab
@@ -72,15 +71,14 @@ namespace tgui
         ///
         /// @return The new tab
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Tabs::Ptr copy(const Tabs::ConstPtr& tab);
+        TGUI_NODISCARD static VerticalTabs::Ptr copy(const VerticalTabs::ConstPtr& tab);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the area used by the tabs
         ///
         /// @param size  Total size of the tabs
         ///
-        /// When this function is called, the tabs will no longer be auto-sizing, but each tab will get an equal width such that
-        /// the total width corresponds to the size passed to this function.
+        /// When this function is called, the tabs will no longer be auto-sizing.
         ///
         /// @see setAutoSize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,79 +86,28 @@ namespace tgui
         using Widget::setSize;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes whether the tabs are auto-sized or not
+        /// @brief Changes the width of the tabs
         ///
-        /// @param autoSize  Should the size of the tabs depend on their content?
+        /// @param width  Width of the tabs
         ///
-        /// When the tabs are in auto-size mode, the width of the tabs will be depend on the text which they contain.
-        /// Otherwise, all tabs have an equal width to fill the size of the widget.
-        ///
-        /// The tabs are auto-sized by default.
+        /// When the tabs are auto-sizing, this function allows changing the width of the tabs without setting a fixed height
+        /// like calling setSize would do.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setAutoSize(bool autoSize);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns whether the tabs are auto-sized or not
-        ///
-        /// @return Is the width of the tabs dependent on their content?
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getAutoSize() const;
+        void setTabWidth(float width);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the height of the tabs
         ///
         /// @param height  Height of the tabs
-        ///
-        /// When the tabs are auto-sizing, this function allows changing the height of the tabs without setting a fixed width
-        /// like calling setSize would do.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTabHeight(float height);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the maximum tab width of the tabs
+        /// @brief Returns the height of the tabs
         ///
-        /// @param maximumWidth  Maximum width of a single tab
-        ///
-        /// This property only has effect when the tabs are auto-sizing.
-        ///
-        /// If the text on the tab is longer than this width then it will be cropped to fit inside the tab.
-        /// By default, the maximum width is 0 which means that there is no limitation.
+        /// @return Height of each tab
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMaximumTabWidth(float maximumWidth);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the maximum tab width of the tabs
-        ///
-        /// @return Maximum tab width
-        ///
-        /// This property only has effect when the tabs are auto-sizing.
-        ///
-        /// If the text on the tab is longer than this width then it will be cropped to fit inside the tab.
-        /// By default, the maximum width is 0 which means that there is no limitation.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getMaximumTabWidth() const;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Changes the minimum tab width of the tabs
-        ///
-        /// @param minimumWidth  Minimum width of a single tab
-        ///
-        /// This property only has effect when the tabs are auto-sizing.
-        ///
-        /// Every tab is at least as wide as this minimum or twice the distance to side.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setMinimumTabWidth(float minimumWidth);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Returns the minimum tab width of the tabs
-        ///
-        /// @return Minimum tab width
-        ///
-        /// This property only has effect when the tabs are auto-sizing.
-        ///
-        /// Every tab is at least as wide as this minimum or twice the distance to side.
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getMinimumTabWidth() const;
+        float getTabHeight() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -206,9 +153,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        float m_maximumTabWidth = 0;
-        float m_minimumTabWidth = 0;
-        bool  m_autoSize = true;
+        float m_tabHeight = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
@@ -218,4 +163,4 @@ namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_TABS_HPP
+#endif // TGUI_VERTICAL_TABS_HPP

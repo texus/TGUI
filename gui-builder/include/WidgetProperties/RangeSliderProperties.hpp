@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct RangeSliderProperties : WidgetProperties
+struct RangeSliderProperties : public WidgetProperties
 {
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {

@@ -103,6 +103,7 @@ set(TEST_SOURCES
     Widgets/ToggleButton.cpp
     Widgets/TreeView.cpp
     Widgets/VerticalLayout.cpp
+    Widgets/VerticalTabs.cpp
 )
 
 # Bundle multiple files together when performing a unity build (useful for CI to speed up compilation).

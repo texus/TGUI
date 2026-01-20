@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct ClickableWidgetProperties : WidgetProperties
+struct ClickableWidgetProperties : public WidgetProperties
 {
 };
 

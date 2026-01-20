@@ -22,13 +22,31 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_GUI_BUILDER_HORIZONTAL_LAYOUT_PROPERTIES_HPP
-#define TGUI_GUI_BUILDER_HORIZONTAL_LAYOUT_PROPERTIES_HPP
+#ifndef TGUI_GUI_BUILDER_VERTICAL_TABS_PROPERTIES_HPP
+#define TGUI_GUI_BUILDER_VERTICAL_TABS_PROPERTIES_HPP
 
-#include "GroupProperties.hpp"
+#include "TabsBaseProperties.hpp"
 
-struct HorizontalLayoutProperties : public GroupProperties
+struct VerticalTabsProperties : public TabsBaseProperties
 {
+    void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
+    {
+        auto tabs = widget->cast<tgui::VerticalTabs>();
+        if (property == "TabHeight")
+            tabs->setTabHeight(value.toFloat());
+        else
+            TabsBaseProperties::updateProperty(widget, property, value);
+    }
+
+    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    {
+        auto pair = TabsBaseProperties::initProperties(widget);
+        auto tabs = widget->cast<tgui::VerticalTabs>();
+
+        pair.first["TabHeight"] = {"Float", tgui::String::fromNumber(tabs->getTabHeight())};
+
+        return pair;
+    }
 };
 
-#endif // TGUI_GUI_BUILDER_HORIZONTAL_LAYOUT_PROPERTIES_HPP
+#endif // TGUI_GUI_BUILDER_VERTICAL_TABS_PROPERTIES_HPP

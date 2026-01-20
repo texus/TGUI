@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct TextAreaProperties : WidgetProperties
+struct TextAreaProperties : public WidgetProperties
 {
     // TODO: Scrollbar renderer
 

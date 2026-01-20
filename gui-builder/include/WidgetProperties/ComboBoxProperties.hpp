@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct ComboBoxProperties : WidgetProperties
+struct ComboBoxProperties : public WidgetProperties
 {
     // TODO: Item Ids
     // TODO: ListBox renderer

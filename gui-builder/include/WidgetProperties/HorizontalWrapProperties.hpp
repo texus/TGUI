@@ -27,7 +27,7 @@
 
 #include "GroupProperties.hpp"
 
-struct HorizontalWrapProperties : GroupProperties
+struct HorizontalWrapProperties : public GroupProperties
 {
 };
 

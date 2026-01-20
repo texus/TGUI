@@ -60,6 +60,7 @@
 #include "WidgetProperties/ToggleButtonProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
 #include "WidgetProperties/VerticalLayoutProperties.hpp"
+#include "WidgetProperties/VerticalTabsProperties.hpp"
 #include <thread>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -308,6 +309,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["ToggleButton"] = std::make_unique<ToggleButtonProperties>();
     m_widgetProperties["TreeView"] = std::make_unique<TreeViewProperties>();
     m_widgetProperties["VerticalLayout"] = std::make_unique<VerticalLayoutProperties>();
+    m_widgetProperties["VerticalTabs"] = std::make_unique<VerticalTabsProperties>();
 
     m_window->setIcon((tgui::getResourcePath() / "resources/Icon.png").asString());
 
@@ -1076,6 +1078,7 @@ void GuiBuilder::loadToolbox()
         {"ToggleButton", []{ return tgui::ToggleButton::create(); }},
         {"TreeView", []{ return tgui::TreeView::create(); }},
         {"VerticalLayout", []{ return tgui::VerticalLayout::create({150, 150}); }},
+        {"VerticalTabs", []{ auto tabs = tgui::VerticalTabs::create(); tabs->add("Tab", false); return tabs; }},
     };
 
     float topPosition = 0;

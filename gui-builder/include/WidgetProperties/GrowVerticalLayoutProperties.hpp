@@ -27,7 +27,7 @@
 
 #include "GroupProperties.hpp"
 
-struct GrowVerticalLayoutProperties : GroupProperties
+struct GrowVerticalLayoutProperties : public GroupProperties
 {
 };
 

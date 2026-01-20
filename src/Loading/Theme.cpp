@@ -318,7 +318,18 @@ namespace tgui
                                                        {"BackgroundColorHover", Color::White},
                                                        {"SelectedBackgroundColor", Color{0, 110, 255}},
                                                        {"SelectedBackgroundColorHover", Color{30, 150, 255}}})},
-                    {"VerticalLayout", RendererData::create({})}
+                    {"VerticalLayout", RendererData::create({})},
+                    {"VerticalTabs", RendererData::create({{"Borders", Borders{1}},
+                                                           {"BorderColor", Color::Black},
+                                                           {"TextColor", Color{60, 60, 60}},
+                                                           {"TextColorHover", Color::Black},
+                                                           {"TextColorDisabled", Color{125, 125, 125}},
+                                                           {"SelectedTextColor", Color::White},
+                                                           {"BackgroundColor", Color{245, 245, 245}},
+                                                           {"BackgroundColorHover", Color::White},
+                                                           {"BackgroundColorDisabled", Color{230, 230, 230}},
+                                                           {"SelectedBackgroundColor", Color{0, 110, 255}},
+                                                           {"SelectedBackgroundColorHover", Color{30, 150, 255}}})},
                };
 
                 for (const auto& pair : m_renderers)
@@ -342,6 +353,7 @@ namespace tgui
         {"PanelListBox", "ScrollablePanel"},
         {"ToggleButton", "Button"},
         {"TreeView", "ListBox"},
+        {"VerticalTabs", "Tabs"},
     };
 
     std::map<String, std::map<String, String>> Theme::m_rendererDefaultSubwidgets = {
@@ -548,6 +560,14 @@ namespace tgui
         {"ToggleButton", {
             {"TextColorDown", "SelectedTextColor"},
             {"BackgroundColorDown", "SelectedBackgroundColor"},
+        }},
+        {"VerticalTabs", {
+            {"BackgroundColor", ""},
+            {"SelectedBackgroundColor", ""},
+            {"TextColor", ""},
+            {"SelectedTextColor", ""},
+            {"BorderColor", ""},
+            {"Borders", ""},
         }},
     };
 

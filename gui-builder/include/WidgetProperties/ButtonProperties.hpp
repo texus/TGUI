@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct ButtonProperties : WidgetProperties
+struct ButtonProperties : public WidgetProperties
 {
     void updateProperty(const tgui::Widget::Ptr& widget, const tgui::String& property, const tgui::String& value) const override
     {

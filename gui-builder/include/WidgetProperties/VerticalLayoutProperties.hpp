@@ -27,7 +27,7 @@
 
 #include "GroupProperties.hpp"
 
-struct VerticalLayoutProperties : GroupProperties
+struct VerticalLayoutProperties : public GroupProperties
 {
 };
 

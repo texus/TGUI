@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct ListBoxProperties : WidgetProperties
+struct ListBoxProperties : public WidgetProperties
 {
     // TODO: Item Ids
     // TODO: Scrollbar renderer

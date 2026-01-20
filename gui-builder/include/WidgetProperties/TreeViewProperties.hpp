@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct TreeViewProperties : WidgetProperties
+struct TreeViewProperties : public WidgetProperties
 {
     // TODO: Scrollbar renderer
 

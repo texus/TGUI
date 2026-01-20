@@ -1,6 +1,7 @@
 TGUI 1.12  (TBD)
 ----------------
 
+- New widget: VerticalTabs
 - Added Move cursor type (also known as SizeAll cursor)
 - ChildWindow's KeepInParent property didn't take parent borders into account
 - Fixed Gui Builder crash when attempting to open form while current form wasn't saved yet

@@ -27,7 +27,7 @@
 
 #include "WidgetProperties.hpp"
 
-struct ListViewProperties : WidgetProperties
+struct ListViewProperties : public WidgetProperties
 {
     // TODO: Items
     // TODO: Selected items
