@@ -228,7 +228,7 @@ namespace tgui
             case ')':
                 TGUI_PRINT_WARNING("bracket mismatch while parsing layout string '" << expression << "'.");
                 return;
-            };
+            }
 
             prevSearchPos = searchPos + 1;
             searchPos = expression.find_first_of("+-/*()", searchPos + 1);
