@@ -50,7 +50,7 @@ namespace tgui
         /// Where in the cell is the widget located?
         /// The widget is centered by default.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum class Alignment
+        enum class Alignment : std::uint8_t
         {
             Center,      //!< Center the widget in the cell
             UpperLeft,   //!< Draw the widget in the upper left corner of the cell

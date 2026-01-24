@@ -40,7 +40,7 @@ namespace tgui
     public:
 
         /// @brief The side where the list will be displayed
-        enum class ExpandDirection
+        enum class ExpandDirection : std::uint8_t
         {
             Down, //!< Display the list below the combo box
             Up,   //!< Display the list above the combo box

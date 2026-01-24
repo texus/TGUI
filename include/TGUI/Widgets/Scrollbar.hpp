@@ -48,7 +48,7 @@ namespace tgui
         static constexpr const char StaticWidgetType[] = "Scrollbar"; //!< Type name of the widget
 
         /// @brief Defines when the scrollbar shows up
-        enum class Policy
+        enum class Policy : std::uint8_t
         {
             Automatic,  //!< Show the scrollbar only when needed (default)
             Always,     //!< Always show the scrollbar, even when the contents fits
@@ -383,7 +383,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected:
 
-        enum class Part
+        enum class Part : std::uint8_t
         {
             None,
             Track,

@@ -50,7 +50,7 @@ namespace tgui
         ///
         /// Determines in which direction the progress bar is filled when value goes from minimum to maximum.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        enum class FillDirection
+        enum class FillDirection : std::uint8_t
         {
             LeftToRight,  //!< Start filling at the left side and go to the right
             RightToLeft,  //!< Start filling at the right side and go to the left

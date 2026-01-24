@@ -64,7 +64,7 @@ namespace dev
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /// Layout alignment for automatically setting the position and (part of) the size of a component
-    enum class AlignLayout
+    enum class AlignLayout : std::uint8_t
     {
         None,       //!< Position and size need to be manually set. This is the default.
         Top,        //!< Places the component on on the top and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
@@ -79,7 +79,7 @@ namespace dev
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /// Position alignment of a component within its parent
-    enum class PositionAlignment
+    enum class PositionAlignment : std::uint8_t
     {
         None,        //!< Place the component at the manually set position. This is the default.
         TopLeft,     //!< Place the component in the upper left corner of its parent
