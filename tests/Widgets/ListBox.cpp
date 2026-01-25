@@ -396,13 +396,13 @@ TEST_CASE("[ListBox]")
         auto mouseReleased = [container](tgui::Vector2f pos){
             container->processMouseReleaseEvent(tgui::Event::MouseButton::Left, pos);
         };
-        auto touchBegin = [&gui](std::intptr_t fingerId, tgui::Vector2f pos){
+        auto touchBegin = [&gui](std::uintptr_t fingerId, tgui::Vector2f pos){
             gui.twoFingerScroll.reportFingerDown(fingerId, pos.x, pos.y);
         };
-        auto touchEnd = [&gui](std::intptr_t fingerId){
+        auto touchEnd = [&gui](std::uintptr_t fingerId){
             gui.twoFingerScroll.reportFingerUp(fingerId);
         };
-        auto touchMove = [&gui](std::intptr_t fingerId, tgui::Vector2f pos){
+        auto touchMove = [&gui](std::uintptr_t fingerId, tgui::Vector2f pos){
             const bool wasScrolling = gui.twoFingerScroll.isScrolling();
             gui.twoFingerScroll.reportFingerMotion(fingerId, pos.x, pos.y);
             if (gui.twoFingerScroll.isScrolling())

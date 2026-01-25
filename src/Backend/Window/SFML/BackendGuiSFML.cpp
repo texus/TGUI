@@ -618,7 +618,7 @@ namespace tgui
             case sf::Event::TouchMoved:
             {
                 eventTGUI.type = Event::Type::FingerMoved;
-                eventTGUI.touch.fingerID = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
                 eventTGUI.touch.x = eventSFML.touch.x;
                 eventTGUI.touch.y = eventSFML.touch.y;
                 return true;
@@ -626,7 +626,7 @@ namespace tgui
             case sf::Event::TouchBegan:
             {
                 eventTGUI.type = Event::Type::FingerDown;
-                eventTGUI.touch.fingerID = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
                 eventTGUI.touch.x = eventSFML.touch.x;
                 eventTGUI.touch.y = eventSFML.touch.y;
                 return true;
@@ -634,7 +634,7 @@ namespace tgui
             case sf::Event::TouchEnded:
             {
                 eventTGUI.type = Event::Type::FingerUp;
-                eventTGUI.touch.fingerID = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
                 eventTGUI.touch.x = eventSFML.touch.x;
                 eventTGUI.touch.y = eventSFML.touch.y;
                 return true;

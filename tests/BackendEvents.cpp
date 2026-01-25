@@ -484,27 +484,27 @@ TEST_CASE("[Backend events]")
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent({eventTouchBegan}, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonPressed);
-                REQUIRE(eventTGUI.mouseButton.x == 200);
-                REQUIRE(eventTGUI.mouseButton.y == 150);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerDown);
+                REQUIRE(eventTGUI.touch.x == 200);
+                REQUIRE(eventTGUI.touch.y == 150);
 
                 sf::Event::TouchMoved eventTouchMoved;
                 eventTouchMoved.finger = 0;
                 eventTouchMoved.position.x = 210;
                 eventTouchMoved.position.y = 155;
                 REQUIRE(backendGuiSFML->convertEvent({eventTouchMoved}, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseMoved);
-                REQUIRE(eventTGUI.mouseMove.x == 210);
-                REQUIRE(eventTGUI.mouseMove.y == 155);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerMoved);
+                REQUIRE(eventTGUI.touch.x == 210);
+                REQUIRE(eventTGUI.touch.y == 155);
 
                 sf::Event::TouchEnded eventTouchEnded;
                 eventTouchEnded.finger = 0;
                 eventTouchEnded.position.x = 220;
                 eventTouchEnded.position.y = 160;
                 REQUIRE(backendGuiSFML->convertEvent({eventTouchEnded}, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonReleased);
-                REQUIRE(eventTGUI.mouseButton.x == 220);
-                REQUIRE(eventTGUI.mouseButton.y == 160);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerUp);
+                REQUIRE(eventTGUI.touch.x == 220);
+                REQUIRE(eventTGUI.touch.y == 160);
             }
 
             SECTION("MouseEntered")
@@ -795,26 +795,26 @@ TEST_CASE("[Backend events]")
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonPressed);
-                REQUIRE(eventTGUI.mouseButton.x == 200);
-                REQUIRE(eventTGUI.mouseButton.y == 150);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerDown);
+                REQUIRE(eventTGUI.touch.x == 200);
+                REQUIRE(eventTGUI.touch.y == 150);
 
                 eventSFML.type = sf::Event::TouchMoved;
                 eventSFML.touch.finger = 0;
                 eventSFML.touch.x = 210;
                 eventSFML.touch.y = 155;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseMoved);
-                REQUIRE(eventTGUI.mouseMove.x == 210);
-                REQUIRE(eventTGUI.mouseMove.y == 155);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerMoved);
+                REQUIRE(eventTGUI.touch.x == 210);
+                REQUIRE(eventTGUI.touch.y == 155);
 
                 eventSFML.type = sf::Event::TouchEnded;
                 eventSFML.touch.x = 220;
                 eventSFML.touch.y = 160;
                 REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonReleased);
-                REQUIRE(eventTGUI.mouseButton.x == 220);
-                REQUIRE(eventTGUI.mouseButton.y == 160);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerUp);
+                REQUIRE(eventTGUI.touch.x == 220);
+                REQUIRE(eventTGUI.touch.y == 160);
             }
 
             SECTION("MouseEntered")
@@ -1436,25 +1436,25 @@ TEST_CASE("[Backend events]")
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonPressed);
-                REQUIRE(eventTGUI.mouseButton.x == 200);
-                REQUIRE(eventTGUI.mouseButton.y == 150);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerDown);
+                REQUIRE(eventTGUI.touch.x == 200);
+                REQUIRE(eventTGUI.touch.y == 150);
 
                 eventSDL.type = SDL_EVENT_FINGER_MOTION;
                 eventSDL.tfinger.x = 210.f / windowSize.x;
                 eventSDL.tfinger.y = 155.f / windowSize.y;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseMoved);
-                REQUIRE(eventTGUI.mouseMove.x == 210);
-                REQUIRE(eventTGUI.mouseMove.y == 155);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerMoved);
+                REQUIRE(eventTGUI.touch.x == 210);
+                REQUIRE(eventTGUI.touch.y == 155);
 
                 eventSDL.type = SDL_EVENT_FINGER_UP;
                 eventSDL.tfinger.x = 220.f / windowSize.x;
                 eventSDL.tfinger.y = 160.f / windowSize.y;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
-                REQUIRE(eventTGUI.type == tgui::Event::Type::MouseButtonReleased);
-                REQUIRE(eventTGUI.mouseButton.x == 220);
-                REQUIRE(eventTGUI.mouseButton.y == 160);
+                REQUIRE(eventTGUI.type == tgui::Event::Type::FingerUp);
+                REQUIRE(eventTGUI.touch.x == 220);
+                REQUIRE(eventTGUI.touch.y == 160);
             }
 
             SECTION("MouseEntered")
