@@ -30,7 +30,7 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TwoFingerScrollDetect::reportFingerDown(std::intptr_t fingerId, float x, float y)
+    void TwoFingerScrollDetect::reportFingerDown(std::uintptr_t fingerId, float x, float y)
     {
         m_fingerPositions[fingerId] = {x, y};
 
@@ -49,7 +49,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TwoFingerScrollDetect::reportFingerUp(std::intptr_t fingerId)
+    void TwoFingerScrollDetect::reportFingerUp(std::uintptr_t fingerId)
     {
         m_fingerPositions.erase(fingerId);
 
@@ -59,7 +59,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void TwoFingerScrollDetect::reportFingerMotion(std::intptr_t fingerId, float x, float y)
+    void TwoFingerScrollDetect::reportFingerMotion(std::uintptr_t fingerId, float x, float y)
     {
         m_fingerPositions[fingerId] = {x, y};
     }

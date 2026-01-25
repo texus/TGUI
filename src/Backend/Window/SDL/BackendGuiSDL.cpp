@@ -428,61 +428,38 @@ namespace tgui
             }
             case SDL_EVENT_FINGER_DOWN:
             {
-                // Ignore this finger if another finger is already down
-                if (m_touchFirstFingerDown)
-                    return false;
-
-                // Remember which finger this is, for when we receive SDL_EVENT_FINGER_MOTION and SDL_EVENT_FINGER_UP events
-                m_touchFirstFingerDown = true;
+                eventTGUI.type = Event::Type::FingerDown;
 #if (SDL_MAJOR_VERSION >= 3)
-                m_touchFirstFingerId = eventSDL.tfinger.fingerID;
-                m_touchFirstFingerTouchId = eventSDL.tfinger.touchID;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSDL.tfinger.fingerID);
 #else
-                m_touchFirstFingerId = eventSDL.tfinger.fingerId;
-                m_touchFirstFingerTouchId = eventSDL.tfinger.touchId;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSDL.tfinger.fingerId);
 #endif
-
-                // Simulate a MouseButtonPressed event
-                eventTGUI.type = Event::Type::MouseButtonPressed;
-                eventTGUI.mouseButton.button = Event::MouseButton::Left;
-                eventTGUI.mouseButton.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
-                eventTGUI.mouseButton.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
+                eventTGUI.touch.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
+                eventTGUI.touch.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
                 return true;
             }
             case SDL_EVENT_FINGER_UP:
             {
-                // Only handle the event if this is the first finger
+                eventTGUI.type = Event::Type::FingerUp;
 #if (SDL_MAJOR_VERSION >= 3)
-                if (!m_touchFirstFingerDown || (m_touchFirstFingerId != eventSDL.tfinger.fingerID) || (m_touchFirstFingerTouchId != eventSDL.tfinger.touchID))
-                    return false;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSDL.tfinger.fingerID);
 #else
-                if (!m_touchFirstFingerDown || (m_touchFirstFingerId != eventSDL.tfinger.fingerId) || (m_touchFirstFingerTouchId != eventSDL.tfinger.touchId))
-                    return false;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSDL.tfinger.fingerId);
 #endif
-                m_touchFirstFingerDown = false;
-
-                // Simulate a MouseButtonReleased event
-                eventTGUI.type = Event::Type::MouseButtonReleased;
-                eventTGUI.mouseButton.button = Event::MouseButton::Left;
-                eventTGUI.mouseButton.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
-                eventTGUI.mouseButton.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
+                eventTGUI.touch.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
+                eventTGUI.touch.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
                 return true;
             }
             case SDL_EVENT_FINGER_MOTION:
             {
-                // Only handle the event if this is the first finger
+                eventTGUI.type = Event::Type::FingerMoved;
 #if (SDL_MAJOR_VERSION >= 3)
-                if (!m_touchFirstFingerDown || (m_touchFirstFingerId != eventSDL.tfinger.fingerID) || (m_touchFirstFingerTouchId != eventSDL.tfinger.touchID))
-                    return false;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSDL.tfinger.fingerID);
 #else
-                if (!m_touchFirstFingerDown || (m_touchFirstFingerId != eventSDL.tfinger.fingerId) || (m_touchFirstFingerTouchId != eventSDL.tfinger.touchId))
-                    return false;
+                eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventSDL.tfinger.fingerId);
 #endif
-
-                // Simulate a MouseMoved event
-                eventTGUI.type = Event::Type::MouseMoved;
-                eventTGUI.mouseMove.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
-                eventTGUI.mouseMove.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
+                eventTGUI.touch.x = static_cast<int>(std::round(eventSDL.tfinger.x * m_framebufferSize.x));
+                eventTGUI.touch.y = static_cast<int>(std::round(eventSDL.tfinger.y * m_framebufferSize.y));
                 return true;
             }
             default: // This event is not handled by TGUI
@@ -508,46 +485,10 @@ namespace tgui
             return false;
 #endif
 
-        // Detect scrolling with two fingers by examining touch events
-        if ((sdlEvent.type == SDL_EVENT_FINGER_DOWN) || (sdlEvent.type == SDL_EVENT_FINGER_UP) || (sdlEvent.type == SDL_EVENT_FINGER_MOTION))
-        {
-            const bool wasScrolling = m_twoFingerScroll.isScrolling();
-
-#if (SDL_MAJOR_VERSION >= 3)
-            const auto fingerId = static_cast<std::intptr_t>(sdlEvent.tfinger.fingerID);
-#else
-            const auto fingerId = static_cast<std::intptr_t>(sdlEvent.tfinger.fingerId);
-#endif
-            const float x = sdlEvent.tfinger.x * m_framebufferSize.x;
-            const float y = sdlEvent.tfinger.y * m_framebufferSize.y;
-
-            if (sdlEvent.type == SDL_EVENT_FINGER_DOWN)
-                m_twoFingerScroll.reportFingerDown(fingerId, x, y);
-            else if (sdlEvent.type == SDL_EVENT_FINGER_UP)
-                m_twoFingerScroll.reportFingerUp(fingerId);
-            else if (sdlEvent.type == SDL_EVENT_FINGER_MOTION)
-            {
-                m_twoFingerScroll.reportFingerMotion(fingerId, x, y);
-                if (m_twoFingerScroll.isScrolling())
-                    return handleTwoFingerScroll(wasScrolling);
-            }
-        }
-
         // Convert the event to our own type so that we can process it in a backend-independent way afterwards
         Event event;
         if (!convertEvent(sdlEvent, event))
             return false; // We don't process this type of event
-
-        // For touches, always send a mouse move event before the mouse press,
-        // because widgets may assume that the mouse had to move to the clicked location first
-        if ((event.type == Event::Type::MouseButtonPressed) && (sdlEvent.type == SDL_EVENT_FINGER_DOWN))
-        {
-            Event mouseMoveEvent;
-            mouseMoveEvent.type = Event::Type::MouseMoved;
-            mouseMoveEvent.mouseMove.x = event.mouseButton.x;
-            mouseMoveEvent.mouseMove.y = event.mouseButton.y;
-            handleEvent(mouseMoveEvent);
-        }
 
         // If a text event consists of multiple unicode characters (which can happen when an IME is used) then our
         // converted event only contains the last character. We will send all other unicode characters here.

@@ -48,13 +48,13 @@ namespace tgui
         /// @param x         X position of the finger on the window
         /// @param y         Y position of the finger on the window
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void reportFingerDown(std::intptr_t fingerId, float x, float y);
+        void reportFingerDown(std::uintptr_t fingerId, float x, float y);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the detector that a touching finger has moved
         /// @param fingerId  Id for the finger that was passed to reportFingerDown when the touch began
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void reportFingerUp(std::intptr_t fingerId);
+        void reportFingerUp(std::uintptr_t fingerId);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the detector that a finger stopped touching
@@ -62,7 +62,7 @@ namespace tgui
         /// @param x         X position of the finger on the window
         /// @param y         Y position of the finger on the window
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void reportFingerMotion(std::intptr_t fingerId, float x, float y);
+        void reportFingerMotion(std::uintptr_t fingerId, float x, float y);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether two fingers are currently being held down and we have detected it as a scroll event
@@ -96,7 +96,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        std::unordered_map<std::intptr_t, Vector2f> m_fingerPositions;
+        std::unordered_map<std::uintptr_t, Vector2f> m_fingerPositions;
         Vector2f m_initialCentroidPosition;
         Vector2f m_lastCentroidPosition;
         bool m_trackingActive = true; // When three fingers touch, we stop trying to detect scrolling until all fingers are released again

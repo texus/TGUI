@@ -685,6 +685,7 @@ namespace tgui
         bool m_tooltipPossible = false;
         Vector2f m_toolTipRelativePos;
         Vector2i m_lastMousePos;
+        std::uintptr_t m_trackedFingerId = 0;
         TwoFingerScrollDetect m_twoFingerScroll;
 
         Vector2i m_framebufferSize;

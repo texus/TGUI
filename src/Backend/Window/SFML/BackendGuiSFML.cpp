@@ -177,73 +177,10 @@ namespace tgui
 
     bool BackendGuiSFML::handleEvent(sf::Event sfmlEvent)
     {
-        // Detect scrolling with two fingers by examining touch events
-#if SFML_VERSION_MAJOR >= 3
-        if (const auto* sfmlTouchBegan = sfmlEvent.getIf<sf::Event::TouchBegan>())
-        {
-            const auto fingerId = static_cast<std::intptr_t>(sfmlTouchBegan->finger);
-            const auto x = static_cast<float>(sfmlTouchBegan->position.x);
-            const auto y = static_cast<float>(sfmlTouchBegan->position.y);
-            m_twoFingerScroll.reportFingerDown(fingerId, x, y);
-        }
-
-        if (const auto* sfmlTouchEnded = sfmlEvent.getIf<sf::Event::TouchEnded>())
-        {
-            const auto fingerId = static_cast<std::intptr_t>(sfmlTouchEnded->finger);
-            m_twoFingerScroll.reportFingerUp(fingerId);
-        }
-
-        if (const auto* sfmlTouchMoved = sfmlEvent.getIf<sf::Event::TouchMoved>())
-        {
-            const auto fingerId = static_cast<std::intptr_t>(sfmlTouchMoved->finger);
-            const auto x = static_cast<float>(sfmlTouchMoved->position.x);
-            const auto y = static_cast<float>(sfmlTouchMoved->position.y);
-
-            const bool wasScrolling = m_twoFingerScroll.isScrolling();
-            m_twoFingerScroll.reportFingerMotion(fingerId, x, y);
-            if (m_twoFingerScroll.isScrolling())
-                return handleTwoFingerScroll(wasScrolling);
-        }
-#else
-        if ((sfmlEvent.type == sf::Event::TouchBegan) || (sfmlEvent.type == sf::Event::TouchEnded) || (sfmlEvent.type == sf::Event::TouchMoved))
-        {
-            const bool wasScrolling = m_twoFingerScroll.isScrolling();
-
-            const auto fingerId = static_cast<std::intptr_t>(sfmlEvent.touch.finger);
-            const float x = static_cast<float>(sfmlEvent.touch.x);
-            const float y = static_cast<float>(sfmlEvent.touch.y);
-
-            if (sfmlEvent.type == sf::Event::TouchBegan)
-                m_twoFingerScroll.reportFingerDown(fingerId, x, y);
-            else if (sfmlEvent.type == sf::Event::TouchEnded)
-                m_twoFingerScroll.reportFingerUp(fingerId);
-            else if (sfmlEvent.type == sf::Event::TouchMoved)
-            {
-                m_twoFingerScroll.reportFingerMotion(fingerId, x, y);
-                if (m_twoFingerScroll.isScrolling())
-                    return handleTwoFingerScroll(wasScrolling);
-            }
-        }
-#endif
         // Convert the event to our own type so that we can process it in a backend-independent way afterwards
         Event event;
         if (!convertEvent(sfmlEvent, event))
             return false; // We don't process this type of event
-
-#if SFML_VERSION_MAJOR >= 3
-        if ((event.type == Event::Type::MouseButtonPressed) && sfmlEvent.is<sf::Event::TouchBegan>())
-#else
-        if ((event.type == Event::Type::MouseButtonPressed) && (sfmlEvent.type == sf::Event::TouchBegan))
-#endif
-        {
-            // For touches, always send a mouse move event before the mouse press,
-            // because widgets may assume that the mouse had to move to the clicked location first
-            Event mouseMoveEvent;
-            mouseMoveEvent.type = Event::Type::MouseMoved;
-            mouseMoveEvent.mouseMove.x = event.mouseButton.x;
-            mouseMoveEvent.mouseMove.y = event.mouseButton.y;
-            handleEvent(mouseMoveEvent);
-        }
 
         return handleEvent(event);
     }
@@ -518,39 +455,28 @@ namespace tgui
 
         if (const auto* eventTouchMoved = eventSFML.getIf<sf::Event::TouchMoved>())
         {
-            if (eventTouchMoved->finger != 0)
-                return false; // Only the first finger is handled
-
-            // Simulate a MouseMoved event
-            eventTGUI.type = Event::Type::MouseMoved;
-            eventTGUI.mouseMove.x = eventTouchMoved->position.x;
-            eventTGUI.mouseMove.y = eventTouchMoved->position.y;
+            eventTGUI.type = Event::Type::FingerMoved;
+            eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventTouchMoved->finger) + 1;
+            eventTGUI.touch.x = eventTouchMoved->position.x;
+            eventTGUI.touch.y = eventTouchMoved->position.y;
             return true;
         }
 
         if (const auto* eventTouchBegan = eventSFML.getIf<sf::Event::TouchBegan>())
         {
-            if (eventTouchBegan->finger != 0)
-                return false; // Only the first finger is handled
-
-            // Simulate a MouseButtonPressed event
-            eventTGUI.type = Event::Type::MouseButtonPressed;
-            eventTGUI.mouseButton.button = Event::MouseButton::Left;
-            eventTGUI.mouseButton.x = eventTouchBegan->position.x;
-            eventTGUI.mouseButton.y = eventTouchBegan->position.y;
+            eventTGUI.type = Event::Type::FingerDown;
+            eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventTouchBegan->finger) + 1;
+            eventTGUI.touch.x = eventTouchBegan->position.x;
+            eventTGUI.touch.y = eventTouchBegan->position.y;
             return true;
         }
 
         if (const auto* eventTouchEnded = eventSFML.getIf<sf::Event::TouchEnded>())
         {
-            if (eventTouchEnded->finger != 0)
-                return false; // Only the first finger is handled
-
-            // Simulate a MouseButtonReleased event
-            eventTGUI.type = Event::Type::MouseButtonReleased;
-            eventTGUI.mouseButton.button = Event::MouseButton::Left;
-            eventTGUI.mouseButton.x = eventTouchEnded->position.x;
-            eventTGUI.mouseButton.y = eventTouchEnded->position.y;
+            eventTGUI.type = Event::Type::FingerUp;
+            eventTGUI.touch.fingerId = static_cast<std::uintptr_t>(eventTouchEnded->finger) + 1;
+            eventTGUI.touch.x = eventTouchEnded->position.x;
+            eventTGUI.touch.y = eventTouchEnded->position.y;
             return true;
         }
 
@@ -691,30 +617,26 @@ namespace tgui
             }
             case sf::Event::TouchMoved:
             {
-                if (eventSFML.touch.finger != 0)
-                    return false; // Only the first finger is handled
-
-                // Simulate a MouseMoved event
-                eventTGUI.type = Event::Type::MouseMoved;
-                eventTGUI.mouseMove.x = eventSFML.touch.x;
-                eventTGUI.mouseMove.y = eventSFML.touch.y;
+                eventTGUI.type = Event::Type::FingerMoved;
+                eventTGUI.touch.fingerID = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
+                eventTGUI.touch.x = eventSFML.touch.x;
+                eventTGUI.touch.y = eventSFML.touch.y;
                 return true;
             }
             case sf::Event::TouchBegan:
+            {
+                eventTGUI.type = Event::Type::FingerDown;
+                eventTGUI.touch.fingerID = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
+                eventTGUI.touch.x = eventSFML.touch.x;
+                eventTGUI.touch.y = eventSFML.touch.y;
+                return true;
+            }
             case sf::Event::TouchEnded:
             {
-                if (eventSFML.touch.finger != 0)
-                    return false; // Only the first finger is handled
-
-                // Simulate a MouseButtonPressed or MouseButtonReleased event
-                if (eventSFML.type == sf::Event::TouchBegan)
-                    eventTGUI.type = Event::Type::MouseButtonPressed;
-                else
-                    eventTGUI.type = Event::Type::MouseButtonReleased;
-
-                eventTGUI.mouseButton.button = Event::MouseButton::Left;
-                eventTGUI.mouseButton.x = eventSFML.touch.x;
-                eventTGUI.mouseButton.y = eventSFML.touch.y;
+                eventTGUI.type = Event::Type::FingerUp;
+                eventTGUI.touch.fingerID = static_cast<std::uintptr_t>(eventSFML.touch.finger) + 1;
+                eventTGUI.touch.x = eventSFML.touch.x;
+                eventTGUI.touch.y = eventSFML.touch.y;
                 return true;
             }
             default: // This event is not handled by TGUI

@@ -113,7 +113,65 @@ namespace tgui
             case Event::Type::MouseButtonPressed:
             case Event::Type::MouseButtonReleased:
             case Event::Type::MouseWheelScrolled:
+            case Event::Type::FingerDown:
+            case Event::Type::FingerUp:
+            case Event::Type::FingerMoved:
             {
+                // Detect scrolling with two fingers by examining touch events
+                if (event.type == Event::Type::FingerDown)
+                {
+                    m_twoFingerScroll.reportFingerDown(event.touch.fingerId, static_cast<float>(event.touch.x), static_cast<float>(event.touch.y));
+
+                    // If a new finger goes down then we will track it instead of the first finger.
+                    // Since the first finger may have already put a widget into a down state, we tell the widgets that
+                    // the there is no longer anything on top of it.
+                    if (m_trackedFingerId != 0)
+                        m_container->leftMouseButtonNoLongerDown();
+
+                    // We will track the last finger that goes down
+                    m_trackedFingerId = event.touch.fingerId;
+
+                    // Always send a mouse move event before simulating the the mouse press,
+                    // because widgets may assume that the mouse had to move to the clicked location first
+                    Event mouseMoveEvent;
+                    mouseMoveEvent.type = Event::Type::MouseMoved;
+                    mouseMoveEvent.mouseMove.x = event.touch.x;
+                    mouseMoveEvent.mouseMove.y = event.touch.y;
+                    handleEvent(std::move(mouseMoveEvent));
+                }
+                else if (event.type == Event::Type::FingerUp)
+                {
+                    m_twoFingerScroll.reportFingerUp(event.touch.fingerId);
+
+                    // If this isn't the tracked finger then ignore it
+                    if (m_trackedFingerId != event.touch.fingerId)
+                        return false;
+
+                    // We are no longer tracking a finger
+                    m_trackedFingerId = 0;
+                }
+                else if (event.type == Event::Type::FingerMoved)
+                {
+                    const bool wasScrolling = m_twoFingerScroll.isScrolling();
+                    m_twoFingerScroll.reportFingerMotion(event.touch.fingerId, static_cast<float>(event.touch.x), static_cast<float>(event.touch.y));
+                    if (m_twoFingerScroll.isScrolling())
+                    {
+                        // Once we start scrolling we will no longer consider the simulated mouse as down.
+                        // We don't want widgets to think that we are dragging something while scrolling.
+                        if (m_trackedFingerId != 0)
+                        {
+                            m_trackedFingerId = 0;
+                            m_container->leftMouseButtonNoLongerDown();
+                        }
+
+                        return handleTwoFingerScroll(wasScrolling);
+                    }
+
+                    // If this isn't the tracked finger then ignore it
+                    if (m_trackedFingerId != event.touch.fingerId)
+                        return false;
+                }
+
                 Vector2f mouseCoords;
                 if (event.type == Event::Type::MouseMoved)
                 {
@@ -124,6 +182,11 @@ namespace tgui
                 {
                     m_lastMousePos = {event.mouseWheel.x, event.mouseWheel.y};
                     mouseCoords = mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y});
+                }
+                else if ((event.type == Event::Type::FingerUp) || (event.type == Event::Type::FingerDown) || (event.type == Event::Type::FingerMoved))
+                {
+                    m_lastMousePos = {event.touch.x, event.touch.y};
+                    mouseCoords = mapPixelToCoords({event.touch.x, event.touch.y});
                 }
                 else // if ((event.type == Event::Type::MouseButtonPressed) || (event.type == Event::Type::MouseButtonReleased))
                 {
@@ -145,8 +208,6 @@ namespace tgui
                 m_tooltipTime = {};
                 m_tooltipPossible = true;
 
-                if (event.type == Event::Type::MouseMoved)
-                    return m_container->processMouseMoveEvent(mouseCoords);
                 if (event.type == Event::Type::MouseWheelScrolled)
                 {
                     if (m_container->processScrollEvent(event.mouseWheel.delta, mouseCoords, false))
@@ -155,15 +216,30 @@ namespace tgui
                     // Even if no scrollbar moved, we will still absorb the scroll event when the mouse is on top of a widget
                     return m_container->getWidgetAtPos(mouseCoords, false) != nullptr;
                 }
+
                 if (event.type == Event::Type::MouseButtonPressed)
                     return m_container->processMousePressEvent(event.mouseButton.button, mouseCoords);
-                // if (event.type == Event::Type::MouseButtonReleased)
-                const bool eventHandled = m_container->processMouseReleaseEvent(event.mouseButton.button, mouseCoords);
-                if (event.mouseButton.button == Event::MouseButton::Left)
+                if (event.type == Event::Type::FingerDown)
+                    return m_container->processMousePressEvent(Event::MouseButton::Left, mouseCoords);
+
+                if (event.type == Event::Type::MouseButtonReleased)
+                {
+                    const bool eventHandled = m_container->processMouseReleaseEvent(event.mouseButton.button, mouseCoords);
+                    if (event.mouseButton.button == Event::MouseButton::Left)
+                        m_container->leftMouseButtonNoLongerDown();
+                    else if (event.mouseButton.button == Event::MouseButton::Right)
+                        m_container->rightMouseButtonNoLongerDown();
+                    return eventHandled;
+                }
+                if (event.type == Event::Type::FingerUp)
+                {
+                    const bool eventHandled = m_container->processMouseReleaseEvent(Event::MouseButton::Left, mouseCoords);
                     m_container->leftMouseButtonNoLongerDown();
-                else if (event.mouseButton.button == Event::MouseButton::Right)
-                    m_container->rightMouseButtonNoLongerDown();
-                return eventHandled;
+                    return eventHandled;
+                }
+
+                // (event.type == Event::Type::MouseMoved) || (event.type == Event::Type::FingerMoved)
+                return m_container->processMouseMoveEvent(mouseCoords);
             }
             case Event::Type::KeyPressed:
             {
