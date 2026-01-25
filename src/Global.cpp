@@ -174,7 +174,10 @@ namespace tgui
             if (!rawFilePtr)
                 return nullptr;
 
-            const auto closeFileFunc = [](FILE* fp){ if (fclose(fp)) throw tgui::Exception{U"Failed to fclose file, error: " + tgui::String(std::system_error(errno, std::generic_category()).what())}; };
+            const auto closeFileFunc = [](FILE* fp){
+                if (fclose(fp))
+                    throw tgui::Exception{U"Failed to fclose file, error: " + tgui::String(std::system_error(errno, std::generic_category()).what())};
+            };
             const std::unique_ptr<FILE, decltype(closeFileFunc)> file(rawFilePtr, closeFileFunc);
 
             if (fseek(file.get(), 0, SEEK_END) != 0)
