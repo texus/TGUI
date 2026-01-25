@@ -83,8 +83,8 @@ namespace tgui
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             void draw() override
             {
-                TGUI_ASSERT(false, "The SDL_GPU backend requires that you pass SDL_GPUCommandBuffer and SDL_GPURenderPass pointers to the draw function");
-                throw Exception("The SDL_GPU backend requires that you pass SDL_GPUCommandBuffer and SDL_GPURenderPass pointers to the draw function");
+                TGUI_ASSERT(false, "The SDL_GPU backend requires that you pass a SDL_GPURenderPass pointer to the draw function and call prepareDraw before calling draw");
+                throw Exception("The SDL_GPU backend requires that you pass a SDL_GPURenderPass pointer to the draw function and call prepareDraw before calling draw");
             }
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
