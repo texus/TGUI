@@ -1,5 +1,5 @@
-TGUI 1.12  (TBD)
-----------------
+TGUI 1.12  (26 January 2026)
+----------------------------
 
 - New widget: VerticalTabs
 - Added Move cursor type (also known as SizeAll cursor)
