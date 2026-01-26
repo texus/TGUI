@@ -583,7 +583,7 @@ namespace tgui
             if (menu.text.getString() != hierarchy[parentIndex])
                 continue;
 
-            if (parentIndex + 1 == hierarchy.size())
+            if (parentIndex + 1 >= hierarchy.size())
             {
                 menu.menuItems.clear();
                 return true;
