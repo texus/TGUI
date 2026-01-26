@@ -530,7 +530,7 @@ int main(int argc, char * argv[])
 
     session.cli(cli);
     if (session.applyCommandLine(argc, argv) != 0)
-      return 1;
+      return EXIT_FAILURE;
 
     std::unique_ptr<TestsWindowBase> window;
     if (selectedBackend.empty())
@@ -585,7 +585,7 @@ int main(int argc, char * argv[])
         if (!window)
         {
             std::cerr << "Backend parameter was provided but no matching backend was enabled TGUI\n";
-            return 1;
+            return EXIT_FAILURE;
         }
     }
 

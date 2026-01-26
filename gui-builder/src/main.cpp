@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Config.hpp>
+#include <cstdlib>
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp> // GetCommandLineW
     #include <shellapi.h> // CommandLineToArgvW
@@ -78,17 +79,17 @@ int main(int, char* argv[])
     catch (const tgui::Exception& e)
     {
         std::cerr << "TGUI exception thrown: " << e.what() << '\n';
-        return 1;
+        return EXIT_FAILURE;
     }
     catch (const std::exception& e)
     {
         std::cerr << "Exception thrown: " << e.what() << '\n';
-        return 1;
+        return EXIT_FAILURE;
     }
     catch (...)
     {
         std::cerr << "Unknown exception thrown\n";
-        return 1;
+        return EXIT_FAILURE;
     }
-    return 0;
+    return EXIT_SUCCESS;
 }
