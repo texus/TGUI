@@ -82,7 +82,7 @@ macro(tgui_find_dependency_sfml component optional_quiet)
             message(FATAL_ERROR
                 "CMake couldn't find SFML.\n"
                 "Set SFML_DIR to the directory containing SFMLConfig.cmake (usually SFML_ROOT/lib/cmake/SFML).\n"
-                "If searching for SFML 2 found an SFML 3 config, but searching for SFML 3 failed to find it's Shared/Static configuration, then you are probably attempting to import SFML from its build directory. This is no longer supported in SFML 3, you must install SFML.\n")
+                "If searching for SFML 2 found an SFML 3 config, but searching for SFML 3 failed to find its Shared/Static configuration, then you are probably attempting to import SFML from its build directory. This is no longer supported in SFML 3, you must install SFML.\n")
         endif()
 
         if(SFML_VERSION VERSION_LESS "2.5.0")

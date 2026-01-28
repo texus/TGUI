@@ -396,7 +396,7 @@ void GuiBuilder::mainLoop()
 
                                 m_selectedWidgetComboBox->setSelectedItemById(widgetPtrToStrId(widgetToMove));
                                 widgetHierarchyChanged();
-                                m_selectedForm->updateSelectionSquarePositions(); // Absolute widget position moved if it's parent changed
+                                m_selectedForm->updateSelectionSquarePositions(); // Absolute widget position moved if its parent changed
                                 m_selectedForm->setChanged(true);
                             }
                         }
