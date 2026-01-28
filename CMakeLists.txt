@@ -196,7 +196,6 @@ endif()
 
 # Apple-specific options
 if(TGUI_OS_MACOS OR TGUI_OS_IOS)
-
     # Add an option to build framework instead of dylib (release only)
     option(TGUI_BUILD_FRAMEWORK "TRUE to build TGUI as a framework library (release only), FALSE to build according to TGUI_SHARED_LIBS" ${TGUI_SHARED_LIBS})
 
@@ -221,7 +220,6 @@ endif()
 
 # Android-specific options
 if(TGUI_OS_ANDROID)
-
     if(CMAKE_ANDROID_API LESS 19)
         message(FATAL_ERROR "Android API level (${CMAKE_ANDROID_API}) must be equal or greater than 19.")
     endif()

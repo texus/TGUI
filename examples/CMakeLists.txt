@@ -28,7 +28,6 @@ endif()
 # Macro to build the examples
 # Usage: tgui_add_example(example-folder-name SUOURCES source.cpp)
 macro(tgui_add_example target)
-
     # parse the arguments
     cmake_parse_arguments(THIS "" "" "SOURCES" ${ARGN})
 

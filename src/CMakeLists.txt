@@ -436,7 +436,6 @@ if(TGUI_SHARED_LIBS)
         set_target_properties(tgui PROPERTIES PREFIX "")
         set_target_properties(tgui PROPERTIES IMPORT_SUFFIX ".a")
     endif()
-
 else()
     add_library(tgui STATIC)
     set_target_properties(tgui PROPERTIES DEBUG_POSTFIX -s-d)
