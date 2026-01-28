@@ -228,6 +228,8 @@ namespace tgui
             case ')':
                 TGUI_PRINT_WARNING("bracket mismatch while parsing layout string '" << expression << "'.");
                 return;
+            default:
+                break;
             }
 
             prevSearchPos = searchPos + 1;
