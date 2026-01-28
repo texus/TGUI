@@ -183,12 +183,12 @@ namespace tgui
             if (fseek(file.get(), 0, SEEK_END) != 0)
                 return nullptr;
 
-            const long bytesInFile = ftell(file.get());
+            const auto bytesInFile = ftell(file.get());
 
             if (fseek(file.get(), 0, SEEK_SET) != 0)
                 return nullptr;
 
-            if ((bytesInFile <= 0) || (bytesInFile == std::numeric_limits<long>::max()))
+            if ((bytesInFile <= 0) || (bytesInFile == std::numeric_limits<decltype(bytesInFile)>::max()))
             {
                 // When filename was a directory on linux, ftell returned the maximum long value instead of -1
                 return nullptr;
