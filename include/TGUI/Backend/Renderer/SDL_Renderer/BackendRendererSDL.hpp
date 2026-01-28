@@ -77,7 +77,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the SDL_Renderer object that is used to create textures
         ///
-        /// This function is only needed when working with multiple windows. In such case each window has it's own SDL_Renderer
+        /// This function is only needed when working with multiple windows. In such case each window has its own SDL_Renderer
         /// and the correct one needs to be selected when textures are created.
         ///
         /// @since TGUI 1.10

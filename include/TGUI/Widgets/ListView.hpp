@@ -999,7 +999,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function needs to be called when items are inserted into the list. If the widest item for each column is located
-        // below the inserted item then it's index needs to be updated.
+        // below the inserted item then its index needs to be updated.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void incrementWidestItemIndices(std::size_t itemIndex);
 
