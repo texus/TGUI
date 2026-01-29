@@ -365,7 +365,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void FileDialog::setFileTypeFilters(const std::vector<std::pair<String, std::vector<String>>>& filters, std::size_t defaultIndex)
+    void FileDialog::setFileTypeFilters(const std::vector<std::pair<String, std::vector<String>>>& filters, std::size_t defaultFilterIndex)
     {
         m_fileTypeFilters.clear();
         for (const auto& filter : filters)
@@ -394,13 +394,13 @@ namespace tgui
         for (const auto& filter : m_fileTypeFilters)
             m_comboBoxFileTypes->addItem(filter.first);
 
-        if (defaultIndex > m_comboBoxFileTypes->getItemCount())
+        if (defaultFilterIndex > m_comboBoxFileTypes->getItemCount())
         {
-            defaultIndex = m_comboBoxFileTypes->getItemCount() - 1;
+            defaultFilterIndex = m_comboBoxFileTypes->getItemCount() - 1;
             TGUI_PRINT_WARNING("defaultIndex too high in FileDialog::setFileTypeFilters");
         }
 
-        m_comboBoxFileTypes->setSelectedItemByIndex(defaultIndex);
+        m_comboBoxFileTypes->setSelectedItemByIndex(defaultFilterIndex);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -67,16 +67,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid::Grid(Grid&& gridToMove) noexcept :
-        Container     {std::move(gridToMove)},
-        m_autoSize    {std::move(gridToMove.m_autoSize)},
-        m_gridWidgets {std::move(gridToMove.m_gridWidgets)},
-        m_objPadding  {std::move(gridToMove.m_objPadding)},
-        m_objAlignment{std::move(gridToMove.m_objAlignment)},
-        m_rowHeight   {std::move(gridToMove.m_rowHeight)},
-        m_columnWidth {std::move(gridToMove.m_columnWidth)},
-        m_widgetCells {std::move(gridToMove.m_widgetCells)},
-        m_connectedSizeCallbacks{std::move(gridToMove.m_connectedSizeCallbacks)}
+    Grid::Grid(Grid&& other) noexcept :
+        Container     {std::move(other)},
+        m_autoSize    {std::move(other.m_autoSize)},
+        m_gridWidgets {std::move(other.m_gridWidgets)},
+        m_objPadding  {std::move(other.m_objPadding)},
+        m_objAlignment{std::move(other.m_objAlignment)},
+        m_rowHeight   {std::move(other.m_rowHeight)},
+        m_columnWidth {std::move(other.m_columnWidth)},
+        m_widgetCells {std::move(other.m_widgetCells)},
+        m_connectedSizeCallbacks{std::move(other.m_connectedSizeCallbacks)}
     {
         for (auto& widget : m_widgets)
             widget->onSizeChange.disconnect(m_connectedSizeCallbacks[widget]);
