@@ -90,7 +90,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox& MessageBox::operator= (const MessageBox& other)
+    MessageBox& MessageBox::operator=(const MessageBox& other)
     {
         if (this != &other)
         {
@@ -110,7 +110,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    MessageBox& MessageBox::operator= (MessageBox&& other) noexcept
+    MessageBox& MessageBox::operator=(MessageBox&& other) noexcept
     {
         if (this != &other)
         {

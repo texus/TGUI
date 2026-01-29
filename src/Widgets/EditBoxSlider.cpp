@@ -72,7 +72,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBoxSlider& EditBoxSlider::operator= (const EditBoxSlider& other)
+    EditBoxSlider& EditBoxSlider::operator=(const EditBoxSlider& other)
     {
         if (this != &other)
         {
@@ -90,7 +90,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    EditBoxSlider& EditBoxSlider::operator= (EditBoxSlider&& other) noexcept
+    EditBoxSlider& EditBoxSlider::operator=(EditBoxSlider&& other) noexcept
     {
         if (this != &other)
         {

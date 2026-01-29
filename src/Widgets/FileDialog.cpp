@@ -201,7 +201,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialog& FileDialog::operator= (const FileDialog& other)
+    FileDialog& FileDialog::operator=(const FileDialog& other)
     {
         if (this != &other)
         {
@@ -236,7 +236,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialog& FileDialog::operator= (FileDialog&& other) noexcept
+    FileDialog& FileDialog::operator=(FileDialog&& other) noexcept
     {
         if (this != &other)
         {

@@ -88,7 +88,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid& Grid::operator= (const Grid& other)
+    Grid& Grid::operator=(const Grid& other)
     {
         // Make sure it is not the same widget
         if (this != &other)
@@ -120,7 +120,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Grid& Grid::operator= (Grid&& other) noexcept
+    Grid& Grid::operator=(Grid&& other) noexcept
     {
         if (this != &other)
         {

@@ -98,7 +98,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel& ScrollablePanel::operator= (const ScrollablePanel& other)
+    ScrollablePanel& ScrollablePanel::operator=(const ScrollablePanel& other)
     {
         if (this != &other)
         {
@@ -127,7 +127,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollablePanel& ScrollablePanel::operator= (ScrollablePanel&& other) noexcept
+    ScrollablePanel& ScrollablePanel::operator=(ScrollablePanel&& other) noexcept
     {
         if (this != &other)
         {

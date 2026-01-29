@@ -631,7 +631,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Theme& Theme::operator= (const Theme& other)
+    Theme& Theme::operator=(const Theme& other)
     {
         if (this != &other)
         {
@@ -650,7 +650,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Theme& Theme::operator= (Theme&& other) noexcept
+    Theme& Theme::operator=(Theme&& other) noexcept
     {
         if (this != &other)
         {
