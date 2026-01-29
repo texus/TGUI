@@ -287,7 +287,10 @@ namespace tgui
     void BitmapButton::updateTextPosition()
     {
         if (!m_imageComponent->isVisible())
-            return Button::updateTextPosition();
+        {
+            Button::updateTextPosition();
+            return;
+        }
 
         const Vector2f innerSize = m_backgroundComponent->getClientSize();
         const float distanceBetweenTextAndImage = m_textComponent->getLineHeight() / 5.f;

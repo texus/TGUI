@@ -824,20 +824,32 @@ namespace tgui
         else if (expression == U"size")
         {
             if (xAxis)
-                return parseBindingString(U"width", widget, xAxis);
-            return parseBindingString(U"height", widget, xAxis);
+            {
+                parseBindingString(U"width", widget, xAxis);
+                return;
+            }
+            parseBindingString(U"height", widget, xAxis);
+            return;
         }
         else if (expression == U"innersize")
         {
             if (xAxis)
-                return parseBindingString(U"innerwidth", widget, xAxis);
-            return parseBindingString(U"innerheight", widget, xAxis);
+            {
+                parseBindingString(U"innerwidth", widget, xAxis);
+                return;
+            }
+            parseBindingString(U"innerheight", widget, xAxis);
+            return;
         }
         else if ((expression == U"pos") || (expression == U"position"))
         {
             if (xAxis)
-                return parseBindingString(U"x", widget, xAxis);
-            return parseBindingString(U"y", widget, xAxis);
+            {
+                parseBindingString(U"x", widget, xAxis);
+                return;
+            }
+            parseBindingString(U"y", widget, xAxis);
+            return;
         }
         else
         {
@@ -848,7 +860,10 @@ namespace tgui
                 if (widgetName == U"parent" || widgetName == U"&")
                 {
                     if (widget->getParent())
-                        return parseBindingString(expression.substr(dotPos+1), widget->getParent(), xAxis);
+                    {
+                        parseBindingString(expression.substr(dotPos+1), widget->getParent(), xAxis);
+                        return;
+                    }
 
                     // If there is no parent yet then patiently wait until the widget is added to its parent
                     return;
@@ -863,7 +878,10 @@ namespace tgui
                         for (const auto& childWidget : widgets)
                         {
                             if (childWidget->getWidgetName().equalIgnoreCase(widgetName))
-                                return parseBindingString(expression.substr(dotPos+1), childWidget.get(), xAxis);
+                            {
+                                parseBindingString(expression.substr(dotPos+1), childWidget.get(), xAxis);
+                                return;
+                            }
                         }
                     }
 
@@ -874,7 +892,10 @@ namespace tgui
                         for (const auto& siblingWidget : widgets)
                         {
                             if (siblingWidget->getWidgetName().equalIgnoreCase(widgetName))
-                                return parseBindingString(expression.substr(dotPos+1), siblingWidget.get(), xAxis);
+                            {
+                                parseBindingString(expression.substr(dotPos+1), siblingWidget.get(), xAxis);
+                                return;
+                            }
                         }
                     }
                     else // If there is no parent yet then patiently wait until the widget is added to its parent
