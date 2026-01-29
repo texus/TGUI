@@ -91,7 +91,10 @@ namespace tgui
 
         // We can use the drawVertexArray function (called from the base class) if the sprite doesn't have a shader
         if (sprite.getTexture().getData()->svgImage || !sprite.getTexture().getShader())
-            return BackendRenderTarget::drawSprite(states, sprite);
+        {
+            BackendRenderTarget::drawSprite(states, sprite);
+            return;
+        }
 
         RenderStates transformedStates = states;
         if (sprite.getRotation() == 0)
