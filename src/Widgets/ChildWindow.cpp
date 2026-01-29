@@ -166,7 +166,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow& ChildWindow::operator= (const ChildWindow& other)
+    ChildWindow& ChildWindow::operator=(const ChildWindow& other)
     {
         // Make sure it is not the same widget
         if (this != &other)
@@ -217,7 +217,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ChildWindow& ChildWindow::operator= (ChildWindow&& other) noexcept
+    ChildWindow& ChildWindow::operator=(ChildWindow&& other) noexcept
     {
         // Make sure it is not the same widget
         if (this != &other)

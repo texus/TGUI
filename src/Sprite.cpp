@@ -93,7 +93,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Sprite& Sprite::operator= (const Sprite& other)
+    Sprite& Sprite::operator=(const Sprite& other)
     {
         if (this != &other)
         {
@@ -120,7 +120,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Sprite& Sprite::operator= (Sprite&& other) noexcept
+    Sprite& Sprite::operator=(Sprite&& other) noexcept
     {
         if (this != &other)
         {

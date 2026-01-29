@@ -82,7 +82,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TabContainer& TabContainer::operator= (const TabContainer& other)
+    TabContainer& TabContainer::operator=(const TabContainer& other)
     {
         if (this != &other)
         {
@@ -111,7 +111,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TabContainer& TabContainer::operator= (TabContainer&& other) noexcept
+    TabContainer& TabContainer::operator=(TabContainer&& other) noexcept
     {
         if (this != &other)
         {

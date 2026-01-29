@@ -68,7 +68,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSFML& CanvasSFML::operator= (const CanvasSFML& right)
+    CanvasSFML& CanvasSFML::operator=(const CanvasSFML& right)
     {
         if (this != &right)
         {
@@ -82,7 +82,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSFML& CanvasSFML::operator= (CanvasSFML&& right) noexcept
+    CanvasSFML& CanvasSFML::operator=(CanvasSFML&& right) noexcept
     {
         if (this != &right)
         {

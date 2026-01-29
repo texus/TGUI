@@ -216,7 +216,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Container& Container::operator= (const Container& right)
+    Container& Container::operator=(const Container& right)
     {
         // Make sure it is not the same widget
         if (this != &right)
@@ -250,7 +250,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Container& Container::operator= (Container&& right) noexcept
+    Container& Container::operator=(Container&& right) noexcept
     {
         // Make sure it is not the same widget
         if (this != &right)

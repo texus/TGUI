@@ -81,7 +81,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinControl& SpinControl::operator= (const SpinControl& other)
+    SpinControl& SpinControl::operator=(const SpinControl& other)
     {
         if (this != &other)
         {
@@ -101,7 +101,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SpinControl& SpinControl::operator= (SpinControl&& other) noexcept
+    SpinControl& SpinControl::operator=(SpinControl&& other) noexcept
     {
         if (this != &other)
         {

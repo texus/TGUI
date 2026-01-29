@@ -296,7 +296,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TreeView& TreeView::operator= (const TreeView& other)
+    TreeView& TreeView::operator=(const TreeView& other)
     {
         if (this != &other)
         {

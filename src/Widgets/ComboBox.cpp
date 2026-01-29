@@ -126,7 +126,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox& ComboBox::operator= (const ComboBox& other)
+    ComboBox& ComboBox::operator=(const ComboBox& other)
     {
         if (this != &other)
         {
@@ -166,7 +166,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ComboBox& ComboBox::operator= (ComboBox&& other) noexcept
+    ComboBox& ComboBox::operator=(ComboBox&& other) noexcept
     {
         if (this != &other)
         {
