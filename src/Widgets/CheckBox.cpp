@@ -292,8 +292,8 @@ namespace tgui
                 const std::array<Vertex, 6> vertices = {{
                     {{leftPoint.x - x, leftPoint.y + y}, checkColor},
                     {{leftPoint.x + x, leftPoint.y - y}, checkColor},
-                    {{middlePoint.x, middlePoint.y + 2*y}, checkColor},
-                    {{middlePoint.x, middlePoint.y - 2*y}, checkColor},
+                    {{middlePoint.x, middlePoint.y + (2*y)}, checkColor},
+                    {{middlePoint.x, middlePoint.y - (2*y)}, checkColor},
                     {{rightPoint.x + x, rightPoint.y + y}, checkColor},
                     {{rightPoint.x - x, rightPoint.y - y}, checkColor}
                 }};

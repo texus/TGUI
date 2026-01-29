@@ -589,10 +589,10 @@ namespace tgui
         const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
         float maxWidth;
         if (m_autoSize)
-            maxWidth = std::max(0.f, m_maximumTextWidth - 2*textOffset);
+            maxWidth = std::max(0.f, m_maximumTextWidth - (2*textOffset));
         else
         {
-            maxWidth = getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight() - 2*textOffset;
+            maxWidth = getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight() - (2*textOffset);
 
             // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar.
             // If the policy is Automatic then we will take it into account later if we find that the text needs a scrollbar.
@@ -615,7 +615,7 @@ namespace tgui
                                  m_paddingCached.getBottom() + m_bordersCached.getBottom()};
 
         const auto lineCount = std::count(stringPtr->begin(), stringPtr->end(), U'\n') + 1;
-        float requiredTextHeight = (lineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached)
+        float requiredTextHeight = ((lineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached))
                                  + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
                                  + Text::getExtraVerticalPadding(m_textSizeCached);
 
@@ -633,7 +633,7 @@ namespace tgui
                 stringPtr = &wordWrappedString.value();
 
                 const auto newLineCount = std::count(stringPtr->begin(), stringPtr->end(), U'\n') + 1;
-                requiredTextHeight = (newLineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached)
+                requiredTextHeight = ((newLineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached))
                                    + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
                                    + Text::getExtraVerticalPadding(m_textSizeCached);
             }
@@ -676,7 +676,7 @@ namespace tgui
         if (m_autoSize)
         {
             m_autoLayout = AutoLayout::Manual;
-            Widget::setSize({std::max(width, maxWidth) + outline.getLeft() + outline.getRight() + 2*textOffset, requiredTextHeight + outline.getTop() + outline.getBottom()});
+            Widget::setSize({std::max(width, maxWidth) + outline.getLeft() + outline.getRight() + (2*textOffset), requiredTextHeight + outline.getTop() + outline.getBottom()});
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
 

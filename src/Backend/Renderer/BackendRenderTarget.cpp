@@ -466,7 +466,7 @@ namespace tgui
         if (borderWidth > 0)
         {
             radius = std::max(0.f, radius - borderWidth);
-            const Vector2f innerSize = {std::max(0.f, size.x - 2*borderWidth), std::max(0.f, size.y - 2*borderWidth)};
+            const Vector2f innerSize = {std::max(0.f, size.x - (2*borderWidth)), std::max(0.f, size.y - (2*borderWidth))};
             radius = std::min({radius, innerSize.x / 2, innerSize.y / 2});
 
             const std::vector<Vector2f>& innerPoints = drawRoundedRectHelperGetPoints(nrCornerPoints, innerSize, radius, borderWidth);

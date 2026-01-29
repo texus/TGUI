@@ -516,7 +516,7 @@ namespace tgui
                     setValue(m_value - m_step);
             }
             else
-                setValue(m_value + std::round(delta) * m_step);
+                setValue(m_value + (std::round(delta) * m_step));
         }
 
         return true;
@@ -665,7 +665,7 @@ namespace tgui
     {
         if (m_orientation == Orientation::Vertical)
         {
-            m_thumb.left = m_bordersCached.getLeft() + (getInnerSize().x - m_thumb.width) / 2.0f;
+            m_thumb.left = m_bordersCached.getLeft() + ((getInnerSize().x - m_thumb.width) / 2.0f);
 
             if (m_thumbWithinTrackCached)
                 m_thumb.top = (getSize().y - m_thumb.height) / (m_maximum - m_minimum) * (m_maximum - m_value);
@@ -677,7 +677,7 @@ namespace tgui
         }
         else
         {
-            m_thumb.top = m_bordersCached.getTop() + (getInnerSize().y - m_thumb.height) / 2.0f;
+            m_thumb.top = m_bordersCached.getTop() + ((getInnerSize().y - m_thumb.height) / 2.0f);
 
             if (m_thumbWithinTrackCached)
                 m_thumb.left = (getSize().x - m_thumb.width) / (m_maximum - m_minimum) * (m_value - m_minimum);

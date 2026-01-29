@@ -44,7 +44,7 @@ namespace tgui
 
             setTextSize(getGlobalTextSize());
             setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
-                     Text::getLineHeight(m_fontCached, m_textSizeCached) * 8
+                     (Text::getLineHeight(m_fontCached, m_textSizeCached) * 8)
                      + Text::getExtraVerticalPadding(m_textSizeCached)
                      + m_paddingCached.getTopPlusBottom()
                      + m_bordersCached.getTopPlusBottom()});

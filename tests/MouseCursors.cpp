@@ -63,7 +63,7 @@ TEST_CASE("[Mouse cursors]")
             for (auto cursor : cursors)
             {
                 tgui::Vector2u size;
-                auto pixels = tgui::ImageLoader::loadFromFile("resources/Texture" + tgui::String(index % 8 + 1) + ".png", size);
+                auto pixels = tgui::ImageLoader::loadFromFile("resources/Texture" + tgui::String((index % 8) + 1) + ".png", size);
 
                 REQUIRE_NOTHROW(tgui::Cursor::setStyle(cursor, pixels.get(), size, {0,0}));
 

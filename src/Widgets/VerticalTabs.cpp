@@ -270,7 +270,7 @@ namespace tgui
                 states.transform.translate({0, -borderHeight});
                 target.drawRoundedRectangle(states, {getSize().x, m_tabHeight + (2 * borderHeight)}, Color::applyOpacity(backgroundColor, m_opacityCached),
                                             m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
-                states.transform.translate({0, m_tabHeight + 2*borderHeight});
+                states.transform.translate({0, m_tabHeight + (2*borderHeight)});
             }
             else
             {

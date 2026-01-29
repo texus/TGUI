@@ -243,7 +243,7 @@ namespace tgui
         if (m_allowTextClick && !getText().empty())
         {
             // Check if the mouse is on top of the image or the small gap between image and text
-            if (FloatRect{0, 0, getSize().x + getSize().x * m_textDistanceRatioCached, getSize().y}.contains(pos))
+            if (FloatRect{0, 0, getSize().x + (getSize().x * m_textDistanceRatioCached), getSize().y}.contains(pos))
                 return true;
 
             // Check if the mouse is on top of the text
