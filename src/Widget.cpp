@@ -186,6 +186,7 @@ namespace tgui
         m_mouseCursor                  {other.m_mouseCursor},
         m_autoLayout                   {other.m_autoLayout},
         m_autoLayoutUpdateEnabled      {other.m_autoLayoutUpdateEnabled},
+        m_ignoreMouseEvents            {other.m_ignoreMouseEvents},
         m_fontCached                   {other.m_fontCached},
         m_opacityCached                {other.m_opacityCached},
         m_transparentTextureCached     {other.m_transparentTextureCached},
@@ -209,6 +210,8 @@ namespace tgui
         onUnfocus                      {std::move(other.onUnfocus)},
         onMouseEnter                   {std::move(other.onMouseEnter)},
         onMouseLeave                   {std::move(other.onMouseLeave)},
+        onShowEffectFinish             {std::move(other.onShowEffectFinish)},
+        onAnimationFinish              {std::move(other.onAnimationFinish)},
         m_type                         {std::move(other.m_type)},
         m_name                         {std::move(other.m_name)},
         m_position                     {std::move(other.m_position)},
@@ -244,6 +247,7 @@ namespace tgui
         m_mouseCursor                  {std::move(other.m_mouseCursor)},
         m_autoLayout                   {std::move(other.m_autoLayout)},
         m_autoLayoutUpdateEnabled      {std::move(other.m_autoLayoutUpdateEnabled)},
+        m_ignoreMouseEvents            {std::move(other.m_ignoreMouseEvents)},
         m_fontCached                   {std::move(other.m_fontCached)},
         m_opacityCached                {std::move(other.m_opacityCached)},
         m_transparentTextureCached     {std::move(other.m_transparentTextureCached)},
@@ -279,6 +283,8 @@ namespace tgui
             onUnfocus.disconnectAll();
             onMouseEnter.disconnectAll();
             onMouseLeave.disconnectAll();
+            onShowEffectFinish.disconnectAll();
+            onAnimationFinish.disconnectAll();
 
             m_showAnimations.clear();
 
@@ -318,6 +324,7 @@ namespace tgui
             m_mouseCursor          = other.m_mouseCursor;
             m_autoLayout           = other.m_autoLayout;
             m_autoLayoutUpdateEnabled = other.m_autoLayoutUpdateEnabled;
+            m_ignoreMouseEvents    = other.m_ignoreMouseEvents;
             m_fontCached           = other.m_fontCached;
             m_opacityCached        = other.m_opacityCached;
             m_transparentTextureCached = other.m_transparentTextureCached;
@@ -349,6 +356,8 @@ namespace tgui
             onUnfocus              = std::move(other.onUnfocus);
             onMouseEnter           = std::move(other.onMouseEnter);
             onMouseLeave           = std::move(other.onMouseLeave);
+            onShowEffectFinish     = std::move(other.onShowEffectFinish);
+            onAnimationFinish      = std::move(other.onAnimationFinish);
             m_type                 = std::move(other.m_type);
             m_name                 = std::move(other.m_name);
             m_position             = std::move(other.m_position);
@@ -386,6 +395,7 @@ namespace tgui
             m_mouseCursor          = std::move(other.m_mouseCursor);
             m_autoLayout           = std::move(other.m_autoLayout);
             m_autoLayoutUpdateEnabled = std::move(other.m_autoLayoutUpdateEnabled);
+            m_ignoreMouseEvents    = std::move(other.m_ignoreMouseEvents);
             m_fontCached           = std::move(other.m_fontCached);
             m_opacityCached        = std::move(other.m_opacityCached);
             m_transparentTextureCached = std::move(other.m_transparentTextureCached);
