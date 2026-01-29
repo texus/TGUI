@@ -652,19 +652,19 @@ namespace tgui
 
         if (m_orientation == Orientation::Vertical)
         {
-            m_thumbs.first.left = m_bordersCached.getLeft() + (innerSize.x - m_thumbs.first.width) / 2.0f;
+            m_thumbs.first.left = m_bordersCached.getLeft() + ((innerSize.x - m_thumbs.first.width) / 2.0f);
             m_thumbs.first.top = (innerSize.y / (m_maximum - m_minimum) * (m_maximum - m_selectionStart)) - (m_thumbs.first.height / 2.0f);
 
-            m_thumbs.second.left = m_bordersCached.getLeft() + (innerSize.x - m_thumbs.second.width) / 2.0f;
+            m_thumbs.second.left = m_bordersCached.getLeft() + ((innerSize.x - m_thumbs.second.width) / 2.0f);
             m_thumbs.second.top = (innerSize.y / (m_maximum - m_minimum) * (m_maximum - m_selectionEnd)) - (m_thumbs.second.height / 2.0f);
         }
         else // horizontal
         {
             m_thumbs.first.left = (innerSize.x / (m_maximum - m_minimum) * (m_selectionStart - m_minimum)) - (m_thumbs.first.width / 2.0f);
-            m_thumbs.first.top = m_bordersCached.getTop() + (innerSize.y - m_thumbs.first.height) / 2.0f;
+            m_thumbs.first.top = m_bordersCached.getTop() + ((innerSize.y - m_thumbs.first.height) / 2.0f);
 
             m_thumbs.second.left = (innerSize.x / (m_maximum - m_minimum) * (m_selectionEnd - m_minimum)) - (m_thumbs.second.width / 2.0f);
-            m_thumbs.second.top = m_bordersCached.getTop() + (innerSize.y - m_thumbs.second.height) / 2.0f;
+            m_thumbs.second.top = m_bordersCached.getTop() + ((innerSize.y - m_thumbs.second.height) / 2.0f);
         }
 
         if (m_spriteSelectedTrack.isSet())
@@ -735,12 +735,12 @@ namespace tgui
 
             if (m_orientation == Orientation::Vertical)
             {
-                selectedTrackStates.transform.translate({0, m_thumbs.first.top + m_thumbs.first.height / 2.f});
+                selectedTrackStates.transform.translate({0, m_thumbs.first.top + (m_thumbs.first.height / 2.f)});
                 size = {getInnerSize().x, m_thumbs.second.top - m_thumbs.first.top};
             }
             else
             {
-                selectedTrackStates.transform.translate({m_thumbs.first.left + m_thumbs.first.width / 2.f, 0});
+                selectedTrackStates.transform.translate({m_thumbs.first.left + (m_thumbs.first.width / 2.f), 0});
                 size = {m_thumbs.second.left - m_thumbs.first.left, getInnerSize().y};
             }
 

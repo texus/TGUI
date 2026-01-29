@@ -449,7 +449,7 @@ namespace tgui
         if (m_maximum == m_minimum)
             m_angle = m_startRotation;
         else if (m_clockwiseTurning)
-            m_angle = m_startRotation - (m_value - m_minimum) / (m_maximum - m_minimum) * allowedAngle;
+            m_angle = m_startRotation - ((m_value - m_minimum) / (m_maximum - m_minimum) * allowedAngle);
         else // counter-clockwise
             m_angle = (((m_value - m_minimum) / (m_maximum - m_minimum)) * allowedAngle) + m_startRotation;
     }

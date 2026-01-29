@@ -519,8 +519,8 @@ namespace tgui
         m_textPosition.x.updateParentSize(getSize().x - borders.getLeft() - borders.getRight());
         m_textPosition.y.updateParentSize(getSize().y - borders.getTop() - borders.getBottom());
 
-        m_textComponent->setPosition({m_textPosition.x.getValue() - m_textOrigin.x * m_textComponent->getSize().x,
-                                      m_textPosition.y.getValue() - m_textOrigin.y * m_textComponent->getSize().y});
+        m_textComponent->setPosition({m_textPosition.x.getValue() - (m_textOrigin.x * m_textComponent->getSize().x),
+                                      m_textPosition.y.getValue() - (m_textOrigin.y * m_textComponent->getSize().y)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

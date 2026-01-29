@@ -149,10 +149,10 @@ namespace tgui
         const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
         float maxWidth;
         if (m_autoSize)
-            maxWidth = std::max(0.f, m_maximumTextWidth - 2*textOffset);
+            maxWidth = std::max(0.f, m_maximumTextWidth - (2*textOffset));
         else
         {
-            maxWidth = getSize().x - outline.getLeft() - outline.getRight() - 2*textOffset;
+            maxWidth = getSize().x - outline.getLeft() - outline.getRight() - (2*textOffset);
 
             // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar.
             // If the policy is Automatic then we will take it into account later if we find that the text needs a scrollbar.
@@ -342,7 +342,7 @@ namespace tgui
         {
             m_autoLayout = AutoLayout::Manual;
             // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-            Widget::setSize({maxWidth + outline.getLeft() + outline.getRight() + 2*textOffset, requiredTextHeight + outline.getTop() + outline.getBottom()});
+            Widget::setSize({maxWidth + outline.getLeft() + outline.getRight() + (2*textOffset), requiredTextHeight + outline.getTop() + outline.getBottom()});
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
 

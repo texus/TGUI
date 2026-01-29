@@ -73,21 +73,21 @@ namespace tgui
     Transform Transform::getInverse() const
     {
         // Compute the determinant
-        const float det = m_matrix[0] * (m_matrix[15] * m_matrix[5] - m_matrix[7] * m_matrix[13])
-                        - m_matrix[1] * (m_matrix[15] * m_matrix[4] - m_matrix[7] * m_matrix[12])
-                        + m_matrix[3] * (m_matrix[13] * m_matrix[4] - m_matrix[5] * m_matrix[12]);
+        const float det = (m_matrix[0] * (m_matrix[15] * m_matrix[5] - m_matrix[7] * m_matrix[13]))
+                        - (m_matrix[1] * (m_matrix[15] * m_matrix[4] - m_matrix[7] * m_matrix[12]))
+                        + (m_matrix[3] * (m_matrix[13] * m_matrix[4] - m_matrix[5] * m_matrix[12]));
 
         // Compute the inverse if the determinant is not zero (don't use an epsilon because the determinant may *really* be tiny)
         if (det != 0.f)
         {
             return { (m_matrix[15] * m_matrix[5] - m_matrix[7] * m_matrix[13]) / det,
-                    -(m_matrix[15] * m_matrix[4] - m_matrix[7] * m_matrix[12]) / det,
+                    -((m_matrix[15] * m_matrix[4]) - (m_matrix[7] * m_matrix[12])) / det,
                      (m_matrix[13] * m_matrix[4] - m_matrix[5] * m_matrix[12]) / det,
-                    -(m_matrix[15] * m_matrix[1] - m_matrix[3] * m_matrix[13]) / det,
+                    -((m_matrix[15] * m_matrix[1]) - (m_matrix[3] * m_matrix[13])) / det,
                      (m_matrix[15] * m_matrix[0] - m_matrix[3] * m_matrix[12]) / det,
-                    -(m_matrix[13] * m_matrix[0] - m_matrix[1] * m_matrix[12]) / det,
+                    -((m_matrix[13] * m_matrix[0]) - (m_matrix[1] * m_matrix[12])) / det,
                      (m_matrix[7]  * m_matrix[1] - m_matrix[3] * m_matrix[5])  / det,
-                    -(m_matrix[7]  * m_matrix[0] - m_matrix[3] * m_matrix[4])  / det,
+                    -((m_matrix[7]  * m_matrix[0]) - (m_matrix[3] * m_matrix[4]))  / det,
                      (m_matrix[5]  * m_matrix[0] - m_matrix[1] * m_matrix[4])  / det};
         }
         return {};
@@ -122,15 +122,15 @@ namespace tgui
         const auto& a = m_matrix;
         const auto& b = other.m_matrix;
 
-        *this = Transform(a[0] * b[0]  + a[4] * b[1]  + a[12] * b[3],
-                          a[0] * b[4]  + a[4] * b[5]  + a[12] * b[7],
-                          a[0] * b[12] + a[4] * b[13] + a[12] * b[15],
-                          a[1] * b[0]  + a[5] * b[1]  + a[13] * b[3],
-                          a[1] * b[4]  + a[5] * b[5]  + a[13] * b[7],
-                          a[1] * b[12] + a[5] * b[13] + a[13] * b[15],
-                          a[3] * b[0]  + a[7] * b[1]  + a[15] * b[3],
-                          a[3] * b[4]  + a[7] * b[5]  + a[15] * b[7],
-                          a[3] * b[12] + a[7] * b[13] + a[15] * b[15]);
+        *this = Transform((a[0] * b[0])  + (a[4] * b[1])  + (a[12] * b[3]),
+                          (a[0] * b[4])  + (a[4] * b[5])  + (a[12] * b[7]),
+                          (a[0] * b[12]) + (a[4] * b[13]) + (a[12] * b[15]),
+                          (a[1] * b[0])  + (a[5] * b[1])  + (a[13] * b[3]),
+                          (a[1] * b[4])  + (a[5] * b[5])  + (a[13] * b[7]),
+                          (a[1] * b[12]) + (a[5] * b[13]) + (a[13] * b[15]),
+                          (a[3] * b[0])  + (a[7] * b[1])  + (a[15] * b[3]),
+                          (a[3] * b[4])  + (a[7] * b[5])  + (a[15] * b[7]),
+                          (a[3] * b[12]) + (a[7] * b[13]) + (a[15] * b[15]));
         return *this;
     }
 
@@ -155,8 +155,8 @@ namespace tgui
         const float rad = angle * pi / 180.f;
         const float cos = std::cos(rad);
         const float sin = std::sin(rad);
-        return combine({cos, -sin, center.x * (1 - cos) + center.y * sin,
-                        sin,  cos, center.y * (1 - cos) - center.x * sin,
+        return combine({cos, -sin, (center.x * (1 - cos)) + (center.y * sin),
+                        sin,  cos, (center.y * (1 - cos)) - (center.x * sin),
                         0,    0,   1});
     }
 

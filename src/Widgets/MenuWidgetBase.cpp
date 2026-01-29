@@ -473,7 +473,7 @@ namespace tgui
     float MenuWidgetBase::getMenuItemHeight(const Menu& menuItem) const
     {
         if (isSeparator(menuItem))
-            return m_separatorThicknessCached + 2*m_separatorVerticalPaddingCached;
+            return m_separatorThicknessCached + (2*m_separatorVerticalPaddingCached);
         return getDefaultMenuItemHeight();
     }
 
@@ -868,7 +868,7 @@ namespace tgui
                 const Transform textTransform = states.transform;
                 const float arrowHeight = itemHeight / 2.f;
                 const float arrowWidth = arrowHeight / 2.f;
-                states.transform.translate({menuWidth - 2*m_distanceToSideCached - arrowWidth, // 2x m_distanceToSideCached because we already translated once
+                states.transform.translate({menuWidth - (2*m_distanceToSideCached) - arrowWidth, // 2x m_distanceToSideCached because we already translated once
                                             (menu.menuItems[j].text.getSize().y - arrowHeight) / 2.f});
 
                 Vertex::Color arrowVertexColor;
@@ -898,7 +898,7 @@ namespace tgui
             for (const auto& menuItem : menu.menuItems)
             {
                 if (isSeparator(menuItem))
-                    target.drawFilledRect(states, {menuWidth - 2*m_separatorSidePaddingCached, m_separatorThicknessCached}, m_separatorColorCached);
+                    target.drawFilledRect(states, {menuWidth - (2*m_separatorSidePaddingCached), m_separatorThicknessCached}, m_separatorColorCached);
 
                 states.transform.translate({0, getMenuItemHeight(menuItem)});
             }

@@ -384,7 +384,7 @@ namespace tgui
 
                 // Add the outline glyph to the vertices
                 addGlyphQuad(*m_outlineVertices, {x, y}, vertexOutlineColor, glyph, fontScale, italicShear);
-                maxX = std::max(maxX, x + right - italicShear * top - m_outlineThickness);
+                maxX = std::max(maxX, x + right - (italicShear * top) - m_outlineThickness);
             }
 
             // Extract the current glyph's description
@@ -395,7 +395,7 @@ namespace tgui
 
             // Update the current bounds with the non outlined glyph bounds
             if (m_outlineThickness == 0)
-                maxX = std::max(maxX, x + glyph.bounds.left + glyph.bounds.width - italicShear * glyph.bounds.top);
+                maxX = std::max(maxX, x + glyph.bounds.left + glyph.bounds.width - (italicShear * glyph.bounds.top));
 
             // Advance to the next character
             x += glyph.advance;
@@ -424,9 +424,9 @@ namespace tgui
         // The height of a line can sometimes be slightly larger than the line spacing returned by the font.
         // To not clip the last line, one line can use the font height instead of the line spacing, to include the extra offset.
         const float fontHeight = m_font->getFontHeight(m_characterSize);
-        const float height = std::max(fontHeight, lineSpacing) + (nrLines - 1) * lineSpacing;
+        const float height = std::max(fontHeight, lineSpacing) + ((nrLines - 1) * lineSpacing);
 
-        m_size = {maxX + m_outlineThickness, height + 2 * m_outlineThickness};
+        m_size = {maxX + m_outlineThickness, height + (2 * m_outlineThickness)};
 
         // Normalize the texture coordinates
         const Vector2u textureSize = m_font->getTextureSize(m_characterSize);
@@ -457,22 +457,22 @@ namespace tgui
     {
         const float padding = 1;
 
-        const float left   = glyph.bounds.left - padding / fontScale;
-        const float top    = glyph.bounds.top - padding / fontScale;
-        const float right  = glyph.bounds.left + glyph.bounds.width + padding / fontScale;
-        const float bottom = glyph.bounds.top  + glyph.bounds.height + padding / fontScale;
+        const float left   = glyph.bounds.left - (padding / fontScale);
+        const float top    = glyph.bounds.top - (padding / fontScale);
+        const float right  = glyph.bounds.left + glyph.bounds.width + (padding / fontScale);
+        const float bottom = glyph.bounds.top  + glyph.bounds.height + (padding / fontScale);
 
         const float u1 = glyph.textureRect.left - padding;
         const float v1 = glyph.textureRect.top - padding;
         const float u2 = glyph.textureRect.left + glyph.textureRect.width + padding;
         const float v2 = glyph.textureRect.top  + glyph.textureRect.height + padding;
 
-        vertices.emplace_back(Vector2f{position.x + left  - italicShear * top   , position.y + top   }, color, Vector2f{u1, v1});
-        vertices.emplace_back(Vector2f{position.x + right - italicShear * top   , position.y + top   }, color, Vector2f{u2, v1});
-        vertices.emplace_back(Vector2f{position.x + left  - italicShear * bottom, position.y + bottom}, color, Vector2f{u1, v2});
-        vertices.emplace_back(Vector2f{position.x + left  - italicShear * bottom, position.y + bottom}, color, Vector2f{u1, v2});
-        vertices.emplace_back(Vector2f{position.x + right - italicShear * top   , position.y + top   }, color, Vector2f{u2, v1});
-        vertices.emplace_back(Vector2f{position.x + right - italicShear * bottom, position.y + bottom}, color, Vector2f{u2, v2});
+        vertices.emplace_back(Vector2f{position.x + left  - (italicShear * top)   , position.y + top   }, color, Vector2f{u1, v1});
+        vertices.emplace_back(Vector2f{position.x + right - (italicShear * top)   , position.y + top   }, color, Vector2f{u2, v1});
+        vertices.emplace_back(Vector2f{position.x + left  - (italicShear * bottom), position.y + bottom}, color, Vector2f{u1, v2});
+        vertices.emplace_back(Vector2f{position.x + left  - (italicShear * bottom), position.y + bottom}, color, Vector2f{u1, v2});
+        vertices.emplace_back(Vector2f{position.x + right - (italicShear * top)   , position.y + top   }, color, Vector2f{u2, v1});
+        vertices.emplace_back(Vector2f{position.x + right - (italicShear * bottom), position.y + bottom}, color, Vector2f{u2, v2});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -480,7 +480,7 @@ namespace tgui
     void BackendText::addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color, float offset, float thickness, float outlineThickness, float fontScale)
     {
         const float top = std::round((lineTop + offset - (thickness / 2)) * fontScale) / fontScale;
-        const float bottom = top + std::round(thickness * fontScale) / fontScale;
+        const float bottom = top + (std::round(thickness * fontScale) / fontScale);
 
         vertices.emplace_back(Vector2f{-outlineThickness,             top    - outlineThickness}, color, Vector2f{1, 1});
         vertices.emplace_back(Vector2f{lineLength + outlineThickness, top    - outlineThickness}, color, Vector2f{1, 1});

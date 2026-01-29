@@ -503,7 +503,7 @@ namespace tgui
             float width = m_splitterWidth;
             if (m_minimumGrabWidth > m_splitterWidth)
             {
-                const float paddingAroundSplitter = (m_minimumGrabWidth - m_splitterWidth / 2.f);
+                const float paddingAroundSplitter = (m_minimumGrabWidth - (m_splitterWidth / 2.f));
                 left -= paddingAroundSplitter;
                 width += 2 * paddingAroundSplitter;
             }
@@ -514,7 +514,7 @@ namespace tgui
         float height = m_splitterWidth;
         if (m_minimumGrabWidth > m_splitterWidth)
         {
-            const float paddingAroundSplitter = (m_minimumGrabWidth - m_splitterWidth / 2.f);
+            const float paddingAroundSplitter = (m_minimumGrabWidth - (m_splitterWidth / 2.f));
             top -= paddingAroundSplitter;
             height += 2 * paddingAroundSplitter;
         }

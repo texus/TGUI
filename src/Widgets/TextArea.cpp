@@ -58,7 +58,7 @@ namespace tgui
 
             setTextSize(getGlobalTextSize());
             setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
-                     10 * m_fontCached.getLineSpacing(m_textSizeCached)
+                     (10 * m_fontCached.getLineSpacing(m_textSizeCached))
                      + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached)) - m_fontCached.getLineSpacing(m_textSizeCached)
                      + Text::getExtraVerticalPadding(m_textSizeCached)
                      + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
@@ -1373,7 +1373,7 @@ namespace tgui
         {
             // Find the maximum width of one line
             const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
-            float maxLineWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight() - 2 * textOffset;
+            float maxLineWidth = getInnerSize().x - m_paddingCached.getLeftPlusRight() - (2 * textOffset);
             if (m_verticalScrollbar->isShown())
                 maxLineWidth -= m_verticalScrollbar->getSize().x;
 
@@ -1497,12 +1497,12 @@ namespace tgui
         const bool verticalScrollbarShown = m_verticalScrollbar->isShown();
         const bool horizontalScrollbarShown = m_horizontalScrollbar->isShown();
 
-        m_verticalScrollbar->setMaximum(static_cast<unsigned int>((m_lines.size() - 1) * m_lineHeight
+        m_verticalScrollbar->setMaximum(static_cast<unsigned int>(((m_lines.size() - 1) * m_lineHeight)
                                                                   + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_lineHeight)
                                                                   + Text::getExtraVerticalPadding(m_textSizeCached)));
 
         m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_maxLineWidth
-                                                                    + Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2));
+                                                                    + (Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) * 2)));
 
         if (m_horizontalScrollbar->getPolicy() == Scrollbar::Policy::Never)
         {

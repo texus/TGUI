@@ -1126,7 +1126,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         if (m_textAlignment != HorizontalAlignment::Left)
         {
             // Calculate the text width
-            const float textWidth = m_displayedText.empty() ? (m_defaultText.getSize().x + 2 * textOffset) : getFullTextWidth();
+            const float textWidth = m_displayedText.empty() ? (m_defaultText.getSize().x + (2 * textOffset)) : getFullTextWidth();
 
             // Check if a layout would make sense
             if (textWidth < getVisibleEditBoxWidth())

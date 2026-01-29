@@ -722,7 +722,7 @@ namespace tgui
         if (index * getItemHeight() < m_verticalScrollbar->getValue())
             m_verticalScrollbar->setValue(static_cast<unsigned int>(index * getItemHeight()));
         else if (static_cast<unsigned int>(index + 1) * getItemHeight() > m_verticalScrollbar->getValue() + m_verticalScrollbar->getViewportSize())
-            m_verticalScrollbar->setValue(static_cast<unsigned int>(index + 1) * getItemHeight() - m_verticalScrollbar->getViewportSize());
+            m_verticalScrollbar->setValue((static_cast<unsigned int>(index + 1) * getItemHeight()) - m_verticalScrollbar->getViewportSize());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2640,12 +2640,12 @@ namespace tgui
         if (mouseOnHeader)
         {
             borderArea = FloatRect{0, m_bordersCached.getTop() + m_paddingCached.getTop(),
-                                   m_separatorWidth + 2*margin, headerHeight};
+                                   m_separatorWidth + (2*margin), headerHeight};
         }
         else // Mouse is on the items, not on the header
         {
             borderArea = FloatRect{0, m_bordersCached.getTop() + m_paddingCached.getTop() + headerHeight,
-                                   m_gridLinesWidth + 2*margin, getInnerSize().y - headerHeight};
+                                   m_gridLinesWidth + (2*margin), getInnerSize().y - headerHeight};
         }
 
         const std::size_t nrColumnsWithSeparator = hasExpandedColumn() ? (m_columns.size() - 1) : m_columns.size();
@@ -2653,7 +2653,7 @@ namespace tgui
         for (std::size_t i = 0; i < nrColumnsWithSeparator; ++i)
         {
             x += m_columns[i].width;
-            borderArea.left = x + (totalSeparatorWidth - separatorWidth) / 2.f - margin;
+            borderArea.left = x + ((totalSeparatorWidth - separatorWidth) / 2.f) - margin;
 
             if (borderArea.contains(pos))
             {
@@ -2943,23 +2943,23 @@ namespace tgui
             {
                 for(const std::size_t selectedItem : m_selectedItems)
                 {
-                    states.transform.translate({0, selectedItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
+                    states.transform.translate({0, (selectedItem * static_cast<float>(totalItemHeight)) - m_verticalScrollbar->getValue()});
 
                     if ((static_cast<int>(selectedItem) == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
                         target.drawFilledRect(states, {availableWidth, static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_selectedBackgroundColorHoverCached, m_opacityCached));
                     else
                         target.drawFilledRect(states, {availableWidth, static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
 
-                    states.transform.translate({0, -static_cast<int>(selectedItem) * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
+                    states.transform.translate({0, (-static_cast<int>(selectedItem) * static_cast<float>(totalItemHeight)) + m_verticalScrollbar->getValue()});
                 }
             }
 
             // Draw the background of the item on which the mouse is standing
             if ((m_hoveredItem >= 0) && (m_selectedItems.find(static_cast<std::size_t>(m_hoveredItem)) == m_selectedItems.end()) && m_backgroundColorHoverCached.isSet())
             {
-                states.transform.translate({0, m_hoveredItem * static_cast<float>(totalItemHeight) - m_verticalScrollbar->getValue()});
+                states.transform.translate({0, (m_hoveredItem * static_cast<float>(totalItemHeight)) - m_verticalScrollbar->getValue()});
                 target.drawFilledRect(states, {availableWidth, static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
-                states.transform.translate({0, -m_hoveredItem * static_cast<float>(totalItemHeight) + m_verticalScrollbar->getValue()});
+                states.transform.translate({0, (-m_hoveredItem * static_cast<float>(totalItemHeight)) + m_verticalScrollbar->getValue()});
             }
 
             // We haven't drawn the header yet, so move back up

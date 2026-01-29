@@ -304,10 +304,10 @@ namespace tgui
         m_textPosition.x.updateParentSize(innerSize.x);
         m_textPosition.y.updateParentSize(innerSize.y);
 
-        m_imageComponent->setPosition({m_textPosition.x.getValue() - m_textOrigin.x * contentSize.x,
-                                       m_textPosition.y.getValue() - m_textOrigin.y * contentSize.y + (contentSize.y - m_imageComponent->getSize().y) / 2.f});
+        m_imageComponent->setPosition({m_textPosition.x.getValue() - (m_textOrigin.x * contentSize.x),
+                                       m_textPosition.y.getValue() - (m_textOrigin.y * contentSize.y) + ((contentSize.y - m_imageComponent->getSize().y) / 2.f)});
         m_textComponent->setPosition({m_imageComponent->getPosition().x + m_imageComponent->getSize().x + distanceBetweenTextAndImage,
-                                      m_textPosition.y.getValue() - m_textOrigin.y * contentSize.y + (contentSize.y - m_textComponent->getSize().y) / 2.f});
+                                      m_textPosition.y.getValue() - (m_textOrigin.y * contentSize.y) + ((contentSize.y - m_textComponent->getSize().y) / 2.f)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

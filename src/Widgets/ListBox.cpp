@@ -204,7 +204,7 @@ namespace tgui
         }
         else if ((index + 1) * getItemHeight() > m_scrollbar->getValue() + m_scrollbar->getViewportSize())
         {
-            m_scrollbar->setValue((static_cast<unsigned int>(index) + 1) * getItemHeight() - m_scrollbar->getViewportSize());
+            m_scrollbar->setValue(((static_cast<unsigned int>(index) + 1) * getItemHeight()) - m_scrollbar->getViewportSize());
             triggerOnScroll();
         }
 

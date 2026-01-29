@@ -165,28 +165,28 @@ namespace tgui
                 // Parse the different types of strings (#123, #1234, #112233 and #11223344)
                 if (str.length() == 4)
                 {
-                    return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[1])),
-                                 static_cast<std::uint8_t>(hexToDec(str[2]) * 16 + hexToDec(str[2])),
-                                 static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[3]))};
+                    return Color{static_cast<std::uint8_t>((hexToDec(str[1]) * 16) + hexToDec(str[1])),
+                                 static_cast<std::uint8_t>((hexToDec(str[2]) * 16) + hexToDec(str[2])),
+                                 static_cast<std::uint8_t>((hexToDec(str[3]) * 16) + hexToDec(str[3]))};
                 }
                 if (str.length() == 5)
                 {
-                    return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[1])),
-                                 static_cast<std::uint8_t>(hexToDec(str[2]) * 16 + hexToDec(str[2])),
-                                 static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[3])),
-                                 static_cast<std::uint8_t>(hexToDec(str[4]) * 16 + hexToDec(str[4]))};
+                    return Color{static_cast<std::uint8_t>((hexToDec(str[1]) * 16) + hexToDec(str[1])),
+                                 static_cast<std::uint8_t>((hexToDec(str[2]) * 16) + hexToDec(str[2])),
+                                 static_cast<std::uint8_t>((hexToDec(str[3]) * 16) + hexToDec(str[3])),
+                                 static_cast<std::uint8_t>((hexToDec(str[4]) * 16) + hexToDec(str[4]))};
                 }
                 if (str.length() == 7)
                 {
-                    return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[2])),
-                                 static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[4])),
-                                 static_cast<std::uint8_t>(hexToDec(str[5]) * 16 + hexToDec(str[6]))};
+                    return Color{static_cast<std::uint8_t>((hexToDec(str[1]) * 16) + hexToDec(str[2])),
+                                 static_cast<std::uint8_t>((hexToDec(str[3]) * 16) + hexToDec(str[4])),
+                                 static_cast<std::uint8_t>((hexToDec(str[5]) * 16) + hexToDec(str[6]))};
                 }
                 // if (str.length() == 9)
-                return Color{static_cast<std::uint8_t>(hexToDec(str[1]) * 16 + hexToDec(str[2])),
-                             static_cast<std::uint8_t>(hexToDec(str[3]) * 16 + hexToDec(str[4])),
-                             static_cast<std::uint8_t>(hexToDec(str[5]) * 16 + hexToDec(str[6])),
-                             static_cast<std::uint8_t>(hexToDec(str[7]) * 16 + hexToDec(str[8]))};
+                return Color{static_cast<std::uint8_t>((hexToDec(str[1]) * 16) + hexToDec(str[2])),
+                             static_cast<std::uint8_t>((hexToDec(str[3]) * 16) + hexToDec(str[4])),
+                             static_cast<std::uint8_t>((hexToDec(str[5]) * 16) + hexToDec(str[6])),
+                             static_cast<std::uint8_t>((hexToDec(str[7]) * 16) + hexToDec(str[8]))};
             }
             // Color doesn't start with '#'
             // Check if the color is represented by a string with its name
