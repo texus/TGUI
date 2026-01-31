@@ -889,6 +889,7 @@ void GuiBuilder::closeForm(Form* form)
             {
                 // Attempting to close the window, while already having asked whether the form should be saved, will result in the close without saving
                 m_window->close();
+                m_selectedForm = nullptr;
                 m_forms.clear();
             }
 
