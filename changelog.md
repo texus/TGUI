@@ -1,3 +1,9 @@
+TGUI 1.13  (TBD)
+----------------
+
+- Position and size layout expressions weren't saved when the result equaled (0,0)
+
+
 TGUI 1.12  (26 January 2026)
 ----------------------------
 

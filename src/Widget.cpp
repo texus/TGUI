@@ -1629,9 +1629,9 @@ namespace tgui
             node->propertyValuePairs[U"Visible"] = std::make_unique<DataIO::ValueNode>("false");
         if (!isEnabled())
             node->propertyValuePairs[U"Enabled"] = std::make_unique<DataIO::ValueNode>("false");
-        if (getPosition() != Vector2f{})
+        if (getPosition() != Vector2f{} || !m_position.x.isConstant() || !m_position.y.isConstant())
             node->propertyValuePairs[U"Position"] = std::make_unique<DataIO::ValueNode>(m_position.toString());
-        if (getSize() != Vector2f{})
+        if (getSize() != Vector2f{} || !m_size.x.isConstant() || !m_size.y.isConstant())
             node->propertyValuePairs[U"Size"] = std::make_unique<DataIO::ValueNode>(m_size.toString());
         if (getOrigin() != Vector2f{})
             node->propertyValuePairs[U"Origin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_origin.x) + "," + String::fromNumber(m_origin.y) + ")");
