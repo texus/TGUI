@@ -340,9 +340,15 @@ void GuiBuilder::mainLoop()
 
                 m_window->close();
             }
-            else if (event.type == tgui::Event::Type::MouseButtonPressed)
+            else if ((event.type == tgui::Event::Type::MouseButtonPressed) || (event.type == tgui::Event::Type::FingerDown))
             {
-                if (m_widgetHierarchyTree && (m_gui->getWidgetBelowMouseCursor({event.mouseButton.x, event.mouseButton.y}, true) == m_widgetHierarchyTree))
+                tgui::Vector2i pos;
+                if (event.type == tgui::Event::Type::MouseButtonPressed)
+                    pos = {event.mouseButton.x, event.mouseButton.y};
+                else
+                    pos = {event.touch.x, event.touch.y};
+
+                if (m_widgetHierarchyTree && (m_gui->getWidgetBelowMouseCursor(pos, true) == m_widgetHierarchyTree))
                 {
                     m_gui->handleEvent(event);
                     passEventToGui = false;
@@ -356,11 +362,24 @@ void GuiBuilder::mainLoop()
                 else
                     m_draggedHierarchyTreeItem.clear();
             }
-            else if (event.type == tgui::Event::Type::MouseButtonReleased)
+            else if ((event.type == tgui::Event::Type::MouseButtonReleased) || (event.type == tgui::Event::Type::FingerUp))
             {
+                tgui::Vector2i pos;
+                tgui::Event::MouseButton mouseButton;
+                if (event.type == tgui::Event::Type::MouseButtonReleased)
+                {
+                    pos = {event.mouseButton.x, event.mouseButton.y};
+                    mouseButton = event.mouseButton.button;
+                }
+                else
+                {
+                    pos = {event.touch.x, event.touch.y};
+                    mouseButton = tgui::Event::MouseButton::Left;
+                }
+
                 if (m_selectedForm && !m_foregroundPanel)
                 {
-                    if (m_widgetHierarchyTree && !m_draggedHierarchyTreeItem.empty() && (m_gui->getWidgetBelowMouseCursor({event.mouseButton.x, event.mouseButton.y}, true) == m_widgetHierarchyTree))
+                    if (m_widgetHierarchyTree && !m_draggedHierarchyTreeItem.empty() && (m_gui->getWidgetBelowMouseCursor(pos, true) == m_widgetHierarchyTree))
                     {
                         m_gui->handleEvent(event);
                         passEventToGui = false;
@@ -403,13 +422,13 @@ void GuiBuilder::mainLoop()
 
                         m_draggedHierarchyTreeItem.clear();
                     }
-                    else if (event.mouseButton.button == tgui::Event::MouseButton::Left)
+                    else if (mouseButton == tgui::Event::MouseButton::Left)
                     {
                         m_selectedForm->mouseReleased();
                     }
-                    else if (event.mouseButton.button == tgui::Event::MouseButton::Right)
+                    else if (mouseButton == tgui::Event::MouseButton::Right)
                     {
-                        if (m_selectedForm->rightMouseClick({event.mouseButton.x, event.mouseButton.y}))
+                        if (m_selectedForm->rightMouseClick({pos.x, pos.y}))
                         {
                             if (!m_popupMenu)
                             {
@@ -446,7 +465,7 @@ void GuiBuilder::mainLoop()
                                 m_popupMenu->addMenuItem("Delete");
 
                             if (!m_popupMenu->getMenuItems().empty())
-                                m_popupMenu->openMenu({static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)});
+                                m_popupMenu->openMenu({static_cast<float>(pos.x), static_cast<float>(pos.y)});
                         }
                     }
                 }
@@ -455,6 +474,11 @@ void GuiBuilder::mainLoop()
             {
                 if (m_selectedForm)
                     m_selectedForm->mouseMoved({event.mouseMove.x, event.mouseMove.y});
+            }
+            else if (event.type == tgui::Event::Type::FingerMoved)
+            {
+                if (m_selectedForm)
+                    m_selectedForm->mouseMoved({event.touch.x, event.touch.y});
             }
             else if (event.type == tgui::Event::Type::KeyPressed)
             {
