@@ -2928,7 +2928,8 @@ namespace tgui
 
                 states.transform.translate({0, (totalItemHeight * firstItem) + m_itemHeight - static_cast<float>(m_verticalScrollbar->getValue())});
 
-                const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
+                const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
+                const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : separatorColor;
                 for (std::size_t i = firstItem; i <= lastItem; ++i)
                 {
                     target.drawFilledRect(states, {availableWidth, static_cast<float>(m_gridLinesWidth)}, Color::applyOpacity(gridLineColor, m_opacityCached));
@@ -3027,7 +3028,8 @@ namespace tgui
                 {
                     if (m_showVerticalGridLines && (m_gridLinesWidth > 0))
                     {
-                        const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : (m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached);
+                        const Color& separatorColor = m_separatorColorCached.isSet() ? m_separatorColorCached : m_borderColorCached;
+                        const Color& gridLineColor = m_gridLinesColorCached.isSet() ? m_gridLinesColorCached : separatorColor;
                         if (m_gridLinesWidth == separatorWidth)
                             target.drawFilledRect(states, {static_cast<float>(m_gridLinesWidth), innerHeight - totalHeaderHeight}, Color::applyOpacity(gridLineColor, m_opacityCached));
                         else
