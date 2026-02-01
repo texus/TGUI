@@ -30,7 +30,7 @@
 
 namespace
 {
-    const char* base64CharactersTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    const char* const base64CharactersTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 } // anonymous namespace
 
 // The following table maps each character from base64CharactersTable to its index in the table.
