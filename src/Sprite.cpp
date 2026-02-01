@@ -309,12 +309,12 @@ namespace tgui
                     ? (m_size.y / imageSize.y)
                     : (m_size.x / (imageSize.x - middleRect.width));
                 const float middleLeft = middleRect.left * scaleFactor;
-                const float middleRight = m_size.x - (imageSize.x - middleRect.left - middleRect.width) * scaleFactor;
+                const float middleRight = m_size.x - ((imageSize.x - middleRect.left - middleRect.width) * scaleFactor);
 
                 if (pos.x >= middleRight)
                     pixel.x = (middleRect.left + middleRect.width) + ((pos.x - middleRight) / scaleFactor);
                 else if (pos.x >= middleLeft)
-                    pixel.x = middleRect.left + (pos.x - middleLeft) / (middleRight - middleLeft) * middleRect.width;
+                    pixel.x = middleRect.left + ((pos.x - middleLeft) / (middleRight - middleLeft) * middleRect.width);
                 else // Mouse on the left part
                     pixel.x = pos.x / scaleFactor;
 
@@ -332,7 +332,7 @@ namespace tgui
                 if (pos.y >= middleBottom)
                     pixel.y = (middleRect.top + middleRect.height) + ((pos.y - middleBottom) / scaleFactor);
                 else if (pos.y >= middleTop)
-                    pixel.y = middleRect.top + (pos.y - middleTop) / (middleBottom - middleTop) * middleRect.height;
+                    pixel.y = middleRect.top + ((pos.y - middleTop) / (middleBottom - middleTop) * middleRect.height);
                 else // Mouse on the top part
                     pixel.y = pos.y / scaleFactor;
 
@@ -360,14 +360,14 @@ namespace tgui
                 else if (pos.x >= middleRight)
                     pixel.x = (middleRect.left + middleRect.width) + ((pos.x - middleRight) / scaleFactor);
                 else
-                    pixel.x = middleRect.left + (pos.x - middleLeft) / (middleRight - middleLeft) * middleRect.width;
+                    pixel.x = middleRect.left + ((pos.x - middleLeft) / (middleRight - middleLeft) * middleRect.width);
 
                 if (pos.y < middleTop)
                     pixel.y = pos.y / scaleFactor;
                 else if (pos.y >= middleBottom)
                     pixel.y = (middleRect.top + middleRect.height) + ((pos.y - middleBottom) / scaleFactor);
                 else
-                    pixel.y = middleRect.top + (pos.y - middleTop) / (middleBottom - middleTop) * middleRect.height;
+                    pixel.y = middleRect.top + ((pos.y - middleTop) / (middleBottom - middleTop) * middleRect.height);
 
                 break;
             }
@@ -459,7 +459,7 @@ namespace tgui
                     ? (m_size.y / textureSize.y)
                     : (m_size.x / (textureSize.x - middleRect.width));
                 const float middleLeft = middleRect.left * scaleFactor;
-                const float middleRight = m_size.x - (textureSize.x - middleRect.left - middleRect.width) * scaleFactor;
+                const float middleRight = m_size.x - ((textureSize.x - middleRect.left - middleRect.width) * scaleFactor);
                 m_vertices = {
                     {{0, 0}, vertexColor, {0, 0}},
                     {{0, m_size.y}, vertexColor, {0, textureSize.y}},

@@ -214,8 +214,8 @@ namespace tgui
 
         const sf::Vector2f normalized = view.getTransform().transformPoint(coord);
 #if SFML_VERSION_MAJOR >= 3
-        return {(normalized.x + 1) / 2 * (viewport.size.x * size.x) + (viewport.position.x * size.x),
-                (-normalized.y + 1) / 2 * (viewport.size.y * size.y) + (viewport.position.y * size.y)};
+        return {((normalized.x + 1) / 2 * (viewport.size.x * size.x)) + (viewport.position.x * size.x),
+                ((-normalized.y + 1) / 2 * (viewport.size.y * size.y)) + (viewport.position.y * size.y)};
 #else
         return {(normalized.x + 1) / 2 * (viewport.width * size.x) + (viewport.left * size.x),
                 (-normalized.y + 1) / 2 * (viewport.height * size.y) + (viewport.top * size.y)};
