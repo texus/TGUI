@@ -137,7 +137,7 @@ namespace tgui
                     mouseMoveEvent.type = Event::Type::MouseMoved;
                     mouseMoveEvent.mouseMove.x = event.touch.x;
                     mouseMoveEvent.mouseMove.y = event.touch.y;
-                    handleEvent(std::move(mouseMoveEvent));
+                    handleEvent(mouseMoveEvent);
                 }
                 else if (event.type == Event::Type::FingerUp)
                 {
