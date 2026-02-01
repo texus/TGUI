@@ -46,7 +46,7 @@ namespace
         /// }
 
         const auto fract = [](float x) { return x - std::floor(x); };
-        const auto mix = [](float x, float y, float a) { return x * (1.0f - a) + y * a; };
+        const auto mix = [](float x, float y, float a) { return (x * (1.0f - a)) + (y * a); };
 
         h = tgui::clamp(h, 0.f, 1.f);
         s = tgui::clamp(s, 0.f, 1.f);
@@ -54,9 +54,9 @@ namespace
 
         const float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
 
-        const float p[] = {std::abs(fract(h + K[0]) * 6.0f - K[3]),
-                           std::abs(fract(h + K[1]) * 6.0f - K[3]),
-                           std::abs(fract(h + K[2]) * 6.0f - K[3])};
+        const float p[] = {std::abs((fract(h + K[0]) * 6.0f) - K[3]),
+                           std::abs((fract(h + K[1]) * 6.0f) - K[3]),
+                           std::abs((fract(h + K[2]) * 6.0f) - K[3])};
 
         const float C[] = {v * mix(K[0], tgui::clamp(p[0] - K[0], 0.f, 1.f), s),
                            v * mix(K[0], tgui::clamp(p[1] - K[0], 0.f, 1.f), s),
@@ -94,7 +94,7 @@ namespace
 #endif
 
         auto length = [](tgui::Vector2f x) {
-            return std::sqrt(x.x * x.x + x.y * x.y);
+            return std::sqrt((x.x * x.x) + (x.y * x.y));
         };
 
         const float s = length(position);
@@ -216,7 +216,7 @@ namespace tgui
             {
                 const Vector2f position = {((static_cast<float>(x) / colorWheelSize) - 0.5f) * 2.f,
                                            ((static_cast<float>(y) / colorWheelSize) - 0.5f) * 2.f};
-                if (std::sqrt(position.x * position.x + position.y * position.y) <= 1.f)
+                if (std::sqrt((position.x * position.x) + (position.y * position.y)) <= 1.f)
                 {
                     const Color pixelColor = calculateColor(position, 1, 1);
                     const unsigned int pixelIndex = ((y * colorWheelSize) + x) * 4;
@@ -459,7 +459,7 @@ namespace tgui
             m_colorRead = true;
 
             auto length = [](Vector2f vec) {
-                return std::sqrt(vec.x * vec.x + vec.y * vec.y);
+                return std::sqrt((vec.x * vec.x) + (vec.y * vec.y));
             };
 
             Vector2f position = {(pos.x - m_colorWheelSprite.getPosition().x) / m_colorWheelSprite.getSize().x,
@@ -524,7 +524,7 @@ namespace tgui
     void ColorPicker::rearrange()
     {
         m_colorWheelSprite.setPosition({10, 10});
-        m_value->setPosition(2 * m_colorWheelSprite.getPosition().x + colorWheelSize, 10);
+        m_value->setPosition((2 * m_colorWheelSprite.getPosition().x) + colorWheelSize, 10);
 
         get<Label>("#TGUI_INTERNAL$ColorPickerLR#")->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10", 10);
         get<Label>("#TGUI_INTERNAL$ColorPickerLG#")->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10",

@@ -369,7 +369,7 @@ namespace tgui
             if (button->isVisible())
             {
                 button->setPosition(m_bordersCached.getLeft() + getInnerTitleBarSize().x - buttonOffsetX - button->getSize().x,
-                                    m_bordersCached.getTop() + (m_titleBarHeightCached - button->getSize().y) / 2.f);
+                                    m_bordersCached.getTop() + ((m_titleBarHeightCached - button->getSize().y) / 2.f));
 
                 buttonOffsetX += button->getSize().x + m_paddingBetweenButtonsCached;
             }

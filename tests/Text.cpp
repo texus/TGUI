@@ -85,7 +85,7 @@ TEST_CASE("[Text]")
             const float width = text.getSize().x;
 
             const tgui::Font& font = text.getFont();
-            REQUIRE(text.getSize().y == 2 * font.getLineSpacing(40) + std::max(font.getFontHeight(40), font.getLineSpacing(40)));
+            REQUIRE(text.getSize().y == (2 * font.getLineSpacing(40)) + std::max(font.getFontHeight(40), font.getLineSpacing(40)));
 
             text.setString("xy");
             REQUIRE(text.getSize().y == std::max(font.getFontHeight(40), font.getLineSpacing(40)));

@@ -352,7 +352,7 @@ namespace tgui
         }
 
         // Calculate the suggested size of the window
-        Vector2f size = {2*distance + m_label->getSize().x, 3*distance + m_label->getSize().y + buttonHeight};
+        Vector2f size = {(2*distance) + m_label->getSize().x, (3*distance) + m_label->getSize().y + buttonHeight};
 
         // Make sure the buttons fit inside the message box
         size.x = std::max(buttonsAreaWidth, size.x);
