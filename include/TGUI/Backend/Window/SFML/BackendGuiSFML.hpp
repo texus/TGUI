@@ -177,7 +177,7 @@ namespace tgui
                 // Let the gui handle the event
                 bool eventHandledByGui = false;
                 if (passEventToGui)
-                    eventHandledByGui = this->handleEvent(std::forward<EventType>(event));
+                    eventHandledByGui = handleEvent(std::forward<EventType>(event));
 
                 // After the gui has handled the events, we call the handlers that return nothing.
                 // These handlers can have an optional bool parameter that indicates whether the event was processed by the gui.
