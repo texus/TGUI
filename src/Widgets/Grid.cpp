@@ -312,7 +312,7 @@ namespace tgui
     {
         // Add the widget to the container. For backwards compatibility, we still do a search and skip this when it is already there.
         const auto& widgets = getWidgets();
-        if (std::find(widgets.rbegin(), widgets.rend(), widget) == widgets.rend())
+        if (std::find(widgets.crbegin(), widgets.crend(), widget) == widgets.crend())
             Container::add(widget);
         else
         {
@@ -327,7 +327,7 @@ namespace tgui
     bool Grid::setWidgetCell(const Widget::Ptr& widget, std::size_t row, std::size_t col, Alignment alignment, const Padding& padding)
     {
         const auto& widgets = getWidgets();
-        if (std::find(widgets.rbegin(), widgets.rend(), widget) == widgets.rend())
+        if (std::find(widgets.crbegin(), widgets.crend(), widget) == widgets.crend())
             return false;
 
         // If the widget was added before then remove it from its old location

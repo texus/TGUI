@@ -678,7 +678,7 @@ namespace tgui
         if (updateHistory && (m_currentDirectory != path))
         {
             if (m_pathHistoryIndex + 1 < m_pathHistory.size())
-                m_pathHistory.erase(m_pathHistory.begin() + static_cast<std::ptrdiff_t>(m_pathHistoryIndex + 1), m_pathHistory.end());
+                m_pathHistory.erase(m_pathHistory.cbegin() + static_cast<std::ptrdiff_t>(m_pathHistoryIndex + 1), m_pathHistory.cend());
 
             m_pathHistory.push_back(path);
             m_pathHistoryIndex = m_pathHistory.size() - 1;
@@ -1301,7 +1301,7 @@ namespace tgui
 
         // Child widgets are saved indirectly by saving the child window.
         // The list view however contained items which shouldn't be saved, so we removed the nodes that were created for them.
-        const auto listViewNodeIt = std::find_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
+        const auto listViewNodeIt = std::find_if(node->children.cbegin(), node->children.cend(), [](const std::unique_ptr<DataIO::Node>& child){
             return child->name == U"ListView.\"#TGUI_INTERNAL$ListView#\"";
         });
         TGUI_ASSERT(listViewNodeIt != node->children.end(), "FileDialog::save couldn't find its ListView");
@@ -1311,7 +1311,7 @@ namespace tgui
         }), listViewNode->children.end());
 
         // We currently don't save the path, so the text in the path edit box shouldn't be saved either
-        const auto pathEditBoxNodeIt = std::find_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
+        const auto pathEditBoxNodeIt = std::find_if(node->children.cbegin(), node->children.cend(), [](const std::unique_ptr<DataIO::Node>& child){
             return child->name == U"EditBox.\"#TGUI_INTERNAL$EditBoxPath#\"";
         });
         TGUI_ASSERT(pathEditBoxNodeIt != node->children.end(), "FileDialog::save couldn't find its path EditBox");

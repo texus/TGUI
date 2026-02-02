@@ -109,7 +109,7 @@ namespace tgui
                 m_activeTimers.push_back(shared_from_this());
             else
             {
-                const auto it = std::find(m_activeTimers.begin(), m_activeTimers.end(), shared_from_this());
+                const auto it = std::find(m_activeTimers.cbegin(), m_activeTimers.cend(), shared_from_this());
                 if (it != m_activeTimers.end())
                     m_activeTimers.erase(it);
             }

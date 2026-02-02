@@ -426,7 +426,7 @@ namespace tgui
             return;
         }
 
-        auto& item = *m_items.emplace(m_items.begin() + static_cast<std::ptrdiff_t>(index));
+        auto& item = *m_items.emplace(m_items.cbegin() + static_cast<std::ptrdiff_t>(index));
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
@@ -451,7 +451,7 @@ namespace tgui
             return;
         }
 
-        auto& item = *m_items.emplace(m_items.begin() + static_cast<std::ptrdiff_t>(index));
+        auto& item = *m_items.emplace(m_items.cbegin() + static_cast<std::ptrdiff_t>(index));
         item.texts.reserve(itemTexts.size());
         for (const auto& text : itemTexts)
             item.texts.push_back(createText(text));
@@ -482,7 +482,7 @@ namespace tgui
         bool columnWidthChanged = false;
         for (std::size_t i = 0; i < items.size(); ++i)
         {
-            auto& item = *m_items.emplace(m_items.begin() + static_cast<std::ptrdiff_t>(index + i));
+            auto& item = *m_items.emplace(m_items.cbegin() + static_cast<std::ptrdiff_t>(index + i));
             item.texts.reserve(items[i].size());
             for (const auto& text : items[i])
                 item.texts.push_back(createText(text));
@@ -592,7 +592,7 @@ namespace tgui
                 m_selectedItems.erase(index);
                 setItemColor(index, m_textColorCached);
                 if (!m_selectedItems.empty())
-                    onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
+                    onItemSelect.emit(this, static_cast<int>(*m_selectedItems.cbegin()));
                 else
                     onItemSelect.emit(this, -1);
             }
@@ -614,7 +614,7 @@ namespace tgui
             {
                 // The selection started from the removed item, just arbitrarily choose a different item (the top one)
                 if (!newSelectedItems.empty())
-                    m_firstSelectedItemIndex = static_cast<int>(*newSelectedItems.begin());
+                    m_firstSelectedItemIndex = static_cast<int>(*newSelectedItems.cbegin());
                 else
                     m_firstSelectedItemIndex = -1;
             }
@@ -635,7 +635,7 @@ namespace tgui
         }
 
         const bool wasIconSet = m_items[index].icon.isSet();
-        m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(index));
+        m_items.erase(m_items.cbegin() + static_cast<std::ptrdiff_t>(index));
 
         if (wasIconSet)
         {
@@ -731,7 +731,7 @@ namespace tgui
     {
         if (!m_multiSelect)
         {
-            updateSelectedItem(indices.empty() ? -1 : static_cast<int>(*indices.begin()));
+            updateSelectedItem(indices.empty() ? -1 : static_cast<int>(*indices.cbegin()));
             return;
         }
 
@@ -751,9 +751,9 @@ namespace tgui
         {
             // Select first selected item arbitrarily (top one is chosen) if the previous value is no longer valid
             if ((m_firstSelectedItemIndex < 0) || (m_selectedItems.find(static_cast<std::size_t>(m_firstSelectedItemIndex)) == m_selectedItems.end()))
-                m_firstSelectedItemIndex = static_cast<int>(*m_selectedItems.begin());
+                m_firstSelectedItemIndex = static_cast<int>(*m_selectedItems.cbegin());
 
-            onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
+            onItemSelect.emit(this, static_cast<int>(*m_selectedItems.cbegin()));
         }
         else
         {
@@ -774,7 +774,7 @@ namespace tgui
     int ListView::getSelectedItemIndex() const
     {
         if (!m_selectedItems.empty())
-            return static_cast<int>(*m_selectedItems.begin());
+            return static_cast<int>(*m_selectedItems.cbegin());
         return -1;
     }
 
@@ -791,7 +791,7 @@ namespace tgui
     {
         m_multiSelect = multiSelect;
         if (!m_multiSelect && m_selectedItems.size() > 1)
-            updateSelectedItem(static_cast<int>(*m_selectedItems.begin()));
+            updateSelectedItem(static_cast<int>(*m_selectedItems.cbegin()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1684,7 +1684,7 @@ namespace tgui
                 for (const auto& text : m_items[index].texts)
                     temp.append(text.getString() + '\t');
 
-                if (*temp.rbegin() == '\t')
+                if (*temp.crbegin() == '\t')
                     temp.pop_back();
 
                 temp.append('\n');
@@ -2239,7 +2239,7 @@ namespace tgui
     {
         if (m_selectedItems.empty() && (item < 0))
             return;
-        if ((m_selectedItems.size() == 1) && (static_cast<int>(*m_selectedItems.begin()) == item))
+        if ((m_selectedItems.size() == 1) && (static_cast<int>(*m_selectedItems.cbegin()) == item))
             return;
 
         for (const auto selectedItem : m_selectedItems)
@@ -2512,7 +2512,7 @@ namespace tgui
 
         updateSelectedAndhoveredItemColors();
 
-        onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
+        onItemSelect.emit(this, static_cast<int>(*m_selectedItems.cbegin()));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2529,7 +2529,7 @@ namespace tgui
         {
             // The selection started from the removed item, just arbitrarily choose a different item (the top one)
             if (!m_selectedItems.empty())
-                m_firstSelectedItemIndex = static_cast<int>(*m_selectedItems.begin());
+                m_firstSelectedItemIndex = static_cast<int>(*m_selectedItems.cbegin());
             else
                 m_firstSelectedItemIndex = -1;
         }
@@ -2537,7 +2537,7 @@ namespace tgui
         m_focusedItemIndex = static_cast<int>(item);
 
         if (!m_selectedItems.empty())
-            onItemSelect.emit(this, static_cast<int>(*m_selectedItems.begin()));
+            onItemSelect.emit(this, static_cast<int>(*m_selectedItems.cbegin()));
         else
             onItemSelect.emit(this, -1);
     }

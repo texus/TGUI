@@ -474,7 +474,7 @@ namespace tgui
         // The fist element of the hierarchy is always empty due to the way we stored it (which is done because the code
         // originated from MenuBar where there are multiple named menus, while ContextMenu uses a single unnamed menu).
         std::vector<String> correctedHierarchy = hierarchy;
-        correctedHierarchy.erase(correctedHierarchy.begin());
+        correctedHierarchy.erase(correctedHierarchy.cbegin());
 
         onMenuItemClick.emit(this, correctedHierarchy.back(), correctedHierarchy);
     }

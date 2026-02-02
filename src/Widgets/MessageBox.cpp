@@ -266,7 +266,7 @@ namespace tgui
             const auto indexOfFirstButtonToRemove = static_cast<int>(m_buttons.size() - (m_buttons.size() - buttonCaptions.size()));
             for (auto offset = static_cast<int>(m_buttons.size() - 1); offset >= indexOfFirstButtonToRemove; --offset)
             {
-                const auto button = m_buttons.begin() + offset;
+                const auto button = m_buttons.cbegin() + offset;
                 remove(*button);
                 m_buttons.erase(button);
             }

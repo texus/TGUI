@@ -115,7 +115,7 @@ namespace tgui
         auto newPanel = Panel::copy(m_panelTemplate);
 
         index = index != -1 ? index : static_cast<int>(getItemCount());
-        m_items.insert(m_items.begin() + index, Item{newPanel, id});
+        m_items.insert(m_items.cbegin() + index, Item{newPanel, id});
 
         updateItemsPositions();
 
@@ -249,7 +249,7 @@ namespace tgui
         }
 
         ScrollablePanel::remove(m_items[index].panel);
-        m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(index));
+        m_items.erase(m_items.cbegin() + static_cast<std::ptrdiff_t>(index));
 
         updateItemsPositions();
 
@@ -403,7 +403,7 @@ namespace tgui
             for (std::size_t i = m_maxItems; i < getItemCount(); ++i)
                 ScrollablePanel::remove(m_items[i].panel);
 
-            m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(m_maxItems), m_items.end());
+            m_items.erase(m_items.cbegin() + static_cast<std::ptrdiff_t>(m_maxItems), m_items.cend());
 
             updateItemsPositions();
         }
@@ -420,14 +420,14 @@ namespace tgui
 
     bool PanelListBox::contains(const Panel::Ptr& panelPtr) const
     {
-        return std::find_if(m_items.begin(), m_items.end(), [panelPtr](const Item& item) { return item.panel == panelPtr; }) != m_items.end();
+        return std::find_if(m_items.cbegin(), m_items.cend(), [panelPtr](const Item& item) { return item.panel == panelPtr; }) != m_items.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool PanelListBox::containsId(const String& id) const
     {
-        return std::find_if(m_items.begin(), m_items.end(), [id](const Item& item) { return item.id == id; }) != m_items.end();
+        return std::find_if(m_items.cbegin(), m_items.cend(), [id](const Item& item) { return item.id == id; }) != m_items.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

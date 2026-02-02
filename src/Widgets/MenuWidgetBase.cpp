@@ -641,7 +641,7 @@ namespace tgui
             if (!menu.menuItems.empty())
             {
                 // Save as nested 'Menu' sections only when needed, use the more compact string list when just storing the menu items
-                const bool recursionNeeded = std::any_of(menu.menuItems.begin(), menu.menuItems.end(),
+                const bool recursionNeeded = std::any_of(menu.menuItems.cbegin(), menu.menuItems.cend(),
                     [](const Menu& menuItem){ return !menuItem.enabled || !menuItem.menuItems.empty(); });
                 if (recursionNeeded)
                     saveMenus(menuNode, menu.menuItems);

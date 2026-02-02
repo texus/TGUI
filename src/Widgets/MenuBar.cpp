@@ -185,7 +185,7 @@ namespace tgui
                 continue;
 
             closeMenu();
-            m_menus.erase(m_menus.begin() + static_cast<std::ptrdiff_t>(i));
+            m_menus.erase(m_menus.cbegin() + static_cast<std::ptrdiff_t>(i));
             return true;
         }
 

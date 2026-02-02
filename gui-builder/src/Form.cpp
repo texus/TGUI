@@ -250,7 +250,7 @@ namespace
                     while (path.asString() != lastPath)
                     {
                         if (!path.getFilename().empty())
-                            formPathParts.insert(formPathParts.begin(), path.getFilename());
+                            formPathParts.insert(formPathParts.cbegin(), path.getFilename());
 
                         lastPath = path.asString();
                         path = path.getParentPath();
@@ -262,7 +262,7 @@ namespace
                     while (path.asString() != lastPath)
                     {
                         if (!path.getFilename().empty())
-                            resourceParts.insert(resourceParts.begin(), path.getFilename());
+                            resourceParts.insert(resourceParts.cbegin(), path.getFilename());
 
                         lastPath = path.asString();
                         path = path.getParentPath();
@@ -519,8 +519,8 @@ std::shared_ptr<WidgetInfo> Form::getWidgetByName(const tgui::String& name) cons
         return {};
 
     const auto it = std::find_if(
-        m_widgets.begin(),
-        m_widgets.end(),
+        m_widgets.cbegin(),
+        m_widgets.cend(),
         [&name](const auto& idAndWidgetInfo)
         {
             const auto& widgetInfo = idAndWidgetInfo.second;
@@ -1060,7 +1060,7 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(const tgui::Container::Ptr& parent, 
 {
     // Loop through widgets in reverse order to find the top one in case of overlapping widgets
     const auto& widgets = parent->getWidgets();
-    for (auto it = widgets.rbegin(); it != widgets.rend(); ++it)
+    for (auto it = widgets.crbegin(); it != widgets.crend(); ++it)
     {
         tgui::Widget::Ptr widget = *it;
 
@@ -1084,7 +1084,7 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(const tgui::Container::Ptr& parent, 
     }
 
     // If a widget has a width or height of 0 then we still select it if the mouse is nearby it and there was no sibling widget below the mouse
-    for (auto it = widgets.rbegin(); it != widgets.rend(); ++it)
+    for (auto it = widgets.crbegin(); it != widgets.crend(); ++it)
     {
         tgui::Widget::Ptr widget = *it;
         if (!widget || !widget->isVisible())

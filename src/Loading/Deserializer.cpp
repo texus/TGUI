@@ -300,7 +300,7 @@ namespace tgui
                 filename = value;
             else
             {
-                String::const_iterator c = value.begin();
+                String::const_iterator c = value.cbegin();
                 ++c; // Skip the opening quote
 
                 // Look for the end quote
@@ -328,7 +328,7 @@ namespace tgui
                 // There may be optional parameters
                 while (removeWhitespace(value, c))
                 {
-                    const auto startOffset = static_cast<std::size_t>(c - value.begin());
+                    const auto startOffset = static_cast<std::size_t>(c - value.cbegin());
 
                     String word;
                     auto openingBracketPos = value.find(U'(', startOffset);
@@ -376,7 +376,7 @@ namespace tgui
                     else
                         throw Exception{U"Failed to deserialize texture '" + value + U"'. Unexpected word '" + word + U"' in front of opening bracket. Expected 'Part', 'Middle' or 'ScaledMiddle'."};
 
-                    const auto endOffset = static_cast<std::size_t>(c - value.begin());
+                    const auto endOffset = static_cast<std::size_t>(c - value.cbegin());
                     auto closeBracketPos = value.find(U')', endOffset);
                     if (closeBracketPos != String::npos)
                     {
