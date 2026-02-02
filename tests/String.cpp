@@ -39,10 +39,10 @@ TEST_CASE("[String]")
 {
     tgui::String str;
 
-    std::string s("abcde");
-    std::wstring ws(L"\u03b1\u03b2\u03b3\u03b4\u03b5");
-    std::u16string u16s(u"\u03b1\u03b2\u03b3\u03b4\u03b5");
-    std::u32string u32s(U"\u03b1\u03b2\u03b3\u03b4\u03b5");
+    const std::string s("abcde");
+    const std::wstring ws(L"\u03b1\u03b2\u03b3\u03b4\u03b5");
+    const std::u16string u16s(u"\u03b1\u03b2\u03b3\u03b4\u03b5");
+    const std::u32string u32s(U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     const std::string_view view_s(s);

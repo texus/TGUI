@@ -607,7 +607,7 @@ namespace tgui
         Optional<String> wordWrappedString = (maxWidth > 0)
             ? Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold)
             : Optional<String>();
-        String* stringPtr = wordWrappedString.has_value() ? &wordWrappedString.value() : &m_string;
+        const String* stringPtr = wordWrappedString.has_value() ? &wordWrappedString.value() : &m_string;
 
         const Outline outline = {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
                                  m_paddingCached.getTop() + m_bordersCached.getTop(),
