@@ -295,7 +295,7 @@ namespace tgui
             if (!cmdBuffer)
                 return;
             SDL_GPUTexture* swapchainTexture;
-            if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmdBuffer, m_window, &swapchainTexture, NULL, NULL))
+            if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmdBuffer, m_window, &swapchainTexture, nullptr, nullptr))
                 return;
             if (swapchainTexture)
             {
@@ -307,7 +307,7 @@ namespace tgui
                 colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
                 colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 
-                SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdBuffer, &colorTargetInfo, 1, NULL);
+                SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdBuffer, &colorTargetInfo, 1, nullptr);
                 m_gui->draw(renderPass);
                 SDL_EndGPURenderPass(renderPass);
             }

@@ -355,7 +355,7 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
         colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 
-        SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdBuffer, &colorTargetInfo, 1, NULL);
+        SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdBuffer, &colorTargetInfo, 1, nullptr);
         dynamic_cast<tgui::SDL_GPU::Gui&>(gui).draw(renderPass);
         SDL_EndGPURenderPass(renderPass);
 

@@ -502,7 +502,7 @@ namespace tgui
         // back to the SDL cursor if we don't force a refresh.
         if (m_customCursorX11)
         {
-            SDL_SetCursor(NULL);
+            SDL_SetCursor(nullptr);
             m_customCursorX11 = false;
         }
 #else

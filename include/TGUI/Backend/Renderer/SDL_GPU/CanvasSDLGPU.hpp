@@ -52,7 +52,7 @@ namespace tgui
     /// colorTargetInfo.clear_color = clearColor;
     /// colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
     /// colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
-    /// SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdBuffer, &colorTargetInfo, 1, NULL);
+    /// SDL_GPURenderPass* renderPass = SDL_BeginGPURenderPass(cmdBuffer, &colorTargetInfo, 1, nullptr);
     /// // Draw to the texture of the canvas
     /// SDL_EndGPURenderPass(renderPass);
     /// @endcode

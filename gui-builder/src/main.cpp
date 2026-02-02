@@ -61,7 +61,7 @@ int main(int, char* argv[])
 
         int argcW;
         LPWSTR* argvW = CommandLineToArgvW(commandLineStr, &argcW);
-        if (argvW == NULL)
+        if (argvW == nullptr)
         {
             std::cerr << "Failed to access command line arguments\n";
             return 1;
