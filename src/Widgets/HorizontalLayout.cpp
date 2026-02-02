@@ -72,7 +72,7 @@ namespace tgui
         const Vector2f contentSize = {getSize().x - m_paddingCached.getLeftPlusRight(),
                                       getSize().y - m_paddingCached.getTopPlusBottom()};
 
-        const float totalRatio = std::accumulate(m_ratios.begin(), m_ratios.end(), 0.f);
+        const float totalRatio = std::accumulate(m_ratios.cbegin(), m_ratios.cend(), 0.f);
 
         float currentOffset = 0;
         for (std::size_t i = 0; i < m_widgets.size(); ++i)

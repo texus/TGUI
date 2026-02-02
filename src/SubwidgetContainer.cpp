@@ -243,12 +243,12 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         // Find the renderer node
-        std::vector<std::unique_ptr<DataIO::Node>>::iterator rendererNodeIt;
+        std::vector<std::unique_ptr<DataIO::Node>>::const_iterator rendererNodeIt;
         const String& rendererName = renderers.at(this).second; // Empty if the renderer isn't shared
         if (rendererName.empty()) // We can't check renderers.at(this).first as Widget::save moved the value
         {
             // If the renderer has no name then it isn't shared and we should find the renderer among the child nodes
-            rendererNodeIt = std::find_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
+            rendererNodeIt = std::find_if(node->children.cbegin(), node->children.cend(), [](const std::unique_ptr<DataIO::Node>& child){
                 return child->name == U"Renderer";
             });
             TGUI_ASSERT(rendererNodeIt != node->children.end(), "SubwidgetContainer relies on Widget::save saving the renderer");
@@ -259,7 +259,7 @@ namespace tgui
             while (rootNode->parent)
                 rootNode = node->parent;
 
-            rendererNodeIt = std::find_if(rootNode->children.begin(), rootNode->children.end(), [&](const std::unique_ptr<DataIO::Node>& child){
+            rendererNodeIt = std::find_if(rootNode->children.cbegin(), rootNode->children.cend(), [&](const std::unique_ptr<DataIO::Node>& child){
                 return child->name == U"Renderer" + rendererName;
             });
             TGUI_ASSERT(rendererNodeIt != rootNode->children.end(), "SubwidgetContainer relies on the renderer being saved already");
@@ -273,8 +273,8 @@ namespace tgui
                 continue;
 
             auto& propertyValuePairs = (*rendererNodeIt)->propertyValuePairs;
-            auto propertyIt = propertyValuePairs.begin();
-            while (propertyIt != propertyValuePairs.end())
+            auto propertyIt = propertyValuePairs.cbegin();
+            while (propertyIt != propertyValuePairs.cend())
             {
                 // Search for properties that either match the widget name or start with the name followed by a dot
                 if ((!propertyIt->first.starts_with(widgetName))

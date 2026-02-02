@@ -51,7 +51,7 @@ namespace tgui
         auto it = m_signals.find(id);
         if (it != m_signals.end())
         {
-            for (auto it2 = m_connectedSignals.begin(); it2 != m_connectedSignals.end();)
+            for (auto it2 = m_connectedSignals.cbegin(); it2 != m_connectedSignals.cend();)
             {
                 if (it2->signalId != id)
                 {

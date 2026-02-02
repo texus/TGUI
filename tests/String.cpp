@@ -112,10 +112,10 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String({u'\x03b1', u'\x03b2', u'\x03b3'}) == u"\u03b1\u03b2\u03b3");
         REQUIRE(tgui::String({U'\x03b1', U'\x03b2', U'\x03b3'}) == U"\u03b1\u03b2\u03b3");
 
-        REQUIRE(tgui::String(s.begin(), s.end()) == "abcde");
-        REQUIRE(tgui::String(ws.begin(), ws.end()) == L"\u03b1\u03b2\u03b3\u03b4\u03b5");
-        REQUIRE(tgui::String(u16s.begin(), u16s.end()) == u"\u03b1\u03b2\u03b3\u03b4\u03b5");
-        REQUIRE(tgui::String(u32s.begin(), u32s.end()) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(tgui::String(s.cbegin(), s.cend()) == "abcde");
+        REQUIRE(tgui::String(ws.cbegin(), ws.cend()) == L"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(tgui::String(u16s.cbegin(), u16s.cend()) == u"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(tgui::String(u32s.cbegin(), u32s.cend()) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
         REQUIRE(tgui::String("xyz"sv) == "xyz");
         REQUIRE(tgui::String(L"\U00010348"sv) == L"\U00010348");
@@ -140,7 +140,7 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(std::u8string(u8"\U00010348")) == u8"\U00010348");
         REQUIRE(tgui::String(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 6) == u8"\u03b4\u03b5");
         REQUIRE(tgui::String(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == u8"\u03b2\u03b3\u03b4");
-        REQUIRE(tgui::String(u8s.begin(), u8s.end()) == u8"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(tgui::String(u8s.cbegin(), u8s.cend()) == u8"\u03b1\u03b2\u03b3\u03b4\u03b5");
         REQUIRE(tgui::String(3, u8'x') == "xxx");
 
     #if TGUI_COMPILED_WITH_CPP_VER >= 17
@@ -233,11 +233,11 @@ TEST_CASE("[String]")
         REQUIRE(str.assign({u'\x03b1', u'\x03b2', u'\x03b3'}) == u"\u03b1\u03b2\u03b3");
         REQUIRE(str.assign({U'\x03b1', U'\x03b2', U'\x03b3'}) == U"\u03b1\u03b2\u03b3");
 
-        REQUIRE(str.assign(s.begin(), s.end()) == "abcde");
-        REQUIRE(str.assign(ws.begin(), ws.end()) == L"\u03b1\u03b2\u03b3\u03b4\u03b5");
-        REQUIRE(str.assign(u16s.begin(), u16s.end()) == u"\u03b1\u03b2\u03b3\u03b4\u03b5");
-        REQUIRE(str.assign(u32s.begin(), u32s.end()) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
-        REQUIRE(str.assign(view_u32s.begin(), view_u32s.end()) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(str.assign(s.cbegin(), s.cend()) == "abcde");
+        REQUIRE(str.assign(ws.cbegin(), ws.cend()) == L"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(str.assign(u16s.cbegin(), u16s.cend()) == u"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(str.assign(u32s.cbegin(), u32s.cend()) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(str.assign(view_u32s.cbegin(), view_u32s.cend()) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
         REQUIRE(str.assign(s) == "abcde");
         REQUIRE(str.assign(ws) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
@@ -257,7 +257,7 @@ TEST_CASE("[String]")
         REQUIRE(str.assign(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == u8"\u03b2\u03b3\u03b4");
         REQUIRE(str.assign(3, u8'x') == u8"xxx");
         REQUIRE(str.assign({u8'a', u8'b', u8'c'}) == u8"abc");
-        REQUIRE(str.assign(u8s.begin(), u8s.end()) == u8"\u03b1\u03b2\u03b3\u03b4\u03b5");
+        REQUIRE(str.assign(u8s.cbegin(), u8s.cend()) == u8"\u03b1\u03b2\u03b3\u03b4\u03b5");
 #endif
     }
 
@@ -426,26 +426,26 @@ TEST_CASE("[String]")
         str = "^$"; str.insert(1, tgui::String("xyz")); REQUIRE(str == "^xyz$");
         str = "^$"; str.insert(1, tgui::String("abcde"), 2, 2); REQUIRE(str == "^cd$");
 
-        str = "^$"; str.insert(str.begin() + 1, 3, 'x'); REQUIRE(str == "^xxx$");
-        str = "^$"; str.insert(str.begin() + 1, 3, L'\x20AC'); REQUIRE(str == L"^\u20AC\u20AC\u20AC$");
-        str = "^$"; str.insert(str.begin() + 1, 3, u'\x20AC'); REQUIRE(str == u"^\u20AC\u20AC\u20AC$");
-        str = "^$"; str.insert(str.begin() + 1, 3, U'\x10348'); REQUIRE(str == U"^\U00010348\U00010348\U00010348$");
+        str = "^$"; str.insert(str.cbegin() + 1, 3, 'x'); REQUIRE(str == "^xxx$");
+        str = "^$"; str.insert(str.cbegin() + 1, 3, L'\x20AC'); REQUIRE(str == L"^\u20AC\u20AC\u20AC$");
+        str = "^$"; str.insert(str.cbegin() + 1, 3, u'\x20AC'); REQUIRE(str == u"^\u20AC\u20AC\u20AC$");
+        str = "^$"; str.insert(str.cbegin() + 1, 3, U'\x10348'); REQUIRE(str == U"^\U00010348\U00010348\U00010348$");
 
-        str = "^$"; str.insert(str.begin() + 1, 'x'); REQUIRE(str == "^x$");
-        str = "^$"; str.insert(str.begin() + 1, L'\x20AC'); REQUIRE(str == L"^\u20AC$");
-        str = "^$"; str.insert(str.begin() + 1, u'\x20AC'); REQUIRE(str == u"^\u20AC$");
-        str = "^$"; str.insert(str.begin() + 1, U'\x10348'); REQUIRE(str == U"^\U00010348$");
+        str = "^$"; str.insert(str.cbegin() + 1, 'x'); REQUIRE(str == "^x$");
+        str = "^$"; str.insert(str.cbegin() + 1, L'\x20AC'); REQUIRE(str == L"^\u20AC$");
+        str = "^$"; str.insert(str.cbegin() + 1, u'\x20AC'); REQUIRE(str == u"^\u20AC$");
+        str = "^$"; str.insert(str.cbegin() + 1, U'\x10348'); REQUIRE(str == U"^\U00010348$");
 
-        str = "^$"; str.insert(str.begin() + 1, {'a', 'b', 'c'}); REQUIRE(str == "^abc$");
-        str = "^$"; str.insert(str.begin() + 1, {L'\x03b1', L'\x03b2', L'\x03b3'}); REQUIRE(str == L"^\u03b1\u03b2\u03b3$");
-        str = "^$"; str.insert(str.begin() + 1, {u'\x03b1', u'\x03b2', u'\x03b3'}); REQUIRE(str == u"^\u03b1\u03b2\u03b3$");
-        str = "^$"; str.insert(str.begin() + 1, {U'\x03b1', U'\x03b2', U'\x03b3'}); REQUIRE(str == U"^\u03b1\u03b2\u03b3$");
+        str = "^$"; str.insert(str.cbegin() + 1, {'a', 'b', 'c'}); REQUIRE(str == "^abc$");
+        str = "^$"; str.insert(str.cbegin() + 1, {L'\x03b1', L'\x03b2', L'\x03b3'}); REQUIRE(str == L"^\u03b1\u03b2\u03b3$");
+        str = "^$"; str.insert(str.cbegin() + 1, {u'\x03b1', u'\x03b2', u'\x03b3'}); REQUIRE(str == u"^\u03b1\u03b2\u03b3$");
+        str = "^$"; str.insert(str.cbegin() + 1, {U'\x03b1', U'\x03b2', U'\x03b3'}); REQUIRE(str == U"^\u03b1\u03b2\u03b3$");
 
-        str = "^$"; str.insert(str.begin() + 1, s.begin(), s.end()); REQUIRE(str == "^abcde$");
-        str = "^$"; str.insert(str.begin() + 1, ws.begin(), ws.end()); REQUIRE(str == L"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
-        str = "^$"; str.insert(str.begin() + 1, u16s.begin(), u16s.end()); REQUIRE(str == u"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
-        str = "^$"; str.insert(str.begin() + 1, u32s.begin(), u32s.end()); REQUIRE(str == U"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
-        str = "^$"; str.insert(str.begin() + 1, view_u32s.begin(), view_u32s.end()); REQUIRE(str == U"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
+        str = "^$"; str.insert(str.cbegin() + 1, s.cbegin(), s.cend()); REQUIRE(str == "^abcde$");
+        str = "^$"; str.insert(str.cbegin() + 1, ws.cbegin(), ws.cend()); REQUIRE(str == L"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
+        str = "^$"; str.insert(str.cbegin() + 1, u16s.cbegin(), u16s.cend()); REQUIRE(str == u"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
+        str = "^$"; str.insert(str.cbegin() + 1, u32s.cbegin(), u32s.cend()); REQUIRE(str == U"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
+        str = "^$"; str.insert(str.cbegin() + 1, view_u32s.cbegin(), view_u32s.cend()); REQUIRE(str == U"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         str = "^$"; REQUIRE(str.insert(1, u8"\U00010348") == u8"^\U00010348$");
@@ -454,10 +454,10 @@ TEST_CASE("[String]")
         str = "^$"; REQUIRE(str.insert(1, std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 6) == u8"^\u03b4\u03b5$");
         str = "^$"; REQUIRE(str.insert(1, std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == u8"^\u03b2\u03b3\u03b4$");
         str = "^$"; REQUIRE(str.insert(1, 3, u8'\x13') == u8"^\u0013\u0013\u0013$");
-        str = "^$"; str.insert(str.begin() + 1, 3, u8'\x13'); REQUIRE(str == u8"^\u0013\u0013\u0013$");
-        str = "^$"; str.insert(str.begin() + 1, u8'\x13'); REQUIRE(str == u8"^\u0013$");
-        str = "^$"; str.insert(str.begin() + 1, {u8'\x41', u8'\x42', u8'\x43'}); REQUIRE(str == u8"^\u0041\u0042\u0043$");
-        str = "^$"; str.insert(str.begin() + 1, u8s.begin(), u8s.end()); REQUIRE(str == u8"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
+        str = "^$"; str.insert(str.cbegin() + 1, 3, u8'\x13'); REQUIRE(str == u8"^\u0013\u0013\u0013$");
+        str = "^$"; str.insert(str.cbegin() + 1, u8'\x13'); REQUIRE(str == u8"^\u0013$");
+        str = "^$"; str.insert(str.cbegin() + 1, {u8'\x41', u8'\x42', u8'\x43'}); REQUIRE(str == u8"^\u0041\u0042\u0043$");
+        str = "^$"; str.insert(str.cbegin() + 1, u8s.cbegin(), u8s.cend()); REQUIRE(str == u8"^\u03b1\u03b2\u03b3\u03b4\u03b5$");
 #endif
     }
 
@@ -466,7 +466,7 @@ TEST_CASE("[String]")
         str = "ABCDEFGHIJK";
         REQUIRE(str.erase(2, 3) == "ABFGHIJK");
 
-        const auto it = str.erase(str.begin() + 3);
+        const auto it = str.erase(str.cbegin() + 3);
         REQUIRE(str == "ABFHIJK");
 
         str.erase(it, it + 2);
@@ -534,11 +534,11 @@ TEST_CASE("[String]")
         str = "@"; REQUIRE(str.append({u'\x03b1', u'\x03b2', u'\x03b3'}) == u"@\u03b1\u03b2\u03b3");
         str = "@"; REQUIRE(str.append({U'\x03b1', U'\x03b2', U'\x03b3'}) == U"@\u03b1\u03b2\u03b3");
 
-        str = "@"; REQUIRE(str.append(s.begin(), s.end()) == "@abcde");
-        str = "@"; REQUIRE(str.append(ws.begin(), ws.end()) == L"@\u03b1\u03b2\u03b3\u03b4\u03b5");
-        str = "@"; REQUIRE(str.append(u16s.begin(), u16s.end()) == u"@\u03b1\u03b2\u03b3\u03b4\u03b5");
-        str = "@"; REQUIRE(str.append(u32s.begin(), u32s.end()) == U"@\u03b1\u03b2\u03b3\u03b4\u03b5");
-        str = "@"; REQUIRE(str.append(view_u32s.begin(), view_u32s.end()) == U"@\u03b1\u03b2\u03b3\u03b4\u03b5");
+        str = "@"; REQUIRE(str.append(s.cbegin(), s.cend()) == "@abcde");
+        str = "@"; REQUIRE(str.append(ws.cbegin(), ws.cend()) == L"@\u03b1\u03b2\u03b3\u03b4\u03b5");
+        str = "@"; REQUIRE(str.append(u16s.cbegin(), u16s.cend()) == u"@\u03b1\u03b2\u03b3\u03b4\u03b5");
+        str = "@"; REQUIRE(str.append(u32s.cbegin(), u32s.cend()) == U"@\u03b1\u03b2\u03b3\u03b4\u03b5");
+        str = "@"; REQUIRE(str.append(view_u32s.cbegin(), view_u32s.cend()) == U"@\u03b1\u03b2\u03b3\u03b4\u03b5");
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         str = "@"; REQUIRE(str.append(u8"\U00010348") == u8"@\U00010348");
@@ -548,7 +548,7 @@ TEST_CASE("[String]")
         str = "@"; REQUIRE(str.append(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == u8"@\u03b2\u03b3\u03b4");
         str = "@"; REQUIRE(str.append(3, u8'\x13') == u8"@\u0013\u0013\u0013");
         str = "@"; REQUIRE(str.append({u8'\x41', u8'\x42', u8'\x43'}) == u8"@\u0041\u0042\u0043");
-        str = "@"; REQUIRE(str.append(u8s.begin(), u8s.end()) == u8"@\u03b1\u03b2\u03b3\u03b4\u03b5");
+        str = "@"; REQUIRE(str.append(u8s.cbegin(), u8s.cend()) == u8"@\u03b1\u03b2\u03b3\u03b4\u03b5");
 #endif
     }
 
@@ -640,15 +640,15 @@ TEST_CASE("[String]")
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, u"\u03b1\u03b2\u03b3\u03b4\u03b5", 3) == U"^\u03b1\u03b2\u03b3$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, U"\u03b1\u03b2\u03b3\u03b4\u03b5", 3) == U"^\u03b1\u03b2\u03b3$");
 
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, "abc") == U"^abc$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, L"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, u"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, U"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, "abc") == U"^abc$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, L"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, u"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, U"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
 
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, "abcde", 3) == U"^abc$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, L"\u03b1\u03b2\u03b3\u03b4\u03b5", 3) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, u"\u03b1\u03b2\u03b3\u03b4\u03b5", 3) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, U"\u03b1\u03b2\u03b3\u03b4\u03b5", 3) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, "abcde", 3) == U"^abc$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, L"\u03b1\u03b2\u03b3\u03b4\u03b5", 3) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, u"\u03b1\u03b2\u03b3\u03b4\u03b5", 3) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, U"\u03b1\u03b2\u03b3\u03b4\u03b5", 3) == U"^\u03b1\u03b2\u03b3$");
 
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, std::string("abc")) == U"^abc$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, std::wstring(L"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
@@ -664,33 +664,33 @@ TEST_CASE("[String]")
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, tgui::String(U"\u03b1\u03b2\u03b3\u03b4\u03b5"), 1, 3) == U"^\u03b2\u03b3\u03b4$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, U"\u03b1\u03b2\u03b3\u03b4\u03b5"sv, 1, 3) == U"^\u03b2\u03b3\u03b4$");
 
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, std::string("abc")) == U"^abc$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, std::wstring(L"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, std::u16string(u"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, std::u32string(U"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, tgui::String(U"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, U"\u03b1\u03b2\u03b3"sv) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, std::string("abc")) == U"^abc$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, std::wstring(L"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, std::u16string(u"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, std::u32string(U"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, tgui::String(U"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, U"\u03b1\u03b2\u03b3"sv) == U"^\u03b1\u03b2\u03b3$");
 
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, s.begin() + 1, s.begin() + 4) == U"^bcd$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, ws.begin() + 1, ws.begin() + 4) == U"^\u03b2\u03b3\u03b4$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, u16s.begin() + 1, u16s.begin() + 4) == U"^\u03b2\u03b3\u03b4$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, u32s.begin() + 1, u32s.begin() + 4) == U"^\u03b2\u03b3\u03b4$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, view_u32s.begin() + 1, view_u32s.begin() + 4) == U"^\u03b2\u03b3\u03b4$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, s.cbegin() + 1, s.cbegin() + 4) == U"^bcd$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, ws.cbegin() + 1, ws.cbegin() + 4) == U"^\u03b2\u03b3\u03b4$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, u16s.cbegin() + 1, u16s.cbegin() + 4) == U"^\u03b2\u03b3\u03b4$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, u32s.cbegin() + 1, u32s.cbegin() + 4) == U"^\u03b2\u03b3\u03b4$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, view_u32s.cbegin() + 1, view_u32s.cbegin() + 4) == U"^\u03b2\u03b3\u03b4$");
 
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, 3, 'b') == U"^bbb$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, 3, L'\x03b2') == U"^\u03b2\u03b2\u03b2$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, 3, u'\x03b2') == U"^\u03b2\u03b2\u03b2$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, 3, U'\x03b2') == U"^\u03b2\u03b2\u03b2$");
 
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, 3, 'b') == U"^bbb$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, 3, L'\x03b2') == U"^\u03b2\u03b2\u03b2$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, 3, u'\x03b2') == U"^\u03b2\u03b2\u03b2$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, 3, U'\x03b2') == U"^\u03b2\u03b2\u03b2$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, 3, 'b') == U"^bbb$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, 3, L'\x03b2') == U"^\u03b2\u03b2\u03b2$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, 3, u'\x03b2') == U"^\u03b2\u03b2\u03b2$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, 3, U'\x03b2') == U"^\u03b2\u03b2\u03b2$");
 
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, {'a', 'b', 'c'}) == U"^abc$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, {L'\x03b1', L'\x03b2', L'\x03b3'}) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, {u'\x03b1', u'\x03b2', u'\x03b3'}) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, {U'\x03b1', U'\x03b2', U'\x03b3'}) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, {'a', 'b', 'c'}) == U"^abc$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, {L'\x03b1', L'\x03b2', L'\x03b3'}) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, {u'\x03b1', u'\x03b2', u'\x03b3'}) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, {U'\x03b1', U'\x03b2', U'\x03b3'}) == U"^\u03b1\u03b2\u03b3$");
 
         str = "^ab:abc:abc:bc$"; REQUIRE(str.replace("abc", "xyz") == "^ab:xyz:xyz:bc$");
         str = "123"; REQUIRE(str.replace("", "xyz") == "xyz1xyz2xyz3xyz");
@@ -698,15 +698,15 @@ TEST_CASE("[String]")
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, u8"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, u8"\u03b1\u03b2\u03b3\u03b4\u03b5", 6) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, u8"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, u8"\u03b1\u03b2\u03b3\u03b4\u03b5", 6) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, u8"\u03b1\u03b2\u03b3") == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, u8"\u03b1\u03b2\u03b3\u03b4\u03b5", 6) == U"^\u03b1\u03b2\u03b3$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, std::u8string(u8"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == U"^\u03b2\u03b3\u03b4$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, std::u8string(u8"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, u8s.begin() + 2, u8s.begin() + 8) == U"^\u03b2\u03b3\u03b4$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, std::u8string(u8"\u03b1\u03b2\u03b3")) == U"^\u03b1\u03b2\u03b3$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, u8s.cbegin() + 2, u8s.cbegin() + 8) == U"^\u03b2\u03b3\u03b4$");
         str = U"^a\u03b5$"; REQUIRE(str.replace(1, 2, 3, u8'b') == U"^bbb$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, 3, u8'b') == U"^bbb$");
-        str = U"^a\u03b5$"; REQUIRE(str.replace(str.begin() + 1, str.begin() + 3, {u8'a', u8'b', u8'c'}) == U"^abc$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, 3, u8'b') == U"^bbb$");
+        str = U"^a\u03b5$"; REQUIRE(str.replace(str.cbegin() + 1, str.cbegin() + 3, {u8'a', u8'b', u8'c'}) == U"^abc$");
 #endif
     }
 

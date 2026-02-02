@@ -448,7 +448,7 @@ namespace tgui
 
         explicit operator sf::String() const
         {
-            return sf::String::fromUtf32(m_string.begin(), m_string.end());
+            return sf::String::fromUtf32(m_string.cbegin(), m_string.cend());
         }
 #endif
 

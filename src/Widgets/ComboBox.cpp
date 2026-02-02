@@ -584,7 +584,7 @@ namespace tgui
     bool ComboBox::contains(const String& item) const
     {
         const auto& items = getItems();
-        return std::find(items.begin(), items.end(), item) != items.end();
+        return std::find(items.cbegin(), items.cend(), item) != items.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -592,7 +592,7 @@ namespace tgui
     bool ComboBox::containsId(const String& id) const
     {
         const auto& ids = getItemIds();
-        return std::find(ids.begin(), ids.end(), id) != ids.end();
+        return std::find(ids.cbegin(), ids.cend(), id) != ids.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

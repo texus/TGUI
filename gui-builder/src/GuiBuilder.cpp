@@ -671,12 +671,12 @@ void GuiBuilder::saveGuiBuilderState()
     // Save the list of themes
     if (m_themes.size() > 1)
     {
-        auto themeIt = m_themes.begin();
+        auto themeIt = m_themes.cbegin();
         if (themeIt->first == "White")
             themeIt++;
 
         tgui::String themeList = "[" + tgui::Serializer::serialize(themeIt->first);
-        for (++themeIt; themeIt != m_themes.end(); ++themeIt)
+        for (++themeIt; themeIt != m_themes.cend(); ++themeIt)
         {
             if (themeIt->first != "White")
                 themeList += ", " + tgui::Serializer::serialize(themeIt->first);
@@ -726,7 +726,7 @@ void GuiBuilder::formSaved(const tgui::String& filename)
     if (m_recentFiles.empty() || (m_recentFiles.front() != filename))
     {
         m_recentFiles.erase(std::remove_if(m_recentFiles.begin(), m_recentFiles.end(), [filename](const tgui::String& recentFile){ return filename == recentFile; }), m_recentFiles.end());
-        m_recentFiles.insert(m_recentFiles.begin(), filename);
+        m_recentFiles.insert(m_recentFiles.cbegin(), filename);
     }
 
     saveGuiBuilderState();
@@ -1517,7 +1517,7 @@ bool GuiBuilder::loadForm(tgui::String filename, bool loadingFromFile)
     initSelectedWidgetComboBoxAfterLoad();
 
     m_recentFiles.erase(std::remove_if(m_recentFiles.begin(), m_recentFiles.end(), [filename](const tgui::String& recentFile){ return filename == recentFile; }), m_recentFiles.end());
-    m_recentFiles.insert(m_recentFiles.begin(), filename);
+    m_recentFiles.insert(m_recentFiles.cbegin(), filename);
     saveGuiBuilderState();
     return true;
 }
@@ -2883,7 +2883,7 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui:
 
     auto widgets = m_selectedForm->getWidgets();
 
-    auto it = std::find_if(widgets.begin(), widgets.end(), [widget](const std::shared_ptr<WidgetInfo>& otherWidget){
+    auto it = std::find_if(widgets.cbegin(), widgets.cend(), [widget](const std::shared_ptr<WidgetInfo>& otherWidget){
         return otherWidget->ptr.get() == widget;
     });
 

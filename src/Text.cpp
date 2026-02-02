@@ -321,7 +321,7 @@ namespace tgui
         for (unsigned int i = 0; i < static_cast<unsigned int>(height); ++i)
             textSizes[i] = i + 1;
 
-        const auto high = std::lower_bound(textSizes.begin(), textSizes.end(), height,
+        const auto high = std::lower_bound(textSizes.cbegin(), textSizes.cend(), height,
                                            [&](unsigned int charSize, float h) { return std::max(font.getLineSpacing(charSize), font.getFontHeight(charSize)) < h; });
         if (high == textSizes.end())
             return static_cast<unsigned int>(height);

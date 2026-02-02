@@ -61,7 +61,7 @@ namespace tgui
     void BoxLayoutRatios::insert(std::size_t index, const Widget::Ptr& widget, float ratio, const String& widgetName)
     {
         if (index < m_ratios.size())
-            m_ratios.insert(m_ratios.begin() + static_cast<std::ptrdiff_t>(index), ratio);
+            m_ratios.insert(m_ratios.cbegin() + static_cast<std::ptrdiff_t>(index), ratio);
         else
             m_ratios.push_back(ratio);
 
@@ -73,7 +73,7 @@ namespace tgui
     bool BoxLayoutRatios::remove(std::size_t index)
     {
         if (index < m_ratios.size())
-            m_ratios.erase(m_ratios.begin() + static_cast<std::ptrdiff_t>(index));
+            m_ratios.erase(m_ratios.cbegin() + static_cast<std::ptrdiff_t>(index));
 
         return BoxLayout::remove(index);
     }

@@ -404,7 +404,7 @@ namespace tgui
             // Copy children that aren't overwritten
             for (const auto& baseChildNode : baseSectionNode->children)
             {
-                const auto it = std::find_if(sectionNode->children.begin(), sectionNode->children.end(),
+                const auto it = std::find_if(sectionNode->children.cbegin(), sectionNode->children.cend(),
                     [&](const std::unique_ptr<DataIO::Node>& childNode){ return childNode->name == baseChildNode->name; });
                 if (it == sectionNode->children.end())
                     sectionNode->children.push_back(std::make_unique<DataIO::Node>(*baseChildNode));
@@ -562,7 +562,7 @@ namespace tgui
                 if (position != std::stringstream::pos_type(-1))
                 {
                     String str = stream.str();
-                    auto lineNumber = std::count(str.begin(), str.begin() + static_cast<std::ptrdiff_t>(position), U'\n') + 1;
+                    auto lineNumber = std::count(str.cbegin(), str.cbegin() + static_cast<std::ptrdiff_t>(position), U'\n') + 1;
                     throw Exception{U"Error while parsing input at line " + String::fromNumber(lineNumber) + U". " + error};
                 }
                 throw Exception{U"Error while parsing input. " + error};

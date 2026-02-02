@@ -124,7 +124,7 @@ namespace tgui
 
         bool removeItemImpl(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<std::shared_ptr<TreeView::Node>>& nodes)
         {
-            for (auto it = nodes.begin(); it != nodes.end(); ++it)
+            for (auto it = nodes.cbegin(); it != nodes.cend(); ++it)
             {
                 if ((*it)->text.getString() != hierarchy[parentIndex])
                     continue;
@@ -291,7 +291,7 @@ namespace tgui
         m_visibleNodes.resize(other.m_visibleNodes.size(), nullptr);
         cloneVisibleNodeList(other.m_nodes, m_nodes, other.m_visibleNodes, m_visibleNodes);
 
-        TGUI_ASSERT(std::count(m_visibleNodes.begin(), m_visibleNodes.end(), nullptr) == 0, "Cloned nodes can't contain a nullptr");
+        TGUI_ASSERT(std::count(m_visibleNodes.cbegin(), m_visibleNodes.cend(), nullptr) == 0, "Cloned nodes can't contain a nullptr");
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -464,7 +464,7 @@ namespace tgui
         // Make sure the parent of the item we are selecting is expanded
         if (hierarchy.size() >= 2)
         {
-            if (!expandOrCollapse(std::vector<String>(hierarchy.begin(), hierarchy.end()-1), true))
+            if (!expandOrCollapse(std::vector<String>(hierarchy.cbegin(), hierarchy.cend()-1), true))
                 return false;
         }
 
@@ -524,7 +524,7 @@ namespace tgui
         assert(node != nullptr);
         while (node)
         {
-            hierarchy.insert(hierarchy.begin(), node->text.getString());
+            hierarchy.insert(hierarchy.cbegin(), node->text.getString());
             node = node->parent;
         }
 
@@ -544,7 +544,7 @@ namespace tgui
         assert(node != nullptr);
         while (node)
         {
-            hierarchy.insert(hierarchy.begin(), node->text.getString());
+            hierarchy.insert(hierarchy.cbegin(), node->text.getString());
             node = node->parent;
         }
 
@@ -593,8 +593,8 @@ namespace tgui
         if (index >= parentNodes->size())
             index = parentNodes->size() - 1;
 
-        parentNodes->erase(parentNodes->begin() + static_cast<std::ptrdiff_t>(currentIndex));
-        parentNodes->insert(parentNodes->begin() + static_cast<std::ptrdiff_t>(index), node);
+        parentNodes->erase(parentNodes->cbegin() + static_cast<std::ptrdiff_t>(currentIndex));
+        parentNodes->insert(parentNodes->cbegin() + static_cast<std::ptrdiff_t>(index), node);
         markNodesDirty();
         return true;
     }
@@ -652,7 +652,7 @@ namespace tgui
 
         // Remove the node from its old parent
         auto& oldParentNodes = node->parent ? node->parent->nodes : m_nodes;
-        auto it = std::find_if(oldParentNodes.begin(), oldParentNodes.end(), [node](const std::shared_ptr<Node>& child){ return child.get() == node; });
+        auto it = std::find_if(oldParentNodes.cbegin(), oldParentNodes.cend(), [node](const std::shared_ptr<Node>& child){ return child.get() == node; });
         assert(it != oldParentNodes.end());
         auto nodeSharedPtr = *it;
         oldParentNodes.erase(it);
@@ -683,7 +683,7 @@ namespace tgui
         assert(node != nullptr);
         while (node)
         {
-            hierarchy.insert(hierarchy.begin(), node->text.getString());
+            hierarchy.insert(hierarchy.cbegin(), node->text.getString());
             node = node->parent;
         }
 
@@ -937,7 +937,7 @@ namespace tgui
                         assert(node != nullptr);
                         while (node)
                         {
-                            hierarchy.insert(hierarchy.begin(), node->text.getString());
+                            hierarchy.insert(hierarchy.cbegin(), node->text.getString());
                             node = node->parent;
                         }
 
@@ -983,7 +983,7 @@ namespace tgui
                 assert(node != nullptr);
                 while (node)
                 {
-                    hierarchy.insert(hierarchy.begin(), node->text.getString());
+                    hierarchy.insert(hierarchy.cbegin(), node->text.getString());
                     node = node->parent;
                 }
 
@@ -1778,7 +1778,7 @@ namespace tgui
             assert(node != nullptr);
             while (node)
             {
-                hierarchy.insert(hierarchy.begin(), node->text.getString());
+                hierarchy.insert(hierarchy.cbegin(), node->text.getString());
                 node = node->parent;
             }
 

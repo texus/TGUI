@@ -197,11 +197,11 @@ namespace tgui
 
     String String::trim() const
     {
-        const auto firstIt = std::find_if(m_string.begin(), m_string.end(), [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); });
+        const auto firstIt = std::find_if(m_string.cbegin(), m_string.cend(), [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); });
         if (firstIt == m_string.end())
             return {};
 
-        const auto lastIt = std::find_if(m_string.rbegin(), m_string.rend(), [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); }).base();
+        const auto lastIt = std::find_if(m_string.crbegin(), m_string.crend(), [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); }).base();
         return String(firstIt, lastIt);
     }
 
@@ -262,7 +262,7 @@ namespace tgui
         if (substring.length() > length())
             return false;
 
-        return std::equal(m_string.begin(), m_string.begin() + static_cast<std::ptrdiff_t>(substring.length()), substring.begin(), substring.end(), &compareCharIgnoreCase);
+        return std::equal(m_string.cbegin(), m_string.cbegin() + static_cast<std::ptrdiff_t>(substring.length()), substring.cbegin(), substring.cend(), &compareCharIgnoreCase);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,8 +281,8 @@ namespace tgui
         if (substring.length() > length())
             return false;
 
-        return std::equal(m_string.begin() + static_cast<std::ptrdiff_t>(length() - substring.length()), m_string.end(),
-                          substring.begin(), substring.end(), &compareCharIgnoreCase);
+        return std::equal(m_string.cbegin() + static_cast<std::ptrdiff_t>(length() - substring.length()), m_string.cend(),
+                          substring.cbegin(), substring.cend(), &compareCharIgnoreCase);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,8 +368,8 @@ namespace tgui
     {
         String result;
 
-        auto it = segments.begin();
-        if (it != segments.end())
+        auto it = segments.cbegin();
+        if (it != segments.cend())
         {
             result += *it;
             ++it;
@@ -387,17 +387,17 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String::String(const std::string& str) :
-        m_string(utf::convertUtf8toUtf32(str.begin(), str.end()))
+        m_string(utf::convertUtf8toUtf32(str.cbegin(), str.cend()))
     {
     }
 
     String::String(const std::wstring& str) :
-        m_string(utf::convertWidetoUtf32(str.begin(), str.end()))
+        m_string(utf::convertWidetoUtf32(str.cbegin(), str.cend()))
     {
     }
 
     String::String(const std::u16string& str) :
-        m_string(utf::convertUtf16toUtf32(str.begin(), str.end()))
+        m_string(utf::convertUtf16toUtf32(str.cbegin(), str.cend()))
     {
     }
 
@@ -462,17 +462,17 @@ namespace tgui
     }
 
     String::String(const std::string& str, std::size_t pos) :
-        m_string(utf::convertUtf8toUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos), str.end()))
+        m_string(utf::convertUtf8toUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos), str.cend()))
     {
     }
 
     String::String(const std::wstring& str, std::size_t pos) :
-        m_string(utf::convertWidetoUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos), str.end()))
+        m_string(utf::convertWidetoUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos), str.cend()))
     {
     }
 
     String::String(const std::u16string& str, std::size_t pos) :
-        m_string(utf::convertUtf16toUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos), str.end()))
+        m_string(utf::convertUtf16toUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos), str.cend()))
     {
     }
 
@@ -482,20 +482,20 @@ namespace tgui
     }
 
     String::String(const std::string& str, std::size_t pos, std::size_t count) :
-        m_string(utf::convertUtf8toUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos),
-                                         ((count != npos) && (pos + count < str.length())) ? (str.begin() + static_cast<std::ptrdiff_t>(pos + count)) : str.end()))
+        m_string(utf::convertUtf8toUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos),
+                                         ((count != npos) && (pos + count < str.length())) ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count)) : str.cend()))
     {
     }
 
     String::String(const std::wstring& str, std::size_t pos, std::size_t count) :
-        m_string(utf::convertWidetoUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos),
-                                         ((count != npos) && (pos + count < str.length())) ? (str.begin() + static_cast<std::ptrdiff_t>(pos + count)) : str.end()))
+        m_string(utf::convertWidetoUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos),
+                                         ((count != npos) && (pos + count < str.length())) ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count)) : str.cend()))
     {
     }
 
     String::String(const std::u16string& str, std::size_t pos, std::size_t count) :
-        m_string(utf::convertUtf16toUtf32(str.begin() + static_cast<std::ptrdiff_t>(pos),
-                                          ((count != npos) && (pos + count < str.length())) ? (str.begin() + static_cast<std::ptrdiff_t>(pos + count)) : str.end()))
+        m_string(utf::convertUtf16toUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos),
+                                          ((count != npos) && (pos + count < str.length())) ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count)) : str.cend()))
     {
     }
 
@@ -1107,19 +1107,19 @@ namespace tgui
     String::iterator String::insert(const_iterator pos, std::initializer_list<char> chars)
     {
         const std::u32string tmpStr(utf::convertUtf8toUtf32(chars.begin(), chars.end()));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
+        return m_string.insert(pos, tmpStr.cbegin(), tmpStr.cend());
     }
 
     String::iterator String::insert(const_iterator pos, std::initializer_list<wchar_t> chars)
     {
         const std::u32string tmpStr(utf::convertWidetoUtf32(chars.begin(), chars.end()));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
+        return m_string.insert(pos, tmpStr.cbegin(), tmpStr.cend());
     }
 
     String::iterator String::insert(const_iterator pos, std::initializer_list<char16_t> chars)
     {
         const std::u32string tmpStr(utf::convertUtf16toUtf32(chars.begin(), chars.end()));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
+        return m_string.insert(pos, tmpStr.cbegin(), tmpStr.cend());
     }
 
     String::iterator String::insert(const_iterator pos, std::initializer_list<char32_t> chars)
@@ -1133,19 +1133,19 @@ namespace tgui
     String::iterator String::insert(const_iterator pos, std::string::const_iterator first, std::string::const_iterator last)
     {
         const std::u32string tmpStr(utf::convertUtf8toUtf32(first, last));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
+        return m_string.insert(pos, tmpStr.cbegin(), tmpStr.cend());
     }
 
     String::iterator String::insert(const_iterator pos, std::wstring::const_iterator first, std::wstring::const_iterator last)
     {
         const std::u32string tmpStr(utf::convertWidetoUtf32(first, last));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
+        return m_string.insert(pos, tmpStr.cbegin(), tmpStr.cend());
     }
 
     String::iterator String::insert(const_iterator pos, std::u16string::const_iterator first, std::u16string::const_iterator last)
     {
         const std::u32string tmpStr(utf::convertUtf16toUtf32(first, last));
-        return m_string.insert(pos, tmpStr.begin(), tmpStr.end());
+        return m_string.insert(pos, tmpStr.cbegin(), tmpStr.cend());
     }
 
     String::iterator String::insert(const_iterator pos, std::u32string::const_iterator first, std::u32string::const_iterator last)

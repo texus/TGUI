@@ -728,7 +728,7 @@ namespace tgui
 
         // Move the widget to the new index
         m_widgets.erase(m_widgets.begin() + static_cast<std::ptrdiff_t>(currentWidgetIndex));
-        m_widgets.insert(m_widgets.begin() + static_cast<std::ptrdiff_t>(index), widgetToMove);
+        m_widgets.insert(m_widgets.cbegin() + static_cast<std::ptrdiff_t>(index), widgetToMove);
 
         if (widgetToMove->getAutoLayout() != AutoLayout::Manual)
             updateChildrenWithAutoLayout();

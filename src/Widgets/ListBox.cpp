@@ -264,7 +264,7 @@ namespace tgui
         }
 
         // Remove the item
-        m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(index));
+        m_items.erase(m_items.cbegin() + static_cast<std::ptrdiff_t>(index));
 
         m_scrollbar->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
         updateItemPositions();
@@ -510,7 +510,7 @@ namespace tgui
                 updateSelectedItem(-1);
 
             // Remove the items that passed the limitation
-            m_items.erase(m_items.begin() + static_cast<std::ptrdiff_t>(m_maxItems), m_items.end());
+            m_items.erase(m_items.cbegin() + static_cast<std::ptrdiff_t>(m_maxItems), m_items.cend());
 
             m_scrollbar->setMaximum(static_cast<unsigned int>(m_items.size() * m_itemHeight));
             updateItemPositions();
@@ -557,14 +557,14 @@ namespace tgui
 
     bool ListBox::contains(const String& itemStr) const
     {
-        return std::find_if(m_items.begin(), m_items.end(), [itemStr](const Item& item){ return item.text.getString() == itemStr; }) != m_items.end();
+        return std::find_if(m_items.cbegin(), m_items.cend(), [itemStr](const Item& item){ return item.text.getString() == itemStr; }) != m_items.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ListBox::containsId(const String& id) const
     {
-        return std::find_if(m_items.begin(), m_items.end(), [id](const Item& item){ return item.id == id; }) != m_items.end();
+        return std::find_if(m_items.cbegin(), m_items.cend(), [id](const Item& item){ return item.id == id; }) != m_items.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

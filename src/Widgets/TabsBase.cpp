@@ -98,7 +98,7 @@ namespace tgui
         newTab.text.setCharacterSize(getTextSize());
         newTab.text.setString(text);
 
-        m_tabs.insert(m_tabs.begin() + static_cast<std::ptrdiff_t>(index), std::move(newTab));
+        m_tabs.insert(m_tabs.cbegin() + static_cast<std::ptrdiff_t>(index), std::move(newTab));
         recalculateTabsSize();
 
         // New hovered tab depends on several factors, we keep it simple and just remove the hover state
@@ -205,7 +205,7 @@ namespace tgui
             return false;
 
         // Remove the tab
-        m_tabs.erase(m_tabs.begin() + static_cast<std::ptrdiff_t>(index));
+        m_tabs.erase(m_tabs.cbegin() + static_cast<std::ptrdiff_t>(index));
 
         // Check if the selected tab should be updated
         if (m_selectedTab == static_cast<int>(index))

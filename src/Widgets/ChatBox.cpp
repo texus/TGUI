@@ -192,7 +192,7 @@ namespace tgui
     {
         if (lineIndex < m_lines.size())
         {
-            m_lines.erase(m_lines.begin() + static_cast<std::ptrdiff_t>(lineIndex));
+            m_lines.erase(m_lines.cbegin() + static_cast<std::ptrdiff_t>(lineIndex));
 
             recalculateFullTextHeight();
             return true;
@@ -227,9 +227,9 @@ namespace tgui
         if ((m_maxLines > 0) && (m_maxLines < m_lines.size()))
         {
             if (m_newLinesBelowOthers)
-                m_lines.erase(m_lines.begin(), m_lines.begin() + static_cast<std::ptrdiff_t>(m_lines.size() - m_maxLines));
+                m_lines.erase(m_lines.cbegin(), m_lines.cbegin() + static_cast<std::ptrdiff_t>(m_lines.size() - m_maxLines));
             else
-                m_lines.erase(m_lines.begin() + static_cast<std::ptrdiff_t>(m_maxLines), m_lines.end());
+                m_lines.erase(m_lines.cbegin() + static_cast<std::ptrdiff_t>(m_maxLines), m_lines.cend());
 
             recalculateFullTextHeight();
         }

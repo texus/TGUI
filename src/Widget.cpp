@@ -454,7 +454,7 @@ namespace tgui
                 }
             }
 
-            parentTypes.insert(parentTypes.begin(), getWidgetType());
+            parentTypes.insert(parentTypes.cbegin(), getWidgetType());
             const auto& globalRelationMap = Theme::getRendererInheritedGlobalProperties("");
             for (const String& parentType : parentTypes)
             {
@@ -515,8 +515,8 @@ namespace tgui
         rendererData->shared = true;
 
         // Tell the widget about all the updated properties, both new ones and old ones that were now reset to their default value
-        auto oldIt = oldData->propertyValuePairs.begin();
-        auto newIt = rendererData->propertyValuePairs.begin();
+        auto oldIt = oldData->propertyValuePairs.cbegin();
+        auto newIt = rendererData->propertyValuePairs.cbegin();
         while (oldIt != oldData->propertyValuePairs.end() && newIt != rendererData->propertyValuePairs.end())
         {
             if (oldIt->first < newIt->first)
@@ -1403,7 +1403,7 @@ namespace tgui
         m_animationTimeElapsed += elapsedTime;
 
         const bool screenRefreshRequired = !m_showAnimations.empty();
-        for (auto it = m_showAnimations.begin(); it != m_showAnimations.end();)
+        for (auto it = m_showAnimations.cbegin(); it != m_showAnimations.cend();)
         {
             if ((*it)->update(elapsedTime))
                 it = m_showAnimations.erase(it);

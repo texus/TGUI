@@ -614,7 +614,7 @@ namespace tgui
                                  m_paddingCached.getRight() + m_bordersCached.getRight(),
                                  m_paddingCached.getBottom() + m_bordersCached.getBottom()};
 
-        const auto lineCount = std::count(stringPtr->begin(), stringPtr->end(), U'\n') + 1;
+        const auto lineCount = std::count(stringPtr->cbegin(), stringPtr->cend(), U'\n') + 1;
         float requiredTextHeight = ((lineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached))
                                  + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
                                  + Text::getExtraVerticalPadding(m_textSizeCached);
@@ -632,7 +632,7 @@ namespace tgui
                 wordWrappedString = Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold);
                 stringPtr = &wordWrappedString.value();
 
-                const auto newLineCount = std::count(stringPtr->begin(), stringPtr->end(), U'\n') + 1;
+                const auto newLineCount = std::count(stringPtr->cbegin(), stringPtr->cend(), U'\n') + 1;
                 requiredTextHeight = ((newLineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached))
                                    + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
                                    + Text::getExtraVerticalPadding(m_textSizeCached);
@@ -728,7 +728,7 @@ namespace tgui
         if (m_verticalAlignment != tgui::VerticalAlignment::Top) // TGUI_NEXT: Remove "tgui::" prefix
         {
             const float totalHeight = getSize().y - outline.getTop() - outline.getBottom();
-            float totalTextHeight = std::accumulate(lineSpacings.begin(), lineSpacings.end(), 0.f);
+            float totalTextHeight = std::accumulate(lineSpacings.cbegin(), lineSpacings.cend(), 0.f);
 
             unsigned int lastLineMaxTextSize = 0;
             for (const auto& textPiece : m_lines.back())
