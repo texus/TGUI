@@ -236,7 +236,9 @@ namespace tgui
 
         const bool success = (fwrite(stringView.data(), 1, stringView.size(), file) == stringView.size());
 
-        (void)fclose(file);
+        if (fclose(file))
+            throw tgui::Exception{U"writeFile failed to fclose file, error: " + tgui::String(std::system_error(errno, std::generic_category()).what())};
+
         return success;
     }
 
