@@ -33,20 +33,16 @@ namespace
 
     bool noWidgetsFocused(const tgui::Container::Ptr& root)
     {
-        for (const auto& widget : root->getWidgets())
-        {
-            if (widget->isFocused())
-                return false;
+        const auto& widgets = root->getWidgets();
+        return std::all_of(widgets.cbegin(), widgets.cend(),
+                           [&](const auto& widget)
+                           {
+                               if (widget->isFocused())
+                                   return false;
 
-            const tgui::Container::Ptr container = std::dynamic_pointer_cast<tgui::Container>(widget);
-            if (container != nullptr)
-            {
-                if (!noWidgetsFocused(container))
-                    return false;
-            }
-        }
-
-        return true;
+                               const auto container = std::dynamic_pointer_cast<tgui::Container>(widget);
+                               return !container || noWidgetsFocused(container);
+                           });
     }
 
     bool widgetFocused(const tgui::Widget::Ptr& widget)
