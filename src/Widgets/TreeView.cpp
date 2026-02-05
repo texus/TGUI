@@ -1689,21 +1689,20 @@ namespace tgui
             return true;
         }
         // Root node
-        for (const auto& node : m_nodes)
-        {
-            if (node->text.getString() != hierarchy.back())
-                continue;
+        const auto& target = hierarchy.back();
+        return std::any_of(m_nodes.cbegin(), m_nodes.cend(),
+                           [&](const auto& node)
+                           {
+                               if (node->text.getString() != target)
+                                   return false;
 
-            if (node->expanded != expandNode)
-            {
-                node->expanded = expandNode;
-                markNodesDirty();
-            }
-
-            return true;
-        }
-
-        return false;
+                               if (node->expanded != expandNode)
+                               {
+                                   node->expanded = expandNode;
+                                   markNodesDirty();
+                               }
+                               return true;
+                           });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
