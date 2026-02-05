@@ -54,7 +54,7 @@ namespace tgui
     SvgImage::SvgImage(const String& filename) :
         m_data{std::make_unique<priv::SvgImageData>()}
     {
-        m_data->svg = nsvgParseFromFile(filename.toStdString().c_str(), "px", 96);
+        m_data->svg = tgui::priv::nsvgParseFromFile(filename.toStdString().c_str(), "px", 96);
         if (!m_data->svg)
         {
             TGUI_PRINT_WARNING("Failed to load svg: " << filename);
@@ -66,9 +66,9 @@ namespace tgui
     SvgImage::~SvgImage()
     {
         if (m_data->rasterizer)
-            nsvgDeleteRasterizer(m_data->rasterizer);
+            tgui::priv::nsvgDeleteRasterizer(m_data->rasterizer);
         if (m_data->svg)
-            nsvgDelete(m_data->svg);
+            tgui::priv::nsvgDelete(m_data->svg);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ namespace tgui
             return;
 
         if (!m_data->rasterizer)
-            m_data->rasterizer = nsvgCreateRasterizer();
+            m_data->rasterizer = tgui::priv::nsvgCreateRasterizer();
 
         const float fontScale = getBackend()->getFontScale();
         size.x = static_cast<unsigned int>(size.x * fontScale);
@@ -105,8 +105,8 @@ namespace tgui
         const float scaleY = size.y / m_data->svg->height;
 
         auto pixels = MakeUniqueForOverwrite<unsigned char[]>(size.x * size.y * 4);
-        nsvgRasterizeXY(m_data->rasterizer, m_data->svg, 0, 0, scaleX, scaleY,
-                        pixels.get(), static_cast<int>(size.x), static_cast<int>(size.y), static_cast<int>(size.x * 4));
+        tgui::priv::nsvgRasterizeXY(m_data->rasterizer, m_data->svg, 0, 0, scaleX, scaleY,
+                                    pixels.get(), static_cast<int>(size.x), static_cast<int>(size.y), static_cast<int>(size.x * 4));
 
         texture.load(size, std::move(pixels), true);
     }

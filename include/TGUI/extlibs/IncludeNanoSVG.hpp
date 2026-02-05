@@ -84,11 +84,6 @@
     // We place the functions in a namespace to prevent potential issues if the TGUI user also uses nanosvg in their own project.
     // We don't use an anonymous namespace as it leads to a warning from some compilers because SvgImageData (which has to be
     // forward declared in the header file and can't be anonymous) would have public members that have static linkage.
-    using tgui::priv::nsvgParseFromFile;
-    using tgui::priv::nsvgDelete;
-    using tgui::priv::nsvgCreateRasterizer;
-    using tgui::priv::nsvgRasterizeXY;
-    using tgui::priv::nsvgDeleteRasterizer;
 #endif
 
 #if defined(__GNUC__)
