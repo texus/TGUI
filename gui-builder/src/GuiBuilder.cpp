@@ -2166,7 +2166,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
                 texture->load(filename, partRect, middleRect, smooth);
                 onChange(tgui::Serializer::serialize(*texture));
             }
-            catch (tgui::Exception&)
+            catch (const tgui::Exception&)
             {
             }
 
@@ -2260,7 +2260,7 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
         {
             originalTexture = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Texture, value).getTexture();
         }
-        catch (tgui::Exception& e)
+        catch (const tgui::Exception& e)
         {
             // Is it possible to reach this code? It would mean the existing value was already bad, but we don't allow setting bad values?
             displayErrorMessage(tgui::String(U"Exception caught when loading image: ") + e.what());
