@@ -260,11 +260,11 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     // So if we can't find our 'resources' folder, we will ask the OS in which path our executable is located.
     if (!tgui::Filesystem::directoryExists(tgui::getResourcePath() / U"resources"))
     {
-        char pathStr[FILENAME_MAX];
-        const ssize_t pathLen = readlink("/proc/self/exe", pathStr, FILENAME_MAX);
+        std::array<char, FILENAME_MAX> pathStr{};
+        const ssize_t pathLen = readlink("/proc/self/exe", pathStr.data(), pathStr.size());
         if (pathLen > 0)
         {
-            const tgui::Filesystem::Path absoluteFilePath(tgui::String(pathStr, static_cast<std::size_t>(pathLen)));
+            const tgui::Filesystem::Path absoluteFilePath(tgui::String(pathStr.data(), static_cast<std::size_t>(pathLen)));
             const tgui::Filesystem::Path dirContainingExe(absoluteFilePath.getParentPath());
             if (tgui::Filesystem::directoryExists(dirContainingExe / U"resources"))
                 tgui::setResourcePath(dirContainingExe);
