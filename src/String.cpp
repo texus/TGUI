@@ -94,7 +94,7 @@ namespace tgui
 
     bool isDigit(char32_t character)
     {
-        return ((character >= U'0') && (character <= U'9'));
+        return (character >= U'0') && (character <= U'9');
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

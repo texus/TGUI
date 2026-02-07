@@ -141,7 +141,7 @@ namespace tgui
 
         TGUI_NODISCARD constexpr bool empty() const noexcept
         {
-            return (m_length == 0);
+            return m_length == 0;
         }
 
         TGUI_NODISCARD constexpr StringViewImpl substr(std::size_t pos = 0, std::size_t count = std::u32string::npos) const

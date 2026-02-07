@@ -37,7 +37,7 @@ namespace
 {
     bool compareFloats(float x, float y)
     {
-        return (std::abs(x - y) < 0.0000001f);
+        return std::abs(x - y) < 0.0000001f;
     }
 }
 
@@ -284,7 +284,7 @@ namespace tgui
             {
                 const Vector2f centerPoint = getSize() / 2.f;
                 const float distance = std::sqrt(std::pow(centerPoint.x - pos.x, 2.f) + std::pow(centerPoint.y - pos.y, 2.f));
-                return (distance <= std::min(getSize().x, getSize().y));
+                return distance <= std::min(getSize().x, getSize().y);
             }
         }
 
