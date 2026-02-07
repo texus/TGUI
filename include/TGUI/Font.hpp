@@ -28,8 +28,6 @@
 #include <TGUI/String.hpp>
 #include <TGUI/Rect.hpp>
 
-#include <cstdint>
-#include <string>
 #include <cstddef>
 #include <memory>
 

@@ -29,8 +29,6 @@
 #include <TGUI/Vertex.hpp>
 
 #include <cstdint>
-#include <string>
-#include <map>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
     #include <SFML/Graphics/Color.hpp>
