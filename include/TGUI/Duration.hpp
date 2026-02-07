@@ -27,7 +27,6 @@
 
 #include <TGUI/Config.hpp>
 
-#include <cstdint>
 #include <chrono>
 #include <type_traits>
 
