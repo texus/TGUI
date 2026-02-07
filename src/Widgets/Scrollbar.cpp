@@ -663,8 +663,8 @@ namespace tgui
         // scrollbars, but we don't want to do this when the user accidentally scrolled a bit too far.
         // So we will absorb the event (by returning true) if a previous scroll event was recent, or let our parent
         // handle the event (by returning false) if we were already stuck at the end of the scrollbar for a while.
-        return ((m_lastSuccessfulScrollTime != std::chrono::steady_clock::time_point())
-             && (Duration{std::chrono::steady_clock::now() - m_lastSuccessfulScrollTime} <= Duration{std::chrono::seconds(1)}));
+        return (m_lastSuccessfulScrollTime != std::chrono::steady_clock::time_point())
+               && (Duration{std::chrono::steady_clock::now() - m_lastSuccessfulScrollTime} <= Duration{std::chrono::seconds(1)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

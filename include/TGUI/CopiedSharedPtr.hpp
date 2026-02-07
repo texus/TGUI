@@ -74,7 +74,7 @@ namespace tgui
 
         explicit operator bool() const noexcept
         {
-            return (m_WidgetPtr != nullptr);
+            return m_WidgetPtr != nullptr;
         }
 
         WidgetType& operator*() const noexcept

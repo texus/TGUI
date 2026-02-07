@@ -63,7 +63,7 @@ namespace tgui
 
     bool Signal::disconnect(unsigned int id)
     {
-        return (m_handlers.erase(id) != 0);
+        return m_handlers.erase(id) != 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

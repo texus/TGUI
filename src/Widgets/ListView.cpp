@@ -2331,7 +2331,7 @@ namespace tgui
             }
         }
 
-        return (widestItemWidth != oldWidestItemWidth);
+        return widestItemWidth != oldWidestItemWidth;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

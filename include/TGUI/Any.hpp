@@ -78,7 +78,7 @@ namespace tgui
         TGUI_NODISCARD bool is() const
         {
             using T = StorageType<U>;
-            return (dynamic_cast<Derived<T>*>(ptr) != nullptr);
+            return dynamic_cast<Derived<T>*>(ptr) != nullptr;
         }
 
         template<class U>
