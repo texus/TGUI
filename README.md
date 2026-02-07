@@ -49,7 +49,6 @@ Dependencies for each backend:
 | **RAYLIB**              | raylib  (>= 4.2)      | raylib  (>= 4.2)        | raylib  (>= 4.2)        |
 
 
-
 Download
 --------
 
