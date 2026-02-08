@@ -185,14 +185,12 @@ namespace tgui
 
             const auto bytesInFile = ftell(file.get());
 
-            if (fseek(file.get(), 0, SEEK_SET) != 0)
+            // ftell will return -1 on failure. When filename was a directory on linux, ftell returned the maximum long value instead of -1 though.
+            if ((bytesInFile < 0) || (bytesInFile == std::numeric_limits<decltype(bytesInFile)>::max()))
                 return nullptr;
 
-            if ((bytesInFile <= 0) || (bytesInFile == std::numeric_limits<decltype(bytesInFile)>::max()))
-            {
-                // When filename was a directory on linux, ftell returned the maximum long value instead of -1
+            if (fseek(file.get(), 0, SEEK_SET) != 0)
                 return nullptr;
-            }
 
             fileSize = static_cast<std::size_t>(bytesInFile);
             auto buffer = MakeUniqueForOverwrite<std::uint8_t[]>(fileSize);
