@@ -301,12 +301,12 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         gui.draw();
         target->display();
         (void)target->getTexture().copyToImage().saveToFile(filename);
-    #ifdef TGUI_ENABLE_DRAW_TESTS
+#ifdef TGUI_ENABLE_DRAW_TESTS
         compareImageFiles(filename, "expected/" + tgui::String(filename));
-    #endif
+#endif
         return;
     }
-#endif
+#endif // TGUI_HAS_BACKEND_SFML_GRAPHICS
 
 #if TGUI_HAS_BACKEND_SDL_GPU
     if (std::dynamic_pointer_cast<tgui::BackendRendererSDLGPU>(tgui::getBackend()->getRenderer()))
@@ -404,9 +404,15 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         SDL_UnmapGPUTransferBuffer(device, transferBuffer);
         SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
         SDL_ReleaseGPUTexture(device, texture);
+
+#ifdef TGUI_ENABLE_DRAW_TESTS
+        // Comparing the output files is not possible because the expected images were rendered with SFML (and thus might differ slightly).
+        // However this line can be uncommented if the files in the expected folder were replaced with ones generated with the SDL_GPU backend.
+        //compareImageFiles(filename, "expected/" + tgui::String(filename));
+#endif
         return;
     }
-#endif
+#endif // TGUI_HAS_BACKEND_SDL_GPU
 
     gui.draw();
 }

@@ -29,6 +29,7 @@
 #include <TGUI/Container.hpp>
 
 #include <numeric>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -318,8 +319,10 @@ namespace tgui
         {
             m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
 
-            TGUI_GL_CHECK(glScissor(static_cast<int>(clipViewport.left), static_cast<int>(m_targetSize.y - clipViewport.top - clipViewport.height),
-                                    static_cast<int>(clipViewport.width), static_cast<int>(clipViewport.height)));
+            TGUI_GL_CHECK(glScissor(static_cast<int>(std::lround(clipViewport.left)),
+                                    static_cast<int>(std::lround(m_targetSize.y - clipViewport.top - clipViewport.height)),
+                                    static_cast<int>(std::lround(clipViewport.width)),
+                                    static_cast<int>(std::lround(clipViewport.height))));
         }
         else // Clip the entire window
         {

@@ -87,10 +87,10 @@ namespace tgui
         SDL_GetRenderViewport(m_renderer, &oldViewport);
 
         SDL_Rect newViewport;
-        newViewport.x = static_cast<int>(std::floor(m_viewport.left));
-        newViewport.y = static_cast<int>(std::floor(m_viewport.top));
-        newViewport.w = static_cast<int>(std::ceil(m_viewport.width));
-        newViewport.h = static_cast<int>(std::ceil(m_viewport.height));
+        newViewport.x = static_cast<int>(std::lround(m_viewport.left));
+        newViewport.y = static_cast<int>(std::lround(m_viewport.top));
+        newViewport.w = static_cast<int>(std::lround(m_viewport.width));
+        newViewport.h = static_cast<int>(std::lround(m_viewport.height));
 
         // Change the viewport if needed
         const bool viewportNeedsUpdate = (oldViewport.x != newViewport.x) || (oldViewport.y != newViewport.y)
@@ -183,10 +183,10 @@ namespace tgui
             m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
 
             SDL_Rect clipRectSDL;
-            clipRectSDL.x = static_cast<int>(std::floor(clipViewport.left - m_viewport.left));
-            clipRectSDL.y = static_cast<int>(std::floor(clipViewport.top - m_viewport.top));
-            clipRectSDL.w = static_cast<int>(std::ceil(clipViewport.width));
-            clipRectSDL.h = static_cast<int>(std::ceil(clipViewport.height));
+            clipRectSDL.x = static_cast<int>(std::lround(clipViewport.left - m_viewport.left));
+            clipRectSDL.y = static_cast<int>(std::lround(clipViewport.top - m_viewport.top));
+            clipRectSDL.w = static_cast<int>(std::lround(clipViewport.width));
+            clipRectSDL.h = static_cast<int>(std::lround(clipViewport.height));
             SDL_SetRenderClipRect(m_renderer, &clipRectSDL);
         }
         else // Clip the entire window

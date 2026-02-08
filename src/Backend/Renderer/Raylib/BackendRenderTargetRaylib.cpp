@@ -28,6 +28,7 @@
 #include <TGUI/Container.hpp>
 
 #include <numeric>
+#include <cmath>
 
 #include <rlgl.h>
 
@@ -184,7 +185,8 @@ namespace tgui
         {
             m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
 
-            BeginScissorMode(static_cast<int>(clipViewport.left), static_cast<int>(clipViewport.top), static_cast<int>(clipViewport.width), static_cast<int>(clipViewport.height));
+            BeginScissorMode(static_cast<int>(std::lround(clipViewport.left)), static_cast<int>(std::lround(clipViewport.top)),
+                             static_cast<int>(std::lround(clipViewport.width)), static_cast<int>(std::lround(clipViewport.height)));
         }
         else // Clip the entire window
         {

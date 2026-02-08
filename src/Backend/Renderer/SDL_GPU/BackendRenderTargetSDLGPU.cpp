@@ -752,10 +752,10 @@ namespace tgui
         {
             m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
             m_clipRect = {
-                static_cast<int>(std::floor(clipViewport.left)),
-                static_cast<int>(std::floor(clipViewport.top)),
-                static_cast<int>(std::ceil(clipViewport.width)),
-                static_cast<int>(std::ceil(clipViewport.height))
+                static_cast<int>(std::lround(clipViewport.left)),
+                static_cast<int>(std::lround(clipViewport.top)),
+                static_cast<int>(std::lround(clipViewport.width)),
+                static_cast<int>(std::lround(clipViewport.height))
             };
         }
         else // Clip the entire window
