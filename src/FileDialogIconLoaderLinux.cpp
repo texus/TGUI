@@ -48,7 +48,7 @@
         using magic_t = struct magic_set*;
         magic_t magic_open(int);
         void magic_close(magic_t);
-        int magic_load(magic_t, const char *);
+        int magic_load(magic_t, const char*);
         const char* magic_file(magic_t, const char*);
     }
 #endif

@@ -44,9 +44,9 @@ namespace tgui
     public:
 
         using ContextLoadFuncReturnType = void (*)();
-        using ContextLoadFuncType = ContextLoadFuncReturnType (*)(const char *name);
+        using ContextLoadFuncType = ContextLoadFuncReturnType (*)(const char* name);
 
-        using SDLContextLoadFuncType = void* (*)(const char *name);
+        using SDLContextLoadFuncType = void* (*)(const char* name);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Initializes the backend renderer. This will initialize GLAD to use OpenGL ES
