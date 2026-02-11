@@ -45,7 +45,7 @@ namespace tgui
         void getAllRenderers(std::vector<RendererData*>& orderedRenderers, std::map<RendererData*, std::vector<const Widget*>>& rendererToWidgetsMap, const Container* container)
         {
             const auto addRenderer = [&](RendererData* rendererData, const Widget* widget){
-                auto it = rendererToWidgetsMap.find(rendererData);
+                const auto it = rendererToWidgetsMap.find(rendererData);
                 if (it != rendererToWidgetsMap.end())
                     it->second.push_back(widget);
                 else
@@ -69,7 +69,7 @@ namespace tgui
                     getAllRenderers(orderedRenderers, rendererToWidgetsMap, childContainer);
                 else
                 {
-                    auto* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get());
+                    const auto* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get());
                     if (subWidgetContainer)
                     {
                         addRenderer(subWidgetContainer->getContainer()->getSharedRenderer()->getData().get(), subWidgetContainer->getContainer());

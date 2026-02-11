@@ -490,7 +490,7 @@ namespace tgui
                     }
 
                     // Global properties can inherit from each other (e.g. border color defaults to text color)
-                    auto propertyNameIt = globalRelationMap.find(propertyName);
+                    const auto propertyNameIt = globalRelationMap.find(propertyName);
                     if (propertyNameIt == globalRelationMap.end())
                         continue;
 
