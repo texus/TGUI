@@ -61,7 +61,7 @@ namespace tgui
         }
         else // The image doesn't exist yet
         {
-            auto it = m_imageMap.insert({filename, {}});
+            const auto it = m_imageMap.insert({filename, {}});
             imageIt = it.first;
         }
 
