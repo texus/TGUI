@@ -43,7 +43,7 @@ namespace tgui
         using Ptr = std::shared_ptr<TreeView>;
         using ConstPtr = std::shared_ptr<const TreeView>;
 
-        static constexpr const char StaticWidgetType[] = "TreeView"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "TreeView"; //!< Type name of the widget
 
         /// @brief Read-only node representation used by getNode and getNodes
         struct ConstNode

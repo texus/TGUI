@@ -44,7 +44,7 @@ namespace tgui
         using Ptr = std::shared_ptr<EditBoxSlider>; //!< Shared widget pointer
         using ConstrPtr = std::shared_ptr<const EditBoxSlider>; //!< Shared const widget pointer
 
-        static constexpr const char StaticWidgetType[] = "EditBoxSlider"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "EditBoxSlider"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

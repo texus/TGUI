@@ -46,7 +46,7 @@ namespace tgui
         using Ptr = std::shared_ptr<MessageBox>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const MessageBox>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "MessageBox"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "MessageBox"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The label and button alignment

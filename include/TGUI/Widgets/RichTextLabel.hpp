@@ -52,7 +52,7 @@ namespace tgui
         using Ptr = std::shared_ptr<RichTextLabel>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const RichTextLabel>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "RichTextLabel"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "RichTextLabel"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

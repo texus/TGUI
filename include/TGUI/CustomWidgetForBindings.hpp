@@ -47,7 +47,7 @@ namespace tgui
         using Ptr = std::shared_ptr<CustomWidgetForBindings>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CustomWidgetForBindings>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "CustomWidget"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "CustomWidget"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

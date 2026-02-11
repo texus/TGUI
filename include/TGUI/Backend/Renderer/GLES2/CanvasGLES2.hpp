@@ -64,7 +64,7 @@ namespace tgui
         using Ptr = std::shared_ptr<CanvasGLES2>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CanvasGLES2>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "CanvasGLES2"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "CanvasGLES2"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

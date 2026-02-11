@@ -36,7 +36,7 @@
 namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char CheckBox::StaticWidgetType[];
+    constexpr char CheckBox::StaticWidgetType[];
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

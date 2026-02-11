@@ -45,7 +45,7 @@ namespace tgui
         using Ptr = std::shared_ptr<Group>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Group>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "Group"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "Group"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

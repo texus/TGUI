@@ -48,7 +48,7 @@ namespace tgui
         using Ptr = std::shared_ptr<TabContainer>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const TabContainer>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "TabContainer"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "TabContainer"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enumeration of the tab alignments for tabs

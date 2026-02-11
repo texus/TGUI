@@ -64,7 +64,7 @@ namespace tgui
         using Ptr = std::shared_ptr<CanvasSDLGPU>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CanvasSDLGPU>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "CanvasSDLGPU"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "CanvasSDLGPU"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

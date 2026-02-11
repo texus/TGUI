@@ -277,17 +277,17 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    inline constexpr const Color Color::Black      {  0,   0,   0};
-    inline constexpr const Color Color::White      {255, 255, 255};
-    inline constexpr const Color Color::Red        {255,   0,   0};
-    inline constexpr const Color Color::Green      {  0, 255,   0};
-    inline constexpr const Color Color::Blue       {  0,   0, 255};
-    inline constexpr const Color Color::Yellow     {255, 255,   0};
-    inline constexpr const Color Color::Magenta    {255,   0, 255};
-    inline constexpr const Color Color::Cyan       {  0, 255, 255};
-    inline constexpr const Color Color::Transparent{  0,   0,   0,   0};
+    inline constexpr Color Color::Black      {  0,   0,   0};
+    inline constexpr Color Color::White      {255, 255, 255};
+    inline constexpr Color Color::Red        {255,   0,   0};
+    inline constexpr Color Color::Green      {  0, 255,   0};
+    inline constexpr Color Color::Blue       {  0,   0, 255};
+    inline constexpr Color Color::Yellow     {255, 255,   0};
+    inline constexpr Color Color::Magenta    {255,   0, 255};
+    inline constexpr Color Color::Cyan       {  0, 255, 255};
+    inline constexpr Color Color::Transparent{  0,   0,   0,   0};
 
-    inline constexpr const std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap
+    inline constexpr std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap
     {
         {{U"black"sv, Color::Black},
          {U"white"sv, Color::White},

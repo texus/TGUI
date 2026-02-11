@@ -47,7 +47,7 @@ namespace tgui
         using Ptr = std::shared_ptr<GrowHorizontalLayout>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const GrowHorizontalLayout>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "GrowHorizontalLayout"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "GrowHorizontalLayout"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

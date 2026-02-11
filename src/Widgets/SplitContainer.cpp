@@ -31,7 +31,7 @@
 namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char SplitContainer::StaticWidgetType[];
+    constexpr char SplitContainer::StaticWidgetType[];
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

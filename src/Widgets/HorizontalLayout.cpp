@@ -31,7 +31,7 @@
 namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char HorizontalLayout::StaticWidgetType[];
+    constexpr char HorizontalLayout::StaticWidgetType[];
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
