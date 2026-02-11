@@ -512,7 +512,7 @@ if(TGUI_OS_LINUX)
     target_link_libraries(tgui PRIVATE Threads::Threads)
     target_link_libraries(tgui PRIVATE ${CMAKE_DL_LIBS})
 
-    # The TGUI_USE_X11 variable must always exist on linux to generate a valid TGUIConfig.cmake file
+    # The TGUI_USE_X11 variable must always exist on Linux to generate a valid TGUIConfig.cmake file
     set(TGUI_USE_X11 OFF)
 endif()
 

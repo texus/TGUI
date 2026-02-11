@@ -31,7 +31,7 @@ set(GUI_BUILDER_SOURCES
     src/main.cpp
 )
 
-# Make a GUI application on windows (without having the command line window)
+# Make a GUI application on Windows (without having the command line window)
 if(TGUI_OS_WINDOWS)
     set(GUI_TYPE WIN32)
 endif()

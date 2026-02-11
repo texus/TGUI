@@ -545,7 +545,7 @@ endmacro()
 macro(tgui_add_dependency_freetype)
     if(NOT TARGET Freetype::Freetype)
         if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC)
-            # On windows we will provide some help to find freetype (since it is more difficult on this platform).
+            # On Windows we will provide some help to find freetype (since it is more difficult on this platform).
             # We only do this for MSVC because FreeType only provides prebuilt binaries for this compiler.
             if(FREETYPE_WINDOWS_BINARIES_PATH AND NOT FREETYPE_INCLUDE_DIR_ft2build)
                 set(FREETYPE_INCLUDE_DIR_ft2build "${FREETYPE_WINDOWS_BINARIES_PATH}/include")
@@ -595,7 +595,7 @@ macro(tgui_add_dependency_freetype)
             find_package(Freetype)
 
             if(NOT FREETYPE_FOUND)
-                set(FREETYPE_WINDOWS_BINARIES_PATH "" CACHE PATH "Path to FreeType windows binaries (contains 'include', 'release dll' and 'release static' folders)")
+                set(FREETYPE_WINDOWS_BINARIES_PATH "" CACHE PATH "Path to FreeType Windows binaries (contains 'include', 'release dll' and 'release static' folders)")
                 message(FATAL_ERROR
                     "CMake couldn't find FreeType.\n"
                     "If you don't have FreeType installed then you can download binaries from github.com/ubawurinna/freetype-windows-binaries/releases/ ('Source code (zip)' link under 'Assets') and set the FREETYPE_WINDOWS_BINARIES_PATH variable to the extracted freetype-windows-binaries folder.\n")

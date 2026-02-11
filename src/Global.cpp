@@ -185,7 +185,7 @@ namespace tgui
 
             const auto bytesInFile = ftell(file.get());
 
-            // ftell will return -1 on failure. When filename was a directory on linux, ftell returned the maximum long value instead of -1 though.
+            // ftell will return -1 on failure. When filename was a directory on Linux, ftell returned the maximum long value instead of -1 though.
             if ((bytesInFile < 0) || (bytesInFile == std::numeric_limits<decltype(bytesInFile)>::max()))
                 return nullptr;
 
