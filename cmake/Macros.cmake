@@ -100,7 +100,7 @@ endfunction()
 
 # Set the appropriate standard library on each platform for the given target
 function(tgui_set_stdlib target)
-    # Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using GCC.
+    # Apply the TGUI_USE_STATIC_STD_LIBS option on Windows when using GCC.
     if(TGUI_OS_WINDOWS AND TGUI_COMPILER_GCC)
         if(TGUI_USE_STATIC_STD_LIBS AND NOT TGUI_COMPILER_GCC_TDM)
             target_link_libraries(${target} PRIVATE "-static-libgcc" "-static-libstdc++")
@@ -109,7 +109,7 @@ function(tgui_set_stdlib target)
         endif()
     endif()
 
-    # Apply the TGUI_USE_STATIC_STD_LIBS option on windows when using Visual Studio.
+    # Apply the TGUI_USE_STATIC_STD_LIBS option on Windows when using Visual Studio.
     if(TGUI_COMPILER_MSVC OR TGUI_COMPILER_CLANG_CL)
         if(TGUI_USE_STATIC_STD_LIBS)
             set_property(TARGET ${target} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
