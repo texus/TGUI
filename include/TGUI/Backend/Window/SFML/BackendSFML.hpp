@@ -29,10 +29,7 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
 
-#include <SFML/Window.hpp>
-
 #include <unordered_map>
-#include <map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -25,8 +25,8 @@
 #include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
-#include <TGUI/Exception.hpp>
 #include <TGUI/Base64.hpp>
+#include <TGUI/Exception.hpp>
 
 #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
 
