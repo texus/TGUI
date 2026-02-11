@@ -45,7 +45,7 @@ namespace tgui
         using Ptr = std::shared_ptr<Scrollbar>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Scrollbar>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "Scrollbar"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "Scrollbar"; //!< Type name of the widget
 
         /// @brief Defines when the scrollbar shows up
         enum class Policy : std::uint8_t

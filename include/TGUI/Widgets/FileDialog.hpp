@@ -65,7 +65,7 @@ namespace tgui
         using Ptr = std::shared_ptr<FileDialog>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const FileDialog>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "FileDialog"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "FileDialog"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

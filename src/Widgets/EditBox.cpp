@@ -40,7 +40,7 @@ namespace tgui
     const char32_t* EditBox::Validator::Float = U"[+-]?[0-9]*\\.?[0-9]*";
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char EditBox::StaticWidgetType[];
+    constexpr char EditBox::StaticWidgetType[];
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

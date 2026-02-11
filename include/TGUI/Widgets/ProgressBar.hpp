@@ -43,7 +43,7 @@ namespace tgui
         using Ptr = std::shared_ptr<ProgressBar>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ProgressBar>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "ProgressBar"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "ProgressBar"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The fill direction of the progress bar

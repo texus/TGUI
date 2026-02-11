@@ -46,7 +46,7 @@ namespace tgui
         using Ptr = std::shared_ptr<ChildWindow>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ChildWindow>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "ChildWindow"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "ChildWindow"; //!< Type name of the widget
 
         /// Title alignments, possible options for the setTitleAlignment function
         using TitleAlignment TGUI_DEPRECATED("Use tgui::HorizontalAlignment instead") = HorizontalAlignment;

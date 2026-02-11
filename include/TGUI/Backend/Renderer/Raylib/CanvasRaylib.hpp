@@ -68,7 +68,7 @@ namespace tgui
         using Ptr = std::shared_ptr<CanvasRaylib>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CanvasRaylib>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "CanvasRaylib"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "CanvasRaylib"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Destructor

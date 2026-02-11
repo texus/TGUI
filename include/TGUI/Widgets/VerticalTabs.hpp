@@ -46,7 +46,7 @@ namespace tgui
         using Ptr = std::shared_ptr<VerticalTabs>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const VerticalTabs>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "VerticalTabs"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "VerticalTabs"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

@@ -45,7 +45,7 @@ namespace tgui
         using Ptr = std::shared_ptr<ScrollablePanel>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ScrollablePanel>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "ScrollablePanel"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "ScrollablePanel"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

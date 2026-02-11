@@ -43,7 +43,7 @@ namespace tgui
         using Ptr = std::shared_ptr<RadioButtonGroup>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const RadioButtonGroup>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "RadioButtonGroup"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "RadioButtonGroup"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

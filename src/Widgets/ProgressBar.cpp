@@ -32,7 +32,7 @@
 namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char ProgressBar::StaticWidgetType[];
+    constexpr char ProgressBar::StaticWidgetType[];
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

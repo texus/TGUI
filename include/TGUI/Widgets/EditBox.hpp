@@ -49,7 +49,7 @@ namespace tgui
         using Ptr = std::shared_ptr<EditBox>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const EditBox>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "EditBox"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "EditBox"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The text alignment

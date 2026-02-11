@@ -41,7 +41,7 @@ namespace tgui
         using Ptr = std::shared_ptr<ToggleButton>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ToggleButton>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "ToggleButton"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "ToggleButton"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

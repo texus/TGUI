@@ -42,7 +42,7 @@ namespace tgui
         using Ptr = std::shared_ptr<Picture>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Picture>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "Picture"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "Picture"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

@@ -29,7 +29,7 @@
 namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char Group::StaticWidgetType[];
+    constexpr char Group::StaticWidgetType[];
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

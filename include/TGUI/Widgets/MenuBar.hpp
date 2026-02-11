@@ -42,7 +42,7 @@ namespace tgui
         using Ptr = std::shared_ptr<MenuBar>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const MenuBar>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "MenuBar"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "MenuBar"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

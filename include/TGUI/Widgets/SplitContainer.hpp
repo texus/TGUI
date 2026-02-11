@@ -47,7 +47,7 @@ namespace tgui
         using Ptr = std::shared_ptr<SplitContainer>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const SplitContainer>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "SplitContainer"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "SplitContainer"; //!< Type name of the widget
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

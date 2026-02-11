@@ -44,7 +44,7 @@ namespace tgui
         using Ptr = std::shared_ptr<ChatBox>; //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ChatBox>; //!< Shared constant widget pointer
 
-        static constexpr const char StaticWidgetType[] = "ChatBox"; //!< Type name of the widget
+        static constexpr char StaticWidgetType[] = "ChatBox"; //!< Type name of the widget
 
         struct Line
         {
