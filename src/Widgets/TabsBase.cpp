@@ -135,6 +135,50 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool TabsBase::changeTextById(const String& id, const String& text)
+    {
+        const int index = getIndexById(id);
+        if (index < 0)
+            return false;
+
+        return changeText(static_cast<std::size_t>(index), text);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabsBase::setTabId(std::size_t index, const String& id)
+    {
+        if (index >= m_tabs.size())
+            return;
+
+        m_tabs[index].id = id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    String TabsBase::getTabId(std::size_t index) const
+    {
+        if (index >= m_tabs.size())
+            return "";
+
+        return m_tabs[index].id;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int TabsBase::getIndexById(const String& id) const
+    {
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
+        {
+            if (m_tabs[i].id == id)
+                return static_cast<int>(i);
+        }
+
+        return -1;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool TabsBase::select(const String& text)
     {
         for (std::size_t i = 0; i < m_tabs.size(); ++i)
@@ -170,6 +214,20 @@ namespace tgui
         // Send the callback
         onTabSelect.emit(this, m_tabs[index].text.getString());
         return true;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TabsBase::selectById(const String& id)
+    {
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
+        {
+            if (m_tabs[i].id == id)
+                return select(i);
+        }
+
+        deselect();
+        return false;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,6 +279,19 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool TabsBase::removeById(const String& id)
+    {
+        for (std::size_t i = 0; i < m_tabs.size(); ++i)
+        {
+            if (m_tabs[i].id == id)
+                return remove(i);
+        }
+
+        return false;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void TabsBase::removeAll()
     {
         m_tabs.clear();
@@ -244,6 +315,15 @@ namespace tgui
     int TabsBase::getSelectedIndex() const
     {
         return m_selectedTab;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    String TabsBase::getSelectedId() const
+    {
+        if (m_selectedTab >= 0)
+            return m_tabs[static_cast<std::size_t>(m_selectedTab)].id;
+        return "";
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

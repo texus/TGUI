@@ -75,6 +75,21 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getText(1) == "Item 2");
         REQUIRE(tabs->getText(2) == "Item 3");
         REQUIRE(tabs->getText(3) == "Item 4");
+
+        REQUIRE(tabs->getTabId(0) == "");
+        REQUIRE(tabs->getTabId(1) == "");
+        REQUIRE(tabs->getTabId(2) == "");
+        REQUIRE(tabs->getTabId(3) == "");
+
+        tabs->setTabId(1, "2");
+        tabs->setTabId(3, "Id4");
+        REQUIRE(tabs->getTabId(0) == "");
+        REQUIRE(tabs->getTabId(1) == "2");
+        REQUIRE(tabs->getTabId(2) == "");
+        REQUIRE(tabs->getTabId(3) == "Id4");
+
+        REQUIRE(tabs->getIndexById("1") == -1);
+        REQUIRE(tabs->getIndexById("2") == 1);
     }
 
     SECTION("Removing items")
@@ -82,30 +97,38 @@ TEST_CASE("[Tabs]")
         tabs->add("Item 1");
         tabs->add("Item 2");
         tabs->add("Item 3");
+        tabs->setTabId(0, "Id 1");
+        tabs->setTabId(1, "Id 2");
+        tabs->setTabId(2, "Id 3");
         REQUIRE(tabs->getTabsCount() == 3);
 
         REQUIRE(!tabs->remove("Item 0"));
+        REQUIRE(!tabs->remove(3));
+        REQUIRE(!tabs->removeById("Id 0"));
         REQUIRE(tabs->getTabsCount() == 3);
         REQUIRE(tabs->remove("Item 2"));
         REQUIRE(tabs->getTabsCount() == 2);
 
-        tabs->add("Item 4");
+        tabs->setTabId(tabs->add("Item 4"), "Id 4");
         REQUIRE(tabs->getTabsCount() == 3);
         REQUIRE(tabs->getText(0) == "Item 1");
         REQUIRE(tabs->getText(1) == "Item 3");
         REQUIRE(tabs->getText(2) == "Item 4");
+        REQUIRE(tabs->getIndexById("Id 4") == 2);
 
-        REQUIRE(!tabs->remove(3));
-        REQUIRE(tabs->getTabsCount() == 3);
         REQUIRE(tabs->remove(0));
         REQUIRE(tabs->getTabsCount() == 2);
         REQUIRE(tabs->getText(0) == "Item 3");
         REQUIRE(tabs->getText(1) == "Item 4");
 
+        REQUIRE(tabs->removeById("Id 3"));
+        REQUIRE(tabs->getTabsCount() == 1);
+        REQUIRE(tabs->getText(0) == "Item 4");
+
         tabs->add("Item 5");
         tabs->add("Item 5");
         tabs->add("Item 6");
-        REQUIRE(tabs->getTabsCount() == 5);
+        REQUIRE(tabs->getTabsCount() == 4);
         tabs->removeAll();
         REQUIRE(tabs->getTabsCount() == 0);
     }
@@ -115,17 +138,27 @@ TEST_CASE("[Tabs]")
         tabs->add("Item 1");
         tabs->add("Item 2");
         tabs->add("Item 3");
+        tabs->setTabId(1, "2");
+        tabs->setTabId(2, "3");
 
         REQUIRE(!tabs->changeText(3, "Item 00"));
+        REQUIRE(!tabs->changeTextById("4", "Item 40"));
         REQUIRE(tabs->getTabsCount() == 3);
         REQUIRE(tabs->getText(0) == "Item 1");
         REQUIRE(tabs->getText(1) == "Item 2");
         REQUIRE(tabs->getText(2) == "Item 3");
+
         REQUIRE(tabs->changeText(1, "Item 20"));
         REQUIRE(tabs->getTabsCount() == 3);
         REQUIRE(tabs->getText(0) == "Item 1");
         REQUIRE(tabs->getText(1) == "Item 20");
         REQUIRE(tabs->getText(2) == "Item 3");
+
+        REQUIRE(tabs->changeTextById("3", "Item 30"));
+        REQUIRE(tabs->getTabsCount() == 3);
+        REQUIRE(tabs->getText(0) == "Item 1");
+        REQUIRE(tabs->getText(1) == "Item 20");
+        REQUIRE(tabs->getText(2) == "Item 30");
     }
 
     SECTION("Selecting items")
@@ -146,6 +179,13 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getSelected() == "Item 4");
         REQUIRE(tabs->getSelectedIndex() == 3);
 
+        REQUIRE(tabs->getSelectedId() == "");
+        tabs->setTabId(0, "1");
+        tabs->setTabId(1, "2");
+        tabs->setTabId(2, "3");
+        tabs->setTabId(3, "4");
+        REQUIRE(tabs->getSelectedId() == "4");
+
         REQUIRE(!tabs->select("Item 0"));
         REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
@@ -153,18 +193,27 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->select("Item 1"));
         REQUIRE(tabs->getSelected() == "Item 1");
         REQUIRE(tabs->getSelectedIndex() == 0);
+        REQUIRE(tabs->getSelectedId() == "1");
 
         REQUIRE(!tabs->select(4));
         REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
+        REQUIRE(tabs->getSelectedId() == "");
 
         REQUIRE(tabs->select(2));
         REQUIRE(tabs->getSelected() == "Item 3");
         REQUIRE(tabs->getSelectedIndex() == 2);
+        REQUIRE(tabs->getSelectedId() == "3");
+
+        REQUIRE(tabs->selectById("2"));
+        REQUIRE(tabs->getSelected() == "Item 2");
+        REQUIRE(tabs->getSelectedIndex() == 1);
+        REQUIRE(tabs->getSelectedId() == "2");
 
         tabs->deselect();
         REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
+        REQUIRE(tabs->getSelectedId() == "");
     }
 
     SECTION("AutoSize")

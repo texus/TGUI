@@ -119,9 +119,45 @@ namespace tgui
         bool changeText(std::size_t index, const String& text);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the text of one of the tabs
+        ///
+        /// @param id    The identifier that was set with setTabId
+        /// @param text  The new text of the tab that will be drawn on top of it
+        ///
+        /// @return True when text was successfully changed, false when no tab with the given id was found
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool changeTextById(const String& id, const String& text);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Sets a unique id for a tab
+        ///
+        /// @param index  The index of the tab
+        /// @param id     Unique identifier
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setTabId(std::size_t index, const String& id);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the unique id for a tab
+        ///
+        /// @param index  The index of the tab
+        ///
+        /// @return The identifier that was set with setTabId, or an empty string if no id was explicitly set
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD String getTabId(std::size_t index) const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the index of a tab that is uniquely identified by the given id
+        ///
+        /// @param id  The identifier that was set with setTabId
+        ///
+        /// @return Index of the tab if a tab with the given id was found, -1 if no such tab exists
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD int getIndexById(const String& id) const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Selects the tab with a given text
         /// @param text  The text of the tab to select
-        /// @return Whether a tab was selected, false is returned if tab doesn't exist or is invisible or disabled
+        /// @return Whether a tab was selected, false is returned if the tab doesn't exist or is invisible or disabled
         /// @see select(std::size_t)
         ///
         /// If there are multiple tabs with the same text then the first one will be selected.
@@ -138,6 +174,18 @@ namespace tgui
         /// When false is returned, the selected tab will still be deselected.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool select(std::size_t index);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Selects the tab with a given id
+        ///
+        /// @param id  The id of the tab that was set with setTabId
+        ///
+        /// @return Whether a tab was selected, false is returned if the tab doesn't exist or is invisible or disabled
+        ///
+        /// If there are multiple tabs with the same id then the first one will be selected.
+        /// When false is returned, the selected tab will still be deselected.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool selectById(const String& id);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Deselects the selected tab
@@ -161,6 +209,13 @@ namespace tgui
         bool remove(std::size_t index);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Removes a tab with a given id
+        /// @param id  The id of the tab that was set with setTabId
+        /// @return Whether a tab was removed, false is returned when the id didn't match any tab
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool removeById(const String& id);
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Removes all tabs
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void removeAll();
@@ -178,10 +233,16 @@ namespace tgui
         ///
         /// @return The index of the tab.
         ///         When no tab is selected then this function returns -1
-        ///
-        /// @warning The index returned by this function may no longer be correct when a tab is removed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD int getSelectedIndex() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Gets the id assigned to the currently selected tab
+        ///
+        /// @return The id of the tab.
+        ///         When no tab is selected then this function returns an empty string
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD String getSelectedId() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Gets the index of the tab below the mouse cursor
@@ -302,10 +363,11 @@ namespace tgui
 
         struct Tab
         {
-            bool  visible;
-            bool  enabled;
-            float width;
-            Text  text;
+            bool   visible;
+            bool   enabled;
+            float  width;
+            Text   text;
+            String id;
         };
         std::vector<Tab> m_tabs;
 
