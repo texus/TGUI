@@ -43,7 +43,8 @@ namespace tgui
                     "CanvasSDLGPU can only be created when using the SDL_GPU backend renderer");
 
         SDL_GPUDevice* sdlDevice = std::static_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer())->getInternalDevice();
-        m_backendTexture = std::make_shared<BackendTextureSDLGPU>(sdlDevice, SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET);
+        const std::uint32_t textureUsageFlags = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+        m_backendTexture = std::make_shared<BackendTextureSDLGPU>(sdlDevice, textureUsageFlags);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,8 @@ namespace tgui
                     "CanvasSDLGPU can only be used when using the SDL_GPU backend renderer");
 
         SDL_GPUDevice* sdlDevice = std::static_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer())->getInternalDevice();
-        m_backendTexture = std::make_shared<BackendTextureSDLGPU>(sdlDevice,  SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET);
+        const std::uint32_t textureUsageFlags = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+        m_backendTexture = std::make_shared<BackendTextureSDLGPU>(sdlDevice, textureUsageFlags);
 
         setSize(other.getSize());
     }
@@ -107,11 +109,13 @@ namespace tgui
             {
                 TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer()),
                     "CanvasSDLGPU can only be used when using the SDL_GPU backend renderer");
-                SDL_GPUDevice* device = std::static_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer())->getInternalDevice();
+                const auto backendRenderer = std::static_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer());
+                const SDL_GPUTextureFormat swapchainTextureFormat = backendRenderer->getSwapchainTextureFormat();
+                SDL_GPUDevice* device = backendRenderer->getInternalDevice();
 
                 SDL_GPUTextureCreateInfo textureInfo = {};
                 textureInfo.type = SDL_GPU_TEXTURETYPE_2D;
-                textureInfo.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+                textureInfo.format = swapchainTextureFormat;
                 textureInfo.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
                 textureInfo.width = newTextureSize.x;
                 textureInfo.height = newTextureSize.y;

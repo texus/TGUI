@@ -49,8 +49,9 @@ namespace tgui
         /// @brief Initializes the backend renderer
         ///
         /// @param device  Device used for rendering
+        /// @param swapchainTextureFormat  Texture format of the swapchain
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        BackendRendererSDLGPU(SDL_GPUDevice* device);
+        BackendRendererSDLGPU(SDL_GPUDevice* device, SDL_GPUTextureFormat swapchainTextureFormat);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new empty texture object
@@ -68,6 +69,13 @@ namespace tgui
         TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the texture format of the swapchain
+        ///
+        /// @return Texture format of the swapchain that was passed to the constructor of this object
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        TGUI_NODISCARD SDL_GPUTextureFormat getSwapchainTextureFormat() const;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a pointer to the device object that was used to create this backend renderer
         ///
         /// @return SDL_GPUDevice pointer that was passed to the constructor of this object
@@ -77,7 +85,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private:
 
-        SDL_GPUDevice* m_device = nullptr;
+        SDL_GPUDevice* m_device;
+        SDL_GPUTextureFormat m_swapchainTextureFormat;
     };
 }
 

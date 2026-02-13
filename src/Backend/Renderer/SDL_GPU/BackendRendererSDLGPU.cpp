@@ -33,8 +33,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    BackendRendererSDLGPU::BackendRendererSDLGPU(SDL_GPUDevice* device) :
-        m_device{device}
+    BackendRendererSDLGPU::BackendRendererSDLGPU(SDL_GPUDevice* device, SDL_GPUTextureFormat swapchainTextureFormat) :
+        m_device{device},
+        m_swapchainTextureFormat{swapchainTextureFormat}
     {
         TGUI_ASSERT(m_device, "device passed to BackendRendererSDLGPU can't be a nullptr");
 
@@ -55,6 +56,13 @@ namespace tgui
     {
         // SDL's GPU API currently provides no way to query this value
         return 16384;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    SDL_GPUTextureFormat BackendRendererSDLGPU::getSwapchainTextureFormat() const
+    {
+        return m_swapchainTextureFormat;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

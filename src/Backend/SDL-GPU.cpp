@@ -36,9 +36,11 @@ namespace tgui
         {
             if (!isBackendSet())
             {
+                const SDL_GPUTextureFormat swapchainTextureFormat = SDL_GetGPUSwapchainTextureFormat(device, window);
+
                 auto backend = std::make_shared<BackendSDL>();
                 backend->setFontBackend(std::make_shared<BackendFontFactoryImpl<BackendFontSDLttf>>());
-                backend->setRenderer(std::make_shared<BackendRendererSDLGPU>(device));
+                backend->setRenderer(std::make_shared<BackendRendererSDLGPU>(device, swapchainTextureFormat));
                 backend->setDestroyOnLastGuiDetatch(true);
                 setBackend(backend);
             }
