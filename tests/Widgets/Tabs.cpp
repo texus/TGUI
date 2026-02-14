@@ -76,16 +76,16 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getText(2) == "Item 3");
         REQUIRE(tabs->getText(3) == "Item 4");
 
-        REQUIRE(tabs->getTabId(0) == "");
-        REQUIRE(tabs->getTabId(1) == "");
-        REQUIRE(tabs->getTabId(2) == "");
-        REQUIRE(tabs->getTabId(3) == "");
+        REQUIRE(tabs->getTabId(0).empty());
+        REQUIRE(tabs->getTabId(1).empty());
+        REQUIRE(tabs->getTabId(2).empty());
+        REQUIRE(tabs->getTabId(3).empty());
 
         tabs->setTabId(1, "2");
         tabs->setTabId(3, "Id4");
-        REQUIRE(tabs->getTabId(0) == "");
+        REQUIRE(tabs->getTabId(0).empty());
         REQUIRE(tabs->getTabId(1) == "2");
-        REQUIRE(tabs->getTabId(2) == "");
+        REQUIRE(tabs->getTabId(2).empty());
         REQUIRE(tabs->getTabId(3) == "Id4");
 
         REQUIRE(tabs->getIndexById("1") == -1);
@@ -179,7 +179,7 @@ TEST_CASE("[Tabs]")
         REQUIRE(tabs->getSelected() == "Item 4");
         REQUIRE(tabs->getSelectedIndex() == 3);
 
-        REQUIRE(tabs->getSelectedId() == "");
+        REQUIRE(tabs->getSelectedId().empty());
         tabs->setTabId(0, "1");
         tabs->setTabId(1, "2");
         tabs->setTabId(2, "3");
@@ -198,7 +198,7 @@ TEST_CASE("[Tabs]")
         REQUIRE(!tabs->select(4));
         REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
-        REQUIRE(tabs->getSelectedId() == "");
+        REQUIRE(tabs->getSelectedId().empty());
 
         REQUIRE(tabs->select(2));
         REQUIRE(tabs->getSelected() == "Item 3");
@@ -213,7 +213,7 @@ TEST_CASE("[Tabs]")
         tabs->deselect();
         REQUIRE(tabs->getSelected().empty());
         REQUIRE(tabs->getSelectedIndex() == -1);
-        REQUIRE(tabs->getSelectedId() == "");
+        REQUIRE(tabs->getSelectedId().empty());
     }
 
     SECTION("AutoSize")
