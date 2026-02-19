@@ -209,30 +209,24 @@ namespace tgui
     unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, const BoundArgs&... args)
     {
         const unsigned int id = generateUniqueId();
+        auto fwdHandler = std::forward<Func>(handler);
 
-        if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>
-                   && std::is_invocable_v<decltype(&handler), BoundArgs...>
-                   && !std::is_function_v<Func>)
+        constexpr bool takesCallerArgs = std::is_invocable<Func, BoundArgs..., const std::shared_ptr<Widget>&, const String&>::value;
+        if constexpr (takesCallerArgs)
         {
-            // Reference to function
-            m_signals[id] = {widgetName, signalName, makeSignal([=, f=std::function<void(const BoundArgs&...)>(handler)]{ std::invoke(f, args...); })};
-        }
-        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&...)>>)
-        {
-            // Function pointer
-            m_signals[id] = {widgetName, signalName, makeSignal([=]{ std::invoke(handler, args...); })};
-        }
-        else if constexpr (std::is_convertible_v<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>>
-                        && std::is_invocable_v<decltype(&handler), BoundArgs..., const std::shared_ptr<Widget>&, const String&>
-                        && !std::is_function_v<Func>)
-        {
-            // Reference to function with caller arguments
-            m_signals[id] = {widgetName, signalName, makeSignalEx([=, f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>& w, const String& s)>(handler)](const std::shared_ptr<Widget>& w, const String& s){ std::invoke(f, args..., w, s); })};
+            m_signals[id] = {widgetName, signalName,
+                makeSignalEx([f=fwdHandler, args...](const std::shared_ptr<Widget>& w, const String& s) {
+                    std::invoke(f, args..., w, s);
+                })
+            };
         }
         else
         {
-            // Function pointer with caller arguments
-            m_signals[id] = {widgetName, signalName, makeSignalEx([=](const std::shared_ptr<Widget>& w, const String& s){ std::invoke(handler, args..., w, s); })};
+            m_signals[id] = {widgetName, signalName,
+                makeSignal([f=fwdHandler, args...] {
+                    std::invoke(f, args...);
+                })
+            };
         }
 
         connect(id);
