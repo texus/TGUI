@@ -73,6 +73,7 @@ public:
     void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
     void saveUndoState(UndoType type);
+    bool isEnabledDragBeforeSelect() const;
 
 private:
 
@@ -138,6 +139,8 @@ private:
     void menuBarCallbackLoadForm();
     void menuBarCallbackLoadRecent(const tgui::String& filename);
     void menuBarCallbackSaveFile();
+    void menuBarCallbackDisableDragBeforeSelect();
+    void menuBarCallbackEnableDragBeforeSelect();
     void menuBarCallbackQuit();
     void menuBarCallbackEditThemes();
     void menuBarCallbackBringWidgetToFront();
@@ -172,6 +175,7 @@ private:
 
     std::vector<CopiedWidget> m_copiedWidgets;
     std::vector<tgui::String> m_draggedHierarchyTreeItem;
+    bool m_enableDragBeforeSelect = true;
 
     std::map<tgui::String, tgui::Theme> m_themes;
     tgui::String m_defaultTheme;

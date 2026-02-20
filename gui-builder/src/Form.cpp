@@ -1108,9 +1108,14 @@ void Form::onFormMousePress(tgui::Vector2f pos)
     auto widget = getWidgetBelowMouse(m_widgetsContainer, pos);
     if (widget)
     {
+        const bool alreadySelected = m_selectedWidget && m_selectedWidget->ptr == widget;
         selectWidget(m_widgets[widgetPtrToStrId(widget)]);
-        m_draggingWidget = true;
-        m_draggingPos = pos;
+
+        if (alreadySelected || m_guiBuilder->isEnabledDragBeforeSelect())
+        {
+            m_draggingWidget = true;
+            m_draggingPos = pos;
+        }
     }
     else
         selectWidget(nullptr);

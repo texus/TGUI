@@ -33,6 +33,10 @@ MenuBar.MenuBar {
         }
 
         Menu {
+            Text = "Disable drag before select";
+        }
+
+        Menu {
             Text = Quit;
         }
     }

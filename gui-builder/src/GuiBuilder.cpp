@@ -641,6 +641,13 @@ bool GuiBuilder::loadGuiBuilderState()
             m_defaultPath += '/';
     }
 
+    if (node->propertyValuePairs["EnableDragBeforeSelect"])
+    {
+        m_enableDragBeforeSelect = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Bool, node->propertyValuePairs[U"EnableDragBeforeSelect"]->value).getBool();
+        if (!m_enableDragBeforeSelect && m_menuBar)
+            m_menuBar->changeMenuItem({"File", "Disable drag before select"}, "Enable drag before select");
+    }
+
     return true;
 }
 
@@ -690,6 +697,7 @@ void GuiBuilder::saveGuiBuilderState()
         "(" + tgui::String::fromNumber(m_formSize.x) + ", " + tgui::String::fromNumber(m_formSize.y) + ")");
 
     node->propertyValuePairs["DefaultPath"] = std::make_unique<tgui::DataIO::ValueNode>(tgui::Serializer::serialize(m_defaultPath));
+    node->propertyValuePairs["EnableDragBeforeSelect"] = std::make_unique<tgui::DataIO::ValueNode>(tgui::Serializer::serialize(m_enableDragBeforeSelect));
 
     std::stringstream stream;
     tgui::DataIO::emit(node, stream);
@@ -1021,6 +1029,8 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
     m_menuBar->connectMenuItem({"File", "New"}, [this]{ menuBarCallbackNewForm(); });
     m_menuBar->connectMenuItem({"File", "Load"}, [this]{ menuBarCallbackLoadForm(); });
     m_menuBar->connectMenuItem({"File", "Save"}, [this]{ menuBarCallbackSaveFile(); });
+    m_menuBar->connectMenuItem({"File", "Disable drag before select"}, [this]{ menuBarCallbackDisableDragBeforeSelect(); });
+    m_menuBar->connectMenuItem({"File", "Enable drag before select"}, [this]{ menuBarCallbackEnableDragBeforeSelect(); });
     m_menuBar->connectMenuItem({"File", "Quit"}, [this]{ menuBarCallbackQuit(); });
     m_menuBar->connectMenuItem({"Themes", "Edit"}, [this]{ menuBarCallbackEditThemes(); });
     m_menuBar->connectMenuItem({"Widget", "Bring to front"}, [this]{ menuBarCallbackBringWidgetToFront(); });
@@ -1031,6 +1041,9 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
     m_menuBar->connectMenuItem({"Widget", "Delete"}, [this]{ menuBarCallbackDeleteWidget(); });
     m_menuBar->connectMenuItem({"Help", "Keyboard shortcuts"}, [this]{ menuBarCallbackKeyboardShortcuts(); });
     m_menuBar->connectMenuItem({"Help", "About"}, [this]{ menuBarCallbackAbout(); });
+
+    if (!m_enableDragBeforeSelect)
+        m_menuBar->changeMenuItem({"File", "Disable drag before select"}, "Enable drag before select");
 
     m_menuBar->removeSubMenuItems({"File", "Recent"});
     bool addedRecentFile = false;
@@ -2648,6 +2661,24 @@ void GuiBuilder::menuBarCallbackSaveFile()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void GuiBuilder::menuBarCallbackDisableDragBeforeSelect()
+{
+    m_enableDragBeforeSelect = false;
+    saveGuiBuilderState();
+    m_menuBar->changeMenuItem({"File", "Disable drag before select"}, "Enable drag before select");
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void GuiBuilder::menuBarCallbackEnableDragBeforeSelect()
+{
+    m_enableDragBeforeSelect = true;
+    saveGuiBuilderState();
+    m_menuBar->changeMenuItem({"File", "Enable drag before select"}, "Disable drag before select");
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void GuiBuilder::menuBarCallbackQuit()
 {
     saveGuiBuilderState();
@@ -2986,6 +3017,13 @@ void GuiBuilder::saveUndoState(GuiBuilder::UndoType type)
     // Save state and desc of saved state
     m_undoSaves.push_back(m_selectedForm->saveState());
     m_undoSavesDesc.push_back(descString);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool GuiBuilder::isEnabledDragBeforeSelect() const
+{
+    return m_enableDragBeforeSelect;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
