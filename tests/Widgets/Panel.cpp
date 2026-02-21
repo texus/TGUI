@@ -268,4 +268,16 @@ TEST_CASE("[Panel]")
 
         TEST_DRAW("Panel.png")
     }
+
+    SECTION("Child Widgets")
+    {
+        auto testPanel = tgui::Panel::create();
+        auto testButton = tgui::Button::create();
+
+        testPanel->add(testButton);
+        REQUIRE(testPanel->getWidgets().size() == 1);
+
+        testPanel->remove(testButton);
+        REQUIRE(testPanel->getWidgets().empty());
+    }
 }
