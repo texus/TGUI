@@ -775,23 +775,6 @@ namespace tgui
         return *this;
     }
 
-    String& String::assign(std::u32string::const_iterator first, std::u32string::const_iterator last)
-    {
-        m_string.assign(first, last);
-        return *this;
-    }
-
-    String& String::assign(StringView::const_iterator first, StringView::const_iterator last)
-    {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        m_string.assign(first, last);
-#else
-        if (last >= first)
-            m_string.assign(first, static_cast<std::size_t>(last - first));
-#endif
-        return *this;
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String::reference String::at(std::size_t pos)
@@ -1148,25 +1131,6 @@ namespace tgui
         return m_string.insert(pos, tmpStr.cbegin(), tmpStr.cend());
     }
 
-    String::iterator String::insert(const_iterator pos, std::u32string::const_iterator first, std::u32string::const_iterator last)
-    {
-        return m_string.insert(pos, first, last);
-    }
-
-    String::iterator String::insert(const_iterator pos, StringView::const_iterator first, StringView::const_iterator last)
-    {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        return m_string.insert(pos, first, last);
-#else
-        const auto index = std::distance(m_string.cbegin(), pos);
-
-        if ((last > first) && (index >= 0))
-            m_string.insert(static_cast<std::size_t>(index), first, static_cast<std::size_t>(last - first));
-
-        return m_string.begin() + index;
-#endif
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     String& String::erase(std::size_t index, std::size_t count)
@@ -1376,23 +1340,6 @@ namespace tgui
     String& String::append(std::u16string::const_iterator first, std::u16string::const_iterator last)
     {
         m_string.append(String{first, last}.m_string);
-        return *this;
-    }
-
-    String& String::append(std::u32string::const_iterator first, std::u32string::const_iterator last)
-    {
-        m_string.append(first, last);
-        return *this;
-    }
-
-    String& String::append(StringView::const_iterator first, StringView::const_iterator last)
-    {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        m_string.append(first, last);
-#else
-        if (last > first)
-            m_string.append(first, static_cast<std::size_t>(last - first));
-#endif
         return *this;
     }
 
@@ -1626,23 +1573,6 @@ namespace tgui
     String& String::replace(const_iterator first, const_iterator last, std::u16string::const_iterator first2, std::u16string::const_iterator last2)
     {
         m_string.replace(first, last, String{first2, last2}.m_string);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, std::u32string::const_iterator first2, std::u32string::const_iterator last2)
-    {
-        m_string.replace(first, last, first2, last2);
-        return *this;
-    }
-
-    String& String::replace(const_iterator first, const_iterator last, StringView::const_iterator first2, StringView::const_iterator last2)
-    {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-        m_string.replace(first, last, first2, last2);
-#else
-        if (last2 > first2)
-            m_string.replace(first, last, first2, static_cast<std::size_t>(last2 - first2));
-#endif
         return *this;
     }
 

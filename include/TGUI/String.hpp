@@ -108,6 +108,15 @@ namespace tgui
             void>;
 #endif
 
+        // Helper to check if iterator is either from std::u32string or std::u32string_view.
+        // When compiling with Emscipten (which used Clang 23), those iterators are the same
+        // and we can't have a seperate function for each.
+        template <typename IteratorType>
+        using IsU32Iterator = std::enable_if_t<
+            std::is_convertible<IteratorType, std::u32string::const_iterator>::value
+            || std::is_convertible<IteratorType, StringView::const_iterator>::value,
+            void>;
+
     public:
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
@@ -510,8 +519,13 @@ namespace tgui
         String& assign(std::string::const_iterator first, std::string::const_iterator last);
         String& assign(std::wstring::const_iterator first, std::wstring::const_iterator last);
         String& assign(std::u16string::const_iterator first, std::u16string::const_iterator last);
-        String& assign(std::u32string::const_iterator first, std::u32string::const_iterator last);
-        String& assign(StringView::const_iterator first, StringView::const_iterator last);
+
+        template <typename IteratorType, typename = IsU32Iterator<IteratorType>>
+        String& assign(IteratorType first, IteratorType last)
+        {
+            m_string.assign(first, last);
+            return *this;
+        }
 
         TGUI_NODISCARD reference       at(std::size_t pos);
         TGUI_NODISCARD const_reference at(std::size_t pos) const;
@@ -623,8 +637,13 @@ namespace tgui
         iterator insert(const_iterator pos, std::string::const_iterator first, std::string::const_iterator last);
         iterator insert(const_iterator pos, std::wstring::const_iterator first, std::wstring::const_iterator last);
         iterator insert(const_iterator pos, std::u16string::const_iterator first, std::u16string::const_iterator last);
-        iterator insert(const_iterator pos, std::u32string::const_iterator first, std::u32string::const_iterator last);
-        iterator insert(const_iterator pos, StringView::const_iterator first, StringView::const_iterator last);
+
+        template <typename IteratorType, typename = IsU32Iterator<IteratorType>>
+        String& insert(const_iterator pos, IteratorType first, IteratorType last)
+        {
+            m_string.insert(pos, first, last);
+            return *this;
+        }
 
         String& erase(std::size_t index = 0, std::size_t count = npos);
 
@@ -663,8 +682,13 @@ namespace tgui
         String& append(std::string::const_iterator first, std::string::const_iterator last);
         String& append(std::wstring::const_iterator first, std::wstring::const_iterator last);
         String& append(std::u16string::const_iterator first, std::u16string::const_iterator last);
-        String& append(std::u32string::const_iterator first, std::u32string::const_iterator last);
-        String& append(StringView::const_iterator first, StringView::const_iterator last);
+
+        template <typename IteratorType, typename = IsU32Iterator<IteratorType>>
+        String& append(IteratorType first, IteratorType last)
+        {
+            m_string.append(first, last);
+            return *this;
+        }
 
         String& append(std::initializer_list<char> chars);
         String& append(std::initializer_list<wchar_t> chars);
@@ -715,8 +739,13 @@ namespace tgui
         String& replace(const_iterator first, const_iterator last, std::string::const_iterator first2, std::string::const_iterator last2);
         String& replace(const_iterator first, const_iterator last, std::wstring::const_iterator first2, std::wstring::const_iterator last2);
         String& replace(const_iterator first, const_iterator last, std::u16string::const_iterator first2, std::u16string::const_iterator last2);
-        String& replace(const_iterator first, const_iterator last, std::u32string::const_iterator first2, std::u32string::const_iterator last2);
-        String& replace(const_iterator first, const_iterator last, StringView::const_iterator first2, StringView::const_iterator last2);
+
+        template <typename IteratorType, typename = IsU32Iterator<IteratorType>>
+        String& replace(const_iterator first, const_iterator last, IteratorType first2, IteratorType last2)
+        {
+            m_string.replace(first, last, first2, last2);
+            return *this;
+        }
 
         String& replace(std::size_t pos, std::size_t count, const char* cstr, std::size_t count2);
         String& replace(std::size_t pos, std::size_t count, const wchar_t* cstr, std::size_t count2);
