@@ -33,7 +33,9 @@
 #define TGUI_VERSION_PATCH @TGUI_VERSION_PATCH@
 
 // Detect the platform, to enable platform-specific code
-#if defined(_WIN32)
+#if defined(__EMSCRIPTEN__)
+    #define TGUI_SYSTEM_EMSCRIPTEN // Emscripten
+#elif defined(_WIN32)
     #define TGUI_SYSTEM_WINDOWS // Windows
 #elif defined(__APPLE__) && defined(__MACH__)
     #include "TargetConditionals.h"
