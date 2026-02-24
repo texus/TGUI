@@ -1500,7 +1500,7 @@ namespace tgui
 
     inline std::size_t String::find_last_not_of(char8_t ch, std::size_t pos) const noexcept
     {
-        return m_string.find_last_not_of(static_cast<char8_t>(ch), pos);
+        return m_string.find_last_not_of(static_cast<char32_t>(ch), pos);
     }
 
     inline bool String::starts_with(char8_t ch) const noexcept
