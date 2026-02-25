@@ -227,7 +227,7 @@ namespace tgui
 
     void EditBox::setMaximumCharacters(unsigned int maxChars)
     {
-        // Set the new character limit ( 0 to disable the limit )
+        // Set the new character limit (0 to disable the limit)
         m_maxChars = maxChars;
 
         // If there is a character limit then check if it is exceeded
