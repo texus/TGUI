@@ -71,7 +71,7 @@ namespace
 
     TGUI_NODISCARD tgui::Color calculateColor(tgui::Vector2f position, float v, float a)
     {
-        /// vec2 position = ( gl_FragCoord.xy / resolution.xy );
+        /// vec2 position = (gl_FragCoord.xy / resolution.xy);
         /// vec2 p2 = position - vec2(0.5, 0.5);
         ///
         /// float S = length(p2*2.0);

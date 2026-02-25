@@ -205,7 +205,7 @@ TEST_CASE("[DataIO]")
 
         SECTION("Found empty value")
         {
-            std::stringstream input("{ Property = ; ");
+            std::stringstream input("{ Property = ;");
             REQUIRE_THROWS_AS(tgui::DataIO::parse(input), tgui::Exception);
         }
 
