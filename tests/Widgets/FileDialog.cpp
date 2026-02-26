@@ -96,11 +96,13 @@ TEST_CASE("[FileDialog]")
 
     SECTION("Captions")
     {
+        dialog->setCreateFolderButtonText("Summon folder");
         dialog->setConfirmButtonText("Use that file");
         dialog->setCancelButtonText("Don't do it!");
         dialog->setFilenameLabelText("What file?");
         dialog->setListViewColumnCaptions("Moniker", "Largeness", "Timing");
 
+        REQUIRE(dialog->getCreateFolderButtonText() == "Summon folder");
         REQUIRE(dialog->getConfirmButtonText() == "Use that file");
         REQUIRE(dialog->getCancelButtonText() == "Don't do it!");
         REQUIRE(dialog->getFilenameLabelText() == "What file?");
