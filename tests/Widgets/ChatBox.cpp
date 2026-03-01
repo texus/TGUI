@@ -165,6 +165,10 @@ TEST_CASE("[ChatBox]")
         chatBox->addLine("Text", tgui::Color::Blue);
         REQUIRE(chatBox->getLine(1).empty());
         REQUIRE(chatBox->getLineColor(1) == tgui::Color::Yellow);
+        REQUIRE(chatBox->getLineTextStyle(1) == tgui::TextStyle::Regular);
+
+        chatBox->setTextStyle(tgui::TextStyle::StrikeThrough);
+        REQUIRE(chatBox->getLineTextStyle(1) == tgui::TextStyle::StrikeThrough);
     }
 
     SECTION("Lines start from top or bottom")
