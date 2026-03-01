@@ -24,7 +24,7 @@
 
 #include <iostream>
 #if TGUI_BUILD_CXX20_MODULE
-    import tgui;
+import tgui;
 #else
     #include <TGUI/TGUI.hpp>
 #endif
@@ -192,7 +192,7 @@ bool runExample(tgui::BackendGui& gui)
         button->setPosition(75, 70);
         button->setText("OK");
         button->setSize(100, 30);
-        button->onPress([=]{ child->setVisible(false); });
+        button->onPress([=] { child->setVisible(false); });
         child->add(button);
 
         auto checkbox = tgui::CheckBox::create();

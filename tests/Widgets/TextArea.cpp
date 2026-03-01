@@ -29,19 +29,19 @@ namespace
     tgui::Event::KeyEvent createKeyEvent(tgui::Event::KeyboardKey key, bool control, bool shift)
     {
         tgui::Event::KeyEvent event;
-        event.alt     = false;
-        event.shift   = shift;
-        event.code    = key;
+        event.alt = false;
+        event.shift = shift;
+        event.code = key;
 #ifdef TGUI_SYSTEM_MACOS
         event.control = false;
-        event.system  = control;
+        event.system = control;
 #else
         event.control = control;
-        event.system  = false;
+        event.system = false;
 #endif
         return event;
     }
-}
+} // namespace
 
 TEST_CASE("[TextArea]")
 {
@@ -50,13 +50,13 @@ TEST_CASE("[TextArea]")
 
     SECTION("Signals")
     {
-        textArea->onTextChange([](){});
-        textArea->onTextChange([](const tgui::String&){});
+        textArea->onTextChange([]() {});
+        textArea->onTextChange([](const tgui::String&) {});
 
-        textArea->onCaretPositionChange([](){});
+        textArea->onCaretPositionChange([]() {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(textArea)->getSignal("TextChanged").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(textArea)->getSignal("CaretPositionChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(textArea)->getSignal("TextChanged").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(textArea)->getSignal("CaretPositionChanged").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -299,7 +299,9 @@ TEST_CASE("[TextArea]")
     {
         textArea->setSize(200, 100);
         textArea->setTextSize(18);
-        textArea->setText("Cupcake ipsum dolor sit amet cotton candy. Ice cream chocolate cake soufflé lollipop marzipan sesame snaps. Marzipan bear claw halvah tiramisu pie.");
+        textArea->setText(
+            "Cupcake ipsum dolor sit amet cotton candy. Ice cream chocolate cake soufflé lollipop marzipan sesame snaps. Marzipan "
+            "bear claw halvah tiramisu pie.");
         testScrollbarAccess(textArea->getVerticalScrollbar());
 
         REQUIRE(textArea->getHorizontalScrollbar()->getPolicy() == tgui::Scrollbar::Policy::Never);
@@ -493,7 +495,8 @@ TEST_CASE("[TextArea]")
 
             SECTION("Pressing tab")
             {
-                auto sendTabEventToGui = [](GuiNull& gui) {
+                auto sendTabEventToGui = [](GuiNull& gui)
+                {
                     tgui::Event event;
                     event.key = createKeyEvent(tgui::Event::KeyboardKey::Tab, false, false);
                     event.type = tgui::Event::Type::KeyPressed;
@@ -708,7 +711,11 @@ TEST_CASE("[TextArea]")
         textArea->setSize(250, 150);
         textArea->setText("Something");
         textArea->setTextSize(16);
-        textArea->setText("Cupcake ipsum dolor sit.\nAmet candy canes sesame snaps cupcake apple pie lemon drops jelly apple pie candy canes.\nPowder donut sugar plum croissant gingerbread sesame snaps pie.\nCaramels cupcake icing.\nBear claw lemon drops carrot cake chocolate ice cream jelly beans gummi bears.\nMuffin ice cream cupcake chocolate cake.\nTopping oat cake bonbon.");
+        textArea->setText(
+            "Cupcake ipsum dolor sit.\nAmet candy canes sesame snaps cupcake apple pie lemon drops jelly apple pie candy "
+            "canes.\nPowder donut sugar plum croissant gingerbread sesame snaps pie.\nCaramels cupcake icing.\nBear claw lemon drops "
+            "carrot cake chocolate ice cream jelly beans gummi bears.\nMuffin ice cream cupcake chocolate cake.\nTopping oat cake "
+            "bonbon.");
 
         tgui::TextAreaRenderer renderer = tgui::RendererData::create();
         renderer.setBackgroundColor(tgui::Color::Yellow);
@@ -735,10 +742,7 @@ TEST_CASE("[TextArea]")
         textArea->mouseMoved({136, 105});
         textArea->leftMouseReleased({136, 105});
 
-        SECTION("Colored")
-        {
-            TEST_DRAW("TextArea.png")
-        }
+        SECTION("Colored"){TEST_DRAW("TextArea.png")}
 
         SECTION("Textured")
         {

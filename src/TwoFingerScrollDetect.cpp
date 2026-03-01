@@ -99,7 +99,8 @@ namespace tgui
 
     Vector2f TwoFingerScrollDetect::calculateFingerCentroid()
     {
-        TGUI_ASSERT(!m_fingerPositions.empty(), "TwoFingerScrollDetect::calculateFingerCentroid should not be called when no fingers are down");
+        TGUI_ASSERT(!m_fingerPositions.empty(),
+                    "TwoFingerScrollDetect::calculateFingerCentroid should not be called when no fingers are down");
 
         Vector2f centroid;
         for (const auto& pair : m_fingerPositions)
@@ -110,6 +111,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

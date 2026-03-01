@@ -26,6 +26,7 @@
 #define TGUI_BACKEND_FONT_FREETYPE_HPP
 
 #include <TGUI/Config.hpp>
+
 #include <TGUI/Backend/Font/BackendFont.hpp>
 
 #include <unordered_map>
@@ -46,7 +47,6 @@ namespace tgui
     class TGUI_API BackendFontFreeType : public BackendFont
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Destructor that cleans up the FreeType resources
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,15 +203,15 @@ namespace tgui
         void setFontScale(float scale) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         struct Glyph
         {
-            float     advance = 0;   //!< Offset to move horizontally to the next character
-            float     lsbDelta = 0;  //!< Left offset after forced autohint. Internally used by getKerning()
-            float     rsbDelta = 0;  //!< Right offset after forced autohint. Internally used by getKerning()
-            FloatRect bounds;        //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
-            UIntRect  textureRect;   //!< Texture coordinates of the glyph inside the font's texture
+            float advance = 0;    //!< Offset to move horizontally to the next character
+            float lsbDelta = 0;   //!< Left offset after forced autohint. Internally used by getKerning()
+            float rsbDelta = 0;   //!< Right offset after forced autohint. Internally used by getKerning()
+            FloatRect bounds;     //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
+            UIntRect textureRect; //!< Texture coordinates of the glyph inside the font's texture
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,20 +240,25 @@ namespace tgui
         void cleanup();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         struct Row
         {
-            Row(unsigned int rowTop, unsigned int rowHeight) : width(0), top(rowTop), height(rowHeight) {}
+            Row(unsigned int rowTop, unsigned int rowHeight) :
+                width(0),
+                top(rowTop),
+                height(rowHeight)
+            {
+            }
 
             unsigned int width;  //!< Current width of the row
             unsigned int top;    //!< Y position of the row into the texture
             unsigned int height; //!< Height of the row
         };
 
-        FT_Library  m_library = nullptr;  // Handle to the freetype library
-        FT_Face     m_face    = nullptr;  // Contains the font (typeface and style)
-        FT_Stroker  m_stroker = nullptr;  // Used for rendering outlines
+        FT_Library m_library = nullptr; // Handle to the freetype library
+        FT_Face m_face = nullptr;       // Contains the font (typeface and style)
+        FT_Stroker m_stroker = nullptr; // Used for rendering outlines
 
         std::unordered_map<unsigned int, float> m_cachedLineSpacing;
         std::unordered_map<unsigned int, float> m_cachedFontHeights;
@@ -261,7 +266,7 @@ namespace tgui
         std::unordered_map<unsigned int, float> m_cachedDescents;
 
         std::unordered_map<std::uint64_t, Glyph> m_glyphs;
-        unsigned int     m_nextRow = 3; //!< Y position of the next new row in the texture (first 2 rows contain pixels for underlining)
+        unsigned int m_nextRow = 3; //!< Y position of the next new row in the texture (first 2 rows contain pixels for underlining)
         std::vector<Row> m_rows;
 
         std::unique_ptr<std::uint8_t[]> m_fileContents;
@@ -274,7 +279,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     using BackendFontFreetype TGUI_DEPRECATED("Use BackendFontFreeType instead (capital T)") = BackendFontFreeType;
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

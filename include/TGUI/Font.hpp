@@ -25,8 +25,8 @@
 #ifndef TGUI_FONT_HPP
 #define TGUI_FONT_HPP
 
-#include <TGUI/String.hpp>
 #include <TGUI/Rect.hpp>
+#include <TGUI/String.hpp>
 
 #include <cstddef>
 #include <memory>
@@ -42,9 +42,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API FontGlyph
     {
-        float     advance = 0;  //!< Offset to move horizontally to the next character
-        FloatRect bounds;       //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
-        UIntRect  textureRect;  //!< Texture coordinates of the glyph inside the font's texture
+        float advance = 0;    //!< Offset to move horizontally to the next character
+        FloatRect bounds;     //!< Bounding rectangle of the glyph, in coordinates relative to the baseline
+        UIntRect textureRect; //!< Texture coordinates of the glyph inside the font's texture
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,6 @@ namespace tgui
     class TGUI_API Font
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the global font that is used for all new widgets
         /// @param font  New global font
@@ -210,14 +209,14 @@ namespace tgui
         TGUI_NODISCARD std::shared_ptr<BackendFont> getBackendFont() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         std::shared_ptr<BackendFont> m_backendFont;
         String m_id;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

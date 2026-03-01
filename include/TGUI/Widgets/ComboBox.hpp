@@ -25,8 +25,8 @@
 #ifndef TGUI_COMBO_BOX_HPP
 #define TGUI_COMBO_BOX_HPP
 
-#include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Renderers/ComboBoxRenderer.hpp>
+#include <TGUI/Widgets/ListBox.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,18 +38,16 @@ namespace tgui
     class TGUI_API ComboBox : public Widget
     {
     public:
-
         /// @brief The side where the list will be displayed
         enum class ExpandDirection : std::uint8_t
         {
-            Down, //!< Display the list below the combo box
-            Up,   //!< Display the list above the combo box
-            Automatic  //!< Display the list below the combo box unless it wouldn't fit on the screen
+            Down,     //!< Display the list below the combo box
+            Up,       //!< Display the list above the combo box
+            Automatic //!< Display the list below the combo box unless it wouldn't fit on the screen
         };
 
     public:
-
-        using Ptr = std::shared_ptr<ComboBox>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<ComboBox>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ComboBox>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ComboBox"; //!< Type name of the widget
@@ -548,8 +546,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -614,13 +612,13 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalItem onItemSelect = {"ItemSelected"}; //!< An item was selected in the combo box. Optional parameter: selected item or its index
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         // The number of items to display. If there is a scrollbar then you can scroll to see the other.
         // If there is no scrollbar then this will be the maximum amount of items.
         std::size_t m_nrOfItemsToDisplay = 0;
@@ -645,26 +643,25 @@ namespace tgui
         // Cached renderer properties
         Borders m_bordersCached;
         Padding m_paddingCached;
-        Color   m_borderColorCached;
-        Color   m_backgroundColorCached;
-        Color   m_backgroundColorDisabledCached;
-        Color   m_arrowColorCached;
-        Color   m_arrowColorHoverCached;
-        Color   m_arrowColorDisabledCached;
-        Color   m_arrowBackgroundColorCached;
-        Color   m_arrowBackgroundColorHoverCached;
-        Color   m_arrowBackgroundColorDisabledCached;
-        Color   m_textColorCached;
-        Color   m_textColorDisabledCached;
-        float   m_roundedBorderRadiusCached = 0;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_backgroundColorDisabledCached;
+        Color m_arrowColorCached;
+        Color m_arrowColorHoverCached;
+        Color m_arrowColorDisabledCached;
+        Color m_arrowBackgroundColorCached;
+        Color m_arrowBackgroundColorHoverCached;
+        Color m_arrowBackgroundColorDisabledCached;
+        Color m_textColorCached;
+        Color m_textColorDisabledCached;
+        float m_roundedBorderRadiusCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif // TGUI_COMBO_BOX_HPP
-

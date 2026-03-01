@@ -25,9 +25,9 @@
 #ifndef TGUI_TREE_VIEW_HPP
 #define TGUI_TREE_VIEW_HPP
 
-#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/TreeViewRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,7 +39,6 @@ namespace tgui
     class TGUI_API TreeView : public Widget, public DualScrollbarChildInterface
     {
     public:
-
         using Ptr = std::shared_ptr<TreeView>;
         using ConstPtr = std::shared_ptr<const TreeView>;
 
@@ -343,7 +342,8 @@ namespace tgui
         ///
         /// @return Value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead")
+        TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the vertical scrollbar
@@ -352,7 +352,8 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead")
+        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
@@ -366,7 +367,8 @@ namespace tgui
         ///
         /// @return Value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -375,7 +377,8 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
@@ -449,8 +452,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -525,7 +528,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Node* findParentNode(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<std::shared_ptr<Node>>& nodes, Node* parent, bool createParents);
+        TGUI_NODISCARD Node* findParentNode(const std::vector<String>& hierarchy,
+                                            unsigned int parentIndex,
+                                            std::vector<std::shared_ptr<Node>>& nodes,
+                                            Node* parent,
+                                            bool createParents);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Expands or collapses one of the visible items
@@ -563,17 +570,18 @@ namespace tgui
         void updateSelectedItem(int item);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
-        SignalItemHierarchy onItemSelect = {"ItemSelected"};   //!< An node was selected in the tree view. Optional parameter: selected node
+    public:
+        SignalItemHierarchy onItemSelect = {"ItemSelected"}; //!< An node was selected in the tree view. Optional parameter: selected node
         SignalItemHierarchy onDoubleClick = {"DoubleClicked"}; //!< A leaf node was double clicked. Optional parameter: selected node
-        SignalItemHierarchy onExpand = {"Expanded"};           //!< A branch node was expanded in the tree view. Optional parameter: expanded node
-        SignalItemHierarchy onCollapse = {"Collapsed"};        //!< A branch node was collapsed in the tree view. Optional parameter: collapsed node
-        SignalItemHierarchy onRightClick = {"RightClicked"};   //!< Right mouse button was pressed on top of a node. Optional parameter: node below mouse
+        SignalItemHierarchy onExpand = {"Expanded"}; //!< A branch node was expanded in the tree view. Optional parameter: expanded node
+        SignalItemHierarchy onCollapse = {"Collapsed"}; //!< A branch node was collapsed in the tree view. Optional parameter: collapsed node
+        SignalItemHierarchy onRightClick = {
+            "RightClicked"}; //!< Right mouse button was pressed on top of a node. Optional parameter: node below mouse
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         // This contains the nodes of the tree
         std::vector<std::shared_ptr<Node>> m_nodes;
         std::vector<std::shared_ptr<Node>> m_visibleNodes;
@@ -589,30 +597,30 @@ namespace tgui
         bool m_possibleDoubleClick = false;
         int m_doubleClickNodeIndex = -1;
 
-        Sprite    m_spriteBackground;
-        Sprite    m_spriteBranchExpanded;
-        Sprite    m_spriteBranchCollapsed;
-        Sprite    m_spriteLeaf;
+        Sprite m_spriteBackground;
+        Sprite m_spriteBranchExpanded;
+        Sprite m_spriteBranchCollapsed;
+        Sprite m_spriteLeaf;
 
         // Cached renderer properties
-        Borders   m_bordersCached;
-        Borders   m_paddingCached;
-        Color     m_borderColorCached;
-        Color     m_backgroundColorCached;
-        Color     m_textColorCached;
-        Color     m_textColorHoverCached;
-        Color     m_selectedTextColorCached;
-        Color     m_selectedTextColorHoverCached;
-        Color     m_selectedBackgroundColorCached;
-        Color     m_selectedBackgroundColorHoverCached;
-        Color     m_backgroundColorHoverCached;
+        Borders m_bordersCached;
+        Borders m_paddingCached;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_textColorCached;
+        Color m_textColorHoverCached;
+        Color m_selectedTextColorCached;
+        Color m_selectedTextColorHoverCached;
+        Color m_selectedBackgroundColorCached;
+        Color m_selectedBackgroundColorHoverCached;
+        Color m_backgroundColorHoverCached;
         TextStyles m_textStyleCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

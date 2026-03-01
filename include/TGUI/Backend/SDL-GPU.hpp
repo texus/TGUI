@@ -30,9 +30,9 @@
     #error "TGUI wasn't build with the SDL_GPU backend"
 #endif
 
-#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-#include <TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp>
 #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
+#include <TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp>
+#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 
 namespace tgui
 {
@@ -44,7 +44,6 @@ namespace tgui
         class TGUI_API Gui : public BackendGuiSDL
         {
         public:
-
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Default constructor
             ///
@@ -83,8 +82,12 @@ namespace tgui
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             void draw() override
             {
-                TGUI_ASSERT(false, "The SDL_GPU backend requires that you pass a SDL_GPURenderPass pointer to the draw function and call prepareDraw before calling draw");
-                throw Exception("The SDL_GPU backend requires that you pass a SDL_GPURenderPass pointer to the draw function and call prepareDraw before calling draw");
+                TGUI_ASSERT(false,
+                            "The SDL_GPU backend requires that you pass a SDL_GPURenderPass pointer to the draw function and call "
+                            "prepareDraw before calling draw");
+                throw Exception(
+                    "The SDL_GPU backend requires that you pass a SDL_GPURenderPass pointer to the draw function and call prepareDraw "
+                    "before calling draw");
             }
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,8 +114,8 @@ namespace tgui
             void draw(SDL_GPURenderPass* renderPass);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        protected:
 
+        protected:
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Clears the screen, draws the gui and then presents the frame
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,11 +127,11 @@ namespace tgui
             void presentScreen() override;
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        protected:
 
+        protected:
             SDL_GPUDevice* m_device = nullptr;
         };
-    }
-}
+    } // namespace SDL_GPU
+} // namespace tgui
 
 #endif // TGUI_BACKEND_SDL_GPU_INCLUDE_HPP

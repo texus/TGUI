@@ -33,7 +33,7 @@ namespace tgui
         const float defaultWidth = 160;
         const float defaultHeight = 140;
         const float defaultPanelHeight = 40;
-    }
+    } // namespace
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     constexpr char PanelListBox::StaticWidgetType[];
@@ -368,7 +368,7 @@ namespace tgui
         std::vector<Panel::Ptr> items;
         items.reserve(m_items.size());
 
-        for (const auto &item : m_items)
+        for (const auto& item : m_items)
             items.push_back(item.panel);
 
         return items;
@@ -380,7 +380,7 @@ namespace tgui
     {
         std::vector<String> ids;
         ids.reserve(m_items.size());
-        for (const auto &item : m_items)
+        for (const auto& item : m_items)
             ids.push_back(item.id);
 
         return ids;
@@ -420,7 +420,8 @@ namespace tgui
 
     bool PanelListBox::contains(const Panel::Ptr& panelPtr) const
     {
-        return std::find_if(m_items.cbegin(), m_items.cend(), [panelPtr](const Item& item) { return item.panel == panelPtr; }) != m_items.cend();
+        return std::find_if(m_items.cbegin(), m_items.cend(), [panelPtr](const Item& item) { return item.panel == panelPtr; })
+               != m_items.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -520,7 +521,8 @@ namespace tgui
         auto node = ScrollablePanel::save(renderers);
 
         if (m_selectedItem >= 0)
-            node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getSelectedItemIndex()));
+            node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(
+                String::fromNumber(getSelectedItemIndex()));
 
         node->propertyValuePairs[U"ItemsHeight"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsHeight().getValue()));
         node->propertyValuePairs[U"ItemsWidth"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getItemsWidth().getValue()));
@@ -557,7 +559,8 @@ namespace tgui
             }
             else
             {
-                throw Exception{ U"Failed to parse MaximumItems property, found unknown value '" + node->propertyValuePairs[U"MaximumItems"]->value + U"'." };
+                throw Exception{U"Failed to parse MaximumItems property, found unknown value '"
+                                + node->propertyValuePairs[U"MaximumItems"]->value + U"'."};
             }
         }
 
@@ -570,7 +573,8 @@ namespace tgui
             }
             else
             {
-                throw Exception{ U"Failed to parse SelectedItemIndex property, found unknown value '" + node->propertyValuePairs[U"SelectedItemIndex"]->value + U"'." };
+                throw Exception{U"Failed to parse SelectedItemIndex property, found unknown value '"
+                                + node->propertyValuePairs[U"SelectedItemIndex"]->value + U"'."};
             }
         }
     }
@@ -669,11 +673,13 @@ namespace tgui
         {
             if (m_selectedItem == m_hoveringItem && m_selectedItemsBackgroundColorHoverCached.isSet())
             {
-                m_items[static_cast<std::size_t>(m_hoveringItem)].panel->getRenderer()->setBackgroundColor(m_selectedItemsBackgroundColorHoverCached);
+                m_items[static_cast<std::size_t>(m_hoveringItem)].panel->getRenderer()->setBackgroundColor(
+                    m_selectedItemsBackgroundColorHoverCached);
             }
             else if (m_itemsBackgroundColorHoverCached.isSet())
             {
-                m_items[static_cast<std::size_t>(m_hoveringItem)].panel->getRenderer()->setBackgroundColor(m_itemsBackgroundColorHoverCached);
+                m_items[static_cast<std::size_t>(m_hoveringItem)].panel->getRenderer()->setBackgroundColor(
+                    m_itemsBackgroundColorHoverCached);
             }
         }
     }
@@ -695,6 +701,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,8 +42,10 @@ namespace tgui
 
     bool BackendTextureOpenGL3::loadTextureOnly(Vector2u size, const std::uint8_t* pixels, bool smooth)
     {
-        TGUI_ASSERT(isBackendSet(), "BackendTextureOpenGL3 can't be created when there is no system backend initialized (was a gui created yet?)");
-        TGUI_ASSERT(getBackend()->getRenderer(), "BackendTextureOpenGL3 can't be created when there is no backend renderer (was a gui attached to a window yet?)");
+        TGUI_ASSERT(isBackendSet(),
+                    "BackendTextureOpenGL3 can't be created when there is no system backend initialized (was a gui created yet?)");
+        TGUI_ASSERT(getBackend()->getRenderer(),
+                    "BackendTextureOpenGL3 can't be created when there is no backend renderer (was a gui attached to a window yet?)");
 
         const bool reuseTexture = ((m_textureId != 0) && (size.x == m_imageSize.x) && (size.y == m_imageSize.y) && (smooth == m_isSmooth));
 
@@ -65,7 +67,8 @@ namespace tgui
         if (reuseTexture)
         {
             if (pixels)
-                TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), GL_RGBA, GL_UNSIGNED_BYTE, pixels));
+                TGUI_GL_CHECK(
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), GL_RGBA, GL_UNSIGNED_BYTE, pixels));
         }
         else
         {
@@ -79,13 +82,15 @@ namespace tgui
             {
                 TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y)));
                 if (pixels)
-                    TGUI_GL_CHECK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), GL_RGBA, GL_UNSIGNED_BYTE, pixels));
+                    TGUI_GL_CHECK(
+                        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), GL_RGBA, GL_UNSIGNED_BYTE, pixels));
             }
             else
             {
                 TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0));
                 TGUI_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0));
-                TGUI_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
+                TGUI_GL_CHECK(
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
             }
         }
 
@@ -125,6 +130,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

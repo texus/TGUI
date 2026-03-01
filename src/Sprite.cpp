@@ -22,10 +22,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Sprite.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+
 #include <TGUI/Color.hpp>
 #include <TGUI/Optional.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Sprite.hpp>
 
 #include <cmath>
 
@@ -41,16 +42,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Sprite::Sprite(const Sprite& other) :
-        m_size       (other.m_size),
-        m_texture    (other.m_texture),
-        m_svgTexture (nullptr),
-        m_vertices   (other.m_vertices),
-        m_indices    (other.m_indices),
+        m_size(other.m_size),
+        m_texture(other.m_texture),
+        m_svgTexture(nullptr),
+        m_vertices(other.m_vertices),
+        m_indices(other.m_indices),
         m_visibleRect(other.m_visibleRect),
         m_vertexColor(other.m_vertexColor),
-        m_opacity    (other.m_opacity),
-        m_rotation   (other.m_rotation),
-        m_position   (other.m_position),
+        m_opacity(other.m_opacity),
+        m_rotation(other.m_rotation),
+        m_position(other.m_position),
         m_scalingType(other.m_scalingType)
     {
         if (m_texture.getData() && m_texture.getData()->svgImage)
@@ -60,16 +61,16 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Sprite::Sprite(Sprite&& other) noexcept :
-        m_size       (std::move(other.m_size)),
-        m_texture    (std::move(other.m_texture)),
-        m_svgTexture (std::move(other.m_svgTexture)),
-        m_vertices   (std::move(other.m_vertices)),
-        m_indices    (std::move(other.m_indices)),
+        m_size(std::move(other.m_size)),
+        m_texture(std::move(other.m_texture)),
+        m_svgTexture(std::move(other.m_svgTexture)),
+        m_vertices(std::move(other.m_vertices)),
+        m_indices(std::move(other.m_indices)),
         m_visibleRect(std::move(other.m_visibleRect)),
         m_vertexColor(std::move(other.m_vertexColor)),
-        m_opacity    (std::move(other.m_opacity)),
-        m_rotation   (std::move(other.m_rotation)),
-        m_position   (std::move(other.m_position)),
+        m_opacity(std::move(other.m_opacity)),
+        m_rotation(std::move(other.m_rotation)),
+        m_position(std::move(other.m_position)),
         m_scalingType(std::move(other.m_scalingType))
     {
         if (m_svgTexture)
@@ -102,16 +103,16 @@ namespace tgui
 
             Sprite temp(other);
 
-            std::swap(m_size,        temp.m_size);
-            std::swap(m_texture,     temp.m_texture);
-            std::swap(m_svgTexture,  temp.m_svgTexture);
-            std::swap(m_vertices,    temp.m_vertices);
-            std::swap(m_indices,     temp.m_indices);
+            std::swap(m_size, temp.m_size);
+            std::swap(m_texture, temp.m_texture);
+            std::swap(m_svgTexture, temp.m_svgTexture);
+            std::swap(m_vertices, temp.m_vertices);
+            std::swap(m_indices, temp.m_indices);
             std::swap(m_visibleRect, temp.m_visibleRect);
             std::swap(m_vertexColor, temp.m_vertexColor);
-            std::swap(m_opacity,     temp.m_opacity);
-            std::swap(m_rotation,    temp.m_rotation);
-            std::swap(m_position,    temp.m_position);
+            std::swap(m_opacity, temp.m_opacity);
+            std::swap(m_rotation, temp.m_rotation);
+            std::swap(m_position, temp.m_position);
             std::swap(m_scalingType, temp.m_scalingType);
         }
 
@@ -127,16 +128,16 @@ namespace tgui
             if (m_svgTexture)
                 getBackend()->unregisterSvgSprite(this);
 
-            m_size        = std::move(other.m_size);
-            m_texture     = std::move(other.m_texture);
-            m_svgTexture  = std::move(other.m_svgTexture);
-            m_vertices    = std::move(other.m_vertices);
-            m_indices     = std::move(other.m_indices);
+            m_size = std::move(other.m_size);
+            m_texture = std::move(other.m_texture);
+            m_svgTexture = std::move(other.m_svgTexture);
+            m_vertices = std::move(other.m_vertices);
+            m_indices = std::move(other.m_indices);
             m_visibleRect = std::move(other.m_visibleRect);
             m_vertexColor = std::move(other.m_vertexColor);
-            m_opacity     = std::move(other.m_opacity);
-            m_rotation    = std::move(other.m_rotation);
-            m_position    = std::move(other.m_position);
+            m_opacity = std::move(other.m_opacity);
+            m_rotation = std::move(other.m_rotation);
+            m_position = std::move(other.m_position);
             m_scalingType = std::move(other.m_scalingType);
 
             if (m_svgTexture)
@@ -306,8 +307,8 @@ namespace tgui
             case ScalingType::Horizontal:
             {
                 const float scaleFactor = (m_size.x >= (imageSize.x - middleRect.width) * (m_size.y / imageSize.y))
-                    ? (m_size.y / imageSize.y)
-                    : (m_size.x / (imageSize.x - middleRect.width));
+                                              ? (m_size.y / imageSize.y)
+                                              : (m_size.x / (imageSize.x - middleRect.width));
                 const float middleLeft = middleRect.left * scaleFactor;
                 const float middleRight = m_size.x - ((imageSize.x - middleRect.left - middleRect.width) * scaleFactor);
 
@@ -324,8 +325,8 @@ namespace tgui
             case ScalingType::Vertical:
             {
                 const float scaleFactor = (m_size.y >= (imageSize.y - middleRect.height) * (m_size.x / imageSize.x))
-                    ? (m_size.x / imageSize.x)
-                    : (m_size.y / (imageSize.y - middleRect.height));
+                                              ? (m_size.x / imageSize.x)
+                                              : (m_size.y / (imageSize.y - middleRect.height));
                 const float middleTop = middleRect.top * scaleFactor;
                 const float middleBottom = m_size.y - ((imageSize.y - middleRect.top - middleRect.height) * scaleFactor);
 
@@ -346,8 +347,12 @@ namespace tgui
                     scaleFactor = std::min(m_size.x / imageSize.x, m_size.y / imageSize.y);
                 else
                 {
-                    const float scaleFactorX = (m_size.x >= imageSize.x - middleRect.width) ? 1 : (m_size.x / (imageSize.x - middleRect.width));
-                    const float scaleFactorY = (m_size.y >= imageSize.y - middleRect.height) ? 1 : (m_size.y / (imageSize.y - middleRect.height));
+                    const float scaleFactorX = (m_size.x >= imageSize.x - middleRect.width)
+                                                   ? 1
+                                                   : (m_size.x / (imageSize.x - middleRect.width));
+                    const float scaleFactorY = (m_size.y >= imageSize.y - middleRect.height)
+                                                   ? 1
+                                                   : (m_size.y / (imageSize.y - middleRect.height));
                     scaleFactor = std::min(scaleFactorX, scaleFactorY);
                 }
                 const float middleLeft = middleRect.left * scaleFactor;
@@ -401,9 +406,8 @@ namespace tgui
                 getBackend()->registerSvgSprite(this);
             }
 
-            const Vector2u svgTextureSize{
-                static_cast<unsigned int>(std::round(getSize().x)),
-                static_cast<unsigned int>(std::round(getSize().y))};
+            const Vector2u svgTextureSize{static_cast<unsigned int>(std::round(getSize().x)),
+                                          static_cast<unsigned int>(std::round(getSize().y))};
 
             m_texture.getData()->svgImage->rasterize(*m_svgTexture, svgTextureSize);
 
@@ -442,10 +446,7 @@ namespace tgui
                     {{0, m_size.y}, vertexColor, {0, textureSize.y}},
                     {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
                 };
-                m_indices = {
-                    0, 2, 1,
-                    1, 2, 3
-                };
+                m_indices = {0, 2, 1, 1, 2, 3};
                 break;
             }
             case ScalingType::Horizontal:
@@ -456,8 +457,8 @@ namespace tgui
                 // 1---3-------5---7 //
                 ///////////////////////
                 const float scaleFactor = (m_size.x >= (textureSize.x - middleRect.width) * (m_size.y / textureSize.y))
-                    ? (m_size.y / textureSize.y)
-                    : (m_size.x / (textureSize.x - middleRect.width));
+                                              ? (m_size.y / textureSize.y)
+                                              : (m_size.x / (textureSize.x - middleRect.width));
                 const float middleLeft = middleRect.left * scaleFactor;
                 const float middleRight = m_size.x - ((textureSize.x - middleRect.left - middleRect.width) * scaleFactor);
                 m_vertices = {
@@ -470,14 +471,7 @@ namespace tgui
                     {{m_size.x, 0}, vertexColor, {textureSize.x, 0}},
                     {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
                 };
-                m_indices = {
-                    0, 1, 2,
-                    1, 3, 2,
-                    2, 3, 4,
-                    3, 5, 4,
-                    4, 5, 6,
-                    5, 7, 6
-                };
+                m_indices = {0, 1, 2, 1, 3, 2, 2, 3, 4, 3, 5, 4, 4, 5, 6, 5, 7, 6};
                 break;
             }
             case ScalingType::Vertical:
@@ -494,8 +488,8 @@ namespace tgui
                 // 6---7-//
                 ///////////
                 const float scaleFactor = (m_size.y >= (textureSize.y - middleRect.height) * (m_size.x / textureSize.x))
-                    ? (m_size.x / textureSize.x)
-                    : (m_size.y / (textureSize.y - middleRect.height));
+                                              ? (m_size.x / textureSize.x)
+                                              : (m_size.y / (textureSize.y - middleRect.height));
                 const float middleTop = middleRect.top * scaleFactor;
                 const float middleBottom = m_size.y - ((textureSize.y - middleRect.top - middleRect.height) * scaleFactor);
                 m_vertices = {
@@ -508,14 +502,7 @@ namespace tgui
                     {{0, m_size.y}, vertexColor, {0, textureSize.y}},
                     {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
                 };
-                m_indices = {
-                    0, 2, 1,
-                    1, 2, 3,
-                    2, 4, 3,
-                    3, 4, 5,
-                    4, 6, 5,
-                    5, 6, 7
-                };
+                m_indices = {0, 2, 1, 1, 2, 3, 2, 4, 3, 3, 4, 5, 4, 6, 5, 5, 6, 7};
                 break;
             }
             case ScalingType::NineSlice:
@@ -536,8 +523,12 @@ namespace tgui
                     scaleFactor = std::min(m_size.x / textureSize.x, m_size.y / textureSize.y);
                 else
                 {
-                    const float scaleFactorX = (m_size.x >= textureSize.x - middleRect.width) ? 1 : (m_size.x / (textureSize.x - middleRect.width));
-                    const float scaleFactorY = (m_size.y >= textureSize.y - middleRect.height) ? 1 : (m_size.y / (textureSize.y - middleRect.height));
+                    const float scaleFactorX = (m_size.x >= textureSize.x - middleRect.width)
+                                                   ? 1
+                                                   : (m_size.x / (textureSize.x - middleRect.width));
+                    const float scaleFactorY = (m_size.y >= textureSize.y - middleRect.height)
+                                                   ? 1
+                                                   : (m_size.y / (textureSize.y - middleRect.height));
                     scaleFactor = std::min(scaleFactorX, scaleFactorY);
                 }
                 const float middleLeft = middleRect.left * scaleFactor;
@@ -562,26 +553,8 @@ namespace tgui
                     {{m_size.x, middleBottom}, vertexColor, {textureSize.x, middleRect.top + middleRect.height}},
                     {{m_size.x, m_size.y}, vertexColor, {textureSize.x, textureSize.y}},
                 };
-                m_indices = {
-                    0, 2, 1,
-                    1, 2, 3,
-                    2, 4, 3,
-                    3, 4, 5,
-                    4, 6, 5,
-                    6, 7, 5,
-                    7, 8, 5,
-                    8, 9, 5,
-                    5, 9, 3,
-                    9, 10, 3,
-                    3, 10, 1,
-                    1, 10, 11,
-                    11, 10, 12,
-                    12, 10, 13,
-                    10, 13, 9,
-                    13, 9, 14,
-                    9, 8, 14,
-                    8, 15, 14
-                };
+                m_indices = {0, 2,  1, 1, 2,  3, 2, 4,  3,  3,  4,  5,  4,  6,  5,  6,  7,  5, 7,  8, 5,  8, 9, 5,  5, 9,  3,
+                             9, 10, 3, 3, 10, 1, 1, 10, 11, 11, 10, 12, 12, 10, 13, 10, 13, 9, 13, 9, 14, 9, 8, 14, 8, 15, 14};
                 break;
             }
         };
@@ -623,6 +596,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

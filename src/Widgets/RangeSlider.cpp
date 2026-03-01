@@ -280,7 +280,7 @@ namespace tgui
     {
         // Round to nearest allowed value
         if (m_step != 0)
-           value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
+            value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
 
         // When the value is below the minimum or above the maximum then adjust it
         if (value < m_minimum)
@@ -314,7 +314,7 @@ namespace tgui
     {
         // Round to nearest allowed value
         if (m_step != 0)
-           value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
+            value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
 
         // When the value is below the minimum or above the maximum then adjust it
         if (value < m_minimum)
@@ -369,19 +369,22 @@ namespace tgui
         // Check if the mouse is on top of the thumbs
         if (FloatRect(m_thumbs.second.left, m_thumbs.second.top, m_thumbs.second.width, m_thumbs.second.height).contains(pos))
         {
-            if (!m_transparentTextureCached || !m_spriteThumb.isSet() || !m_spriteThumb.isTransparentPixel(pos - m_thumbs.first.getPosition()))
+            if (!m_transparentTextureCached || !m_spriteThumb.isSet()
+                || !m_spriteThumb.isTransparentPixel(pos - m_thumbs.first.getPosition()))
                 return true;
         }
         if (FloatRect(m_thumbs.first.left, m_thumbs.first.top, m_thumbs.first.width, m_thumbs.first.height).contains(pos))
         {
-            if (!m_transparentTextureCached || !m_spriteThumb.isSet() || !m_spriteThumb.isTransparentPixel(pos - m_thumbs.second.getPosition()))
+            if (!m_transparentTextureCached || !m_spriteThumb.isSet()
+                || !m_spriteThumb.isTransparentPixel(pos - m_thumbs.second.getPosition()))
                 return true;
         }
 
         // Check if the mouse is on top of the track
         if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
         {
-            if (!m_transparentTextureCached || !m_spriteTrack.isSet() || !m_spriteTrack.isTransparentPixel(pos - m_bordersCached.getOffset()))
+            if (!m_transparentTextureCached || !m_spriteTrack.isSet()
+                || !m_spriteTrack.isTransparentPixel(pos - m_bordersCached.getOffset()))
                 return true;
         }
 
@@ -425,50 +428,62 @@ namespace tgui
             {
                 if (m_mouseDownOnThumb == 1)
                 {
-                    setSelectionStart(m_maximum - (((pos.y + (m_thumbs.first.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)));
+                    setSelectionStart(
+                        m_maximum
+                        - (((pos.y + (m_thumbs.first.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)));
 
                     // Set the thumb position for smooth scrolling
                     const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
                     if ((thumbTop + (m_thumbs.first.height / 2.0f) > 0) && (thumbTop + (m_thumbs.first.height / 2.0f) < getSize().y))
                         m_thumbs.first.top = thumbTop;
                     else
-                        m_thumbs.first.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_selectionStart)) - (m_thumbs.first.height / 2.0f);
+                        m_thumbs.first.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_selectionStart))
+                                             - (m_thumbs.first.height / 2.0f);
                 }
                 else // if (m_mouseDownOnThumb == 2)
                 {
-                    setSelectionEnd(m_maximum - (((pos.y + (m_thumbs.second.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum)));
+                    setSelectionEnd(m_maximum
+                                    - (((pos.y + (m_thumbs.second.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y)
+                                       * (m_maximum - m_minimum)));
 
                     // Set the thumb position for smooth scrolling
                     const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
                     if ((thumbTop + (m_thumbs.second.height / 2.0f) > 0) && (thumbTop + (m_thumbs.second.height / 2.0f) < getSize().y))
                         m_thumbs.second.top = thumbTop;
                     else
-                        m_thumbs.second.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_selectionEnd)) - (m_thumbs.second.height / 2.0f);
+                        m_thumbs.second.top = (getSize().y / (m_maximum - m_minimum) * (m_maximum - m_selectionEnd))
+                                              - (m_thumbs.second.height / 2.0f);
                 }
             }
             else // the slider lies horizontal
             {
                 if (m_mouseDownOnThumb == 1)
                 {
-                    setSelectionStart((((pos.x + (m_thumbs.first.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum);
+                    setSelectionStart(
+                        (((pos.x + (m_thumbs.first.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum))
+                        + m_minimum);
 
                     // Set the thumb position for smooth scrolling
                     const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
                     if ((thumbLeft + (m_thumbs.first.width / 2.0f) > 0) && (thumbLeft + (m_thumbs.first.width / 2.0f) < getSize().x))
                         m_thumbs.first.left = thumbLeft;
                     else
-                        m_thumbs.first.left = (getSize().x / (m_maximum - m_minimum) * (m_selectionStart - m_minimum)) - (m_thumbs.first.width / 2.0f);
+                        m_thumbs.first.left = (getSize().x / (m_maximum - m_minimum) * (m_selectionStart - m_minimum))
+                                              - (m_thumbs.first.width / 2.0f);
                 }
                 else // if (m_mouseDownOnThumb == 2)
                 {
-                    setSelectionEnd((((pos.x + (m_thumbs.second.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum);
+                    setSelectionEnd(
+                        (((pos.x + (m_thumbs.second.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum))
+                        + m_minimum);
 
                     // Set the thumb position for smooth scrolling
                     const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
                     if ((thumbLeft + (m_thumbs.second.width / 2.0f) > 0) && (thumbLeft + (m_thumbs.second.width / 2.0f) < getSize().x))
                         m_thumbs.second.left = thumbLeft;
                     else
-                        m_thumbs.second.left = (getSize().x / (m_maximum - m_minimum) * (m_selectionEnd - m_minimum)) - (m_thumbs.second.width / 2.0f);
+                        m_thumbs.second.left = (getSize().x / (m_maximum - m_minimum) * (m_selectionEnd - m_minimum))
+                                               - (m_thumbs.second.width / 2.0f);
                 }
             }
         }
@@ -672,16 +687,26 @@ namespace tgui
             if (m_imageOrientation == m_orientation)
             {
                 if (m_orientation == Orientation::Vertical)
-                    m_spriteSelectedTrack.setVisibleRect({0, m_thumbs.second.top + (m_thumbs.first.height / 2.0f), innerSize.x, m_thumbs.first.top - m_thumbs.second.top});
+                    m_spriteSelectedTrack.setVisibleRect(
+                        {0, m_thumbs.second.top + (m_thumbs.first.height / 2.0f), innerSize.x, m_thumbs.first.top - m_thumbs.second.top});
                 else
-                    m_spriteSelectedTrack.setVisibleRect({m_thumbs.first.left + (m_thumbs.first.width / 2.0f), 0, m_thumbs.second.left - m_thumbs.first.left, innerSize.y});
+                    m_spriteSelectedTrack.setVisibleRect(
+                        {m_thumbs.first.left + (m_thumbs.first.width / 2.0f), 0, m_thumbs.second.left - m_thumbs.first.left, innerSize.y});
             }
             else // Image is rotated
             {
                 if (m_orientation == Orientation::Vertical)
-                    m_spriteSelectedTrack.setVisibleRect({innerSize.y - m_thumbs.second.top - (m_thumbs.second.height / 2.0f), 0, m_thumbs.second.top - m_thumbs.first.top, innerSize.x});
+                    m_spriteSelectedTrack.setVisibleRect(
+                        {innerSize.y - m_thumbs.second.top - (m_thumbs.second.height / 2.0f),
+                         0,
+                         m_thumbs.second.top - m_thumbs.first.top,
+                         innerSize.x});
                 else
-                    m_spriteSelectedTrack.setVisibleRect({innerSize.y, m_thumbs.first.left + (m_thumbs.first.width / 2.0f), -innerSize.y, m_thumbs.second.left - m_thumbs.first.left});
+                    m_spriteSelectedTrack.setVisibleRect(
+                        {innerSize.y,
+                         m_thumbs.first.left + (m_thumbs.first.width / 2.0f),
+                         -innerSize.y,
+                         m_thumbs.second.left - m_thumbs.first.left});
             }
 
             if (m_spriteSelectedTrackHover.isSet())
@@ -770,15 +795,21 @@ namespace tgui
                 {
                     // Draw the borders around the thumb
                     if (m_mouseHover && m_borderColorHoverCached.isSet())
-                        target.drawBorders(states, m_bordersCached, {m_thumbs.first.width, m_thumbs.first.height}, Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
+                        target.drawBorders(states,
+                                           m_bordersCached,
+                                           {m_thumbs.first.width, m_thumbs.first.height},
+                                           Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
                     else
-                        target.drawBorders(states, m_bordersCached, {m_thumbs.first.width, m_thumbs.first.height}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                        target.drawBorders(states,
+                                           m_bordersCached,
+                                           {m_thumbs.first.width, m_thumbs.first.height},
+                                           Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
                     states.transform.translate(m_bordersCached.getOffset());
                 }
 
                 const Vector2f thumbInnerSize = {m_thumbs.first.width - m_bordersCached.getLeftPlusRight(),
-                                                     m_thumbs.first.height - m_bordersCached.getTopPlusBottom()};
+                                                 m_thumbs.first.height - m_bordersCached.getTopPlusBottom()};
 
                 if (m_mouseHover && m_thumbColorHoverCached.isSet())
                     target.drawFilledRect(states, thumbInnerSize, Color::applyOpacity(m_thumbColorHoverCached, m_opacityCached));
@@ -791,7 +822,8 @@ namespace tgui
 
         // Draw the second thumb
         {
-            states.transform.translate({-m_bordersCached.getLeft() + m_thumbs.second.left, -m_bordersCached.getTop() + m_thumbs.second.top});
+            states.transform.translate(
+                {-m_bordersCached.getLeft() + m_thumbs.second.left, -m_bordersCached.getTop() + m_thumbs.second.top});
 
             // Draw the thumb
             if (m_spriteThumb.isSet())
@@ -807,9 +839,15 @@ namespace tgui
                 {
                     // Draw the borders around the thumb
                     if (m_mouseHover && m_borderColorHoverCached.isSet())
-                        target.drawBorders(states, m_bordersCached, {m_thumbs.second.width, m_thumbs.second.height}, Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
+                        target.drawBorders(states,
+                                           m_bordersCached,
+                                           {m_thumbs.second.width, m_thumbs.second.height},
+                                           Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
                     else
-                        target.drawBorders(states, m_bordersCached, {m_thumbs.second.width, m_thumbs.second.height}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                        target.drawBorders(states,
+                                           m_bordersCached,
+                                           {m_thumbs.second.width, m_thumbs.second.height},
+                                           Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
                     states.transform.translate(m_bordersCached.getOffset());
                 }
@@ -833,6 +871,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

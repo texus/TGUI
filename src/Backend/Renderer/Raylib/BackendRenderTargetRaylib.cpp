@@ -22,15 +22,16 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Renderer/Raylib/BackendRenderTargetRaylib.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
+#include <TGUI/Backend/Renderer/Raylib/BackendRenderTargetRaylib.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
+
 #include <TGUI/Container.hpp>
 
-#include <numeric>
-#include <cmath>
-
 #include <rlgl.h>
+
+#include <cmath>
+#include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,7 +78,10 @@ namespace tgui
 
         rlDisableBackfaceCulling();
         BeginBlendMode(BLEND_ALPHA);
-        BeginScissorMode(static_cast<int>(m_viewport.left), static_cast<int>(m_viewport.top), static_cast<int>(m_viewport.width), static_cast<int>(m_viewport.height));
+        BeginScissorMode(static_cast<int>(m_viewport.left),
+                         static_cast<int>(m_viewport.top),
+                         static_cast<int>(m_viewport.width),
+                         static_cast<int>(m_viewport.height));
 
         m_pixelsPerPoint = {m_viewport.width / m_viewRect.width, m_viewport.height / m_viewRect.height};
 
@@ -92,8 +96,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetRaylib::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+    void BackendRenderTargetRaylib::drawVertexArray(
+        const RenderStates& states,
+        const Vertex* vertices,
+        std::size_t vertexCount,
+        const unsigned int* indices,
+        std::size_t indexCount,
+        const std::shared_ptr<BackendTexture>& texture)
     {
         if (vertexCount == 0)
             return;
@@ -151,16 +160,28 @@ namespace tgui
 
         const Transform finalTransform = m_projectionTransform * states.transform;
         const float* transformValues = finalTransform.getMatrix().data();
-        Matrix convertedTransform = {
-            transformValues[0], transformValues[4], transformValues[8], transformValues[12],
-            transformValues[1], transformValues[5], transformValues[9], transformValues[13],
-            transformValues[2], transformValues[6], transformValues[10], transformValues[14],
-            transformValues[3], transformValues[7], transformValues[11], transformValues[15]
-        };
+        Matrix convertedTransform =
+            {transformValues[0],
+             transformValues[4],
+             transformValues[8],
+             transformValues[12],
+             transformValues[1],
+             transformValues[5],
+             transformValues[9],
+             transformValues[13],
+             transformValues[2],
+             transformValues[6],
+             transformValues[10],
+             transformValues[14],
+             transformValues[3],
+             transformValues[7],
+             transformValues[11],
+             transformValues[15]};
 
         if (texture)
         {
-            TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureRaylib>(texture), "BackendRenderTargetRaylib requires textures of type BackendTextureRaylib");
+            TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureRaylib>(texture),
+                        "BackendRenderTargetRaylib requires textures of type BackendTextureRaylib");
             const Texture2D& textureRaylib = std::static_pointer_cast<BackendTextureRaylib>(texture)->getInternalTexture();
 
             SetMaterialTexture(&m_material, MATERIAL_MAP_DIFFUSE, textureRaylib);
@@ -185,8 +206,10 @@ namespace tgui
         {
             m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
 
-            BeginScissorMode(static_cast<int>(std::lround(clipViewport.left)), static_cast<int>(std::lround(clipViewport.top)),
-                             static_cast<int>(std::lround(clipViewport.width)), static_cast<int>(std::lround(clipViewport.height)));
+            BeginScissorMode(static_cast<int>(std::lround(clipViewport.left)),
+                             static_cast<int>(std::lround(clipViewport.top)),
+                             static_cast<int>(std::lround(clipViewport.width)),
+                             static_cast<int>(std::lround(clipViewport.height)));
         }
         else // Clip the entire window
         {
@@ -197,6 +220,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

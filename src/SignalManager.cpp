@@ -32,7 +32,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SignalManager::setDefaultSignalManager(const SignalManager::Ptr &manager)
+    void SignalManager::setDefaultSignalManager(const SignalManager::Ptr& manager)
     {
         m_manager = manager;
     }
@@ -76,7 +76,7 @@ namespace tgui
 
     void SignalManager::disconnectAll()
     {
-        for (auto &signalTuple : m_connectedSignals)
+        for (auto& signalTuple : m_connectedSignals)
         {
             if (auto widget = signalTuple.widget.lock())
                 widget->getSignal(m_signals[signalTuple.signalId].signalName).disconnect(signalTuple.signalWidgetID);
@@ -88,11 +88,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SignalManager::add(const Widget::Ptr &widgetPtr)
+    void SignalManager::add(const Widget::Ptr& widgetPtr)
     {
         m_widgets.emplace_back(widgetPtr);
 
-        for (auto &it : m_signals)
+        for (auto& it : m_signals)
         {
             if (it.second.widgetName == widgetPtr->getWidgetName())
             {
@@ -109,7 +109,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void SignalManager::remove(Widget *widget)
+    void SignalManager::remove(Widget* widget)
     {
         for (auto it = m_widgets.begin(); it != m_widgets.end();)
         {
@@ -128,7 +128,7 @@ namespace tgui
             {
                 it = m_connectedSignals.erase(it);
             }
-            else if(it->widget.lock().get() == widget)
+            else if (it->widget.lock().get() == widget)
             {
                 widget->getSignal(m_signals[it->signalId].signalName).disconnect(it->signalWidgetID);
                 it = m_connectedSignals.erase(it);
@@ -144,10 +144,12 @@ namespace tgui
     {
         auto signalIt = m_signals.find(sid);
         if (signalIt == m_signals.end())
-        { return; }
-        auto &handle = signalIt->second;
+        {
+            return;
+        }
+        auto& handle = signalIt->second;
 
-        for (auto &it : m_widgets)
+        for (auto& it : m_widgets)
         {
             auto widget = it.lock();
             if (!widget)
@@ -168,16 +170,14 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::pair<SignalManager::Delegate, SignalManager::DelegateEx>
-    SignalManager::makeSignal(const SignalManager::Delegate &handle)
+    std::pair<SignalManager::Delegate, SignalManager::DelegateEx> SignalManager::makeSignal(const SignalManager::Delegate& handle)
     {
         return std::make_pair(handle, SignalManager::DelegateEx{});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    std::pair<SignalManager::Delegate, SignalManager::DelegateEx>
-    SignalManager::makeSignalEx(const SignalManager::DelegateEx &handle)
+    std::pair<SignalManager::Delegate, SignalManager::DelegateEx> SignalManager::makeSignalEx(const SignalManager::DelegateEx& handle)
     {
         return std::make_pair(SignalManager::Delegate{}, handle);
     }
@@ -190,7 +190,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-

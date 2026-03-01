@@ -25,9 +25,9 @@
 #ifndef TGUI_CHAT_BOX_HPP
 #define TGUI_CHAT_BOX_HPP
 
-#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ChatBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 
 #include <deque>
 
@@ -40,8 +40,7 @@ namespace tgui
     class TGUI_API ChatBox : public Widget, public ScrollbarChildInterface
     {
     public:
-
-        using Ptr = std::shared_ptr<ChatBox>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<ChatBox>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ChatBox>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ChatBox"; //!< Type name of the widget
@@ -330,8 +329,8 @@ namespace tgui
         void leftMouseButtonNoLongerDown() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Recalculates the text attribute of the line
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,8 +357,8 @@ namespace tgui
         void updateRendering();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
         ///
@@ -401,8 +400,8 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         Color m_textColor = Color::Black;
         TextStyles m_textStyle = Regular;
 
@@ -420,14 +419,14 @@ namespace tgui
         // Cached renderer properties
         Borders m_bordersCached;
         Padding m_paddingCached;
-        Color   m_backgroundColorCached;
-        Color   m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_borderColorCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

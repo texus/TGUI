@@ -25,8 +25,8 @@
 #ifndef TGUI_BACKEND_RENDER_TARGET_RAYLIB_HPP
 #define TGUI_BACKEND_RENDER_TARGET_RAYLIB_HPP
 
-#include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,7 +39,6 @@ namespace tgui
     class TGUI_API BackendRenderTargetRaylib : public BackendRenderTarget
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Destructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,12 +85,16 @@ namespace tgui
         /// @param indexCount   Amount of elements in the indices array
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                             const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
+        void drawVertexArray(const RenderStates& states,
+                             const Vertex* vertices,
+                             std::size_t vertexCount,
+                             const unsigned int* indices,
+                             std::size_t indexCount,
+                             const std::shared_ptr<BackendTexture>& texture) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called from addClippingLayer and removeClippingLayer to apply the clipping
         ///
@@ -103,8 +106,8 @@ namespace tgui
         void updateClipping(FloatRect clipRect, FloatRect clipViewport) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         Color m_clearColor;
         Transform m_projectionTransform;
         Material m_material = LoadMaterialDefault();
@@ -112,7 +115,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

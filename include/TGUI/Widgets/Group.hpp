@@ -41,8 +41,7 @@ namespace tgui
     class TGUI_API Group : public Container
     {
     public:
-
-        using Ptr = std::shared_ptr<Group>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Group>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Group>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "Group"; //!< Type name of the widget
@@ -126,8 +125,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -141,8 +140,8 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         // Cached renderer properties
         Padding m_paddingCached;
 
@@ -150,7 +149,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

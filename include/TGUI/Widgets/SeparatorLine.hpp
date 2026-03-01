@@ -25,8 +25,8 @@
 #ifndef TGUI_SEPARATOR_LINE_HPP
 #define TGUI_SEPARATOR_LINE_HPP
 
-#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Renderers/SeparatorLineRenderer.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,8 +46,7 @@ namespace tgui
     class TGUI_API SeparatorLine : public ClickableWidget
     {
     public:
-
-        using Ptr = std::shared_ptr<SeparatorLine>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<SeparatorLine>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const SeparatorLine>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "SeparatorLine"; //!< Type name of the widget
@@ -100,8 +99,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -115,8 +114,8 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         // Cached renderer properties
         Color m_colorCached = Color::Black;
 
@@ -124,7 +123,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

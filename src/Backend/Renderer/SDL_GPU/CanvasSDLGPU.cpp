@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp>
 #include <TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp>
+#include <TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,8 @@ namespace tgui
     CanvasSDLGPU::CanvasSDLGPU(const char* typeName, bool initRenderer) :
         CanvasBase{typeName, initRenderer}
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer()),
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                        && std::dynamic_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer()),
                     "CanvasSDLGPU can only be created when using the SDL_GPU backend renderer");
 
         SDL_GPUDevice* sdlDevice = std::static_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer())->getInternalDevice();
@@ -52,7 +53,8 @@ namespace tgui
     CanvasSDLGPU::CanvasSDLGPU(const CanvasSDLGPU& other) :
         CanvasBase{other}
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer()),
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                        && std::dynamic_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer()),
                     "CanvasSDLGPU can only be used when using the SDL_GPU backend renderer");
 
         SDL_GPUDevice* sdlDevice = std::static_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer())->getInternalDevice();
@@ -64,7 +66,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSDLGPU& CanvasSDLGPU::operator= (const CanvasSDLGPU& right)
+    CanvasSDLGPU& CanvasSDLGPU::operator=(const CanvasSDLGPU& right)
     {
         if (this != &right)
         {
@@ -107,8 +109,9 @@ namespace tgui
             const Vector2u newTextureSize{newSize};
             if ((m_textureSize.x != newTextureSize.x) || (m_textureSize.y != newTextureSize.y))
             {
-                TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer()),
-                    "CanvasSDLGPU can only be used when using the SDL_GPU backend renderer");
+                TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                                && std::dynamic_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer()),
+                            "CanvasSDLGPU can only be used when using the SDL_GPU backend renderer");
                 const auto backendRenderer = std::static_pointer_cast<BackendRendererSDLGPU>(getBackend()->getRenderer());
                 const SDL_GPUTextureFormat swapchainTextureFormat = backendRenderer->getSwapchainTextureFormat();
                 SDL_GPUDevice* device = backendRenderer->getInternalDevice();
@@ -149,10 +152,7 @@ namespace tgui
             {{0, size.y}, vertexColor, {0, 1}},
             {{size.x, size.y}, vertexColor, {1, 1}},
         }};
-        const std::array<unsigned int, 6> indices = {{
-            0, 2, 1,
-            1, 2, 3
-        }};
+        const std::array<unsigned int, 6> indices = {{0, 2, 1, 1, 2, 3}};
         target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), m_backendTexture);
     }
 
@@ -164,6 +164,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

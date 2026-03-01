@@ -39,8 +39,8 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/EditBoxSlider.hpp>
 #include <TGUI/Widgets/FileDialog.hpp>
-#include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Widgets/Grid.hpp>
+#include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Widgets/GrowHorizontalLayout.hpp>
 #include <TGUI/Widgets/GrowVerticalLayout.hpp>
 #include <TGUI/Widgets/HorizontalLayout.hpp>
@@ -51,8 +51,8 @@
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Widgets/MessageBox.hpp>
-#include <TGUI/Widgets/PanelListBox.hpp>
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/PanelListBox.hpp>
 #include <TGUI/Widgets/Picture.hpp>
 #include <TGUI/Widgets/ProgressBar.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
@@ -66,8 +66,8 @@
 #include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/SpinControl.hpp>
 #include <TGUI/Widgets/SplitContainer.hpp>
-#include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TabContainer.hpp>
+#include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/TextArea.hpp>
 #include <TGUI/Widgets/ToggleButton.hpp>
 #include <TGUI/Widgets/TreeView.hpp>

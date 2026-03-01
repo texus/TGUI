@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/SDL-GPU.hpp>
-
 #include <TGUI/extlibs/IncludeSDL.hpp>
+
+#include <TGUI/Backend/SDL-GPU.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -101,7 +101,10 @@ namespace tgui
 
                 SDL_GPUColorTargetInfo colorTargetInfo = {};
                 colorTargetInfo.texture = swapchainTexture;
-                colorTargetInfo.clear_color = {clearColor.getRed() / 255.f, clearColor.getGreen() / 255.f, clearColor.getBlue() / 255.f, clearColor.getAlpha() / 255.f};
+                colorTargetInfo.clear_color = {clearColor.getRed() / 255.f,
+                                               clearColor.getGreen() / 255.f,
+                                               clearColor.getBlue() / 255.f,
+                                               clearColor.getAlpha() / 255.f};
                 colorTargetInfo.load_op = SDL_GPU_LOADOP_CLEAR;
                 colorTargetInfo.store_op = SDL_GPU_STOREOP_STORE;
 
@@ -114,9 +117,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
+    } // namespace SDL_GPU
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

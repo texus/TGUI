@@ -62,7 +62,6 @@ namespace tgui
 #endif
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the color with its alpha channel multiplied with the alpha parameter
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +71,6 @@ namespace tgui
         }
 
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object without a color
         ///
@@ -80,9 +78,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         constexpr Color() :
             m_isSet{false},
-            m_red  {0},
+            m_red{0},
             m_green{0},
-            m_blue {0},
+            m_blue{0},
             m_alpha{0}
         {
         }
@@ -95,9 +93,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         constexpr Color(const sf::Color& color) :
             m_isSet{true},
-            m_red  {color.r},
+            m_red{color.r},
             m_green{color.g},
-            m_blue {color.b},
+            m_blue{color.b},
             m_alpha{color.a}
         {
         }
@@ -113,16 +111,16 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         constexpr Color(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha = 255) :
             m_isSet{true},
-            m_red  {red},
+            m_red{red},
             m_green{green},
-            m_blue {blue},
+            m_blue{blue},
             m_alpha{alpha}
         {
         }
 
-#if defined (_MSC_VER)
-#   pragma warning(push)
-#   pragma warning(disable: 26495) // Ignore "Variable is uninitialized" warning to surpress incorrect code analysis
+#if defined(_MSC_VER)
+    #pragma warning(push)
+    #pragma warning(disable : 26495) // Ignore "Variable is uninitialized" warning to surpress incorrect code analysis
 #endif
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object from a string
@@ -135,8 +133,8 @@ namespace tgui
             Color{priv::constructColorFromString(string)}
         {
         }
-#if defined (_MSC_VER)
-#   pragma warning(pop)
+#if defined(_MSC_VER)
+    #pragma warning(pop)
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,11 +226,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD constexpr bool operator==(const Color& rhs) const
         {
-            return (m_isSet == rhs.m_isSet)
-                && (m_red == rhs.m_red)
-                && (m_green == rhs.m_green)
-                && (m_blue == rhs.m_blue)
-                && (m_alpha == rhs.m_alpha);
+            return (m_isSet == rhs.m_isSet) && (m_red == rhs.m_red) && (m_green == rhs.m_green) && (m_blue == rhs.m_blue)
+                   && (m_alpha == rhs.m_alpha);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,8 +239,8 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         static const Color Black;       //!< Black predefined color
         static const Color White;       //!< White predefined color
         static const Color Red;         //!< Red predefined color
@@ -259,8 +254,8 @@ namespace tgui
         static const std::array<std::pair<StringView, Color>, 9> colorNamesMap;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         bool m_isSet = false;
         std::uint8_t m_red = 0;
         std::uint8_t m_green = 0;
@@ -271,18 +266,17 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    inline constexpr Color Color::Black      {  0,   0,   0};
-    inline constexpr Color Color::White      {255, 255, 255};
-    inline constexpr Color Color::Red        {255,   0,   0};
-    inline constexpr Color Color::Green      {  0, 255,   0};
-    inline constexpr Color Color::Blue       {  0,   0, 255};
-    inline constexpr Color Color::Yellow     {255, 255,   0};
-    inline constexpr Color Color::Magenta    {255,   0, 255};
-    inline constexpr Color Color::Cyan       {  0, 255, 255};
-    inline constexpr Color Color::Transparent{  0,   0,   0,   0};
+    inline constexpr Color Color::Black{0, 0, 0};
+    inline constexpr Color Color::White{255, 255, 255};
+    inline constexpr Color Color::Red{255, 0, 0};
+    inline constexpr Color Color::Green{0, 255, 0};
+    inline constexpr Color Color::Blue{0, 0, 255};
+    inline constexpr Color Color::Yellow{255, 255, 0};
+    inline constexpr Color Color::Magenta{255, 0, 255};
+    inline constexpr Color Color::Cyan{0, 255, 255};
+    inline constexpr Color Color::Transparent{0, 0, 0, 0};
 
-    inline constexpr std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap
-    {
+    inline constexpr std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap{
         {{U"black"sv, Color::Black},
          {U"white"sv, Color::White},
          {U"red"sv, Color::Red},
@@ -291,11 +285,10 @@ namespace tgui
          {U"cyan"sv, Color::Cyan},
          {U"blue"sv, Color::Blue},
          {U"magenta"sv, Color::Magenta},
-         {U"transparent"sv, Color::Transparent}}
-    };
+         {U"transparent"sv, Color::Transparent}}};
 #endif
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     namespace priv
     {
@@ -314,8 +307,8 @@ namespace tgui
         /// to be defined as "inline constexpr".
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD TGUI_API Color constructColorFromString(const String& string);
-    }
-}
+    } // namespace priv
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

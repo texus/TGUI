@@ -22,9 +22,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/ContextMenu.hpp>
-#include <TGUI/Container.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+
+#include <TGUI/Container.hpp>
+#include <TGUI/Widgets/ContextMenu.hpp>
 
 #include <cmath>
 
@@ -430,8 +431,10 @@ namespace tgui
         m_menu.selectedMenuItem = -1;
 
         // Remove the 'menu' nodes as they have been processed
-        node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-            [](const std::unique_ptr<DataIO::Node>& child){ return child->name == U"Menu"; }), node->children.end());
+        node->children.erase(std::remove_if(node->children.begin(),
+                                            node->children.end(),
+                                            [](const std::unique_ptr<DataIO::Node>& child) { return child->name == U"Menu"; }),
+                             node->children.end());
 
         if (node->propertyValuePairs[U"MinimumMenuWidth"])
             setMinimumMenuWidth(node->propertyValuePairs[U"MinimumMenuWidth"]->value.toFloat());
@@ -526,6 +529,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

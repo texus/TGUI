@@ -22,11 +22,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Window/BackendGui.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-#include <TGUI/ToolTip.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+#include <TGUI/Backend/Window/BackendGui.hpp>
+
 #include <TGUI/Timer.hpp>
+#include <TGUI/ToolTip.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -120,7 +121,9 @@ namespace tgui
                 // Detect scrolling with two fingers by examining touch events
                 if (event.type == Event::Type::FingerDown)
                 {
-                    m_twoFingerScroll.reportFingerDown(event.touch.fingerId, static_cast<float>(event.touch.x), static_cast<float>(event.touch.y));
+                    m_twoFingerScroll.reportFingerDown(event.touch.fingerId,
+                                                       static_cast<float>(event.touch.x),
+                                                       static_cast<float>(event.touch.y));
 
                     // If a new finger goes down then we will track it instead of the first finger.
                     // Since the first finger may have already put a widget into a down state, we tell the widgets that
@@ -153,7 +156,9 @@ namespace tgui
                 else if (event.type == Event::Type::FingerMoved)
                 {
                     const bool wasScrolling = m_twoFingerScroll.isScrolling();
-                    m_twoFingerScroll.reportFingerMotion(event.touch.fingerId, static_cast<float>(event.touch.x), static_cast<float>(event.touch.y));
+                    m_twoFingerScroll.reportFingerMotion(event.touch.fingerId,
+                                                         static_cast<float>(event.touch.x),
+                                                         static_cast<float>(event.touch.y));
                     if (m_twoFingerScroll.isScrolling())
                     {
                         // Once we start scrolling we will no longer consider the simulated mouse as down.
@@ -183,7 +188,8 @@ namespace tgui
                     m_lastMousePos = {event.mouseWheel.x, event.mouseWheel.y};
                     mouseCoords = mapPixelToCoords({event.mouseWheel.x, event.mouseWheel.y});
                 }
-                else if ((event.type == Event::Type::FingerUp) || (event.type == Event::Type::FingerDown) || (event.type == Event::Type::FingerMoved))
+                else if ((event.type == Event::Type::FingerUp) || (event.type == Event::Type::FingerDown)
+                         || (event.type == Event::Type::FingerMoved))
                 {
                     m_lastMousePos = {event.touch.x, event.touch.y};
                     mouseCoords = mapPixelToCoords({event.touch.x, event.touch.y});
@@ -342,9 +348,9 @@ namespace tgui
 
     Font BackendGui::getFont() const
     {
-       if (m_container->getInheritedFont())
-          return m_container->getInheritedFont();
-       return Font::getGlobalFont();
+        if (m_container->getInheritedFont())
+            return m_container->getInheritedFont();
+        return Font::getGlobalFont();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -677,7 +683,8 @@ namespace tgui
 
     bool BackendGui::handleTwoFingerScroll(bool wasAlreadyScrolling)
     {
-        TGUI_ASSERT(m_twoFingerScroll.isScrolling(), "m_twoFingerScroll.isScrolling() must return true when BackendGui::handleTwoFingerScroll is called");
+        TGUI_ASSERT(m_twoFingerScroll.isScrolling(),
+                    "m_twoFingerScroll.isScrolling() must return true when BackendGui::handleTwoFingerScroll is called");
 
         if (!wasAlreadyScrolling)
         {
@@ -715,7 +722,9 @@ namespace tgui
 
         // If a render target was created already then inform it about the size change
         if (m_backendRenderTarget)
-            m_backendRenderTarget->setView(m_view.getRect(), m_viewport.getRect(), {static_cast<float>(m_framebufferSize.x), static_cast<float>(m_framebufferSize.y)});
+            m_backendRenderTarget->setView(m_view.getRect(),
+                                           m_viewport.getRect(),
+                                           {static_cast<float>(m_framebufferSize.x), static_cast<float>(m_framebufferSize.y)});
 
         m_container->setSize(Vector2f{m_view.getWidth(), m_view.getHeight()});
 
@@ -750,9 +759,9 @@ namespace tgui
 
     bool BackendGui::isKeyboardModifierPressed(Event::KeyModifier modifierKey) const
     {
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
+        TGUI_IGNORE_DEPRECATED_WARNINGS_START
         return getBackend()->isKeyboardModifierPressed(modifierKey);
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
+        TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -775,30 +784,30 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     {
         switch (key)
         {
-        case Event::KeyboardKey::Numpad0:
-            return Event::KeyboardKey::Insert;
-        case Event::KeyboardKey::Numpad1:
-            return Event::KeyboardKey::End;
-        case Event::KeyboardKey::Numpad2:
-            return Event::KeyboardKey::Down;
-        case Event::KeyboardKey::Numpad3:
-            return Event::KeyboardKey::PageDown;
-        case Event::KeyboardKey::Numpad4:
-            return Event::KeyboardKey::Left;
-        case Event::KeyboardKey::Numpad6:
-            return Event::KeyboardKey::Right;
-        case Event::KeyboardKey::Numpad7:
-            return Event::KeyboardKey::Home;
-        case Event::KeyboardKey::Numpad8:
-            return Event::KeyboardKey::Up;
-        case Event::KeyboardKey::Numpad9:
-            return Event::KeyboardKey::PageUp;
-        default: // Event::KeyboardKey::Numpad5
-            return Event::KeyboardKey::Unknown; // Let's ignore this key press
+            case Event::KeyboardKey::Numpad0:
+                return Event::KeyboardKey::Insert;
+            case Event::KeyboardKey::Numpad1:
+                return Event::KeyboardKey::End;
+            case Event::KeyboardKey::Numpad2:
+                return Event::KeyboardKey::Down;
+            case Event::KeyboardKey::Numpad3:
+                return Event::KeyboardKey::PageDown;
+            case Event::KeyboardKey::Numpad4:
+                return Event::KeyboardKey::Left;
+            case Event::KeyboardKey::Numpad6:
+                return Event::KeyboardKey::Right;
+            case Event::KeyboardKey::Numpad7:
+                return Event::KeyboardKey::Home;
+            case Event::KeyboardKey::Numpad8:
+                return Event::KeyboardKey::Up;
+            case Event::KeyboardKey::Numpad9:
+                return Event::KeyboardKey::PageUp;
+            default:                                // Event::KeyboardKey::Numpad5
+                return Event::KeyboardKey::Unknown; // Let's ignore this key press
         };
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

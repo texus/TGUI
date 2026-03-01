@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,8 @@ namespace tgui
     CanvasSDL::CanvasSDL(const char* typeName, bool initRenderer) :
         CanvasBase{typeName, initRenderer}
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                        && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
                     "CanvasSDL can only be created when using the SDL_Renderer backend renderer");
 
         SDL_Renderer* sdlRenderer = std::static_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer())->getInternalRenderer();
@@ -51,7 +52,8 @@ namespace tgui
     CanvasSDL::CanvasSDL(const CanvasSDL& other) :
         CanvasBase{other}
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                        && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
                     "CanvasSDL can only be used when using the SDL_Renderer backend renderer");
 
         SDL_Renderer* sdlRenderer = std::static_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer())->getInternalRenderer();
@@ -62,7 +64,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasSDL& CanvasSDL::operator= (const CanvasSDL& right)
+    CanvasSDL& CanvasSDL::operator=(const CanvasSDL& right)
     {
         if (this != &right)
         {
@@ -104,12 +106,16 @@ namespace tgui
             const Vector2u newTextureSize{newSize};
             if ((m_textureSize.x < newTextureSize.x) || (m_textureSize.y < newTextureSize.y))
             {
-                TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
-                    "CanvasSDL can only be used when using the SDL_Renderer backend renderer");
+                TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                                && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
+                            "CanvasSDL can only be used when using the SDL_Renderer backend renderer");
                 SDL_Renderer* sdlRenderer = std::static_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer())->getInternalRenderer();
 
-                m_textureTarget = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET,
-                                                    static_cast<int>(newTextureSize.x), static_cast<int>(newTextureSize.y));
+                m_textureTarget = SDL_CreateTexture(sdlRenderer,
+                                                    SDL_PIXELFORMAT_RGBA32,
+                                                    SDL_TEXTUREACCESS_TARGET,
+                                                    static_cast<int>(newTextureSize.x),
+                                                    static_cast<int>(newTextureSize.y));
 
                 // Move the ownership of the texture to our backend texture (we thus don't need to call SDL_DestroyTexture ourselves)
                 m_backendTexture->replaceInternalTexture(m_textureTarget);
@@ -141,10 +147,7 @@ namespace tgui
             {{0, size.y}, vertexColor, {0, normalizedTextureSize.y}},
             {{size.x, size.y}, vertexColor, {normalizedTextureSize.x, normalizedTextureSize.y}},
         }};
-        const std::array<unsigned int, 6> indices = {{
-            0, 2, 1,
-            1, 2, 3
-        }};
+        const std::array<unsigned int, 6> indices = {{0, 2, 1, 1, 2, 3}};
         target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), m_backendTexture);
     }
 
@@ -156,6 +159,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

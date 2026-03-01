@@ -26,9 +26,9 @@
 #define TGUI_BACKEND_GUI_HPP
 
 #include <TGUI/Container.hpp>
-#include <TGUI/RelFloatRect.hpp>
-#include <TGUI/Event.hpp>
 #include <TGUI/Cursor.hpp>
+#include <TGUI/Event.hpp>
+#include <TGUI/RelFloatRect.hpp>
 #include <TGUI/TwoFingerScrollDetect.hpp>
 
 #include <chrono>
@@ -44,7 +44,6 @@ namespace tgui
     class TGUI_API BackendGui
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,7 +317,8 @@ namespace tgui
         ///
         /// @deprecated Replaced by getWidgetBelowMouseCursor overload with additional recursive parameter in TGUI 1.2
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getWidgetBelowMouseCursor(mousePos, true) instead") TGUI_NODISCARD Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos) const;
+        TGUI_DEPRECATED("Use getWidgetBelowMouseCursor(mousePos, true) instead")
+        TGUI_NODISCARD Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos) const;
 #endif
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -644,8 +644,8 @@ namespace tgui
         TGUI_NODISCARD bool isKeyboardNavigationEnabled() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Handles the backend-independent part of the two finger scrolling.
         // Returns whether the touch event should be absorbed by the gui.
@@ -666,15 +666,15 @@ namespace tgui
         static Event::KeyboardKey translateKeypadKey(Event::KeyboardKey key);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalFloatRect onViewChange = {"ViewChanged"}; //!< The view was changed. Optional parameter: new view rectangle
-        Signal onWindowFocus = {"WindowFocused"}; //!< The window sent a GainedFocus event. @since TGUI 1.3
-        Signal onWindowUnfocus = {"WindowUnfocused"}; //!< The window sent a LostFocus event. @since TGUI 1.3
+        Signal onWindowFocus = {"WindowFocused"};       //!< The window sent a GainedFocus event. @since TGUI 1.3
+        Signal onWindowUnfocus = {"WindowUnfocused"};   //!< The window sent a LostFocus event. @since TGUI 1.3
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::chrono::steady_clock::time_point m_lastUpdateTime;
         bool m_windowFocused = true;
 
@@ -704,7 +704,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

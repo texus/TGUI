@@ -22,10 +22,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <stack>
-#include <set>
-
 #include "Tests.hpp"
+
+#include <set>
+#include <stack>
 
 namespace
 {
@@ -34,7 +34,8 @@ namespace
     bool noWidgetsFocused(const tgui::Container::Ptr& root)
     {
         const auto& widgets = root->getWidgets();
-        return std::all_of(widgets.cbegin(), widgets.cend(),
+        return std::all_of(widgets.cbegin(),
+                           widgets.cend(),
                            [&](const auto& widget)
                            {
                                if (widget->isFocused())
@@ -75,7 +76,7 @@ namespace
                 {
                     containers.push(childContainer);
 
-                           // Parent of widget has to be focused, all other containers have to be unfocused
+                    // Parent of widget has to be focused, all other containers have to be unfocused
                     if (parents.find(childContainer.get()) != parents.end())
                     {
                         if (!child->isFocused())
@@ -404,10 +405,10 @@ TEST_CASE("[Focussing widgets]")
         event.type = tgui::Event::Type::KeyPressed;
         event.key = tgui::Event::KeyEvent();
         event.key.control = false;
-        event.key.alt     = false;
-        event.key.shift   = false;
-        event.key.system  = false;
-        event.key.code    = tgui::Event::KeyboardKey::Tab;
+        event.key.alt = false;
+        event.key.shift = false;
+        event.key.system = false;
+        event.key.code = tgui::Event::KeyboardKey::Tab;
         gui.handleEvent(event);
         REQUIRE(widgetFocused(editBox));
 

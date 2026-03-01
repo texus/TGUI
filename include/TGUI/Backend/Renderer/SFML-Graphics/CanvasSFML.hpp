@@ -26,6 +26,7 @@
 #define TGUI_CANVAS_SFML_HPP
 
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+
 #include <TGUI/Widgets/CanvasBase.hpp>
 
 #include <SFML/Graphics/RenderTexture.hpp>
@@ -63,8 +64,7 @@ namespace tgui
     class TGUI_API CanvasSFML : public CanvasBase
     {
     public:
-
-        using Ptr = std::shared_ptr<CanvasSFML>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<CanvasSFML>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CanvasSFML>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "CanvasSFML"; //!< Type name of the widget
@@ -240,8 +240,7 @@ namespace tgui
         /// @param type        Type of primitives to draw
         /// @param states      Render states to use for drawing
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void draw(const sf::Vertex* vertices, std::size_t vertexCount,
-                  sf::PrimitiveType type, const sf::RenderStates& states = {});
+        void draw(const sf::Vertex* vertices, std::size_t vertexCount, sf::PrimitiveType type, const sf::RenderStates& states = {});
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws a TGUI sprite to the canvas
@@ -282,20 +281,20 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         sf::RenderTexture m_renderTexture;
         Optional<sf::View> m_customView;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

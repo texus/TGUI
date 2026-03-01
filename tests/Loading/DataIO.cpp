@@ -94,12 +94,12 @@ TEST_CASE("[DataIO]")
             REQUIRE(rootNode->children[0]->propertyValuePairs.size() == 1);
             REQUIRE(rootNode->children[0]->propertyValuePairs["Property"]->value == "\"\\\\\\\"Value\\\"\\\\\"");
 
-            REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String,
-                                                    rootNode->children[0]->name).getString()
+            REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, rootNode->children[0]->name).getString()
                     == "SpecialChars.{}=:;/*#//\t\"\\");
 
             REQUIRE(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String,
-                                                    rootNode->children[0]->propertyValuePairs["Property"]->value).getString()
+                                                    rootNode->children[0]->propertyValuePairs["Property"]->value)
+                        .getString()
                     == "\\\"Value\"\\");
         }
 

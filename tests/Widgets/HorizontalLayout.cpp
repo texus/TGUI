@@ -77,14 +77,17 @@ TEST_CASE("[HorizontalLayout]")
             REQUIRE(!layout->setRatio(nullptr, 1));
             REQUIRE(layout->getRatio(nullptr) == 0);
 
-            REQUIRE(layout->get(0)->getFullSize() == tgui::Vector2f((800 - 20 - 3*30) * (1 / 4.5f), 980));
-            REQUIRE(layout->get(1)->getFullSize() == tgui::Vector2f((800 - 20 - 3*30) * (1 / 4.5f), 980));
-            REQUIRE(layout->get(2)->getFullSize() == tgui::Vector2f((800 - 20 - 3*30) * (0.5f / 4.5f), 980));
-            REQUIRE(layout->get(3)->getFullSize() == tgui::Vector2f((800 - 20 - 3*30) * (2 / 4.5f), 980));
+            REQUIRE(layout->get(0)->getFullSize() == tgui::Vector2f((800 - 20 - 3 * 30) * (1 / 4.5f), 980));
+            REQUIRE(layout->get(1)->getFullSize() == tgui::Vector2f((800 - 20 - 3 * 30) * (1 / 4.5f), 980));
+            REQUIRE(layout->get(2)->getFullSize() == tgui::Vector2f((800 - 20 - 3 * 30) * (0.5f / 4.5f), 980));
+            REQUIRE(layout->get(3)->getFullSize() == tgui::Vector2f((800 - 20 - 3 * 30) * (2 / 4.5f), 980));
             REQUIRE(layout->get(0)->getPosition() == tgui::Vector2f(0, 0));
-            REQUIRE(layout->get(1)->getPosition() == tgui::Vector2f(layout->get(0)->getPosition().x + layout->get(0)->getFullSize().x + 30, 0));
-            REQUIRE(layout->get(2)->getPosition() == tgui::Vector2f(layout->get(1)->getPosition().x + layout->get(1)->getFullSize().x + 30, 0));
-            REQUIRE(layout->get(3)->getPosition() == tgui::Vector2f(layout->get(2)->getPosition().x + layout->get(2)->getFullSize().x + 30, 0));
+            REQUIRE(layout->get(1)->getPosition()
+                    == tgui::Vector2f(layout->get(0)->getPosition().x + layout->get(0)->getFullSize().x + 30, 0));
+            REQUIRE(layout->get(2)->getPosition()
+                    == tgui::Vector2f(layout->get(1)->getPosition().x + layout->get(1)->getFullSize().x + 30, 0));
+            REQUIRE(layout->get(3)->getPosition()
+                    == tgui::Vector2f(layout->get(2)->getPosition().x + layout->get(2)->getFullSize().x + 30, 0));
 
             layout->insertSpace(1, 1.5f);
             layout->insertSpace(3, 2.5f);
@@ -94,16 +97,20 @@ TEST_CASE("[HorizontalLayout]")
             layout->insert(2, button4);
             layout->remove(2);
 
-            REQUIRE(layout->get(0)->getFullSize() == tgui::Vector2f((800 - 20 - 4*30) * (1 / 8.f), 980));
-            REQUIRE(layout->get(1)->getFullSize() == tgui::Vector2f((800 - 20 - 4*30) * (1.5f / 8.f), 980));
-            REQUIRE(layout->get(2)->getFullSize() == tgui::Vector2f((800 - 20 - 4*30) * (1 / 8.f), 980));
-            REQUIRE(layout->get(3)->getFullSize() == tgui::Vector2f((800 - 20 - 4*30) * (2.5f / 8.f), 980));
-            REQUIRE(layout->get(4)->getFullSize() == tgui::Vector2f((800 - 20 - 4*30) * (2 / 8.f), 980));
+            REQUIRE(layout->get(0)->getFullSize() == tgui::Vector2f((800 - 20 - 4 * 30) * (1 / 8.f), 980));
+            REQUIRE(layout->get(1)->getFullSize() == tgui::Vector2f((800 - 20 - 4 * 30) * (1.5f / 8.f), 980));
+            REQUIRE(layout->get(2)->getFullSize() == tgui::Vector2f((800 - 20 - 4 * 30) * (1 / 8.f), 980));
+            REQUIRE(layout->get(3)->getFullSize() == tgui::Vector2f((800 - 20 - 4 * 30) * (2.5f / 8.f), 980));
+            REQUIRE(layout->get(4)->getFullSize() == tgui::Vector2f((800 - 20 - 4 * 30) * (2 / 8.f), 980));
             REQUIRE(layout->get(0)->getPosition() == tgui::Vector2f(0, 0));
-            REQUIRE(layout->get(1)->getPosition() == tgui::Vector2f(layout->get(0)->getPosition().x + layout->get(0)->getFullSize().x + 30, 0));
-            REQUIRE(layout->get(2)->getPosition() == tgui::Vector2f(layout->get(1)->getPosition().x + layout->get(1)->getFullSize().x + 30, 0));
-            REQUIRE(layout->get(3)->getPosition() == tgui::Vector2f(layout->get(2)->getPosition().x + layout->get(2)->getFullSize().x + 30, 0));
-            REQUIRE(layout->get(4)->getPosition() == tgui::Vector2f(layout->get(3)->getPosition().x + layout->get(3)->getFullSize().x + 30, 0));
+            REQUIRE(layout->get(1)->getPosition()
+                    == tgui::Vector2f(layout->get(0)->getPosition().x + layout->get(0)->getFullSize().x + 30, 0));
+            REQUIRE(layout->get(2)->getPosition()
+                    == tgui::Vector2f(layout->get(1)->getPosition().x + layout->get(1)->getFullSize().x + 30, 0));
+            REQUIRE(layout->get(3)->getPosition()
+                    == tgui::Vector2f(layout->get(2)->getPosition().x + layout->get(2)->getFullSize().x + 30, 0));
+            REQUIRE(layout->get(4)->getPosition()
+                    == tgui::Vector2f(layout->get(3)->getPosition().x + layout->get(3)->getFullSize().x + 30, 0));
         }
     }
 

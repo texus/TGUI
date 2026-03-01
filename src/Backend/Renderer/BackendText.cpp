@@ -196,9 +196,9 @@ namespace tgui
 
         index = std::min(index, m_string.length());
 
-        const bool isBold           = static_cast<unsigned int>(m_style) & TextStyle::Bold;
+        const bool isBold = static_cast<unsigned int>(m_style) & TextStyle::Bold;
         const float whitespaceWidth = m_font->getGlyph(U' ', m_characterSize, isBold).advance;
-        const float lineSpacing     = m_font->getLineSpacing(m_characterSize);
+        const float lineSpacing = m_font->getLineSpacing(m_characterSize);
 
         Vector2f position;
         char32_t prevChar = 0;
@@ -217,10 +217,18 @@ namespace tgui
             // Handle special characters
             switch (curChar)
             {
-                case ' ':  position.x += whitespaceWidth;             continue;
-                case '\t': position.x += whitespaceWidth * 4;         continue;
-                case '\n': position.y += lineSpacing; position.x = 0; continue;
-                default:                                              break;
+                case ' ':
+                    position.x += whitespaceWidth;
+                    continue;
+                case '\t':
+                    position.x += whitespaceWidth * 4;
+                    continue;
+                case '\n':
+                    position.y += lineSpacing;
+                    position.x = 0;
+                    continue;
+                default:
+                    break;
             }
 
             // For regular characters, add the advance offset of the glyph
@@ -290,13 +298,13 @@ namespace tgui
         const Vertex::Color vertexFillColor(m_fillColor);
         const Vertex::Color vertexOutlineColor(m_outlineColor);
 
-        const bool isBold              = (static_cast<unsigned int>(m_style) & TextStyle::Bold) != 0;
-        const bool isUnderlined        = (static_cast<unsigned int>(m_style) & TextStyle::Underlined) != 0;
-        const bool isStrikeThrough     = (static_cast<unsigned int>(m_style) & TextStyle::StrikeThrough) != 0;
-        const float italicShear        = (static_cast<unsigned int>(m_style) & TextStyle::Italic) ? 0.20944f : 0.f; // 12 degrees in radians
-        const float underlineOffset    = m_font->getUnderlinePosition(m_characterSize);
+        const bool isBold = (static_cast<unsigned int>(m_style) & TextStyle::Bold) != 0;
+        const bool isUnderlined = (static_cast<unsigned int>(m_style) & TextStyle::Underlined) != 0;
+        const bool isStrikeThrough = (static_cast<unsigned int>(m_style) & TextStyle::StrikeThrough) != 0;
+        const float italicShear = (static_cast<unsigned int>(m_style) & TextStyle::Italic) ? 0.20944f : 0.f; // 12 degrees in radians
+        const float underlineOffset = m_font->getUnderlinePosition(m_characterSize);
         const float underlineThickness = m_font->getUnderlineThickness(m_characterSize);
-        const float fontScale          = m_font->getFontScale();
+        const float fontScale = m_font->getFontScale();
 
         // Compute the location of the strike through dynamically
         // We use the center point of the lowercase 'x' glyph as the reference
@@ -379,7 +387,7 @@ namespace tgui
             {
                 const auto& glyph = m_font->getGlyph(curChar, m_characterSize, isBold, m_outlineThickness);
 
-                const float top   = glyph.bounds.top;
+                const float top = glyph.bounds.top;
                 const float right = glyph.bounds.left + glyph.bounds.width;
 
                 // Add the outline glyph to the vertices
@@ -453,44 +461,56 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendText::addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color, const FontGlyph& glyph, float fontScale, float italicShear)
+    void BackendText::addGlyphQuad(std::vector<Vertex>& vertices,
+                                   Vector2f position,
+                                   const Vertex::Color& color,
+                                   const FontGlyph& glyph,
+                                   float fontScale,
+                                   float italicShear)
     {
         const float padding = 1;
 
-        const float left   = glyph.bounds.left - (padding / fontScale);
-        const float top    = glyph.bounds.top - (padding / fontScale);
-        const float right  = glyph.bounds.left + glyph.bounds.width + (padding / fontScale);
-        const float bottom = glyph.bounds.top  + glyph.bounds.height + (padding / fontScale);
+        const float left = glyph.bounds.left - (padding / fontScale);
+        const float top = glyph.bounds.top - (padding / fontScale);
+        const float right = glyph.bounds.left + glyph.bounds.width + (padding / fontScale);
+        const float bottom = glyph.bounds.top + glyph.bounds.height + (padding / fontScale);
 
         const float u1 = glyph.textureRect.left - padding;
         const float v1 = glyph.textureRect.top - padding;
         const float u2 = glyph.textureRect.left + glyph.textureRect.width + padding;
-        const float v2 = glyph.textureRect.top  + glyph.textureRect.height + padding;
+        const float v2 = glyph.textureRect.top + glyph.textureRect.height + padding;
 
-        vertices.emplace_back(Vector2f{position.x + left  - (italicShear * top)   , position.y + top   }, color, Vector2f{u1, v1});
-        vertices.emplace_back(Vector2f{position.x + right - (italicShear * top)   , position.y + top   }, color, Vector2f{u2, v1});
-        vertices.emplace_back(Vector2f{position.x + left  - (italicShear * bottom), position.y + bottom}, color, Vector2f{u1, v2});
-        vertices.emplace_back(Vector2f{position.x + left  - (italicShear * bottom), position.y + bottom}, color, Vector2f{u1, v2});
-        vertices.emplace_back(Vector2f{position.x + right - (italicShear * top)   , position.y + top   }, color, Vector2f{u2, v1});
+        vertices.emplace_back(Vector2f{position.x + left - (italicShear * top), position.y + top}, color, Vector2f{u1, v1});
+        vertices.emplace_back(Vector2f{position.x + right - (italicShear * top), position.y + top}, color, Vector2f{u2, v1});
+        vertices.emplace_back(Vector2f{position.x + left - (italicShear * bottom), position.y + bottom}, color, Vector2f{u1, v2});
+        vertices.emplace_back(Vector2f{position.x + left - (italicShear * bottom), position.y + bottom}, color, Vector2f{u1, v2});
+        vertices.emplace_back(Vector2f{position.x + right - (italicShear * top), position.y + top}, color, Vector2f{u2, v1});
         vertices.emplace_back(Vector2f{position.x + right - (italicShear * bottom), position.y + bottom}, color, Vector2f{u2, v2});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendText::addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color, float offset, float thickness, float outlineThickness, float fontScale)
+    void BackendText::addLine(std::vector<Vertex>& vertices,
+                              float lineLength,
+                              float lineTop,
+                              const Vertex::Color& color,
+                              float offset,
+                              float thickness,
+                              float outlineThickness,
+                              float fontScale)
     {
         const float top = std::round((lineTop + offset - (thickness / 2)) * fontScale) / fontScale;
         const float bottom = top + (std::round(thickness * fontScale) / fontScale);
 
-        vertices.emplace_back(Vector2f{-outlineThickness,             top    - outlineThickness}, color, Vector2f{1, 1});
-        vertices.emplace_back(Vector2f{lineLength + outlineThickness, top    - outlineThickness}, color, Vector2f{1, 1});
-        vertices.emplace_back(Vector2f{-outlineThickness,             bottom + outlineThickness}, color, Vector2f{1, 1});
-        vertices.emplace_back(Vector2f{-outlineThickness,             bottom + outlineThickness}, color, Vector2f{1, 1});
-        vertices.emplace_back(Vector2f{lineLength + outlineThickness, top    - outlineThickness}, color, Vector2f{1, 1});
+        vertices.emplace_back(Vector2f{-outlineThickness, top - outlineThickness}, color, Vector2f{1, 1});
+        vertices.emplace_back(Vector2f{lineLength + outlineThickness, top - outlineThickness}, color, Vector2f{1, 1});
+        vertices.emplace_back(Vector2f{-outlineThickness, bottom + outlineThickness}, color, Vector2f{1, 1});
+        vertices.emplace_back(Vector2f{-outlineThickness, bottom + outlineThickness}, color, Vector2f{1, 1});
+        vertices.emplace_back(Vector2f{lineLength + outlineThickness, top - outlineThickness}, color, Vector2f{1, 1});
         vertices.emplace_back(Vector2f{lineLength + outlineThickness, bottom + outlineThickness}, color, Vector2f{1, 1});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

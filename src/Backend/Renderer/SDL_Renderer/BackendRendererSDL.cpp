@@ -23,8 +23,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
+
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
 #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
+
 #include <TGUI/Loading/WidgetFactory.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +58,8 @@ namespace tgui
         if ((m_maxTextureSize == 0) && m_renderer)
         {
 #if SDL_MAJOR_VERSION >= 3
-            m_maxTextureSize = static_cast<unsigned int>(SDL_GetNumberProperty(SDL_GetRendererProperties(m_renderer), SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
+            m_maxTextureSize = static_cast<unsigned int>(
+                SDL_GetNumberProperty(SDL_GetRendererProperties(m_renderer), SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
 #else
             SDL_RendererInfo info;
             if (SDL_GetRendererInfo(m_renderer, &info) == 0)
@@ -83,6 +86,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

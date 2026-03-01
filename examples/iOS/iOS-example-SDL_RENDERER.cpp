@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/TGUI.hpp>
+
 #include <TGUI/Backend/SDL-Renderer.hpp>
 
 // The background image will rotate with the screen
@@ -62,16 +63,14 @@ bool runExample(tgui::BackendGui& gui)
     auto button = tgui::Button::create("Hello");
     button->setPosition(50, 50);
     button->setSize(200, 50);
-    button->onPress([=]{ editBox->setText("World"); });
+    button->onPress([=] { editBox->setText("World"); });
     gui.add(button);
 
     // Set the background and let is change depending on the screen orientation.
     // As long as we don't manually set a view, the gui view will match the window size.
     setBackground(gui, gui.getView().getSize());
 
-    gui.onViewChange([guiPtr=&gui](tgui::FloatRect view){
-        setBackground(*guiPtr, view.getSize());
-    });
+    gui.onViewChange([guiPtr = &gui](tgui::FloatRect view) { setBackground(*guiPtr, view.getSize()); });
 
     return true;
 }

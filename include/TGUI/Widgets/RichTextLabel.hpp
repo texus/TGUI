@@ -48,8 +48,7 @@ namespace tgui
     class TGUI_API RichTextLabel : public Label
     {
     public:
-
-        using Ptr = std::shared_ptr<RichTextLabel>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<RichTextLabel>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const RichTextLabel>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "RichTextLabel"; //!< Type name of the widget
@@ -104,8 +103,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Helper function used by rearrangeText() to create the lines before word-wrapping is applied
         ///
@@ -116,7 +115,8 @@ namespace tgui
         /// the function is called). It can be overridden in a derived class to change how the parsing works (e.g. to use BBCode
         /// instead of html tags).
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void constructRichLineBlueprints(std::vector<std::vector<Text::Blueprint>>& textPiecesLines, std::vector<Texture>& images) const;
+        virtual void constructRichLineBlueprints(std::vector<std::vector<Text::Blueprint>>& textPiecesLines,
+                                                 std::vector<Texture>& images) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
@@ -146,17 +146,17 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::vector<Sprite> m_images;
         std::map<std::pair<std::size_t, std::size_t>, String> m_links; // Key = indices for text piece in m_lines
-        std::map<std::size_t, String> m_imageLinks; // Key = index in m_images
+        std::map<std::size_t, String> m_imageLinks;                    // Key = index in m_images
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

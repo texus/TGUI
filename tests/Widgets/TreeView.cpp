@@ -31,31 +31,31 @@ TEST_CASE("[TreeView]")
 
     SECTION("Signals")
     {
-        treeView->onItemSelect([](){});
-        treeView->onItemSelect([](const tgui::String&){});
-        treeView->onItemSelect([](const std::vector<tgui::String>&){});
+        treeView->onItemSelect([]() {});
+        treeView->onItemSelect([](const tgui::String&) {});
+        treeView->onItemSelect([](const std::vector<tgui::String>&) {});
 
-        treeView->onDoubleClick([](){});
-        treeView->onDoubleClick([](const tgui::String&){});
-        treeView->onDoubleClick([](const std::vector<tgui::String>&){});
+        treeView->onDoubleClick([]() {});
+        treeView->onDoubleClick([](const tgui::String&) {});
+        treeView->onDoubleClick([](const std::vector<tgui::String>&) {});
 
-        treeView->onExpand([](){});
-        treeView->onExpand([](const tgui::String&){});
-        treeView->onExpand([](const std::vector<tgui::String>&){});
+        treeView->onExpand([]() {});
+        treeView->onExpand([](const tgui::String&) {});
+        treeView->onExpand([](const std::vector<tgui::String>&) {});
 
-        treeView->onCollapse([](){});
-        treeView->onCollapse([](const tgui::String&){});
-        treeView->onCollapse([](const std::vector<tgui::String>&){});
+        treeView->onCollapse([]() {});
+        treeView->onCollapse([](const tgui::String&) {});
+        treeView->onCollapse([](const std::vector<tgui::String>&) {});
 
-        treeView->onRightClick([](){});
-        treeView->onRightClick([](const tgui::String&){});
-        treeView->onRightClick([](const std::vector<tgui::String>&){});
+        treeView->onRightClick([]() {});
+        treeView->onRightClick([](const tgui::String&) {});
+        treeView->onRightClick([](const std::vector<tgui::String>&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("ItemSelected").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("DoubleClicked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("Expanded").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("Collapsed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("RightClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("ItemSelected").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("DoubleClicked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("Expanded").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("Collapsed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(treeView)->getSignal("RightClicked").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -474,15 +474,11 @@ TEST_CASE("[TreeView]")
         container->add(treeView);
         root->add(container);
 
-        auto mouseMoved = [container](tgui::Vector2f pos){
-            container->processMouseMoveEvent(pos);
-        };
-        auto mousePressed = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left){
-            container->processMousePressEvent(button, pos);
-        };
-        auto mouseReleased = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left){
-            container->processMouseReleaseEvent(button, pos);
-        };
+        auto mouseMoved = [container](tgui::Vector2f pos) { container->processMouseMoveEvent(pos); };
+        auto mousePressed = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left)
+        { container->processMousePressEvent(button, pos); };
+        auto mouseReleased = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left)
+        { container->processMouseReleaseEvent(button, pos); };
 
         treeView->setPosition(10, 20);
         treeView->setSize(120, 64);
@@ -871,12 +867,13 @@ TEST_CASE("[TreeView]")
         renderer.setOpacity(0.7f);
         treeView->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&]{
-                                    renderer.setBackgroundColorHover(tgui::Color::Yellow);
-                                    renderer.setTextColorHover(tgui::Color::Magenta);
-                                    renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
-                                    renderer.setSelectedTextColorHover("#808080");
-                                 };
+        auto setHoverRenderer = [&]
+        {
+            renderer.setBackgroundColorHover(tgui::Color::Yellow);
+            renderer.setTextColorHover(tgui::Color::Magenta);
+            renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
+            renderer.setSelectedTextColorHover("#808080");
+        };
 
         const tgui::Vector2f mousePos1{30, 20};
         const tgui::Vector2f mousePos2{30, 35};
@@ -886,20 +883,14 @@ TEST_CASE("[TreeView]")
         {
             SECTION("No selected item")
             {
-                SECTION("No hover")
-                {
-                    TEST_DRAW("TreeView_NoSelectedNoHover.png")
-                }
+                SECTION("No hover"){TEST_DRAW("TreeView_NoSelectedNoHover.png")}
 
                 SECTION("Hover")
                 {
                     treeView->mouseMoved(mousePos2);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("TreeView_NoSelectedHover_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("TreeView_NoSelectedHover_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("TreeView_NoSelectedHover_HoverSet.png")
@@ -911,20 +902,14 @@ TEST_CASE("[TreeView]")
             {
                 treeView->selectItem({"Smilies"});
 
-                SECTION("No hover")
-                {
-                    TEST_DRAW("TreeView_SelectedNoHover.png")
-                }
+                SECTION("No hover"){TEST_DRAW("TreeView_SelectedNoHover.png")}
 
                 SECTION("Hover selected")
                 {
                     treeView->mouseMoved(mousePos1);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("TreeView_SelectedHoverSelected_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("TreeView_SelectedHoverSelected_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("TreeView_SelectedHoverSelected_HoverSet.png")
@@ -935,11 +920,8 @@ TEST_CASE("[TreeView]")
                 {
                     treeView->mouseMoved(mousePos3);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("TreeView_SelectedHoverOther_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("TreeView_SelectedHoverOther_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("TreeView_SelectedHoverOther_HoverSet.png")
@@ -951,26 +933,20 @@ TEST_CASE("[TreeView]")
         SECTION("Textured")
         {
             renderer.setTextureBackground("resources/Texture1.png");
-            renderer.setTextureBranchExpanded({"resources/Texture5.png", {0,0,15,15}});
-            renderer.setTextureBranchCollapsed({"resources/Texture7.png", {0,0,15,15}});
-            renderer.setTextureLeaf({"resources/Texture8.png", {0,0,15,15}});
+            renderer.setTextureBranchExpanded({"resources/Texture5.png", {0, 0, 15, 15}});
+            renderer.setTextureBranchCollapsed({"resources/Texture7.png", {0, 0, 15, 15}});
+            renderer.setTextureLeaf({"resources/Texture8.png", {0, 0, 15, 15}});
 
             SECTION("No selected item")
             {
-                SECTION("No hover")
-                {
-                    TEST_DRAW("TreeView_NoSelectedNoHover_Texture.png")
-                }
+                SECTION("No hover"){TEST_DRAW("TreeView_NoSelectedNoHover_Texture.png")}
 
                 SECTION("Hover")
                 {
                     treeView->mouseMoved(mousePos2);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("TreeView_NoSelectedHover_NoHoverSet_Texture.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("TreeView_NoSelectedHover_NoHoverSet_Texture.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("TreeView_NoSelectedHover_HoverSet_Texture.png")
@@ -982,20 +958,14 @@ TEST_CASE("[TreeView]")
             {
                 treeView->selectItem({"Smilies"});
 
-                SECTION("No hover")
-                {
-                    TEST_DRAW("TreeView_SelectedNoHover_Texture.png")
-                }
+                SECTION("No hover"){TEST_DRAW("TreeView_SelectedNoHover_Texture.png")}
 
                 SECTION("Hover selected")
                 {
                     treeView->mouseMoved(mousePos1);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("TreeView_SelectedHoverSelected_NoHoverSet_Texture.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("TreeView_SelectedHoverSelected_NoHoverSet_Texture.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("TreeView_SelectedHoverSelected_HoverSet_Texture.png")
@@ -1006,11 +976,8 @@ TEST_CASE("[TreeView]")
                 {
                     treeView->mouseMoved(mousePos3);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("TreeView_SelectedHoverOther_NoHoverSet_Texture.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("TreeView_SelectedHoverOther_NoHoverSet_Texture.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("TreeView_SelectedHoverOther_HoverSet_Texture.png")

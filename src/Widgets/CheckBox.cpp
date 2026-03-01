@@ -102,12 +102,16 @@ namespace tgui
     Vector2f CheckBox::getFullSize() const
     {
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
-         && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
+            && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
             const Vector2f sizeDiff = m_spriteChecked.getSize() - m_spriteUnchecked.getSize();
             if (getText().empty())
-                return getSize() + Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()), std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
-            return getSize() + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x, std::max({0.f, (m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()})};
+                return getSize()
+                       + Vector2f{std::max(0.f, sizeDiff.x - m_bordersCached.getRight()),
+                                  std::max(0.f, sizeDiff.y - m_bordersCached.getTop())};
+            return getSize()
+                   + Vector2f{(getSize().x * m_textDistanceRatioCached) + m_text.getSize().x,
+                              std::max({0.f, (m_text.getSize().y - getSize().y) / 2, sizeDiff.y - m_bordersCached.getTop()})};
         }
         if (getText().empty())
             return getSize();
@@ -120,7 +124,7 @@ namespace tgui
     {
         float yOffset = 0;
         if (m_spriteUnchecked.isSet() && m_spriteChecked.isSet()
-         && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
+            && (m_textureUncheckedCached.getImageSize() != m_textureCheckedCached.getImageSize()))
         {
             const float sizeDiff = m_spriteChecked.getSize().y - m_spriteUnchecked.getSize().y;
             if (sizeDiff > m_bordersCached.getTop())
@@ -213,9 +217,12 @@ namespace tgui
             if (m_spriteUnchecked.isSet())
             {
                 m_spriteChecked.setSize(
-                    {getInnerSize().x + ((m_textureCheckedCached.getImageSize().x - m_textureUncheckedCached.getImageSize().x) * (getInnerSize().x / m_textureUncheckedCached.getImageSize().x)),
-                     getInnerSize().y + ((m_textureCheckedCached.getImageSize().y - m_textureUncheckedCached.getImageSize().y) * (getInnerSize().y / m_textureUncheckedCached.getImageSize().y))}
-                );
+                    {getInnerSize().x
+                         + ((m_textureCheckedCached.getImageSize().x - m_textureUncheckedCached.getImageSize().x)
+                            * (getInnerSize().x / m_textureUncheckedCached.getImageSize().x)),
+                     getInnerSize().y
+                         + ((m_textureCheckedCached.getImageSize().y - m_textureUncheckedCached.getImageSize().y)
+                            * (getInnerSize().y / m_textureUncheckedCached.getImageSize().y))});
             }
             else
                 m_spriteChecked.setSize(getInnerSize());
@@ -289,20 +296,14 @@ namespace tgui
                 const Vector2f rightPoint = {0.86f * size.x, 0.28f * size.y};
                 const float x = (lineThickness / 2.f) * std::cos(pi / 4.f);
                 const float y = (lineThickness / 2.f) * std::sin(pi / 4.f);
-                const std::array<Vertex, 6> vertices = {{
-                    {{leftPoint.x - x, leftPoint.y + y}, checkColor},
-                    {{leftPoint.x + x, leftPoint.y - y}, checkColor},
-                    {{middlePoint.x, middlePoint.y + (2*y)}, checkColor},
-                    {{middlePoint.x, middlePoint.y - (2*y)}, checkColor},
-                    {{rightPoint.x + x, rightPoint.y + y}, checkColor},
-                    {{rightPoint.x - x, rightPoint.y - y}, checkColor}
-                }};
-                const std::array<unsigned int, 3u*4u> indices = {{
-                    0, 1, 2,
-                    1, 2, 3,
-                    2, 3, 4,
-                    3, 4, 5
-                }};
+                const std::array<Vertex, 6> vertices = {
+                    {{{leftPoint.x - x, leftPoint.y + y}, checkColor},
+                     {{leftPoint.x + x, leftPoint.y - y}, checkColor},
+                     {{middlePoint.x, middlePoint.y + (2 * y)}, checkColor},
+                     {{middlePoint.x, middlePoint.y - (2 * y)}, checkColor},
+                     {{rightPoint.x + x, rightPoint.y + y}, checkColor},
+                     {{rightPoint.x - x, rightPoint.y - y}, checkColor}}};
+                const std::array<unsigned int, 3u * 4u> indices = {{0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4, 5}};
                 target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
             }
         }
@@ -323,6 +324,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

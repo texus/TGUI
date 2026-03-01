@@ -26,8 +26,8 @@
 #define TGUI_SPIN_BUTTON_HPP
 
 #include <TGUI/Renderers/SpinButtonRenderer.hpp>
-#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Timer.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 
 #include <cmath>
 
@@ -41,8 +41,7 @@ namespace tgui
     class TGUI_API SpinButton : public ClickableWidget
     {
     public:
-
-        using Ptr = std::shared_ptr<SpinButton>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<SpinButton>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const SpinButton>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "SpinButton"; //!< Type name of the widget
@@ -202,13 +201,13 @@ namespace tgui
         ///
         /// This function will swap the width and height of the spin button if it didn't lie in the wanted direction.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use setOrientation instead")void setVerticalScroll(bool vertical);
+        TGUI_DEPRECATED("Use setOrientation instead") void setVerticalScroll(bool vertical);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the spin button lies horizontally or vertically
         /// @return Does the spin button lie vertically?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getOrientation instead")TGUI_NODISCARD bool getVerticalScroll() const;
+        TGUI_DEPRECATED("Use getOrientation instead") TGUI_NODISCARD bool getVerticalScroll() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the spin button lies horizontally or vertically
@@ -249,8 +248,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -290,21 +289,21 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Schedules a callback to regularly change the value of the spin button as long as the mouse remains pressed on an arrow
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalFloat onValueChange = {"ValueChanged"}; //!< Value of the spin button changed. Optional parameter: new value
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         Orientation m_orientation = Orientation::Vertical; // Is the spin button draw horizontally (arrows next to each other) or vertically (arrows on top of each other)?
         bool m_orientationLocked = false; // Will setSize change the orientation or not?
         std::chrono::time_point<std::chrono::steady_clock> m_lastMousePressTime;
@@ -325,16 +324,16 @@ namespace tgui
 
         // Cached renderer properties
         Borders m_bordersCached;
-        Color   m_borderColorCached;
-        Color   m_backgroundColorCached;
-        Color   m_backgroundColorHoverCached;
-        Color   m_arrowColorCached;
-        Color   m_arrowColorHoverCached;
-        float   m_borderBetweenArrowsCached = 0;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_backgroundColorHoverCached;
+        Color m_arrowColorCached;
+        Color m_arrowColorHoverCached;
+        float m_borderBetweenArrowsCached = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

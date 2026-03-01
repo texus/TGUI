@@ -39,7 +39,7 @@ namespace
     {
         return std::abs(x - y) < 0.0000001f;
     }
-}
+} // namespace
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -113,8 +113,11 @@ namespace tgui
 
         if (m_spriteForeground.isSet())
         {
-            m_spriteForeground.setSize({(m_spriteForeground.getTexture().getImageSize().x / static_cast<float>(m_spriteBackground.getTexture().getImageSize().x)) * getSize().x,
-                                        (m_spriteForeground.getTexture().getImageSize().y / static_cast<float>(m_spriteBackground.getTexture().getImageSize().y)) * getSize().y});
+            m_spriteForeground.setSize(
+                {(m_spriteForeground.getTexture().getImageSize().x / static_cast<float>(m_spriteBackground.getTexture().getImageSize().x))
+                     * getSize().x,
+                 (m_spriteForeground.getTexture().getImageSize().y / static_cast<float>(m_spriteBackground.getTexture().getImageSize().y))
+                     * getSize().y});
         }
     }
 
@@ -277,7 +280,7 @@ namespace tgui
             {
                 // Only return true when the pixel under the mouse isn't transparent
                 if (!m_transparentTextureCached || !m_spriteBackground.isTransparentPixel(pos)
-                 || !m_spriteForeground.isTransparentPixel(pos - ((getInnerSize() - m_spriteForeground.getSize()) / 2.f)))
+                    || !m_spriteForeground.isTransparentPixel(pos - ((getInnerSize() - m_spriteForeground.getSize()) / 2.f)))
                     return true;
             }
             else // There is no texture, the widget has a circle shape
@@ -349,9 +352,10 @@ namespace tgui
                 else if (m_angle > m_endRotation)
                 {
                     if (((m_startRotation > m_endRotation) && (m_clockwiseTurning))
-                     || ((m_startRotation < m_endRotation) && (!m_clockwiseTurning)))
+                        || ((m_startRotation < m_endRotation) && (!m_clockwiseTurning)))
                     {
-                        if (std::min(m_angle - m_startRotation, 360 - m_angle + m_startRotation) <= std::min(m_angle - m_endRotation, 360 - m_angle + m_endRotation))
+                        if (std::min(m_angle - m_startRotation, 360 - m_angle + m_startRotation)
+                            <= std::min(m_angle - m_endRotation, 360 - m_angle + m_endRotation))
                             m_angle = m_startRotation;
                         else
                             m_angle = m_endRotation;
@@ -363,9 +367,10 @@ namespace tgui
                 if (m_angle < m_endRotation)
                 {
                     if (((m_startRotation > m_endRotation) && (m_clockwiseTurning))
-                     || ((m_startRotation < m_endRotation) && (!m_clockwiseTurning)))
+                        || ((m_startRotation < m_endRotation) && (!m_clockwiseTurning)))
                     {
-                        if (std::min(m_startRotation - m_angle, 360 - m_startRotation + m_angle) <= std::min(m_endRotation - m_angle, 360 -m_endRotation + m_angle))
+                        if (std::min(m_startRotation - m_angle, 360 - m_startRotation + m_angle)
+                            <= std::min(m_endRotation - m_angle, 360 - m_endRotation + m_angle))
                             m_angle = m_startRotation;
                         else
                             m_angle = m_endRotation;
@@ -387,12 +392,12 @@ namespace tgui
             else
             {
                 if (((m_endRotation > m_startRotation) && (m_clockwiseTurning))
-                 || ((m_endRotation < m_startRotation) && (!m_clockwiseTurning)))
+                    || ((m_endRotation < m_startRotation) && (!m_clockwiseTurning)))
                 {
                     allowedAngle = 360 - std::abs(m_endRotation - m_startRotation);
                 }
                 else if (((m_endRotation > m_startRotation) && (!m_clockwiseTurning))
-                      || ((m_endRotation < m_startRotation) && (m_clockwiseTurning)))
+                         || ((m_endRotation < m_startRotation) && (m_clockwiseTurning)))
                 {
                     allowedAngle = std::abs(m_endRotation - m_startRotation);
                 }
@@ -434,12 +439,12 @@ namespace tgui
         else
         {
             if (((m_endRotation > m_startRotation) && (m_clockwiseTurning))
-             || ((m_endRotation < m_startRotation) && (!m_clockwiseTurning)))
+                || ((m_endRotation < m_startRotation) && (!m_clockwiseTurning)))
             {
                 allowedAngle = 360 - std::abs(m_endRotation - m_startRotation);
             }
             else if (((m_endRotation > m_startRotation) && (!m_clockwiseTurning))
-                  || ((m_endRotation < m_startRotation) && (m_clockwiseTurning)))
+                     || ((m_endRotation < m_startRotation) && (m_clockwiseTurning)))
             {
                 allowedAngle = std::abs(m_endRotation - m_startRotation);
             }
@@ -542,7 +547,8 @@ namespace tgui
         if (node->propertyValuePairs[U"Value"])
             setValue(node->propertyValuePairs[U"Value"]->value.toFloat());
         if (node->propertyValuePairs[U"ClockwiseTurning"])
-            setClockwiseTurning(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ClockwiseTurning"]->value).getBool());
+            setClockwiseTurning(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ClockwiseTurning"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -565,11 +571,16 @@ namespace tgui
             target.drawSprite(states, m_spriteBackground);
         else
         {
-            const float borderThickness = std::min({m_bordersCached.getLeft(), m_bordersCached.getTop(), m_bordersCached.getRight(), m_bordersCached.getBottom()});
+            const float borderThickness = std::min(
+                {m_bordersCached.getLeft(), m_bordersCached.getTop(), m_bordersCached.getRight(), m_bordersCached.getBottom()});
             if (borderThickness > 0)
             {
                 states.transform.translate({borderThickness, borderThickness});
-                target.drawCircle(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached), borderThickness, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                target.drawCircle(states,
+                                  innerSize,
+                                  Color::applyOpacity(m_backgroundColorCached, m_opacityCached),
+                                  borderThickness,
+                                  Color::applyOpacity(m_borderColorCached, m_opacityCached));
             }
             else
                 target.drawCircle(states, innerSize, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
@@ -596,8 +607,8 @@ namespace tgui
             const float pi = 3.14159265359f;
 #endif
             const float radius = innerSize / 10.0f;
-            states.transform.translate({(innerSize / 2.0f) - radius + (std::cos(m_angle / 180 * pi) * (innerSize / 2.f) * 3.f/5.f),
-                                        (innerSize / 2.0f) - radius + (-std::sin(m_angle / 180 * pi) * (innerSize / 2.f) * 3.f/5.f)});
+            states.transform.translate({(innerSize / 2.0f) - radius + (std::cos(m_angle / 180 * pi) * (innerSize / 2.f) * 3.f / 5.f),
+                                        (innerSize / 2.0f) - radius + (-std::sin(m_angle / 180 * pi) * (innerSize / 2.f) * 3.f / 5.f)});
             target.drawCircle(states, radius * 2.0f, Color::applyOpacity(m_thumbColorCached, m_opacityCached));
         }
     }
@@ -610,6 +621,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

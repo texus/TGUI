@@ -23,16 +23,19 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Config.hpp>
+
 #include <cstdlib>
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp> // GetCommandLineW
+
     #include <shellapi.h> // CommandLineToArgvW
 #endif
 
 // SDL has its own main function on some platforms but it has a define so that we can still call our version "main".
 // So if we are using the SDL backend then we must include it in this file.
-#if !TGUI_HAS_BACKEND_SFML_GRAPHICS && !TGUI_HAS_BACKEND_SFML_OPENGL3 \
- && (TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2)
+#if !TGUI_HAS_BACKEND_SFML_GRAPHICS && !TGUI_HAS_BACKEND_SFML_OPENGL3                                                           \
+    && (TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 \
+        || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2)
     #include <TGUI/extlibs/IncludeSDL.hpp> // To avoid compiler warnings with including SDL_main.h
     #if SDL_MAJOR_VERSION >= 3
         #include <SDL3/SDL_main.h>

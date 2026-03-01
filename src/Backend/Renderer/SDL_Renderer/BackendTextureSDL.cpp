@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
+
 #include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
@@ -33,15 +34,22 @@ namespace tgui
 #if ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL < 12))
     static SDL_ScaleMode GetCurrentSDLScaleMode()
     {
-        const char *hint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
+        const char* hint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
 
-        if (!hint || SDL_strcasecmp(hint, "nearest") == 0) {
+        if (!hint || SDL_strcasecmp(hint, "nearest") == 0)
+        {
             return SDL_SCALEMODE_NEAREST;
-        } else if (SDL_strcasecmp(hint, "linear") == 0) {
+        }
+        else if (SDL_strcasecmp(hint, "linear") == 0)
+        {
             return SDL_SCALEMODE_LINEAR;
-        } else if (SDL_strcasecmp(hint, "best") == 0) {
+        }
+        else if (SDL_strcasecmp(hint, "best") == 0)
+        {
             return SDL_SCALEMODE_BEST;
-        } else {
+        }
+        else
+        {
             return static_cast<SDL_ScaleMode>(SDL_atoi(hint));
         }
     }
@@ -75,10 +83,13 @@ namespace tgui
             if (m_texture)
                 SDL_DestroyTexture(m_texture);
 
-#if (SDL_MAJOR_VERSION > 2) \
- || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
- || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
-            m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, static_cast<int>(size.x), static_cast<int>(size.y));
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+    || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
+            m_texture = SDL_CreateTexture(m_renderer,
+                                          SDL_PIXELFORMAT_RGBA32,
+                                          SDL_TEXTUREACCESS_STATIC,
+                                          static_cast<int>(size.x),
+                                          static_cast<int>(size.y));
 
             if (m_texture)
             {
@@ -101,22 +112,26 @@ namespace tgui
                     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
             }
 
-            m_texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, static_cast<int>(size.x), static_cast<int>(size.y));
+            m_texture = SDL_CreateTexture(m_renderer,
+                                          SDL_PIXELFORMAT_RGBA32,
+                                          SDL_TEXTUREACCESS_STATIC,
+                                          static_cast<int>(size.x),
+                                          static_cast<int>(size.y));
 
             // Restore the old scale mode if we changed it (since it is a global setting)
             if (oldScaleMode != newScaleMode)
             {
                 switch (oldScaleMode)
                 {
-                case SDL_SCALEMODE_NEAREST:
-                    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-                    break;
-                case SDL_SCALEMODE_LINEAR:
-                    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-                    break;
-                case SDL_SCALEMODE_BEST:
-                    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
-                    break;
+                    case SDL_SCALEMODE_NEAREST:
+                        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+                        break;
+                    case SDL_SCALEMODE_LINEAR:
+                        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+                        break;
+                    case SDL_SCALEMODE_BEST:
+                        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+                        break;
                 }
             }
 
@@ -173,7 +188,7 @@ namespace tgui
         if (SDL_GetTextureScaleMode(m_texture, &scaleMode) == 0)
             m_isSmooth = (scaleMode != SDL_SCALEMODE_NEAREST);
 #elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
-   || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
+    || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
         int width;
         int height;
         if (SDL_QueryTexture(texture, nullptr, nullptr, &width, &height) == 0)
@@ -195,6 +210,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

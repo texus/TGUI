@@ -26,8 +26,8 @@
 #define TGUI_SPIN_CONTROL_HPP
 
 #include <TGUI/SubwidgetContainer.hpp>
-#include <TGUI/Widgets/SpinButton.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/SpinButton.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,8 +39,7 @@ namespace tgui
     class TGUI_API SpinControl : public SubwidgetContainer
     {
     public:
-
-        using Ptr = std::shared_ptr<SpinControl>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<SpinControl>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const SpinControl>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "SpinControl"; //!< Type name of the widget
@@ -85,7 +84,12 @@ namespace tgui
         ///
         /// @return The new spin control
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static SpinControl::Ptr create(float min = 0.0f, float max = 10.0f, float value = 0.0f, unsigned int decimal = 0, float step = 1.0f);
+        TGUI_NODISCARD static SpinControl::Ptr create(
+            float min = 0.0f,
+            float max = 10.0f,
+            float value = 0.0f,
+            unsigned int decimal = 0,
+            float step = 1.0f);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another spin control
@@ -245,7 +249,8 @@ namespace tgui
         /// @brief Changes whether the spin button width equals the heigh or the widget or only half of the height (default)
         /// @param useWideArrows  Should the width of the spin button equal its height instead of half the height?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use setSpinButtonWidth(\"100%\") or setSpinButtonWidth(\"50%\") instead") void setUseWideArrows(bool useWideArrows);
+        TGUI_DEPRECATED("Use setSpinButtonWidth(\"100%\") or setSpinButtonWidth(\"50%\") instead")
+        void setUseWideArrows(bool useWideArrows);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the spin button width equals the heigh or the widget or only half of the height (default)
@@ -272,8 +277,8 @@ namespace tgui
         TGUI_NODISCARD float getSpinButtonWidth() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -301,8 +306,8 @@ namespace tgui
         void load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function that initializes the widget when constructing a new widget or loading one from a file
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,25 +324,26 @@ namespace tgui
         void setString(const String& str);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalFloat onValueChange = {"ValueChanged"}; //!< Value of the spin control changed. Optional parameter: new value
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         unsigned int m_decimalPlaces = 0;
         bool m_useWideArrows = false; // TGUI_NEXT: Remove
         AbsoluteOrRelativeValue m_spinButtonWidth;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private:
         SpinButton::Ptr m_spinButton = SpinButton::create();
         EditBox::Ptr m_spinText = EditBox::create();
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

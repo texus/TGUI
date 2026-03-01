@@ -23,13 +23,15 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/extlibs/IncludeSDL.hpp>
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
+
 #include <TGUI/Backend/Renderer/BackendText.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
+
 #include <TGUI/Container.hpp>
 
-#include <numeric>
 #include <cmath>
+#include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -94,7 +96,7 @@ namespace tgui
 
         // Change the viewport if needed
         const bool viewportNeedsUpdate = (oldViewport.x != newViewport.x) || (oldViewport.y != newViewport.y)
-                                      || (oldViewport.w != newViewport.w) || (oldViewport.h != newViewport.h);
+                                         || (oldViewport.w != newViewport.w) || (oldViewport.h != newViewport.h);
         if (viewportNeedsUpdate)
             SDL_SetRenderViewport(m_renderer, &newViewport);
 
@@ -124,8 +126,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetSDL::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+    void BackendRenderTargetSDL::drawVertexArray(
+        const RenderStates& states,
+        const Vertex* vertices,
+        std::size_t vertexCount,
+        const unsigned int* indices,
+        std::size_t indexCount,
+        const std::shared_ptr<BackendTexture>& texture)
     {
         if (vertexCount == 0)
             return;
@@ -133,7 +140,8 @@ namespace tgui
         SDL_Texture* textureSDL = nullptr;
         if (texture)
         {
-            TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSDL>(texture), "BackendRenderTargetSDL requires textures of type BackendTextureSDL");
+            TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSDL>(texture),
+                        "BackendRenderTargetSDL requires textures of type BackendTextureSDL");
             textureSDL = std::static_pointer_cast<BackendTextureSDL>(texture)->getInternalTexture();
         }
 
@@ -145,16 +153,24 @@ namespace tgui
         {
             const Vertex& vertex = vertices[i];
             const Vector2f transformedPosition = finalTransform.transformPoint(vertex.position);
-            verticesSDL.push_back({SDL_FPoint{transformedPosition.x, transformedPosition.y},
-                                   SDL_FColor{vertex.color.red / 255.f, vertex.color.green / 255.f, vertex.color.blue / 255.f, vertex.color.alpha / 255.f},
-                                   SDL_FPoint{vertex.texCoords.x, vertex.texCoords.y}});
+            verticesSDL.push_back(
+                {SDL_FPoint{transformedPosition.x, transformedPosition.y},
+                 SDL_FColor{vertex.color.red / 255.f, vertex.color.green / 255.f, vertex.color.blue / 255.f, vertex.color.alpha / 255.f},
+                 SDL_FPoint{vertex.texCoords.x, vertex.texCoords.y}});
         }
 
-        SDL_RenderGeometryRaw(m_renderer, textureSDL,
-                              &verticesSDL.data()->position.x, sizeof(SDL_Vertex),
-                              &verticesSDL.data()->color, sizeof(SDL_Vertex),
-                              &verticesSDL.data()->tex_coord.x, sizeof(SDL_Vertex),
-                              static_cast<int>(vertexCount), indices, static_cast<int>(indexCount), sizeof(unsigned int));
+        SDL_RenderGeometryRaw(m_renderer,
+                              textureSDL,
+                              &verticesSDL.data()->position.x,
+                              sizeof(SDL_Vertex),
+                              &verticesSDL.data()->color,
+                              sizeof(SDL_Vertex),
+                              &verticesSDL.data()->tex_coord.x,
+                              sizeof(SDL_Vertex),
+                              static_cast<int>(vertexCount),
+                              indices,
+                              static_cast<int>(indexCount),
+                              sizeof(unsigned int));
 #else
         std::vector<Vertex> verticesSDL(vertices, vertices + vertexCount);
         for (std::size_t i = 0; i < vertexCount; ++i)
@@ -168,9 +184,12 @@ namespace tgui
         // the SDL_RenderGeometryRaw function is different in SDL 2.0.18 and SDL >= 2.0.20
         static_assert(sizeof(int) == sizeof(unsigned int), "Size of 'int' and 'unsigned int' must be identical for cast to work");
         static_assert(sizeof(Vertex) == sizeof(SDL_Vertex), "SDL_Vertex requires same memory layout as tgui::Vertex for cast to work");
-        SDL_RenderGeometry(m_renderer, textureSDL,
-                           reinterpret_cast<const SDL_Vertex*>(verticesSDL.data()), static_cast<int>(vertexCount),
-                           reinterpret_cast<const int*>(indices), static_cast<int>(indexCount));
+        SDL_RenderGeometry(m_renderer,
+                           textureSDL,
+                           reinterpret_cast<const SDL_Vertex*>(verticesSDL.data()),
+                           static_cast<int>(vertexCount),
+                           reinterpret_cast<const int*>(indices),
+                           static_cast<int>(indexCount));
 #endif
     }
 
@@ -198,6 +217,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

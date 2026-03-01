@@ -39,9 +39,9 @@
 #endif
 
 #ifdef TGUI_SYSTEM_ANDROID
-    #include <jni.h>
     #include <android/asset_manager.h>
     #include <android/asset_manager_jni.h>
+    #include <jni.h>
 #endif
 
 #include <cmath>
@@ -85,12 +85,22 @@ namespace tgui
     {
 #if SDL_MAJOR_VERSION >= 3
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        SDL_Surface* surface = SDL_CreateSurfaceFrom(static_cast<int>(size.x), static_cast<int>(size.y), SDL_PIXELFORMAT_RGBA32,
-                                                     const_cast<std::uint8_t*>(pixels), 4 * static_cast<int>(size.x));
+        SDL_Surface* surface = SDL_CreateSurfaceFrom(static_cast<int>(size.x),
+                                                     static_cast<int>(size.y),
+                                                     SDL_PIXELFORMAT_RGBA32,
+                                                     const_cast<std::uint8_t*>(pixels),
+                                                     4 * static_cast<int>(size.x));
 #else
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(const_cast<std::uint8_t*>(pixels), static_cast<int>(size.x), static_cast<int>(size.y),
-                                                        32, 4 * static_cast<int>(size.x), 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+        SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(const_cast<std::uint8_t*>(pixels),
+                                                        static_cast<int>(size.x),
+                                                        static_cast<int>(size.y),
+                                                        32,
+                                                        4 * static_cast<int>(size.x),
+                                                        0x000000ff,
+                                                        0x0000ff00,
+                                                        0x00ff0000,
+                                                        0xff000000);
 #endif
 
         if (!surface)
@@ -111,10 +121,9 @@ namespace tgui
     {
 #ifdef TGUI_SYSTEM_LINUX
         // On Linux we use directional resize arrows, but SDL has no support for them
-        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
-         || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
-         || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
-         || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
+        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight) || (type == Cursor::Type::SizeTop)
+            || (type == Cursor::Type::SizeBottom) || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
+            || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
         {
             // If the cursor was previously set to a bitmap then release its resources
             auto it = m_mouseCursors.find(type);
@@ -157,7 +166,7 @@ namespace tgui
         // The rectangle passed to SDL_SetTextInputRect will be wrong in older SDL versions on high-DPI screens.
         float dpiScale = 1;
 
-#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+    #if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
         // If there is more than one window then we arbitrarily select one and assume they all have the same DPI scaling.
         SDL_Window* window = nullptr;
         for (const auto& pair : m_guiResources)
@@ -182,7 +191,7 @@ namespace tgui
             if ((windowSizeScreenCoords.y != 0) && (windowSizeScreenCoords.y != windowSizePixels.y))
                 dpiScale = static_cast<float>(windowSizePixels.y) / static_cast<float>(windowSizeScreenCoords.y);
         }
-#endif
+    #endif
 
         SDL_Rect inputRect;
         inputRect.x = static_cast<int>(std::round(rect.left / dpiScale));
@@ -190,20 +199,20 @@ namespace tgui
         inputRect.w = static_cast<int>(std::round(rect.width / dpiScale));
         inputRect.h = static_cast<int>(std::round(rect.height / dpiScale));
 
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
         SDL_SetTextInputArea(window, &inputRect, 0);
         SDL_StartTextInput(window);
-#else
+    #else
         SDL_SetTextInputRect(&inputRect);
         SDL_StartTextInput();
-#endif
+    #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendSDL::closeVirtualKeyboard()
     {
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
         // If there is more than one window then we arbitrarily select one. This function is deprecated and should never be used anyway.
         SDL_Window* window = nullptr;
         for (const auto& pair : m_guiResources)
@@ -216,9 +225,9 @@ namespace tgui
         }
 
         SDL_StopTextInput(window);
-#else
+    #else
         SDL_StopTextInput();
-#endif
+    #endif
     }
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,14 +237,14 @@ namespace tgui
         const SDL_Keymod pressedModifiers = SDL_GetModState();
         switch (modifierKey)
         {
-        case Event::KeyModifier::System:
-            return (pressedModifiers & SDL_KMOD_GUI) != 0;
-        case Event::KeyModifier::Control:
-            return (pressedModifiers & SDL_KMOD_CTRL) != 0;
-        case Event::KeyModifier::Shift:
-            return (pressedModifiers & SDL_KMOD_SHIFT) != 0;
-        case Event::KeyModifier::Alt:
-            return (pressedModifiers & SDL_KMOD_ALT) != 0;
+            case Event::KeyModifier::System:
+                return (pressedModifiers & SDL_KMOD_GUI) != 0;
+            case Event::KeyModifier::Control:
+                return (pressedModifiers & SDL_KMOD_CTRL) != 0;
+            case Event::KeyModifier::Shift:
+                return (pressedModifiers & SDL_KMOD_SHIFT) != 0;
+            case Event::KeyModifier::Alt:
+                return (pressedModifiers & SDL_KMOD_ALT) != 0;
         }
 
         TGUI_ASSERT(false, "BackendSDL::isKeyboardModifierPressed called with an invalid value");
@@ -248,11 +257,11 @@ namespace tgui
     {
 #ifdef TGUI_SYSTEM_WINDOWS
         // If setting the clipboard fails on Windows then sleep a moment and try again
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
         if (!SDL_SetClipboardText(contents.toStdString().c_str()))
-#else
+    #else
         if (SDL_SetClipboardText(contents.toStdString().c_str()) < 0)
-#endif
+    #endif
         {
             Sleep(1);
             SDL_SetClipboardText(contents.toStdString().c_str());
@@ -273,13 +282,13 @@ namespace tgui
 #ifdef TGUI_SYSTEM_ANDROID
     std::unique_ptr<std::uint8_t[]> BackendSDL::readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const
     {
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
         JNIEnv* env = static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
         jobject activity = static_cast<jobject>(SDL_GetAndroidActivity());
-#else
+    #else
         JNIEnv* env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
         jobject activity = static_cast<jobject>(SDL_AndroidGetActivity());
-#endif
+    #endif
         jclass clazz = env->GetObjectClass(activity);
 
         jmethodID methodID = env->GetMethodID(clazz, "getAssets", "()Landroid/content/res/AssetManager;");
@@ -315,97 +324,97 @@ namespace tgui
         SDL_SystemCursor typeSDL = SDL_SYSTEM_CURSOR_DEFAULT;
         switch (type)
         {
-        case Cursor::Type::Arrow:
-            typeSDL = SDL_SYSTEM_CURSOR_DEFAULT;
-            break;
-        case Cursor::Type::Text:
-            typeSDL = SDL_SYSTEM_CURSOR_TEXT;
-            break;
-        case Cursor::Type::Help: // BackendSDL doesn't support Cursor::Type::Help
-        case Cursor::Type::Hand:
-            typeSDL = SDL_SYSTEM_CURSOR_POINTER;
-            break;
-        case Cursor::Type::SizeLeft:
-            typeSDL = SDL_SYSTEM_CURSOR_W_RESIZE;
-            break;
-        case Cursor::Type::SizeRight:
-            typeSDL = SDL_SYSTEM_CURSOR_E_RESIZE;
-            break;
-        case Cursor::Type::SizeHorizontal:
-            typeSDL = SDL_SYSTEM_CURSOR_EW_RESIZE;
-            break;
-        case Cursor::Type::SizeTop:
-            typeSDL = SDL_SYSTEM_CURSOR_N_RESIZE;
-            break;
-        case Cursor::Type::SizeBottom:
-            typeSDL = SDL_SYSTEM_CURSOR_S_RESIZE;
-            break;
-        case Cursor::Type::SizeVertical:
-            typeSDL = SDL_SYSTEM_CURSOR_NS_RESIZE;
-            break;
-        case Cursor::Type::SizeBottomRight:
-            typeSDL = SDL_SYSTEM_CURSOR_SE_RESIZE;
-            break;
-        case Cursor::Type::SizeTopLeft:
-            typeSDL = SDL_SYSTEM_CURSOR_NW_RESIZE;
-            break;
-        case Cursor::Type::SizeBottomLeft:
-            typeSDL = SDL_SYSTEM_CURSOR_SW_RESIZE;
-            break;
-        case Cursor::Type::SizeTopRight:
-            typeSDL = SDL_SYSTEM_CURSOR_NE_RESIZE;
-            break;
-        case Cursor::Type::Crosshair:
-            typeSDL = SDL_SYSTEM_CURSOR_CROSSHAIR;
-            break;
-        case Cursor::Type::NotAllowed:
-            typeSDL = SDL_SYSTEM_CURSOR_NOT_ALLOWED;
-            break;
-        case Cursor::Type::Move:
-            typeSDL = SDL_SYSTEM_CURSOR_MOVE;
-            break;
+            case Cursor::Type::Arrow:
+                typeSDL = SDL_SYSTEM_CURSOR_DEFAULT;
+                break;
+            case Cursor::Type::Text:
+                typeSDL = SDL_SYSTEM_CURSOR_TEXT;
+                break;
+            case Cursor::Type::Help: // BackendSDL doesn't support Cursor::Type::Help
+            case Cursor::Type::Hand:
+                typeSDL = SDL_SYSTEM_CURSOR_POINTER;
+                break;
+            case Cursor::Type::SizeLeft:
+                typeSDL = SDL_SYSTEM_CURSOR_W_RESIZE;
+                break;
+            case Cursor::Type::SizeRight:
+                typeSDL = SDL_SYSTEM_CURSOR_E_RESIZE;
+                break;
+            case Cursor::Type::SizeHorizontal:
+                typeSDL = SDL_SYSTEM_CURSOR_EW_RESIZE;
+                break;
+            case Cursor::Type::SizeTop:
+                typeSDL = SDL_SYSTEM_CURSOR_N_RESIZE;
+                break;
+            case Cursor::Type::SizeBottom:
+                typeSDL = SDL_SYSTEM_CURSOR_S_RESIZE;
+                break;
+            case Cursor::Type::SizeVertical:
+                typeSDL = SDL_SYSTEM_CURSOR_NS_RESIZE;
+                break;
+            case Cursor::Type::SizeBottomRight:
+                typeSDL = SDL_SYSTEM_CURSOR_SE_RESIZE;
+                break;
+            case Cursor::Type::SizeTopLeft:
+                typeSDL = SDL_SYSTEM_CURSOR_NW_RESIZE;
+                break;
+            case Cursor::Type::SizeBottomLeft:
+                typeSDL = SDL_SYSTEM_CURSOR_SW_RESIZE;
+                break;
+            case Cursor::Type::SizeTopRight:
+                typeSDL = SDL_SYSTEM_CURSOR_NE_RESIZE;
+                break;
+            case Cursor::Type::Crosshair:
+                typeSDL = SDL_SYSTEM_CURSOR_CROSSHAIR;
+                break;
+            case Cursor::Type::NotAllowed:
+                typeSDL = SDL_SYSTEM_CURSOR_NOT_ALLOWED;
+                break;
+            case Cursor::Type::Move:
+                typeSDL = SDL_SYSTEM_CURSOR_MOVE;
+                break;
         }
 #else
         SDL_SystemCursor typeSDL = SDL_SYSTEM_CURSOR_ARROW;
         switch (type)
         {
-        case Cursor::Type::Arrow:
-            typeSDL = SDL_SYSTEM_CURSOR_ARROW;
-            break;
-        case Cursor::Type::Text:
-            typeSDL = SDL_SYSTEM_CURSOR_IBEAM;
-            break;
-        case Cursor::Type::Help: // BackendSDL doesn't support Cursor::Type::Help
-        case Cursor::Type::Hand:
-            typeSDL = SDL_SYSTEM_CURSOR_HAND;
-            break;
-        case Cursor::Type::SizeLeft:
-        case Cursor::Type::SizeRight:
-        case Cursor::Type::SizeHorizontal:
-            typeSDL = SDL_SYSTEM_CURSOR_SIZEWE;
-            break;
-        case Cursor::Type::SizeTop:
-        case Cursor::Type::SizeBottom:
-        case Cursor::Type::SizeVertical:
-            typeSDL = SDL_SYSTEM_CURSOR_SIZENS;
-            break;
-        case Cursor::Type::SizeBottomRight:
-        case Cursor::Type::SizeTopLeft:
-            typeSDL = SDL_SYSTEM_CURSOR_SIZENWSE;
-            break;
-        case Cursor::Type::SizeBottomLeft:
-        case Cursor::Type::SizeTopRight:
-            typeSDL = SDL_SYSTEM_CURSOR_SIZENESW;
-            break;
-        case Cursor::Type::Crosshair:
-            typeSDL = SDL_SYSTEM_CURSOR_CROSSHAIR;
-            break;
-        case Cursor::Type::NotAllowed:
-            typeSDL = SDL_SYSTEM_CURSOR_NO;
-            break;
-        case Cursor::Type::Move:
-            typeSDL = SDL_SYSTEM_CURSOR_SIZEALL;
-            break;
+            case Cursor::Type::Arrow:
+                typeSDL = SDL_SYSTEM_CURSOR_ARROW;
+                break;
+            case Cursor::Type::Text:
+                typeSDL = SDL_SYSTEM_CURSOR_IBEAM;
+                break;
+            case Cursor::Type::Help: // BackendSDL doesn't support Cursor::Type::Help
+            case Cursor::Type::Hand:
+                typeSDL = SDL_SYSTEM_CURSOR_HAND;
+                break;
+            case Cursor::Type::SizeLeft:
+            case Cursor::Type::SizeRight:
+            case Cursor::Type::SizeHorizontal:
+                typeSDL = SDL_SYSTEM_CURSOR_SIZEWE;
+                break;
+            case Cursor::Type::SizeTop:
+            case Cursor::Type::SizeBottom:
+            case Cursor::Type::SizeVertical:
+                typeSDL = SDL_SYSTEM_CURSOR_SIZENS;
+                break;
+            case Cursor::Type::SizeBottomRight:
+            case Cursor::Type::SizeTopLeft:
+                typeSDL = SDL_SYSTEM_CURSOR_SIZENWSE;
+                break;
+            case Cursor::Type::SizeBottomLeft:
+            case Cursor::Type::SizeTopRight:
+                typeSDL = SDL_SYSTEM_CURSOR_SIZENESW;
+                break;
+            case Cursor::Type::Crosshair:
+                typeSDL = SDL_SYSTEM_CURSOR_CROSSHAIR;
+                break;
+            case Cursor::Type::NotAllowed:
+                typeSDL = SDL_SYSTEM_CURSOR_NO;
+                break;
+            case Cursor::Type::Move:
+                typeSDL = SDL_SYSTEM_CURSOR_SIZEALL;
+                break;
         }
 #endif
         return SDL_CreateSystemCursor(typeSDL);
@@ -446,9 +455,8 @@ namespace tgui
         // So we will continue to bypass SDL and use directional arrows in all directions when using SDL2.
         // In SDL3 we can directly request the diagonal arrows from SDL so this code is no longer needed.
 #if defined(TGUI_SYSTEM_LINUX) && defined(TGUI_USE_X11) && (SDL_MAJOR_VERSION < 3) && defined(SDL_VIDEO_DRIVER_X11)
-        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
-            || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
-            || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
+        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight) || (type == Cursor::Type::SizeTop)
+            || (type == Cursor::Type::SizeBottom) || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
             || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
         {
             if (!m_mouseCursors[type]) // Only bypass SDL when system cursors are used
@@ -524,6 +532,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

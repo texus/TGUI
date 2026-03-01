@@ -265,15 +265,18 @@ TEST_CASE("[ChatBox]")
         {
             const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
 
-            SECTION("set serialized property") {
+            SECTION("set serialized property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
             }
 
-            SECTION("set object property") {
+            SECTION("set object property")
+            {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", textureBackground));
             }
 
-            SECTION("functions") {
+            SECTION("functions")
+            {
                 renderer->setTextureBackground(textureBackground);
             }
 

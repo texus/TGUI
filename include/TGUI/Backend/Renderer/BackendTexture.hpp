@@ -40,7 +40,6 @@ namespace tgui
     class TGUI_API BackendTexture
     {
     public:
-
         // Don't allow copying or moving, because we don't expect derived classes to handle it correctly
         BackendTexture(const BackendTexture&) = delete;
         BackendTexture(BackendTexture&&) = delete;
@@ -117,13 +116,13 @@ namespace tgui
         TGUI_NODISCARD const std::uint8_t* getPixels() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         Vector2u m_imageSize;
         std::unique_ptr<std::uint8_t[]> m_pixels;
         bool m_isSmooth = true;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

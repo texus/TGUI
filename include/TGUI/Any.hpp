@@ -30,8 +30,8 @@
 #include <TGUI/Config.hpp>
 
 #include <type_traits>
-#include <utility>
 #include <typeinfo>
+#include <utility>
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     #include <any>
@@ -42,7 +42,7 @@ namespace tgui
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     using Any = std::any;
 
-    template<typename T>
+    template <typename T>
     T AnyCast(const Any& obj)
     {
         return std::any_cast<T>(obj);
@@ -50,7 +50,7 @@ namespace tgui
 #else
     struct Any
     {
-        template<class T>
+        template <class T>
         using StorageType = std::decay_t<T>;
 
         TGUI_NODISCARD bool is_null() const
@@ -63,9 +63,10 @@ namespace tgui
             return ptr != nullptr;
         }
 
-        template<typename U>
+        template <typename U>
         Any(U&& value) // NOLINT(bugprone-forwarding-reference-overload)
-            : ptr{new Derived<StorageType<U>>(std::forward<U>(value))}
+            :
+            ptr{new Derived<StorageType<U>>(std::forward<U>(value))}
         {
         }
 
@@ -74,14 +75,14 @@ namespace tgui
             return ptr != nullptr;
         }
 
-        template<class U>
+        template <class U>
         TGUI_NODISCARD bool is() const
         {
             using T = StorageType<U>;
             return dynamic_cast<Derived<T>*>(ptr) != nullptr;
         }
 
-        template<class U>
+        template <class U>
         StorageType<U>& as() const
         {
             using T = StorageType<U>;
@@ -92,24 +93,24 @@ namespace tgui
             return derived->value;
         }
 
-        template<class U>
+        template <class U>
         operator U()
         {
             return as<StorageType<U>>();
         }
 
-        Any()
-            : ptr(nullptr)
+        Any() :
+            ptr(nullptr)
         {
         }
 
-        Any(const Any& that)
-            : ptr(that.clone())
+        Any(const Any& that) :
+            ptr(that.clone())
         {
         }
 
-        Any(Any&& that) noexcept
-            : ptr(that.ptr)
+        Any(Any&& that) noexcept :
+            ptr(that.ptr)
         {
             that.ptr = nullptr;
         }
@@ -151,10 +152,10 @@ namespace tgui
             TGUI_NODISCARD virtual Base* clone() const = 0;
         };
 
-        template<typename T>
+        template <typename T>
         struct Derived : Base
         {
-            template<typename U>
+            template <typename U>
             Derived(U&& val) : // NOLINT(bugprone-forwarding-reference-overload)
                 value(std::forward<U>(val))
             {
@@ -179,12 +180,12 @@ namespace tgui
         Base* ptr;
     };
 
-    template<typename T>
+    template <typename T>
     TGUI_NODISCARD T AnyCast(const Any& obj)
     {
         return obj.as<T>();
     }
 #endif
-}
+} // namespace tgui
 
 #endif // TGUI_ANY_HPP

@@ -31,10 +31,10 @@ TEST_CASE("[Label]")
 
     SECTION("Signals")
     {
-        label->onDoubleClick([](){});
-        label->onDoubleClick([](const tgui::String&){});
+        label->onDoubleClick([]() {});
+        label->onDoubleClick([](const tgui::String&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(label)->getSignal("DoubleClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(label)->getSignal("DoubleClicked").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -138,7 +138,9 @@ TEST_CASE("[Label]")
     {
         label->setSize(200, 100);
         label->setTextSize(18);
-        label->setText("Cupcake ipsum dolor sit amet soufflé sugar plum tiramisu dragée. Gummies pie liquorice dragée caramels pastry marshmallow.");
+        label->setText(
+            "Cupcake ipsum dolor sit amet soufflé sugar plum tiramisu dragée. Gummies pie liquorice dragée caramels pastry "
+            "marshmallow.");
         testScrollbarAccess(label->getScrollbar());
     }
 
@@ -337,7 +339,10 @@ TEST_CASE("[Label]")
         {
             TEST_DRAW_INIT(420, 215, label)
             label->setScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
-            label->setText("Bacon ipsum dolor amet alcatra jerky turkey ball tip jowl beef. Shank landjaeger frankfurter, doner burgdoggen strip steak chicken pancetta jowl. Pork loin leberkas meatloaf ham shoulder cow hamburger pancetta. Rump turducken ribeye salami pork chop sirloin. Leberkas alcatra filet mignon jerky pork belly.");
+            label->setText(
+                "Bacon ipsum dolor amet alcatra jerky turkey ball tip jowl beef. Shank landjaeger frankfurter, doner burgdoggen strip "
+                "steak chicken pancetta jowl. Pork loin leberkas meatloaf ham shoulder cow hamburger pancetta. Rump turducken ribeye "
+                "salami pork chop sirloin. Leberkas alcatra filet mignon jerky pork belly.");
             label->setTextSize(18);
             label->setSize(400, 205);
             label->getRenderer()->setBackgroundColor(tgui::Color::Blue);

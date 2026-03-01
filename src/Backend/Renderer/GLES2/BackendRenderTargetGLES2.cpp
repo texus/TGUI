@@ -22,14 +22,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
-#include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
+
 #include <TGUI/Container.hpp>
 
-#include <numeric>
 #include <cmath>
+#include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -161,7 +162,8 @@ namespace tgui
             GLsizei errorMessageLength = 0;
             glGetProgramInfoLog(programId, 512, &errorMessageLength, static_cast<GLchar*>(errorMessage));
             const String errorMessageStr{static_cast<const char*>(errorMessage), static_cast<std::size_t>(errorMessageLength)};
-            throw Exception{U"Failed to create shaders in BackendRenderTargetGLES2. Failed to link the shaders. Error: '" + errorMessageStr + "'"};
+            throw Exception{
+                U"Failed to create shaders in BackendRenderTargetGLES2. Failed to link the shaders. Error: '" + errorMessageStr + "'"};
         }
 
         return programId;
@@ -172,15 +174,19 @@ namespace tgui
     BackendRenderTargetGLES2::BackendRenderTargetGLES2() :
         m_shaderProgram(createShaderProgram())
     {
-        TGUI_ASSERT(isBackendSet(), "BackendRenderTargetGLES2 can't be created when there is no system backend initialized (was a gui created yet?)");
-        TGUI_ASSERT(getBackend()->getRenderer(), "BackendRenderTargetGLES2 can't be created when there is no backend renderer (was a gui attached to a window yet?)");
+        TGUI_ASSERT(isBackendSet(),
+                    "BackendRenderTargetGLES2 can't be created when there is no system backend initialized (was a gui created yet?)");
+        TGUI_ASSERT(getBackend()->getRenderer(),
+                    "BackendRenderTargetGLES2 can't be created when there is no backend renderer (was a gui attached to a window "
+                    "yet?)");
 
         // If our OpenGL version didn't support the layout qualifier in GLSL then we need to query the location
         if (!TGUI_GLAD_GL_ES_VERSION_3_1)
         {
             m_projectionMatrixShaderUniformLocation = glGetUniformLocation(m_shaderProgram, "projectionMatrix");
             if (m_projectionMatrixShaderUniformLocation < 0)
-                throw Exception{U"Failed to initialize BackendRenderTargetGLES2: projectionMatrix uniform wasn't found in shader program"};
+                throw Exception{
+                    U"Failed to initialize BackendRenderTargetGLES2: projectionMatrix uniform wasn't found in shader program"};
         }
 
         if (!TGUI_GLAD_GL_ES_VERSION_3_0)
@@ -207,7 +213,7 @@ namespace tgui
         auto pixels = MakeUniqueForOverwrite<std::uint8_t[]>(4); // 4 bytes to store RGBA values
         for (unsigned int i = 0; i < 4; ++i)
             pixels[i] = 255;
-        m_emptyTexture->load({1,1}, std::move(pixels), false);
+        m_emptyTexture->load({1, 1}, std::move(pixels), false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,8 +297,10 @@ namespace tgui
         m_pixelsPerPoint = {m_viewport.width / m_viewRect.width, m_viewport.height / m_viewRect.height};
 
         // Change the state that we need while drawing the gui
-        const std::array<int, 4> viewportGL = {static_cast<int>(m_viewport.left), static_cast<int>(m_targetSize.y - m_viewport.top - m_viewport.height),
-                                               static_cast<int>(m_viewport.width), static_cast<int>(m_viewport.height)};
+        const std::array<int, 4> viewportGL = {static_cast<int>(m_viewport.left),
+                                               static_cast<int>(m_targetSize.y - m_viewport.top - m_viewport.height),
+                                               static_cast<int>(m_viewport.width),
+                                               static_cast<int>(m_viewport.height)};
         TGUI_GL_CHECK(glViewport(viewportGL[0], viewportGL[1], viewportGL[2], viewportGL[3]));
         TGUI_GL_CHECK(glScissor(viewportGL[0], viewportGL[1], viewportGL[2], viewportGL[3]));
         TGUI_GL_CHECK(glUseProgram(m_shaderProgram));
@@ -316,7 +324,8 @@ namespace tgui
         TGUI_GL_CHECK(glUseProgram(0));
         TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
         TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-        TGUI_GL_CHECK(glViewport(oldViewport[0], oldViewport[1], static_cast<GLsizei>(oldViewport[2]), static_cast<GLsizei>(oldViewport[3])));
+        TGUI_GL_CHECK(
+            glViewport(oldViewport[0], oldViewport[1], static_cast<GLsizei>(oldViewport[2]), static_cast<GLsizei>(oldViewport[3])));
 
         if (oldScissorEnabled)
             TGUI_GL_CHECK(glScissor(oldClipRect[0], oldClipRect[1], oldClipRect[2], oldClipRect[3]));
@@ -339,15 +348,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetGLES2::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+    void BackendRenderTargetGLES2::drawVertexArray(
+        const RenderStates& states,
+        const Vertex* vertices,
+        std::size_t vertexCount,
+        const unsigned int* indices,
+        std::size_t indexCount,
+        const std::shared_ptr<BackendTexture>& texture)
     {
         // Change the bound texture if it changed
         if (m_currentTexture != texture)
         {
             if (texture)
             {
-                TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureGLES2>(texture), "BackendRenderTargetGLES2 requires textures of type BackendTextureGLES2");
+                TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureGLES2>(texture),
+                            "BackendRenderTargetGLES2 requires textures of type BackendTextureGLES2");
                 m_currentTexture = std::static_pointer_cast<BackendTextureGLES2>(texture);
 
                 TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_currentTexture->getInternalTexture()));
@@ -370,7 +385,8 @@ namespace tgui
         if (indices)
         {
             // Load the data into the index buffer
-            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indexCount * sizeof(GLuint)), indices, GL_STREAM_DRAW));
+            TGUI_GL_CHECK(
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indexCount * sizeof(GLuint)), indices, GL_STREAM_DRAW));
 
             TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr));
         }
@@ -412,8 +428,10 @@ namespace tgui
         // Texture coordinate is stored as u,v in the last 2 floats
         static_assert(sizeof(Vertex) == 8 + 4 + 8, "Size of tgui::Vertex has to match the data");
         TGUI_GL_CHECK(glVertexAttribPointer(m_positionShaderLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(0)));
-        TGUI_GL_CHECK(glVertexAttribPointer(m_colorShaderLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), reinterpret_cast<GLvoid*>(8)));
-        TGUI_GL_CHECK(glVertexAttribPointer(m_texCoordShaderLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(8 + 4)));
+        TGUI_GL_CHECK(
+            glVertexAttribPointer(m_colorShaderLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), reinterpret_cast<GLvoid*>(8)));
+        TGUI_GL_CHECK(
+            glVertexAttribPointer(m_texCoordShaderLocation, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<GLvoid*>(8 + 4)));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -444,6 +462,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

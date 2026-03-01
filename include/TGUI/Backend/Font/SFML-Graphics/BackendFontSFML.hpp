@@ -29,9 +29,9 @@
 
 #include <SFML/Graphics/Font.hpp>
 
-#include <unordered_set>
-#include <memory>
 #include <map>
+#include <memory>
+#include <unordered_set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,6 @@ namespace tgui
     class TGUI_API BackendFontSFML : public BackendFont
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a font from memory
         ///
@@ -202,8 +201,8 @@ namespace tgui
         TGUI_NODISCARD sf::Font* getInternalFont();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::unique_ptr<sf::Font> m_font;
         std::unique_ptr<std::uint8_t[]> m_fileContents;
 
@@ -218,7 +217,7 @@ namespace tgui
         // can result in the same version being accidentally returned and the text not realizing that the texture changed.
         unsigned int m_lastTextureVersion = 0;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

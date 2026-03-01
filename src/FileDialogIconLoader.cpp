@@ -32,7 +32,9 @@ namespace tgui
 
 #if !defined(TGUI_SYSTEM_WINDOWS) && !defined(TGUI_SYSTEM_LINUX)
     // This struct is used to be able to use make_shared while still keeping the constructor protected.
-    struct MakeSharedFileDialogIconLoader : public FileDialogIconLoader {};
+    struct MakeSharedFileDialogIconLoader : public FileDialogIconLoader
+    {
+    };
 
     std::shared_ptr<FileDialogIconLoader> FileDialogIconLoader::createInstance()
     {
@@ -84,6 +86,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

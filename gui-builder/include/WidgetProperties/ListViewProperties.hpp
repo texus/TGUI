@@ -115,8 +115,10 @@ struct ListViewProperties : public WidgetProperties
         pair.first["ShowVerticalGridLines"] = {"Bool", tgui::Serializer::serialize(listView->getShowVerticalGridLines())};
         pair.first["ShowHorizontalGridLines"] = {"Bool", tgui::Serializer::serialize(listView->getShowHorizontalGridLines())};
         pair.first["ResizableColumns"] = {"Bool", tgui::Serializer::serialize(listView->getResizableColumns())};
-        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(listView->getVerticalScrollbar()->getPolicy())};
-        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(listView->getHorizontalScrollbar()->getPolicy())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
+                                                 serializeScrollbarPolicy(listView->getVerticalScrollbar()->getPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
+                                                   serializeScrollbarPolicy(listView->getHorizontalScrollbar()->getPolicy())};
 
         TGUI_IGNORE_DEPRECATED_WARNINGS_START
         pair.first["ExpandLastColumn"] = {"Bool", tgui::Serializer::serialize(listView->getExpandLastColumn())};
@@ -154,9 +156,9 @@ struct ListViewProperties : public WidgetProperties
             const tgui::HorizontalAlignment alignment = listView->getColumnAlignment(i);
             const bool autoResize = listView->getColumnAutoResize(i);
             const bool expanded = listView->getColumnExpanded(i);
-            serializedColumns.emplace_back('(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width)
-                + ',' + serializeHorizontalAlignment(alignment) + ',' + tgui::Serializer::serialize(autoResize)
-                + ',' + tgui::Serializer::serialize(expanded) + ')');
+            serializedColumns.emplace_back('(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width) + ','
+                                           + serializeHorizontalAlignment(alignment) + ',' + tgui::Serializer::serialize(autoResize)
+                                           + ',' + tgui::Serializer::serialize(expanded) + ')');
         }
 
         return serializeList(serializedColumns);
@@ -187,7 +189,8 @@ struct ListViewProperties : public WidgetProperties
                 const auto& values = node->propertyValuePairs["l"]->valueList;
                 if (values.size() != 5)
                 {
-                    std::cout << "Failed to deserialize column '" + serializedColumn + "'. Expected 5 values between brackets." << std::endl;
+                    std::cout << "Failed to deserialize column '" + serializedColumn + "'. Expected 5 values between brackets."
+                              << std::endl;
                     return false;
                 }
 
@@ -200,7 +203,9 @@ struct ListViewProperties : public WidgetProperties
                     alignment = tgui::HorizontalAlignment::Right;
                 else
                 {
-                    std::cout << "Failed to deserialize column '" + serializedColumn + "'. Alignment has to be either 'Left', 'Center' or 'Right'." << std::endl;
+                    std::cout << "Failed to deserialize column '" + serializedColumn
+                                     + "'. Alignment has to be either 'Left', 'Center' or 'Right'."
+                              << std::endl;
                     return false;
                 }
 

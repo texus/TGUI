@@ -25,8 +25,8 @@
 #ifndef TGUI_BACKEND_RENDER_TARGET_GLES2_HPP
 #define TGUI_BACKEND_RENDER_TARGET_GLES2_HPP
 
-#include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,7 +38,6 @@ namespace tgui
     class TGUI_API BackendRenderTargetGLES2 : public BackendRenderTarget
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,12 +87,16 @@ namespace tgui
         /// @param indexCount   Amount of elements in the indices array
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                             const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
+        void drawVertexArray(const RenderStates& states,
+                             const Vertex* vertices,
+                             std::size_t vertexCount,
+                             const unsigned int* indices,
+                             std::size_t indexCount,
+                             const std::shared_ptr<BackendTexture>& texture) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called from addClippingLayer and removeClippingLayer to apply the clipping
         ///
@@ -116,8 +119,8 @@ namespace tgui
         void createBuffers();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         unsigned int m_shaderProgram = 0;
         unsigned int m_vertexArray = 0;
         unsigned int m_vertexBuffer = 0;
@@ -136,7 +139,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

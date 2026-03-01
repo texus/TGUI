@@ -22,12 +22,12 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <fstream>
-#include <cstring>
-
 #include "Tests.hpp"
 
 #include <TGUI/Loading/ImageLoader.hpp>
+
+#include <cstring>
+#include <fstream>
 
 // Rendering isn't identical on different computers, so we just check that the image looks similar enough.
 // By using software rendering, we can reduce the error margin from 1.5% to 0.05% though.
@@ -51,13 +51,13 @@ void compareImageFiles(const tgui::String& filename1, const tgui::String& filena
         for (unsigned int x = 0; x < imageSize1.x; ++x)
         {
             const unsigned int index = ((y * x) + x) * 4;
-            totalDiff += std::abs(static_cast<int>(imagePixels1[index+0]) - static_cast<int>(imagePixels2[index+0])) / 255.0;
-            totalDiff += std::abs(static_cast<int>(imagePixels1[index+1]) - static_cast<int>(imagePixels2[index+1])) / 255.0;
-            totalDiff += std::abs(static_cast<int>(imagePixels1[index+2]) - static_cast<int>(imagePixels2[index+2])) / 255.0;
+            totalDiff += std::abs(static_cast<int>(imagePixels1[index + 0]) - static_cast<int>(imagePixels2[index + 0])) / 255.0;
+            totalDiff += std::abs(static_cast<int>(imagePixels1[index + 1]) - static_cast<int>(imagePixels2[index + 1])) / 255.0;
+            totalDiff += std::abs(static_cast<int>(imagePixels1[index + 2]) - static_cast<int>(imagePixels2[index + 2])) / 255.0;
         }
     }
 
-    const double diffPercentage = (totalDiff * 100)  / (imageSize1.x * imageSize1.y * 3);
+    const double diffPercentage = (totalDiff * 100) / (imageSize1.x * imageSize1.y * 3);
     INFO("Filename: " + filename1.toStdString());
 
     REQUIRE(diffPercentage < 0.06);

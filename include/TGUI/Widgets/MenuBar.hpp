@@ -25,8 +25,8 @@
 #ifndef TGUI_MENU_BAR_HPP
 #define TGUI_MENU_BAR_HPP
 
-#include <TGUI/Widgets/MenuWidgetBase.hpp>
 #include <TGUI/Renderers/MenuBarRenderer.hpp>
+#include <TGUI/Widgets/MenuWidgetBase.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,8 +38,7 @@ namespace tgui
     class TGUI_API MenuBar : public MenuWidgetBase
     {
     public:
-
-        using Ptr = std::shared_ptr<MenuBar>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<MenuBar>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const MenuBar>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "MenuBar"; //!< Type name of the widget
@@ -124,16 +123,14 @@ namespace tgui
                 {
                     if (clickedMenuItem == hierarchy)
                         std::invoke(handler, args...);
-                }
-            );
+                });
 #else
             return onMenuItemClick.connect(
-                [f=std::function<void(const Args&...)>(handler),args...,hierarchy](const std::vector<String>& clickedMenuItem)
+                [f = std::function<void(const Args&...)>(handler), args..., hierarchy](const std::vector<String>& clickedMenuItem)
                 {
                     if (clickedMenuItem == hierarchy)
                         f(args...);
-                }
-            );
+                });
 #endif
         }
 
@@ -422,8 +419,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -517,15 +514,15 @@ namespace tgui
         void drawOpenMenu(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::vector<Menu> m_menus;
         int m_visibleMenu = -1;
         Sprite m_spriteBackground;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -25,10 +25,10 @@
 #ifndef TGUI_BACKEND_RENDERER_SFML_HPP
 #define TGUI_BACKEND_RENDERER_SFML_HPP
 
-#include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
-#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
-#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 
 #include <memory>
 
@@ -42,7 +42,6 @@ namespace tgui
     class TGUI_API BackendRendererSFML : public BackendRenderer
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +62,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

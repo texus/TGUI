@@ -24,13 +24,14 @@
 
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
+
 #include <TGUI/Container.hpp>
 
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include <cmath>
 #include <array>
+#include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -102,7 +103,8 @@ namespace tgui
         else
         {
             // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
-            transformedStates.transform.translate(-Transform().rotate(sprite.getRotation()).transformRect({{}, sprite.getSize()}).getPosition());
+            transformedStates.transform.translate(
+                -Transform().rotate(sprite.getRotation()).transformRect({{}, sprite.getSize()}).getPosition());
             transformedStates.transform.translate(sprite.getPosition());
             transformedStates.transform.rotate(sprite.getRotation());
         }
@@ -115,12 +117,13 @@ namespace tgui
         const std::shared_ptr<BackendTexture> texture = sprite.getTexture().getData()->backendTexture;
 
         sf::RenderStates sfStates = convertRenderStates(transformedStates, texture);
-        TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture), "BackendRenderTargetSFML::drawSprite requires backend texture of type BackendTextureSFML");
+        TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture),
+                    "BackendRenderTargetSFML::drawSprite requires backend texture of type BackendTextureSFML");
         sfStates.texture = std::static_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture)->getInternalTexture();
         sfStates.shader = sprite.getTexture().getShader();
 
 #if SFML_VERSION_MAJOR < 3
-        const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
+        const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1, 1};
 #endif
         const std::vector<Vertex>& vertices = sprite.getVertices();
         const std::vector<unsigned int>& indices = sprite.getIndices();
@@ -141,7 +144,8 @@ namespace tgui
 #endif
         }
 
-        static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
+        static_assert(sizeof(Vertex) == sizeof(sf::Vertex),
+                      "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
         const auto* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.get());
         m_target->draw(sfmlVertices, indices.size(), sf::PrimitiveType::Triangles, sfStates);
 
@@ -151,15 +155,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetSFML::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+    void BackendRenderTargetSFML::drawVertexArray(
+        const RenderStates& states,
+        const Vertex* vertices,
+        std::size_t vertexCount,
+        const unsigned int* indices,
+        std::size_t indexCount,
+        const std::shared_ptr<BackendTexture>& texture)
     {
         // Creating an sf::Vertex costs time because its constructor can't be inlined. Since our own Vertex struct has an identical memory layout,
         // we will create an array of our own Vertex objects and then use a reinterpret_cast to turn them into sf::Vertex.
-        static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
+        static_assert(sizeof(Vertex) == sizeof(sf::Vertex),
+                      "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
 
 #if SFML_VERSION_MAJOR < 3
-        const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1,1};
+        const Vector2f textureSize = texture ? Vector2f{texture->getSize()} : Vector2f{1, 1};
 #endif
 
         if (indices)
@@ -181,12 +191,18 @@ namespace tgui
 #endif
             }
 
-            m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
+            m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()),
+                           indexCount,
+                           sf::PrimitiveType::Triangles,
+                           convertRenderStates(states, texture));
         }
         else // There are no indices
         {
 #if SFML_VERSION_MAJOR >= 3
-            m_target->draw(reinterpret_cast<const sf::Vertex*>(vertices), vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
+            m_target->draw(reinterpret_cast<const sf::Vertex*>(vertices),
+                           vertexCount,
+                           sf::PrimitiveType::Triangles,
+                           convertRenderStates(states, texture));
 #else
             auto verticesSFML = std::vector<Vertex>(vertices, vertices + vertexCount);
             for (std::size_t i = 0; i < vertexCount; ++i)
@@ -195,7 +211,10 @@ namespace tgui
                 verticesSFML[i].texCoords.y *= textureSize.y;
             }
 
-            m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.data()), vertexCount, sf::PrimitiveType::Triangles, convertRenderStates(states, texture));
+            m_target->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.data()),
+                           vertexCount,
+                           sf::PrimitiveType::Triangles,
+                           convertRenderStates(states, texture));
 #endif
         }
     }
@@ -209,8 +228,10 @@ namespace tgui
             m_pixelsPerPoint = {clipViewport.width / clipRect.width, clipViewport.height / clipRect.height};
 
             // Rounding clipRect to pixel coordinates is needed to avoid blurry text
-            sf::View newView{{{std::round(clipRect.left * m_pixelsPerPoint.x) / m_pixelsPerPoint.x, std::round(clipRect.top * m_pixelsPerPoint.y) / m_pixelsPerPoint.y},
-                              {std::round(clipRect.width * m_pixelsPerPoint.x) / m_pixelsPerPoint.x, std::round(clipRect.height * m_pixelsPerPoint.y) / m_pixelsPerPoint.y}}};
+            sf::View newView{{{std::round(clipRect.left * m_pixelsPerPoint.x) / m_pixelsPerPoint.x,
+                               std::round(clipRect.top * m_pixelsPerPoint.y) / m_pixelsPerPoint.y},
+                              {std::round(clipRect.width * m_pixelsPerPoint.x) / m_pixelsPerPoint.x,
+                               std::round(clipRect.height * m_pixelsPerPoint.y) / m_pixelsPerPoint.y}}};
             newView.setViewport({{clipViewport.left / m_targetSize.x, clipViewport.top / m_targetSize.y},
                                  {clipViewport.width / m_targetSize.x, clipViewport.height / m_targetSize.y}});
             m_target->setView(newView);
@@ -232,10 +253,15 @@ namespace tgui
         const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
 
         sf::RenderStates statesSFML;
-        statesSFML.transform = sf::Transform(
-            transformMatrix[0], transformMatrix[4], transformMatrix[12],
-            transformMatrix[1], transformMatrix[5], transformMatrix[13],
-            transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+        statesSFML.transform = sf::Transform(transformMatrix[0],
+                                             transformMatrix[4],
+                                             transformMatrix[12],
+                                             transformMatrix[1],
+                                             transformMatrix[5],
+                                             transformMatrix[13],
+                                             transformMatrix[3],
+                                             transformMatrix[7],
+                                             transformMatrix[15]);
 
 #if SFML_VERSION_MAJOR >= 3
         statesSFML.coordinateType = sf::CoordinateType::Normalized;
@@ -243,7 +269,8 @@ namespace tgui
 
         if (texture)
         {
-            TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(texture), "BackendRenderTargetSFML requires textures of type BackendTextureSFML");
+            TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(texture),
+                        "BackendRenderTargetSFML requires textures of type BackendTextureSFML");
             statesSFML.texture = std::static_pointer_cast<BackendTextureSFML>(texture)->getInternalTexture();
         }
 
@@ -251,6 +278,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

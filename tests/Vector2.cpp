@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include "Tests.hpp"
+
+#include <iostream>
 
 TEST_CASE("[Vector2]")
 {
@@ -58,7 +58,7 @@ TEST_CASE("[Vector2]")
         REQUIRE(vecStr3.x == 5.6f);
         REQUIRE(vecStr3.y == 7.8f);
 
-        std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
+        std::streambuf* oldbuf = std::cerr.rdbuf(nullptr);
 
         const tgui::Vector2i vecStrInvalid1{""};
         REQUIRE(vecStrInvalid1.x == 0);

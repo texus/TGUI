@@ -83,14 +83,21 @@ TEST_CASE("[Duration]")
         REQUIRE(tgui::Duration(30) / 2.f == tgui::Duration(std::chrono::milliseconds(15)));
         REQUIRE(tgui::Duration(5000) / tgui::Duration(std::chrono::microseconds(2000000)) == 2.5f);
         REQUIRE(tgui::Duration(std::chrono::nanoseconds(100)) % 3 == tgui::Duration(std::chrono::nanoseconds(1)));
-        REQUIRE(tgui::Duration(std::chrono::nanoseconds(100)) % std::chrono::nanoseconds(6) == tgui::Duration(std::chrono::nanoseconds(4)));
+        REQUIRE(tgui::Duration(std::chrono::nanoseconds(100)) % std::chrono::nanoseconds(6)
+                == tgui::Duration(std::chrono::nanoseconds(4)));
 
         tgui::Duration d;
-        d = tgui::Duration(std::chrono::microseconds(20000)); REQUIRE((d += tgui::Duration(30)) == tgui::Duration(std::chrono::milliseconds(50)));
-        d = tgui::Duration(std::chrono::microseconds(20000)); REQUIRE((d -= tgui::Duration(5)) == tgui::Duration(std::chrono::milliseconds(15)));
-        d = tgui::Duration(30); REQUIRE((d *= 20) == tgui::Duration(std::chrono::milliseconds(600)));
-        d = tgui::Duration(30); REQUIRE((d /= 2.f) == tgui::Duration(std::chrono::milliseconds(15)));
-        d = tgui::Duration(std::chrono::nanoseconds(100)); REQUIRE((d %= 3) == tgui::Duration(std::chrono::nanoseconds(1)));
-        d = tgui::Duration(std::chrono::nanoseconds(100)); REQUIRE((d %= std::chrono::nanoseconds(6)) == tgui::Duration(std::chrono::nanoseconds(4)));
+        d = tgui::Duration(std::chrono::microseconds(20000));
+        REQUIRE((d += tgui::Duration(30)) == tgui::Duration(std::chrono::milliseconds(50)));
+        d = tgui::Duration(std::chrono::microseconds(20000));
+        REQUIRE((d -= tgui::Duration(5)) == tgui::Duration(std::chrono::milliseconds(15)));
+        d = tgui::Duration(30);
+        REQUIRE((d *= 20) == tgui::Duration(std::chrono::milliseconds(600)));
+        d = tgui::Duration(30);
+        REQUIRE((d /= 2.f) == tgui::Duration(std::chrono::milliseconds(15)));
+        d = tgui::Duration(std::chrono::nanoseconds(100));
+        REQUIRE((d %= 3) == tgui::Duration(std::chrono::nanoseconds(1)));
+        d = tgui::Duration(std::chrono::nanoseconds(100));
+        REQUIRE((d %= std::chrono::nanoseconds(6)) == tgui::Duration(std::chrono::nanoseconds(4)));
     }
 }

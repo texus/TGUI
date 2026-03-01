@@ -40,7 +40,6 @@ namespace tgui
     class TGUI_API BackendRenderTargetSFML : public BackendRenderTarget
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs the render target
         ///
@@ -91,12 +90,16 @@ namespace tgui
         /// @param indexCount   Amount of elements in the indices array
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                             const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
+        void drawVertexArray(const RenderStates& states,
+                             const Vertex* vertices,
+                             std::size_t vertexCount,
+                             const unsigned int* indices,
+                             std::size_t indexCount,
+                             const std::shared_ptr<BackendTexture>& texture) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called from addClippingLayer and removeClippingLayer to apply the clipping
         ///
@@ -113,15 +116,15 @@ namespace tgui
         TGUI_NODISCARD static sf::RenderStates convertRenderStates(const RenderStates& states, const std::shared_ptr<BackendTexture>& texture);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         sf::RenderTarget* m_target = nullptr;
 
         Color m_clearColor;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

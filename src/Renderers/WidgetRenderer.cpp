@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/RendererDefines.hpp>
+#include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,11 +49,11 @@ namespace tgui
         {
             RendererData temp(other);
 
-            std::swap(propertyValuePairs,       temp.propertyValuePairs);
-            std::swap(observers,                temp.observers);
-            std::swap(connectedTheme,           temp.connectedTheme);
+            std::swap(propertyValuePairs, temp.propertyValuePairs);
+            std::swap(observers, temp.observers);
+            std::swap(connectedTheme, temp.connectedTheme);
             std::swap(themePropertiesInherited, temp.themePropertiesInherited);
-            std::swap(shared,                   temp.shared);
+            std::swap(shared, temp.shared);
         }
 
         return *this;
@@ -76,7 +76,8 @@ namespace tgui
         rendererData->shared = false;
 
         for (const auto& pair : rendererNode->propertyValuePairs)
-            rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
+            rendererData->propertyValuePairs[pair.first] = ObjectConverter(
+                pair.second->value); // Did not compile with VS2015 Update 2 when using braces
 
         for (const auto& nestedProperty : rendererNode->children)
         {
@@ -253,6 +254,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

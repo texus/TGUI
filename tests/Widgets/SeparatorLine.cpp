@@ -31,10 +31,10 @@ TEST_CASE("[SeparatorLine]")
 
     SECTION("Signals")
     {
-        separator->onClick([](){});
-        separator->onClick([](tgui::Vector2f){});
+        separator->onClick([]() {});
+        separator->onClick([](tgui::Vector2f) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(separator)->getSignal("Clicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(separator)->getSignal("Clicked").connect([] {}));
     }
 
     SECTION("WidgetType")

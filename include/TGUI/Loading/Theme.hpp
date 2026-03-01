@@ -39,8 +39,7 @@ namespace tgui
     class TGUI_API Theme
     {
     public:
-
-        using Ptr = std::shared_ptr<Theme>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Theme>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Theme>; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,21 +264,21 @@ namespace tgui
         TGUI_NODISCARD static std::map<String, String> getRendererInheritedGlobalProperties(const String& widgetType);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         static std::map<String, String> m_rendererInheritanceParents;
         static std::map<String, std::map<String, String>> m_rendererDefaultSubwidgets;
         static std::map<String, std::map<String, String>> m_rendererInheritedGlobalProperties;
         static std::shared_ptr<Theme> m_defaultTheme;
-        static std::shared_ptr<BaseThemeLoader> m_themeLoader;  //!< Theme loader which will do the actual loading
+        static std::shared_ptr<BaseThemeLoader> m_themeLoader; //!< Theme loader which will do the actual loading
 
         std::map<String, std::shared_ptr<RendererData>> m_renderers; //!< Maps ids to renderer datas
-        std::map<String, ObjectConverter> m_globalProperties; //!< Maps id to value
+        std::map<String, ObjectConverter> m_globalProperties;        //!< Maps id to value
         String m_primary;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

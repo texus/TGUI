@@ -57,14 +57,13 @@ namespace tgui
                 m_texture.id = 0;
             }
 
-            static_assert(sizeof(Image) == sizeof(void*) + 4*sizeof(int), "Assuming layout of Image class (c++20 aggregate initialization would solve this)");
-            Image image = {
-                const_cast<std::uint8_t*>(pixels),
-                static_cast<int>(size.x),
-                static_cast<int>(size.y),
-                1,
-                PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
-            };
+            static_assert(sizeof(Image) == sizeof(void*) + 4 * sizeof(int),
+                          "Assuming layout of Image class (c++20 aggregate initialization would solve this)");
+            Image image = {const_cast<std::uint8_t*>(pixels),
+                           static_cast<int>(size.x),
+                           static_cast<int>(size.y),
+                           1,
+                           PIXELFORMAT_UNCOMPRESSED_R8G8B8A8};
 
             m_texture = LoadTextureFromImage(image);
             if (m_texture.id)
@@ -111,6 +110,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

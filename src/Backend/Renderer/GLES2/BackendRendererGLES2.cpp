@@ -41,11 +41,13 @@ namespace tgui
         if (!TGUI_GLAD_GL_ES_VERSION_2_0)
         {
             if (version == 0)
-                throw Exception{U"BackendRendererGLES2 failed to query OpenGL ES version, or requested OpenGL ES version wasn't supported. Has an OpenGL ES context been created yet?"};
+                throw Exception{
+                    U"BackendRendererGLES2 failed to query OpenGL ES version, or requested OpenGL ES version wasn't supported. Has an "
+                    U"OpenGL ES context been created yet?"};
             else
             {
                 throw Exception{U"BackendRendererGLES2 expects at least OpenGL ES 2.0, found version "
-                    + String(GLAD_VERSION_MAJOR(version)) + '.' + String(GLAD_VERSION_MINOR(version))};
+                                + String(GLAD_VERSION_MAJOR(version)) + '.' + String(GLAD_VERSION_MINOR(version))};
             }
         }
 
@@ -78,6 +80,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

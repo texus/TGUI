@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/TGUI.hpp>
+
 #include <TGUI/Backend/SFML-Graphics.hpp>
 
 // The background image will rotate with the screen
@@ -60,7 +61,7 @@ int main(int, char**)
     auto button = tgui::Button::create("Quit");
     button->setPosition(50, 50);
     button->setSize(200, 50);
-    button->onPress([&]{ window.close(); });
+    button->onPress([&] { window.close(); });
     gui.add(button);
 
     // Clicking on this edit box will open the keyboard and allow you to type in it

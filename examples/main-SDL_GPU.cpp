@@ -31,10 +31,11 @@
     #else
         #include <SDL_ttf.h>
     #endif
-    import tgui;
-    import tgui.backend.sdl_gpu;
+import tgui;
+import tgui.backend.sdl_gpu;
 #else
     #include <TGUI/TGUI.hpp>
+
     #include <TGUI/Backend/SDL-GPU.hpp>
 #endif
 
@@ -51,7 +52,7 @@ void run_application(SDL_Window* window, SDL_GPUDevice* device)
 }
 
 // Note that no error checking is performed on SDL initialization in this example code
-int main(int, char **)
+int main(int, char**)
 {
     SDL_Init(SDL_INIT_VIDEO);
 

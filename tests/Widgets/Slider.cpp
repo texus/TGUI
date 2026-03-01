@@ -34,10 +34,10 @@ TEST_CASE("[Slider]")
 
     SECTION("Signals")
     {
-        slider->onValueChange([](){});
-        slider->onValueChange([](float){});
+        slider->onValueChange([]() {});
+        slider->onValueChange([](float) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(slider)->getSignal("ValueChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(slider)->getSignal("ValueChanged").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -478,16 +478,17 @@ TEST_CASE("[Slider]")
         renderer.setOpacity(0.7f);
         slider->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTrackColorHover(tgui::Color::Cyan);
-                                        renderer.setThumbColorHover(tgui::Color::Magenta);
-                                        renderer.setBorderColorHover(tgui::Color::Yellow);
-                                        if (textured)
-                                        {
-                                            renderer.setTextureTrackHover("resources/Texture3.png");
-                                            renderer.setTextureThumbHover("resources/Texture4.png");
-                                        }
-                                     };
+        auto setHoverRenderer = [&](bool textured)
+        {
+            renderer.setTrackColorHover(tgui::Color::Cyan);
+            renderer.setThumbColorHover(tgui::Color::Magenta);
+            renderer.setBorderColorHover(tgui::Color::Yellow);
+            if (textured)
+            {
+                renderer.setTextureTrackHover("resources/Texture3.png");
+                renderer.setTextureThumbHover("resources/Texture4.png");
+            }
+        };
 
         const auto mousePos = slider->getPosition() + (slider->getSize() / 2.f);
 

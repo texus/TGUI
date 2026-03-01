@@ -22,14 +22,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp>
-#include <TGUI/Backend/Renderer/OpenGL.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
+#include <TGUI/Backend/Renderer/OpenGL.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
+
 #include <TGUI/Container.hpp>
 
-#include <numeric>
 #include <cmath>
+#include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,8 +74,7 @@ namespace tgui
                 "}";
         }
 
-        const GLchar* fragmentShaderSource =
-        {
+        const GLchar* fragmentShaderSource = {
             "#version 330 core\n"
             "uniform sampler2D uTexture;\n"
             "in vec4 color;\n"
@@ -82,8 +82,7 @@ namespace tgui
             "out vec4 outColor;\n"
             "void main() {\n"
             "    outColor = texture(uTexture, texCoord) * color;\n"
-            "}"
-        };
+            "}"};
 
         // Create the vertex shader
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -130,8 +129,12 @@ namespace tgui
     BackendRenderTargetOpenGL3::BackendRenderTargetOpenGL3() :
         m_shaderProgram(createShaderProgram())
     {
-        TGUI_ASSERT(isBackendSet(), "BackendRenderTargetOpenGL3 can't be created when there is no system backend initialized (was a gui created yet?)");
-        TGUI_ASSERT(getBackend()->getRenderer(), "BackendRenderTargetOpenGL3 can't be created when there is no backend renderer (was a gui attached to a window yet?)");
+        TGUI_ASSERT(isBackendSet(),
+                    "BackendRenderTargetOpenGL3 can't be created when there is no system backend initialized (was a gui created "
+                    "yet?)");
+        TGUI_ASSERT(getBackend()->getRenderer(),
+                    "BackendRenderTargetOpenGL3 can't be created when there is no backend renderer (was a gui attached to a window "
+                    "yet?)");
 
         // If our OpenGL version didn't support the layout qualifier in GLSL then we need to query the location
         if (!TGUI_GLAD_GL_VERSION_4_3)
@@ -144,7 +147,7 @@ namespace tgui
         auto pixels = MakeUniqueForOverwrite<std::uint8_t[]>(4); // 4 bytes to store RGBA values
         for (unsigned int i = 0; i < 4; ++i)
             pixels[i] = 255;
-        m_emptyTexture->load({1,1}, std::move(pixels), false);
+        m_emptyTexture->load({1, 1}, std::move(pixels), false);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,8 +229,10 @@ namespace tgui
         m_pixelsPerPoint = {m_viewport.width / m_viewRect.width, m_viewport.height / m_viewRect.height};
 
         // Change the state that we need while drawing the gui
-        const std::array<int, 4> viewportGL = {static_cast<int>(m_viewport.left), static_cast<int>(m_targetSize.y - m_viewport.top - m_viewport.height),
-                                               static_cast<int>(m_viewport.width), static_cast<int>(m_viewport.height)};
+        const std::array<int, 4> viewportGL = {static_cast<int>(m_viewport.left),
+                                               static_cast<int>(m_targetSize.y - m_viewport.top - m_viewport.height),
+                                               static_cast<int>(m_viewport.width),
+                                               static_cast<int>(m_viewport.height)};
         TGUI_GL_CHECK(glViewport(viewportGL[0], viewportGL[1], viewportGL[2], viewportGL[3]));
         TGUI_GL_CHECK(glScissor(viewportGL[0], viewportGL[1], viewportGL[2], viewportGL[3]));
         TGUI_GL_CHECK(glUseProgram(m_shaderProgram));
@@ -249,7 +254,8 @@ namespace tgui
         TGUI_GL_CHECK(glUseProgram(0));
         TGUI_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
         TGUI_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-        TGUI_GL_CHECK(glViewport(oldViewport[0], oldViewport[1], static_cast<GLsizei>(oldViewport[2]), static_cast<GLsizei>(oldViewport[3])));
+        TGUI_GL_CHECK(
+            glViewport(oldViewport[0], oldViewport[1], static_cast<GLsizei>(oldViewport[2]), static_cast<GLsizei>(oldViewport[3])));
 
         if (oldScissorEnabled)
             TGUI_GL_CHECK(glScissor(oldClipRect[0], oldClipRect[1], oldClipRect[2], oldClipRect[3]));
@@ -272,15 +278,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTargetOpenGL3::drawVertexArray(const RenderStates& states, const Vertex* vertices,
-        std::size_t vertexCount, const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture)
+    void BackendRenderTargetOpenGL3::drawVertexArray(
+        const RenderStates& states,
+        const Vertex* vertices,
+        std::size_t vertexCount,
+        const unsigned int* indices,
+        std::size_t indexCount,
+        const std::shared_ptr<BackendTexture>& texture)
     {
         // Change the bound texture if it changed
         if (m_currentTexture != texture)
         {
             if (texture)
             {
-                TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureOpenGL3>(texture), "BackendRenderTargetOpenGL3 requires textures of type BackendTextureOpenGL3");
+                TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureOpenGL3>(texture),
+                            "BackendRenderTargetOpenGL3 requires textures of type BackendTextureOpenGL3");
                 m_currentTexture = std::static_pointer_cast<BackendTextureOpenGL3>(texture);
 
                 TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_currentTexture->getInternalTexture()));
@@ -303,7 +315,8 @@ namespace tgui
         if (indices)
         {
             // Load the data into the index buffer
-            TGUI_GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indexCount * sizeof(GLuint)), indices, GL_STREAM_DRAW));
+            TGUI_GL_CHECK(
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indexCount * sizeof(GLuint)), indices, GL_STREAM_DRAW));
 
             TGUI_GL_CHECK(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, nullptr));
         }
@@ -366,6 +379,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

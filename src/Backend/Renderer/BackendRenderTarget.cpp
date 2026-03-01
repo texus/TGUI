@@ -24,6 +24,7 @@
 
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
+
 #include <TGUI/Widget.hpp>
 
 #include <algorithm>
@@ -57,7 +58,11 @@ namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD std::vector<tgui::Vector2f> drawRoundedRectHelperGetPoints(unsigned int nrCornerPoints, const tgui::Vector2f& size, float radius, float offset)
+    TGUI_NODISCARD std::vector<tgui::Vector2f> drawRoundedRectHelperGetPoints(
+        unsigned int nrCornerPoints,
+        const tgui::Vector2f& size,
+        float radius,
+        float offset)
     {
         assert(nrCornerPoints != 0);
 
@@ -88,15 +93,15 @@ namespace
         // Bottom left corner
         for (unsigned int i = 0; i < nrCornerPoints; ++i)
         {
-            points.emplace_back(offset + radius + (radius * std::cos(twoPi * (2*(nrCornerPoints - 1) + i) / nrPointsInCircle)),
-                                offset + size.y - radius - (radius * std::sin(twoPi * (2*(nrCornerPoints - 1) + i) / nrPointsInCircle)));
+            points.emplace_back(offset + radius + (radius * std::cos(twoPi * (2 * (nrCornerPoints - 1) + i) / nrPointsInCircle)),
+                                offset + size.y - radius - (radius * std::sin(twoPi * (2 * (nrCornerPoints - 1) + i) / nrPointsInCircle)));
         }
 
         // Bottom right corner
         for (unsigned int i = 0; i < nrCornerPoints; ++i)
         {
-            points.emplace_back(offset + size.x - radius + (radius * std::cos(twoPi * (3*(nrCornerPoints - 1) + i) / nrPointsInCircle)),
-                                offset + size.y - radius - (radius * std::sin(twoPi * (3*(nrCornerPoints - 1) + i) / nrPointsInCircle)));
+            points.emplace_back(offset + size.x - radius + (radius * std::cos(twoPi * (3 * (nrCornerPoints - 1) + i) / nrPointsInCircle)),
+                                offset + size.y - radius - (radius * std::sin(twoPi * (3 * (nrCornerPoints - 1) + i) / nrPointsInCircle)));
         }
 
         return points;
@@ -104,10 +109,14 @@ namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void drawBordersAroundShape(tgui::BackendRenderTarget* renderTarget, const tgui::RenderStates& states,
-                                const std::vector<tgui::Vector2f>& outerPoints, const std::vector<tgui::Vector2f>& innerPoints, const tgui::Color& color)
+    void drawBordersAroundShape(tgui::BackendRenderTarget* renderTarget,
+                                const tgui::RenderStates& states,
+                                const std::vector<tgui::Vector2f>& outerPoints,
+                                const std::vector<tgui::Vector2f>& innerPoints,
+                                const tgui::Color& color)
     {
-        TGUI_ASSERT(outerPoints.size() == innerPoints.size(), "Inner and outer ring of cicle border should have the same amount of points");
+        TGUI_ASSERT(outerPoints.size() == innerPoints.size(),
+                    "Inner and outer ring of cicle border should have the same amount of points");
 
         // Create the vertices
         std::vector<tgui::Vertex> vertices;
@@ -123,12 +132,12 @@ namespace
         for (std::size_t i = 0; i < outerPoints.size(); ++i)
         {
             indices.push_back(static_cast<unsigned int>(i));
-            indices.push_back(static_cast<unsigned int>(i+1));
+            indices.push_back(static_cast<unsigned int>(i + 1));
             indices.push_back(static_cast<unsigned int>(outerPoints.size() + i));
 
             indices.push_back(static_cast<unsigned int>(outerPoints.size() + i));
-            indices.push_back(static_cast<unsigned int>(outerPoints.size() + i+1));
-            indices.push_back(static_cast<unsigned int>(i+1));
+            indices.push_back(static_cast<unsigned int>(outerPoints.size() + i + 1));
+            indices.push_back(static_cast<unsigned int>(i + 1));
         }
 
         // The last two triangles were given wrong indices by the loop (where there are "+1" in the code), and need to be overwitten to close the circle
@@ -142,7 +151,11 @@ namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void drawInnerShape(tgui::BackendRenderTarget* renderTarget, const tgui::RenderStates& states, const std::vector<tgui::Vector2f>& points, const tgui::Vector2f& centerPoint, const tgui::Color& color)
+    void drawInnerShape(tgui::BackendRenderTarget* renderTarget,
+                        const tgui::RenderStates& states,
+                        const std::vector<tgui::Vector2f>& points,
+                        const tgui::Vector2f& centerPoint,
+                        const tgui::Color& color)
     {
         if (points.empty())
             return;
@@ -161,11 +174,11 @@ namespace
         {
             indices.push_back(0); // Center point
             indices.push_back(static_cast<unsigned int>(i));
-            indices.push_back(static_cast<unsigned int>(i+1));
+            indices.push_back(static_cast<unsigned int>(i + 1));
         }
         indices.back() = 1; // Last index was one too far and should use the first point again, to close the circle
 
-               // Draw the triangles
+        // Draw the triangles
         renderTarget->drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
     }
 } // anonymous namespace
@@ -193,7 +206,7 @@ namespace tgui
         const FloatRect& clipRect = m_clipLayers.empty() ? m_viewRect : m_clipLayers.back().first;
         const FloatRect& widgetRect = states.transform.transformRect({widget->getWidgetOffset(), widget->getFullSize()});
         if ((widgetRect.left > clipRect.left + clipRect.width) || (widgetRect.top > clipRect.top + clipRect.height)
-         || (widgetRect.left + widgetRect.width < clipRect.left) || (widgetRect.top + widgetRect.height < clipRect.top))
+            || (widgetRect.left + widgetRect.width < clipRect.left) || (widgetRect.top + widgetRect.height < clipRect.top))
             return;
 
         // Round widget positions to the nearest pixel
@@ -211,9 +224,9 @@ namespace tgui
 
         /// TODO: We currently can't clip rotated objects (except for 90°, 180° or 270° rotations)
         const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
-        if (((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f)) // 0° or 180°
-         && ((std::abs(transformMatrix[1] - 1) > 0.00001f) || (std::abs(transformMatrix[4] + 1) > 0.00001f)) // 90°
-         && ((std::abs(transformMatrix[1] + 1) > 0.00001f) || (std::abs(transformMatrix[4] - 1) > 0.00001f))) // -90°
+        if (((std::abs(transformMatrix[1]) > 0.00001f) || (std::abs(transformMatrix[4]) > 0.00001f))             // 0° or 180°
+            && ((std::abs(transformMatrix[1] - 1) > 0.00001f) || (std::abs(transformMatrix[4] + 1) > 0.00001f))  // 90°
+            && ((std::abs(transformMatrix[1] + 1) > 0.00001f) || (std::abs(transformMatrix[4] - 1) > 0.00001f))) // -90°
         {
             if (!m_clipLayers.empty())
                 m_clipLayers.push_back(m_clipLayers.back());
@@ -232,12 +245,10 @@ namespace tgui
         if ((clipRight - clipLeft > 0) && (clipBottom - clipTop > 0))
         {
             const FloatRect clipRect = {clipLeft, clipTop, clipRight - clipLeft, clipBottom - clipTop};
-            const FloatRect clipViewport = {
-                m_viewport.left + (((clipLeft - m_viewRect.left) / m_viewRect.width) * m_viewport.width),
-                m_viewport.top + (((clipTop - m_viewRect.top) / m_viewRect.height) * m_viewport.height),
-                m_viewport.width * ((clipRight - clipLeft) / m_viewRect.width),
-                m_viewport.height * ((clipBottom - clipTop) / m_viewRect.height)
-            };
+            const FloatRect clipViewport = {m_viewport.left + (((clipLeft - m_viewRect.left) / m_viewRect.width) * m_viewport.width),
+                                            m_viewport.top + (((clipTop - m_viewRect.top) / m_viewRect.height) * m_viewport.height),
+                                            m_viewport.width * ((clipRight - clipLeft) / m_viewRect.width),
+                                            m_viewport.height * ((clipBottom - clipTop) / m_viewRect.height)};
             m_clipLayers.emplace_back(clipRect, clipViewport);
             updateClipping(clipRect, clipViewport);
         }
@@ -276,27 +287,17 @@ namespace tgui
         // 2--------------4 //
         //////////////////////
         const auto vertexColor = Vertex::Color(color);
-        const std::array<Vertex, 9> vertices = {{
-            {{0, 0}, vertexColor},
-            {{borders.getLeft(), 0}, vertexColor},
-            {{0, size.y}, vertexColor},
-            {{borders.getLeft(), size.y - borders.getBottom()}, vertexColor},
-            {{size.x, size.y}, vertexColor},
-            {{size.x - borders.getRight(), size.y - borders.getBottom()}, vertexColor},
-            {{size.x, 0}, vertexColor},
-            {{size.x - borders.getRight(), borders.getTop()}, vertexColor},
-            {{borders.getLeft(), borders.getTop()}, vertexColor}
-        }};
-        const std::array<unsigned int, 8*3> indices = {{
-            0, 2, 1,
-            1, 2, 3,
-            2, 4, 3,
-            3, 4, 5,
-            4, 6, 5,
-            5, 6, 7,
-            6, 1, 7,
-            7, 1, 8
-        }};
+        const std::array<Vertex, 9> vertices = {
+            {{{0, 0}, vertexColor},
+             {{borders.getLeft(), 0}, vertexColor},
+             {{0, size.y}, vertexColor},
+             {{borders.getLeft(), size.y - borders.getBottom()}, vertexColor},
+             {{size.x, size.y}, vertexColor},
+             {{size.x - borders.getRight(), size.y - borders.getBottom()}, vertexColor},
+             {{size.x, 0}, vertexColor},
+             {{size.x - borders.getRight(), borders.getTop()}, vertexColor},
+             {{borders.getLeft(), borders.getTop()}, vertexColor}}};
+        const std::array<unsigned int, 8 * 3> indices = {{0, 2, 1, 1, 2, 3, 2, 4, 3, 3, 4, 5, 4, 6, 5, 5, 6, 7, 6, 1, 7, 7, 1, 8}};
         drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
     }
 
@@ -305,16 +306,9 @@ namespace tgui
     void BackendRenderTarget::drawFilledRect(const RenderStates& states, Vector2f size, Color color)
     {
         const auto vertexColor = Vertex::Color(color);
-        const std::array<Vertex, 4> vertices = {{
-            {{0, 0}, vertexColor},
-            {{0, size.y}, vertexColor},
-            {{size.x, 0}, vertexColor},
-            {{size.x, size.y}, vertexColor}
-        }};
-        const std::array<unsigned int, 2*3> indices = {{
-            0, 1, 2,
-            2, 1, 3
-        }};
+        const std::array<Vertex, 4> vertices = {
+            {{{0, 0}, vertexColor}, {{0, size.y}, vertexColor}, {{size.x, 0}, vertexColor}, {{size.x, size.y}, vertexColor}}};
+        const std::array<unsigned int, 2 * 3> indices = {{0, 1, 2, 2, 1, 3}};
         drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), nullptr);
     }
 
@@ -329,7 +323,8 @@ namespace tgui
         if (sprite.getRotation() != 0)
         {
             // A rotation can cause the image to be shifted, so we move it upfront so that it ends at the correct location
-            transformedStates.transform.translate(-Transform().rotate(sprite.getRotation()).transformRect({{}, sprite.getSize()}).getPosition());
+            transformedStates.transform.translate(
+                -Transform().rotate(sprite.getRotation()).transformRect({{}, sprite.getSize()}).getPosition());
             transformedStates.transform.rotate(sprite.getRotation());
         }
 
@@ -418,13 +413,17 @@ namespace tgui
 
     void BackendRenderTarget::drawTriangle(const RenderStates& states, const Vertex& point1, const Vertex& point2, const Vertex& point3)
     {
-        const std::array<Vertex, 3> vertices = {{ point1, point2, point3 }};
+        const std::array<Vertex, 3> vertices = {{point1, point2, point3}};
         drawVertexArray(states, vertices.data(), vertices.size(), nullptr, 0, nullptr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTarget::drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness, const Color& borderColor)
+    void BackendRenderTarget::drawCircle(const RenderStates& states,
+                                         float size,
+                                         const Color& backgroundColor,
+                                         float borderThickness,
+                                         const Color& borderColor)
     {
         const float radius = size / 2.f;
         const auto nrPoints = static_cast<unsigned int>(std::ceil((radius + std::abs(borderThickness)) * 4));
@@ -453,8 +452,13 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendRenderTarget::drawRoundedRectangle(const RenderStates& states, const Vector2f& size, const Color& backgroundColor,
-                                                   float radius, const Borders& borders, const Color& borderColor)
+    void BackendRenderTarget::drawRoundedRectangle(
+        const RenderStates& states,
+        const Vector2f& size,
+        const Color& backgroundColor,
+        float radius,
+        const Borders& borders,
+        const Color& borderColor)
     {
         // Radius can never be larger than half the width or height
         radius = std::min({radius, size.x / 2, size.y / 2});
@@ -466,16 +470,16 @@ namespace tgui
         if (borderWidth > 0)
         {
             radius = std::max(0.f, radius - borderWidth);
-            const Vector2f innerSize = {std::max(0.f, size.x - (2*borderWidth)), std::max(0.f, size.y - (2*borderWidth))};
+            const Vector2f innerSize = {std::max(0.f, size.x - (2 * borderWidth)), std::max(0.f, size.y - (2 * borderWidth))};
             radius = std::min({radius, innerSize.x / 2, innerSize.y / 2});
 
             const std::vector<Vector2f>& innerPoints = drawRoundedRectHelperGetPoints(nrCornerPoints, innerSize, radius, borderWidth);
 
             drawBordersAroundShape(this, states, outerPoints, innerPoints, borderColor);
-            drawInnerShape(this, states, innerPoints, size/2.f, backgroundColor);
+            drawInnerShape(this, states, innerPoints, size / 2.f, backgroundColor);
         }
         else // There are no borders
-            drawInnerShape(this, states, outerPoints, size/2.f, backgroundColor);
+            drawInnerShape(this, states, outerPoints, size / 2.f, backgroundColor);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -486,6 +490,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

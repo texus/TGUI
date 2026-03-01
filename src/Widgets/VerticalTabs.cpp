@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/VerticalTabs.hpp>
 #include <TGUI/Optional.hpp>
+#include <TGUI/Widgets/VerticalTabs.hpp>
 
 #include <cmath>
 
@@ -267,9 +267,13 @@ namespace tgui
             if (roundedCorners)
             {
                 states.transform.translate({0, -borderHeight});
-                target.drawRoundedRectangle(states, {getSize().x, m_tabHeight + (2 * borderHeight)}, Color::applyOpacity(backgroundColor, m_opacityCached),
-                                            m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
-                states.transform.translate({0, m_tabHeight + (2*borderHeight)});
+                target.drawRoundedRectangle(states,
+                                            {getSize().x, m_tabHeight + (2 * borderHeight)},
+                                            Color::applyOpacity(backgroundColor, m_opacityCached),
+                                            m_roundedBorderRadiusCached,
+                                            m_bordersCached,
+                                            Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                states.transform.translate({0, m_tabHeight + (2 * borderHeight)});
             }
             else
             {
@@ -314,8 +318,9 @@ namespace tgui
                     if (i == m_tabs.size() - 1)
                         bottomBorderHeight = m_bordersCached.getBottom();
 
-                    if ((m_selectedTab >= 0) && (m_hoveringTab >= 0) && (m_borderColorHoverCached.isSet()
-                        && (m_selectedBorderColorCached.isSet() || m_selectedBorderColorHoverCached.isSet())))
+                    if ((m_selectedTab >= 0) && (m_hoveringTab >= 0)
+                        && (m_borderColorHoverCached.isSet()
+                            && (m_selectedBorderColorCached.isSet() || m_selectedBorderColorHoverCached.isSet())))
                     {
                         if ((m_selectedTab == static_cast<int>(i - 1)) || (m_hoveringTab == static_cast<int>(i - 1)))
                             topBorderHeight /= 2;
@@ -327,8 +332,10 @@ namespace tgui
                     if (i < m_tabs.size() - 1)
                         highlightStates.transform.translate({0, -borderHeight});
                     highlightStates.transform.translate({-m_bordersCached.getLeft(), -m_tabHeight - topBorderHeight});
-                    target.drawBorders(highlightStates, {m_bordersCached.getLeft(), topBorderHeight, m_bordersCached.getRight(), bottomBorderHeight},
-                                       {getSize().x, m_tabHeight + topBorderHeight + bottomBorderHeight}, highlightColor);
+                    target.drawBorders(highlightStates,
+                                       {m_bordersCached.getLeft(), topBorderHeight, m_bordersCached.getRight(), bottomBorderHeight},
+                                       {getSize().x, m_tabHeight + topBorderHeight + bottomBorderHeight},
+                                       highlightColor);
                 }
             }
 
@@ -340,7 +347,8 @@ namespace tgui
                 target.addClippingLayer(textStates, {{m_distanceToSideCached, 0}, {usableTextWidth, usableHeight}});
 
             // Draw the text
-            textStates.transform.translate({m_distanceToSideCached + ((usableTextWidth - m_tabs[i].text.getSize().x) / 2.f), ((usableHeight - m_tabs[i].text.getSize().y) / 2.f)});
+            textStates.transform.translate({m_distanceToSideCached + ((usableTextWidth - m_tabs[i].text.getSize().x) / 2.f),
+                                            ((usableHeight - m_tabs[i].text.getSize().y) / 2.f)});
             target.drawText(textStates, m_tabs[i].text);
 
             if (clippingRequired)
@@ -356,6 +364,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

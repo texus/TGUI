@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/MenuBar.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/Widgets/MenuBar.hpp>
 
 #include <cmath>
 
@@ -579,13 +579,16 @@ namespace tgui
         if (node->propertyValuePairs[U"MinimumSubMenuWidth"])
             setMinimumSubMenuWidth(node->propertyValuePairs[U"MinimumSubMenuWidth"]->value.toFloat());
         if (node->propertyValuePairs[U"InvertedMenuDirection"])
-            setInvertedMenuDirection(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"InvertedMenuDirection"]->value).getBool());
+            setInvertedMenuDirection(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"InvertedMenuDirection"]->value).getBool());
 
         loadMenus(node, m_menus);
 
         // Remove the 'menu' nodes as they have been processed
-        node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-            [](const std::unique_ptr<DataIO::Node>& child){ return child->name == U"Menu"; }), node->children.end());
+        node->children.erase(std::remove_if(node->children.begin(),
+                                            node->children.end(),
+                                            [](const std::unique_ptr<DataIO::Node>& child) { return child->name == U"Menu"; }),
+                             node->children.end());
 
         // Update the text colors to properly display disabled menus
         updateTextColors(m_menus, m_visibleMenu);
@@ -751,6 +754,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

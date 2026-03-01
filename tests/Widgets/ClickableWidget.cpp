@@ -30,30 +30,30 @@ TEST_CASE("[ClickableWidget]")
 
     SECTION("Signals")
     {
-        widget->onMousePress([](){});
-        widget->onMousePress([](tgui::Vector2f){});
+        widget->onMousePress([]() {});
+        widget->onMousePress([](tgui::Vector2f) {});
 
-        widget->onMouseRelease([](){});
-        widget->onMouseRelease([](tgui::Vector2f){});
+        widget->onMouseRelease([]() {});
+        widget->onMouseRelease([](tgui::Vector2f) {});
 
-        widget->onClick([](){});
-        widget->onClick([](tgui::Vector2f){});
+        widget->onClick([]() {});
+        widget->onClick([](tgui::Vector2f) {});
 
-        widget->onRightMousePress([](){});
-        widget->onRightMousePress([](tgui::Vector2f){});
+        widget->onRightMousePress([]() {});
+        widget->onRightMousePress([](tgui::Vector2f) {});
 
-        widget->onRightMouseRelease([](){});
-        widget->onRightMouseRelease([](tgui::Vector2f){});
+        widget->onRightMouseRelease([]() {});
+        widget->onRightMouseRelease([](tgui::Vector2f) {});
 
-        widget->onRightClick([](){});
-        widget->onRightClick([](tgui::Vector2f){});
+        widget->onRightClick([]() {});
+        widget->onRightClick([](tgui::Vector2f) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("MousePressed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("MouseReleased").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("Clicked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightMousePressed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightMouseReleased").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("MousePressed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("MouseReleased").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("Clicked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightMousePressed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightMouseReleased").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(widget)->getSignal("RightClicked").connect([] {}));
     }
 
     SECTION("WidgetType")

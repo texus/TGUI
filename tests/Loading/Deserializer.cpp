@@ -154,13 +154,16 @@ TEST_CASE("[Deserializer]")
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 10, 30, 30));
         REQUIRE(!texture.isSmooth());
 
-        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20)").getTexture();
+        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20)")
+                      .getTexture();
         REQUIRE(texture.getData() != nullptr);
         REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 40, 40));
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 10, 20, 20));
         REQUIRE(texture.isSmooth());
 
-        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 10) Part(20, 10, 40, 30) NoSmooth").getTexture();
+        texture = tgui::Deserializer::deserialize(Type::Texture,
+                                                  "\"resources/image.png\" Middle(10, 10, 20, 10) Part(20, 10, 40, 30) NoSmooth")
+                      .getTexture();
         REQUIRE(texture.getData() != nullptr);
         REQUIRE(texture.getPartRect() == tgui::UIntRect(20, 10, 40, 30));
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 10, 20, 10));
@@ -172,13 +175,20 @@ TEST_CASE("[Deserializer]")
         texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(7, 4)").getTexture();
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(7, 4, 36, 42));
 
-        texture = tgui::Deserializer::deserialize(Type::Texture, "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==").getTexture();
+        texture = tgui::Deserializer::deserialize(Type::Texture,
+                                                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4/"
+                                                  "/8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==")
+                      .getTexture();
         REQUIRE(texture.getData() != nullptr);
         REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 5, 5));
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(0, 0, 5, 5));
         REQUIRE(texture.isSmooth());
 
-        texture = tgui::Deserializer::deserialize(Type::Texture, "\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==\" NoSmooth").getTexture();
+        texture = tgui::Deserializer::deserialize(Type::Texture,
+                                                  "\"data:image/"
+                                                  "png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/"
+                                                  "w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==\" NoSmooth")
+                      .getTexture();
         REQUIRE(texture.getData() != nullptr);
         REQUIRE(!texture.isSmooth());
 
@@ -202,7 +212,8 @@ TEST_CASE("[Deserializer]")
     SECTION("deserialize text style")
     {
         REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Regular").getTextStyle() == tgui::TextStyle::Regular);
-        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Bold | Italic").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Italic));
+        REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "Bold | Italic").getTextStyle()
+                == (tgui::TextStyle::Bold | tgui::TextStyle::Italic));
 
         REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "| Underlined").getTextStyle() == tgui::TextStyle::Underlined);
         REQUIRE(tgui::Deserializer::deserialize(Type::TextStyle, "StrikeThrough |").getTextStyle() == tgui::TextStyle::StrikeThrough);
@@ -213,13 +224,14 @@ TEST_CASE("[Deserializer]")
 
     SECTION("deserialize renderer")
     {
-        const tgui::String data = "{\n"
-                                  "  Nested = {\n"
-                                  "    Num = 5;\n"
-                                  "  };\n"
-                                  "  SomeColor = Red;\n"
-                                  "  TextStyleProperty = StrikeThrough;\n"
-                                  "}";
+        const tgui::String data =
+            "{\n"
+            "  Nested = {\n"
+            "    Num = 5;\n"
+            "  };\n"
+            "  SomeColor = Red;\n"
+            "  TextStyleProperty = StrikeThrough;\n"
+            "}";
 
         const std::shared_ptr<tgui::RendererData> rendererData = tgui::Deserializer::deserialize(Type::RendererData, data).getRenderer();
         REQUIRE(rendererData->propertyValuePairs.size() == 3);
@@ -233,7 +245,7 @@ TEST_CASE("[Deserializer]")
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == tgui::Color(10, 20, 30));
         auto oldFunc = tgui::Deserializer::getFunction(tgui::ObjectConverter::Type::Color);
 
-        tgui::Deserializer::setFunction(Type::Color, [](const tgui::String&){ return tgui::ObjectConverter{tgui::Color::Green}; });
+        tgui::Deserializer::setFunction(Type::Color, [](const tgui::String&) { return tgui::ObjectConverter{tgui::Color::Green}; });
         REQUIRE(tgui::Deserializer::deserialize(Type::Color, "rgb(10, 20, 30)").getColor() == tgui::Color::Green);
         REQUIRE(tgui::Deserializer::deserialize(Type::Outline, "(50, 60, 70, 80)").getOutline() == tgui::Outline(50, 60, 70, 80));
 

@@ -31,29 +31,29 @@ TEST_CASE("[ChildWindow]")
 
     SECTION("Signals")
     {
-        childWindow->onMousePress([](){});
+        childWindow->onMousePress([]() {});
 
-        childWindow->onClose([](){});
-        childWindow->onClose([](const tgui::ChildWindow::Ptr&){});
+        childWindow->onClose([]() {});
+        childWindow->onClose([](const tgui::ChildWindow::Ptr&) {});
 
-        childWindow->onClosing([](){});
-        childWindow->onClosing([](bool*){});
+        childWindow->onClosing([]() {});
+        childWindow->onClosing([](bool*) {});
 
-        childWindow->onMaximize([](){});
-        childWindow->onMaximize([](const tgui::ChildWindow::Ptr&){});
+        childWindow->onMaximize([]() {});
+        childWindow->onMaximize([](const tgui::ChildWindow::Ptr&) {});
 
-        childWindow->onMinimize([](){});
-        childWindow->onMinimize([](const tgui::ChildWindow::Ptr&){});
+        childWindow->onMinimize([]() {});
+        childWindow->onMinimize([](const tgui::ChildWindow::Ptr&) {});
 
-        childWindow->onEscapeKeyPress([](){});
-        childWindow->onEscapeKeyPress([](const tgui::ChildWindow::Ptr&){});
+        childWindow->onEscapeKeyPress([]() {});
+        childWindow->onEscapeKeyPress([](const tgui::ChildWindow::Ptr&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("MousePressed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Closed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Closing").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Maximized").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Minimized").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("EscapeKeyPressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("MousePressed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Closed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Closing").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Maximized").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("Minimized").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(childWindow)->getSignal("EscapeKeyPressed").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -107,7 +107,8 @@ TEST_CASE("[ChildWindow]")
     {
         childWindow->setSize(250, 250);
 
-        REQUIRE(childWindow->getMaximumSize() == tgui::Vector2f(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()));
+        REQUIRE(childWindow->getMaximumSize()
+                == tgui::Vector2f(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()));
         childWindow->setMaximumSize({100, 50});
         REQUIRE(childWindow->getMaximumSize() == tgui::Vector2f(100, 50));
 
@@ -185,7 +186,8 @@ TEST_CASE("[ChildWindow]")
         childWindow->setTitleButtons(tgui::ChildWindow::TitleButton::None);
         REQUIRE(childWindow->getTitleButtons() == tgui::ChildWindow::TitleButton::None);
 
-        const unsigned int buttons = tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Maximize | tgui::ChildWindow::TitleButton::Minimize;
+        const unsigned int buttons = tgui::ChildWindow::TitleButton::Close | tgui::ChildWindow::TitleButton::Maximize
+                                     | tgui::ChildWindow::TitleButton::Minimize;
         childWindow->setTitleButtons(buttons);
         REQUIRE(childWindow->getTitleButtons() == buttons);
     }

@@ -122,7 +122,8 @@ TEST_CASE("[Serializer]")
     {
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{tgui::TextStyle::Regular}) == "Regular");
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{tgui::TextStyle::Bold}) == "Bold");
-        REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{tgui::TextStyle::Italic | tgui::TextStyle::Underlined}) == "Italic | Underlined");
+        REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{tgui::TextStyle::Italic | tgui::TextStyle::Underlined})
+                == "Italic | Underlined");
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{"bold"}) == "Bold");
         REQUIRE(tgui::Serializer::serialize(tgui::TextStyles{"italic | underlined"}) == "Italic | Underlined");
 
@@ -139,12 +140,13 @@ TEST_CASE("[Serializer]")
         rendererData->propertyValuePairs["TextStyleProperty"] = {tgui::TextStyle::StrikeThrough};
         rendererData->propertyValuePairs["Nested"] = {childRendererData};
 
-        const tgui::String result = "SomeColor = red;\n"
-                                    "TextStyleProperty = StrikeThrough;\n"
-                                    "\n"
-                                    "Nested {\n"
-                                    "    Num = 5;\n"
-                                    "}\n";
+        const tgui::String result =
+            "SomeColor = red;\n"
+            "TextStyleProperty = StrikeThrough;\n"
+            "\n"
+            "Nested {\n"
+            "    Num = 5;\n"
+            "}\n";
 
         REQUIRE(tgui::Serializer::serialize(rendererData) == result);
     }
@@ -154,7 +156,7 @@ TEST_CASE("[Serializer]")
         REQUIRE(tgui::Serializer::serialize(tgui::Color::Blue) == "blue");
         auto oldFunc = tgui::Serializer::getFunction(tgui::ObjectConverter::Type::Color);
 
-        tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, [](tgui::ObjectConverter&&){ return "STR"; });
+        tgui::Serializer::setFunction(tgui::ObjectConverter::Type::Color, [](tgui::ObjectConverter&&) { return "STR"; });
         REQUIRE(tgui::Serializer::serialize(tgui::Color::Blue) == "STR");
         REQUIRE(tgui::Serializer::serialize(tgui::Outline{10, 2, 50, 300}) == "(10, 2, 50, 300)");
 

@@ -22,22 +22,23 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Filesystem.hpp>
 #include <TGUI/Global.hpp>
+
+#include <TGUI/Filesystem.hpp>
 
 #include <cstdlib> // getenv
 
 #if defined(TGUI_SYSTEM_WINDOWS)
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #else
+    #include <pwd.h>    // getpwuid
     #include <unistd.h> // getuid, getcwd
-    #include <pwd.h> // getpwuid
 
     #if !defined(TGUI_USE_STD_FILESYSTEM) || !defined(TGUI_USE_STD_FILESYSTEM_FILE_TIME)
+        #include <cerrno>      // errno
+        #include <dirent.h>    // opendir, readdir, closedir
+        #include <sys/stat.h>  // stat
         #include <sys/types.h> // stat
-        #include <sys/stat.h> // stat
-        #include <dirent.h> // opendir, readdir, closedir
-        #include <cerrno> // errno
     #endif
 #endif
 
@@ -64,7 +65,8 @@ namespace tgui
 
     Filesystem::Path::Path(const String& path)
 #ifdef TGUI_USE_STD_FILESYSTEM
-        : m_path(std::u32string(path))
+        :
+        m_path(std::u32string(path))
 #endif
     {
 #if !defined(TGUI_USE_STD_FILESYSTEM)
@@ -221,13 +223,13 @@ namespace tgui
         Filesystem::Path newPath = *this;
         for (std::size_t i = newPath.m_parts.size(); i > 0; --i)
         {
-            if (newPath.m_parts[i-1] == U".")
-                newPath.m_parts.erase(newPath.m_parts.begin() + static_cast<std::ptrdiff_t>(i-1));
-            else if (m_parts[i-1] == U"..")
+            if (newPath.m_parts[i - 1] == U".")
+                newPath.m_parts.erase(newPath.m_parts.begin() + static_cast<std::ptrdiff_t>(i - 1));
+            else if (m_parts[i - 1] == U"..")
             {
                 if (i > 1)
                 {
-                    newPath.m_parts.erase(newPath.m_parts.begin() + static_cast<std::ptrdiff_t>(i-2),
+                    newPath.m_parts.erase(newPath.m_parts.begin() + static_cast<std::ptrdiff_t>(i - 2),
                                           newPath.m_parts.begin() + static_cast<std::ptrdiff_t>(i));
                     --i;
                 }
@@ -373,7 +375,7 @@ namespace tgui
     Filesystem::Path Filesystem::getHomeDirectory()
     {
 #ifdef TGUI_SYSTEM_WINDOWS
-    #if defined (_MSC_VER)
+    #if defined(_MSC_VER)
         const DWORD requiredBufferSizeHomeDrive = GetEnvironmentVariableW(L"HOMEDRIVE", nullptr, 0);
         auto bufferHomeDrive = MakeUniqueForOverwrite<wchar_t[]>(requiredBufferSizeHomeDrive);
         const DWORD lengthHomeDrive = GetEnvironmentVariableW(L"HOMEDRIVE", bufferHomeDrive.get(), requiredBufferSizeHomeDrive);
@@ -433,7 +435,7 @@ namespace tgui
     {
         Path localDataDir;
 #ifdef TGUI_SYSTEM_WINDOWS
-    #if defined (_MSC_VER)
+    #if defined(_MSC_VER)
         const DWORD requiredBufferSize = GetEnvironmentVariableW(L"LOCALAPPDATA", nullptr, 0);
         auto buffer = MakeUniqueForOverwrite<wchar_t[]>(requiredBufferSize);
         const DWORD length = GetEnvironmentVariableW(L"LOCALAPPDATA", buffer.get(), requiredBufferSize);
@@ -469,13 +471,15 @@ namespace tgui
 
 #ifdef TGUI_USE_STD_FILESYSTEM_FILE_TIME
         std::error_code errorCode;
-        for (const auto& entry: std::filesystem::directory_iterator(path, std::filesystem::directory_options::skip_permission_denied, errorCode))
+        for (const auto& entry :
+             std::filesystem::directory_iterator(path, std::filesystem::directory_options::skip_permission_denied, errorCode))
         {
             TGUI_EMPLACE_BACK(fileInfo, fileList)
             fileInfo.filename = entry.path().filename().generic_u32string();
             fileInfo.path = Path(entry.path());
             fileInfo.directory = entry.is_directory(errorCode);
-            fileInfo.modificationTime = std::chrono::system_clock::to_time_t(std::chrono::clock_cast<std::chrono::system_clock>(entry.last_write_time(errorCode)));
+            fileInfo.modificationTime = std::chrono::system_clock::to_time_t(
+                std::chrono::clock_cast<std::chrono::system_clock>(entry.last_write_time(errorCode)));
             if (!fileInfo.directory)
                 fileInfo.fileSize = entry.file_size(errorCode);
         }
@@ -540,6 +544,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <set>
-
 #include "Tests.hpp"
+
+#include <set>
 
 TEST_CASE("[ListView]")
 {
@@ -33,22 +33,22 @@ TEST_CASE("[ListView]")
 
     SECTION("Signals")
     {
-        listView->onItemSelect([](){});
-        listView->onItemSelect([](int){});
+        listView->onItemSelect([]() {});
+        listView->onItemSelect([](int) {});
 
-        listView->onDoubleClick([](){});
-        listView->onDoubleClick([](int){});
+        listView->onDoubleClick([]() {});
+        listView->onDoubleClick([](int) {});
 
-        listView->onRightClick([](){});
-        listView->onRightClick([](int){});
+        listView->onRightClick([]() {});
+        listView->onRightClick([](int) {});
 
-        listView->onHeaderClick([](){});
-        listView->onHeaderClick([](int){});
+        listView->onHeaderClick([]() {});
+        listView->onHeaderClick([](int) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("ItemSelected").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("DoubleClicked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("RightClicked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("HeaderClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("ItemSelected").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("DoubleClicked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("RightClicked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listView)->getSignal("HeaderClicked").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -185,10 +185,13 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"c,1", "c,2"}});
 
         listView->insertItem(2, "x,1");
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
+        REQUIRE(listView->getItemRows()
+                == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
 
         listView->insertMultipleItems(1, {{"y,1", "y,2", "y,3"}, {"z,1"}});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"y,1", "y,2"}, {"z,1", ""}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
+        REQUIRE(listView->getItemRows()
+                == std::vector<
+                    std::vector<tgui::String>>{{"1,1", "a,2"}, {"y,1", "y,2"}, {"z,1", ""}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
 
         listView->removeAllItems();
         listView->insertItem(0, "2,1");
@@ -197,7 +200,8 @@ TEST_CASE("[ListView]")
         REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2"}, {"2,1", ""}, {"3,1", "3,2"}});
 
         listView->insertMultipleItems(3, {{"x,1", "x,2"}});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2"}, {"2,1", ""}, {"3,1", "3,2"}, {"x,1", "x,2"}});
+        REQUIRE(listView->getItemRows()
+                == std::vector<std::vector<tgui::String>>{{"1,1", "1,2"}, {"2,1", ""}, {"3,1", "3,2"}, {"x,1", "x,2"}});
     }
 
     SECTION("Data")
@@ -240,16 +244,20 @@ TEST_CASE("[ListView]")
         auto cmp2 = [](const tgui::String& a, const tgui::String& b) { return a.toInt() > b.toInt(); };
 
         listView->sort(0, cmp1);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
+        REQUIRE(listView->getItemRows()
+                == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
 
         listView->sort(5, cmp1);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
+        REQUIRE(listView->getItemRows()
+                == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"200", "-5", "20"}, {"300", "", ""}});
 
         listView->sort(1, cmp2);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"300", "", ""}, {"200", "-5", "20"}});
+        REQUIRE(listView->getItemRows()
+                == std::vector<std::vector<tgui::String>>{{"1000", "7", ""}, {"300", "", ""}, {"200", "-5", "20"}});
 
         listView->sort(2, cmp2);
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"200", "-5", "20"}, {"1000", "7", ""}, {"300", "", ""}});
+        REQUIRE(listView->getItemRows()
+                == std::vector<std::vector<tgui::String>>{{"200", "-5", "20"}, {"1000", "7", ""}, {"300", "", ""}});
     }
 
     SECTION("Returned item rows depend on columns")
@@ -279,23 +287,23 @@ TEST_CASE("[ListView]")
 
     SECTION("Returned item cells")
     {
-        listView->addItem({ "1,1", "1,2", "1,3" });
-        listView->addItem({ "2,1", "2,2" });
+        listView->addItem({"1,1", "1,2", "1,3"});
+        listView->addItem({"2,1", "2,2"});
 
         REQUIRE(listView->getItemCell(0, 0) == "1,1");
         REQUIRE(listView->getItemCell(0, 1).empty());
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1"}, { "2,1" }});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1"}, {"2,1"}});
 
         listView->addColumn("Col 1");
         REQUIRE(listView->getItemCell(1, 0) == "2,1");
         REQUIRE(listView->getItemCell(0, 1).empty());
         REQUIRE(listView->getItemCell(2, 1).empty());
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1"}, { "2,1" }});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1"}, {"2,1"}});
 
         listView->addColumn("Col 2");
         REQUIRE(listView->getItemCell(1, 1) == "2,2");
         REQUIRE(listView->getItemCell(0, 2).empty());
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{ {"1,1", "1,2"}, { "2,1", "2,2" }});
+        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2"}, {"2,1", "2,2"}});
     }
 
     SECTION("Selecting items")
@@ -314,13 +322,13 @@ TEST_CASE("[ListView]")
 
         listView->setMultiSelect(true);
         REQUIRE(listView->getSelectedItemIndices().empty());
-        listView->setSelectedItems({ 0, 2 });
-        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ 0, 2 });
+        listView->setSelectedItems({0, 2});
+        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{0, 2});
 
         listView->setMultiSelect(false);
-        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ 0 });
-        listView->setSelectedItems({ 1, 2 });
-        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{ 1 });
+        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{0});
+        listView->setSelectedItems({1, 2});
+        REQUIRE(listView->getSelectedItemIndices() == std::set<std::size_t>{1});
         listView->deselectItems();
         REQUIRE(listView->getSelectedItemIndices().empty());
     }
@@ -648,11 +656,11 @@ TEST_CASE("[ListView]")
 #endif
 
         listView->addItem("1,1");
-        listView->addItem({ "2,1", "2,2", "2,3" });
-        listView->addItem({ "3,1", "3,2" });
+        listView->addItem({"2,1", "2,2", "2,3"});
+        listView->addItem({"3,1", "3,2"});
 
         listView->setMultiSelect(true);
-        listView->setSelectedItems({ 0,2 });
+        listView->setSelectedItems({0, 2});
 
         listView->keyPressed(event);
         const tgui::String clipboardContents = getClipboardContents();
@@ -688,15 +696,11 @@ TEST_CASE("[ListView]")
         container->add(listView);
         root->add(container);
 
-        auto mouseMoved = [container](tgui::Vector2f pos){
-            container->processMouseMoveEvent(pos);
-        };
-        auto mousePressed = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left){
-            container->processMousePressEvent(button, pos);
-        };
-        auto mouseReleased = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left){
-            container->processMouseReleaseEvent(button, pos);
-        };
+        auto mouseMoved = [container](tgui::Vector2f pos) { container->processMouseMoveEvent(pos); };
+        auto mousePressed = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left)
+        { container->processMousePressEvent(button, pos); };
+        auto mouseReleased = [container](tgui::Vector2f pos, tgui::Event::MouseButton button = tgui::Event::MouseButton::Left)
+        { container->processMouseReleaseEvent(button, pos); };
 
         listView->setPosition(10, 20);
         listView->setSize(120, 64);
@@ -763,7 +767,12 @@ TEST_CASE("[ListView]")
         {
             int lastHeaderIndex = -1;
             unsigned int headerClickCount = 0;
-            listView->onHeaderClick([&](int index){ lastHeaderIndex = index; ++headerClickCount; });
+            listView->onHeaderClick(
+                [&](int index)
+                {
+                    lastHeaderIndex = index;
+                    ++headerClickCount;
+                });
 
             listView->setHeaderHeight(30);
             listView->addColumn("Col 1", 50);
@@ -792,7 +801,12 @@ TEST_CASE("[ListView]")
         {
             int lastIndex = -1;
             unsigned int rightClickCount = 0;
-            listView->onRightClick([&](int index){ lastIndex = index; ++rightClickCount; });
+            listView->onRightClick(
+                [&](int index)
+                {
+                    lastIndex = index;
+                    ++rightClickCount;
+                });
 
             // Right click 3th item
             mousePressed({40, 70}, tgui::Event::MouseButton::Right);
@@ -1180,12 +1194,13 @@ TEST_CASE("[ListView]")
         scrollbarRenderer.setOpacity(0.7f);
         renderer.setScrollbar(scrollbarRenderer.getData());
 
-        auto setHoverRenderer = [&]{
-                                    renderer.setBackgroundColorHover(tgui::Color::Yellow);
-                                    renderer.setTextColorHover(tgui::Color::Magenta);
-                                    renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
-                                    renderer.setSelectedTextColorHover("#808080");
-                                 };
+        auto setHoverRenderer = [&]
+        {
+            renderer.setBackgroundColorHover(tgui::Color::Yellow);
+            renderer.setTextColorHover(tgui::Color::Magenta);
+            renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
+            renderer.setSelectedTextColorHover("#808080");
+        };
 
         listView->addItem({"1", "1.2"});
         listView->addItem("2");
@@ -1212,20 +1227,14 @@ TEST_CASE("[ListView]")
 
         SECTION("No selected item")
         {
-            SECTION("No hover")
-            {
-                TEST_DRAW("ListView_NoSelectedNoHover.png")
-            }
+            SECTION("No hover"){TEST_DRAW("ListView_NoSelectedNoHover.png")}
 
             SECTION("Hover")
             {
                 listView->mouseMoved(mousePos2);
 
-                SECTION("No hover properties set")
-                {
-                    TEST_DRAW("ListView_NoSelectedHover_NoHoverSet.png")
-                }
-                SECTION("Hover properties set")
+                SECTION("No hover properties set"){TEST_DRAW("ListView_NoSelectedHover_NoHoverSet.png")} SECTION(
+                    "Hover properties set")
                 {
                     setHoverRenderer();
                     TEST_DRAW("ListView_NoSelectedHover_HoverSet.png")
@@ -1237,20 +1246,14 @@ TEST_CASE("[ListView]")
         {
             listView->setSelectedItem(4);
 
-            SECTION("No hover")
-            {
-                TEST_DRAW("ListView_SelectedNoHover.png")
-            }
+            SECTION("No hover"){TEST_DRAW("ListView_SelectedNoHover.png")}
 
             SECTION("Hover selected")
             {
                 listView->mouseMoved(mousePos1);
 
-                SECTION("No hover properties set")
-                {
-                    TEST_DRAW("ListView_SelectedHoverSelected_NoHoverSet.png")
-                }
-                SECTION("Hover properties set")
+                SECTION("No hover properties set"){TEST_DRAW("ListView_SelectedHoverSelected_NoHoverSet.png")} SECTION(
+                    "Hover properties set")
                 {
                     setHoverRenderer();
                     TEST_DRAW("ListView_SelectedHoverSelected_HoverSet.png")
@@ -1261,11 +1264,8 @@ TEST_CASE("[ListView]")
             {
                 listView->mouseMoved(mousePos3);
 
-                SECTION("No hover properties set")
-                {
-                    TEST_DRAW("ListView_SelectedHoverOther_NoHoverSet.png")
-                }
-                SECTION("Hover properties set")
+                SECTION("No hover properties set"){TEST_DRAW("ListView_SelectedHoverOther_NoHoverSet.png")} SECTION(
+                    "Hover properties set")
                 {
                     setHoverRenderer();
                     TEST_DRAW("ListView_SelectedHoverOther_HoverSet.png")
@@ -1282,10 +1282,7 @@ TEST_CASE("[ListView]")
                 listView->addColumn("C1", 40);
                 listView->addItem({"1", "1.2"});
 
-                SECTION("No scrollbars")
-                {
-                    TEST_DRAW("ListView_NoScrollbars.png")
-                }
+                SECTION("No scrollbars"){TEST_DRAW("ListView_NoScrollbars.png")}
 
                 SECTION("Vertical scrollbar")
                 {
@@ -1390,10 +1387,7 @@ TEST_CASE("[ListView]")
             listView->setShowVerticalGridLines(true);
             listView->setShowHorizontalGridLines(true);
 
-            SECTION("All separators")
-            {
-                TEST_DRAW("ListView_GridLinesAndSeparators_All.png")
-            }
+            SECTION("All separators"){TEST_DRAW("ListView_GridLinesAndSeparators_All.png")}
 
             SECTION("No column separators")
             {

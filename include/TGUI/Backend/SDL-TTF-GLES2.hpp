@@ -42,9 +42,9 @@
     //       This situation will no longer be supported once we drop support for ndk-build and require the use of CMake
 #endif
 
-#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-#include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
 #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
+#include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
+#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 
 namespace tgui
 {
@@ -56,7 +56,6 @@ namespace tgui
         class TGUI_API Gui : public BackendGuiSDL
         {
         public:
-
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Default constructor
             ///
@@ -82,8 +81,8 @@ namespace tgui
             void setWindow(SDL_Window* window);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        protected:
 
+        protected:
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Shows the drawn content with SDL_GL_SwapWindow
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +95,7 @@ namespace tgui
             void updateFramebufferSize() override;
 #endif
         };
-    }
-}
+    } // namespace SDL_TTF_GLES2
+} // namespace tgui
 
 #endif // TGUI_BACKEND_SDL_TTF_GLES2_INCLUDE_HPP

@@ -34,10 +34,10 @@ TEST_CASE("[Knob]")
 
     SECTION("Signals")
     {
-        knob->onValueChange([](){});
-        knob->onValueChange([](float){});
+        knob->onValueChange([]() {});
+        knob->onValueChange([](float) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(knob)->getSignal("ValueChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(knob)->getSignal("ValueChanged").connect([] {}));
     }
 
     SECTION("WidgetType")

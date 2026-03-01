@@ -31,14 +31,14 @@ TEST_CASE("[ColorPicker]")
 
     SECTION("Signals")
     {
-        colorPicker->onColorChange([](){});
-        colorPicker->onColorChange([](tgui::Color){});
+        colorPicker->onColorChange([]() {});
+        colorPicker->onColorChange([](tgui::Color) {});
 
-        colorPicker->onOkPress([](){});
-        colorPicker->onOkPress([](tgui::Color){});
+        colorPicker->onOkPress([]() {});
+        colorPicker->onOkPress([](tgui::Color) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(colorPicker)->getSignal("ColorChanged").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(colorPicker)->getSignal("OkPressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(colorPicker)->getSignal("ColorChanged").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(colorPicker)->getSignal("OkPressed").connect([] {}));
     }
 
     SECTION("WidgetType")

@@ -25,9 +25,9 @@
 #ifndef TGUI_MENU_WIDGET_BASE_HPP
 #define TGUI_MENU_WIDGET_BASE_HPP
 
-#include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/MenuWidgetBaseRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,6 @@ namespace tgui
     class TGUI_API MenuWidgetBase : public Widget
     {
     public:
-
         /// @brief Used for return value of getMenus
         struct GetMenusElement
         {
@@ -93,8 +92,8 @@ namespace tgui
         virtual void closeMenu() = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         struct Menu
         {
             Text text;
@@ -104,8 +103,8 @@ namespace tgui
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /// @param typeName     Type of the widget
@@ -138,12 +137,17 @@ namespace tgui
         /// @internal
         /// Recursively search for the menu containing the menu item specified in the hierarchy, creating the hierarchy if requested.
         /// The initial call to this function must pass "parentIndex = 0".
-        TGUI_NODISCARD Menu* findMenuItemParent(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<Menu>& menus, bool createParents);
+        TGUI_NODISCARD Menu* findMenuItemParent(const std::vector<String>& hierarchy,
+                                                unsigned int parentIndex,
+                                                std::vector<Menu>& menus,
+                                                bool createParents);
 
         /// @internal
         /// Recursively search for the menu containing the menu item specified in the hierarchy.
         /// The initial call to this function must pass "parentIndex = 0".
-        TGUI_NODISCARD const Menu* findMenuItemParent(const std::vector<String>& hierarchy, unsigned int parentIndex, const std::vector<Menu>& menus) const;
+        TGUI_NODISCARD const Menu* findMenuItemParent(const std::vector<String>& hierarchy,
+                                                      unsigned int parentIndex,
+                                                      const std::vector<Menu>& menus) const;
 
         /// @internal
         /// Search for the menu item specified in the hierarchy and return a pointer to it.
@@ -186,19 +190,30 @@ namespace tgui
         TGUI_NODISCARD float calculateOpenMenuHeight(const std::vector<Menu>& menuItems) const;
 
         /// @internal
-        TGUI_NODISCARD Vector2f calculateSubmenuOffset(const Menu& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const;
+        TGUI_NODISCARD Vector2f
+            calculateSubmenuOffset(const Menu& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const;
 
         /// @internal
         TGUI_NODISCARD bool isMouseOnTopOfMenu(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, const Menu& menu, float menuWidth) const;
 
         /// @internal
-        TGUI_NODISCARD bool findMenuItemBelowMouse(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, Menu& menu, float menuWidth, Menu** resultMenu, std::size_t* resultSelectedMenuItem);
+        TGUI_NODISCARD bool findMenuItemBelowMouse(
+            Vector2f menuPos,
+            Vector2f mousePos,
+            bool openSubMenuToRight,
+            Menu& menu,
+            float menuWidth,
+            Menu** resultMenu,
+            std::size_t* resultSelectedMenuItem);
 
         /// @internal
         static bool isSeparator(const Menu& menuItem);
 
         /// @internal
-        static bool removeMenuImpl(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<Menu>& menus);
+        static bool removeMenuImpl(const std::vector<String>& hierarchy,
+                                   bool removeParentsWhenEmpty,
+                                   unsigned int parentIndex,
+                                   std::vector<Menu>& menus);
 
         /// @internal
         static bool removeSubMenusImpl(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<Menu>& menus);
@@ -214,7 +229,12 @@ namespace tgui
 
         /// @internal
         /// Draw an open menu and recusively draw submenus when open
-        void drawMenu(BackendRenderTarget& target, RenderStates states, const Menu& menu, float menuWidth, float globalLeftPos, bool openSubMenuToRight) const;
+        void drawMenu(BackendRenderTarget& target,
+                      RenderStates states,
+                      const Menu& menu,
+                      float menuWidth,
+                      float globalLeftPos,
+                      bool openSubMenuToRight) const;
 
         /// @internal
         void leftMouseReleasedOnMenu(const Menu* menu);
@@ -279,8 +299,8 @@ namespace tgui
         virtual void drawOpenMenu(BackendRenderTarget& target, RenderStates states) const = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         /// One of the menu items was clicked.
         /// Optional parameters:
         ///     - The text of the clicked menu item
@@ -288,8 +308,8 @@ namespace tgui
         SignalItemHierarchy onMenuItemClick = {"MenuItemClicked"};
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::shared_ptr<OpenMenuPlaceholder> m_openMenuPlaceholder;
 
         float m_minimumMenuWidth = 125;
@@ -321,7 +341,6 @@ namespace tgui
     class OpenMenuPlaceholder : public Widget
     {
     public:
-
         // Instances of this class can't be copied
         OpenMenuPlaceholder(const OpenMenuPlaceholder&) = delete;
         OpenMenuPlaceholder& operator=(const OpenMenuPlaceholder&) = delete;
@@ -390,6 +409,7 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private:
         MenuWidgetBase* m_menuWidget;
         bool m_mouseWasOnMenuWidget = true; // When a menu opens then the mouse will be on top of the menu bar
@@ -398,7 +418,7 @@ namespace tgui
     using MenuBarMenuPlaceholder TGUI_DEPRECATED("Use OpenMenuPlaceholder instead") = OpenMenuPlaceholder;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

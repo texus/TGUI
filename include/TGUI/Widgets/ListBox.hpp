@@ -25,9 +25,9 @@
 #ifndef TGUI_LIST_BOX_HPP
 #define TGUI_LIST_BOX_HPP
 
-#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,9 +38,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ListBox : public Widget, public ScrollbarChildInterface
     {
-      public:
-
-        using Ptr = std::shared_ptr<ListBox>; //!< Shared widget pointer
+    public:
+        using Ptr = std::shared_ptr<ListBox>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ListBox>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ListBox"; //!< Type name of the widget
@@ -548,8 +547,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -649,18 +648,19 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
-        SignalItem onItemSelect   = {"ItemSelected"};   //!< An item was selected in the list box. Optional parameter: selected item or its index
-        SignalItem onMousePress   = {"MousePressed"};   //!< The mouse went down on an item. Optional parameter: selected item or its index
-        SignalItem onMouseRelease = {"MouseReleased"};  //!< The mouse was released on one of the items. Optional parameter: selected item or its index
-        SignalItem onDoubleClick  = {"DoubleClicked"};  //!< An item was double clicked. Optional parameter: selected item or its index
-        SignalItem onRightClick   = {"RightClicked"};   //!< Right mouse pressed on list box (also fires if not on top of item). Optional parameter: selected item or its index
-        SignalUInt onScroll       = {"Scrolled"};       //!< The list was scrolled. Optional parameter: new value of scrollbar
+    public:
+        SignalItem onItemSelect = {"ItemSelected"}; //!< An item was selected in the list box. Optional parameter: selected item or its index
+        SignalItem onMousePress = {"MousePressed"}; //!< The mouse went down on an item. Optional parameter: selected item or its index
+        SignalItem onMouseRelease = {"MouseReleased"}; //!< The mouse was released on one of the items. Optional parameter: selected item or its index
+        SignalItem onDoubleClick = {"DoubleClicked"}; //!< An item was double clicked. Optional parameter: selected item or its index
+        SignalItem onRightClick = {
+            "RightClicked"}; //!< Right mouse pressed on list box (also fires if not on top of item). Optional parameter: selected item or its index
+        SignalUInt onScroll = {"Scrolled"}; //!< The list was scrolled. Optional parameter: new value of scrollbar
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         struct Item
         {
             Text text;
@@ -693,17 +693,17 @@ namespace tgui
         Sprite m_spriteBackground;
 
         // Cached renderer properties
-        Borders   m_bordersCached;
-        Borders   m_paddingCached;
-        Color     m_borderColorCached;
-        Color     m_backgroundColorCached;
-        Color     m_backgroundColorHoverCached;
-        Color     m_selectedBackgroundColorCached;
-        Color     m_selectedBackgroundColorHoverCached;
-        Color     m_textColorCached;
-        Color     m_textColorHoverCached;
-        Color     m_selectedTextColorCached;
-        Color     m_selectedTextColorHoverCached;
+        Borders m_bordersCached;
+        Borders m_paddingCached;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_backgroundColorHoverCached;
+        Color m_selectedBackgroundColorCached;
+        Color m_selectedBackgroundColorHoverCached;
+        Color m_textColorCached;
+        Color m_textColorHoverCached;
+        Color m_selectedTextColorCached;
+        Color m_selectedTextColorHoverCached;
         TextStyles m_textStyleCached;
         TextStyles m_selectedTextStyleCached;
 
@@ -711,7 +711,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

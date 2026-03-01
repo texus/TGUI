@@ -38,8 +38,7 @@ namespace tgui
     class TGUI_API Grid : public Container
     {
     public:
-
-        using Ptr = std::shared_ptr<Grid>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Grid>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Grid>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "Grid"; //!< Type name of the widget
@@ -164,10 +163,10 @@ namespace tgui
         /// @endcode
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void addWidget(const Widget::Ptr& widget,
-                       std::size_t        row,
-                       std::size_t        column,
-                       Alignment          alignment = Alignment::Center,
-                       const Padding&     padding   = Padding{0});
+                       std::size_t row,
+                       std::size_t column,
+                       Alignment alignment = Alignment::Center,
+                       const Padding& padding = Padding{0});
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Chooses the row and column in which a widget should be placed
@@ -181,10 +180,10 @@ namespace tgui
         /// @return True if row and column were set, false if widget didn't exist in grid
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool setWidgetCell(const Widget::Ptr& widget,
-                           std::size_t        row,
-                           std::size_t        column,
-                           Alignment          alignment = Alignment::Center,
-                           const Padding&     padding   = Padding{0});
+                           std::size_t row,
+                           std::size_t column,
+                           Alignment alignment = Alignment::Center,
+                           const Padding& padding = Padding{0});
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the widget in a specific cell of the grid
@@ -291,8 +290,8 @@ namespace tgui
         TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,13 +328,13 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         bool m_autoSize = true;
 
         std::vector<std::vector<Widget::Ptr>> m_gridWidgets;
-        std::vector<std::vector<Padding>>     m_objPadding;
-        std::vector<std::vector<Alignment>>   m_objAlignment;
+        std::vector<std::vector<Padding>> m_objPadding;
+        std::vector<std::vector<Alignment>> m_objAlignment;
 
         std::vector<float> m_rowHeight;
         std::vector<float> m_columnWidth;
@@ -348,7 +347,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

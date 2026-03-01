@@ -39,20 +39,19 @@ namespace tgui
     class CopiedSharedPtr
     {
     public:
-
         template <typename... Args>
-        explicit CopiedSharedPtr(Args&&... args) noexcept
-            : m_WidgetPtr{std::make_shared<WidgetType>(std::forward<Args>(args)...)}
+        explicit CopiedSharedPtr(Args&&... args) noexcept :
+            m_WidgetPtr{std::make_shared<WidgetType>(std::forward<Args>(args)...)}
         {
         }
 
-        CopiedSharedPtr(const CopiedSharedPtr& other) noexcept
-            : m_WidgetPtr{std::make_shared<WidgetType>(*other.m_WidgetPtr)}
+        CopiedSharedPtr(const CopiedSharedPtr& other) noexcept :
+            m_WidgetPtr{std::make_shared<WidgetType>(*other.m_WidgetPtr)}
         {
         }
 
-        CopiedSharedPtr(CopiedSharedPtr&& other) noexcept
-            : m_WidgetPtr{std::move(other.m_WidgetPtr)}
+        CopiedSharedPtr(CopiedSharedPtr&& other) noexcept :
+            m_WidgetPtr{std::move(other.m_WidgetPtr)}
         {
         }
 
@@ -93,13 +92,13 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         std::shared_ptr<WidgetType> m_WidgetPtr;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

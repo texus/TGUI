@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "GuiBuilder.hpp"
 #include "Form.hpp"
+#include "GuiBuilder.hpp"
 
 // WidgetProperties are only included to allow importing 0.8 form files.
 // No new widgets need to be added here and this can be removed again in the future.
@@ -50,7 +50,7 @@
 #include "WidgetProperties/TextAreaProperties.hpp"
 #include "WidgetProperties/TreeViewProperties.hpp"
 
-const static float MOVE_STEP = 10;
+static const float MOVE_STEP = 10;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -102,16 +102,14 @@ namespace
         }
     }
 
-    void makePathsAbsolute(const std::unique_ptr<tgui::DataIO::Node>& node,
-                           const tgui::Filesystem::Path& formPath)
+    void makePathsAbsolute(const std::unique_ptr<tgui::DataIO::Node>& node, const tgui::Filesystem::Path& formPath)
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture")))
-                || (pair.first == U"Font") || (pair.first == U"Image")) {
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font") || (pair.first == U"Image"))
+            {
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
-                    || pair.second->value.equalIgnoreCase(U"null")
-                    || pair.second->value.equalIgnoreCase(U"nullptr"))
+                    || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
                     continue;
 
                 // Skip absolute paths
@@ -152,8 +150,7 @@ namespace
 
                 // If the file can't be found anywhere then don't inject the file path
                 const bool fileFoundRelativeToForm = tgui::Filesystem::fileExists(formPath / filename);
-                const bool fileFoundRelativeToGuiBuilder = tgui::Filesystem::fileExists(
-                    tgui::getResourcePath() / filename);
+                const bool fileFoundRelativeToGuiBuilder = tgui::Filesystem::fileExists(tgui::getResourcePath() / filename);
                 if (!fileFoundRelativeToForm && !fileFoundRelativeToGuiBuilder)
                     continue;
 
@@ -176,17 +173,14 @@ namespace
             makePathsAbsolute(child, formPath);
     }
 
-    void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node,
-                           const tgui::String& formPath,
-                           const tgui::String& guiBuilderPath)
+    void makePathsRelative(const std::unique_ptr<tgui::DataIO::Node>& node, const tgui::String& formPath, const tgui::String& guiBuilderPath)
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture")))
-                || (pair.first == U"Font") || (pair.first == U"Image")) {
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font") || (pair.first == U"Image"))
+            {
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
-                    || pair.second->value.equalIgnoreCase(U"null")
-                    || pair.second->value.equalIgnoreCase(U"nullptr"))
+                    || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
                     continue;
 
                 // Skip paths that are already relative (this shouldn't happen)
@@ -282,14 +276,13 @@ namespace
                             for (std::size_t i = 0; pathsEqual && (i < formPathParts.size()); ++i)
                                 pathsEqual &= (formPathParts[i] == resourceParts[i]);
 
-                            if (pathsEqual) {
+                            if (pathsEqual)
+                            {
                                 assert(originalFormPartsLength > formPathParts.size());
-                                const std::size_t pathsToGoUp = originalFormPartsLength
-                                                                - formPathParts.size();
+                                const std::size_t pathsToGoUp = originalFormPartsLength - formPathParts.size();
 
                                 tgui::String relativePath;
-                                tgui::Filesystem::Path basePath = tgui::Filesystem::Path(formPath)
-                                                                      .getParentPath();
+                                tgui::Filesystem::Path basePath = tgui::Filesystem::Path(formPath).getParentPath();
                                 assert(basePath.asString() + '/' == formPath);
                                 for (std::size_t i = 0; i < pathsToGoUp; ++i)
                                 {
@@ -304,20 +297,19 @@ namespace
 
                                 if (filename.starts_with(basePathStr))
                                 {
-                                    if (pair.second->value[0] != '"') {
+                                    if (pair.second->value[0] != '"')
+                                    {
                                         pair.second->value.erase(0, basePathStr.length());
                                         pair.second->value = relativePath + pair.second->value;
                                     }
                                     else
                                     {
                                         pair.second->value.erase(0, basePathStr.length() + 1);
-                                        pair.second->value = U'"' + relativePath
-                                                             + pair.second->value;
+                                        pair.second->value = U'"' + relativePath + pair.second->value;
                                     }
                                 }
                                 else
-                                    std::cerr << "Failed to make path relative. '" + filename
-                                                     + "' does not start with '" + basePathStr
+                                    std::cerr << "Failed to make path relative. '" + filename + "' does not start with '" + basePathStr
                                                      + "'.\n";
 
                                 break;
@@ -340,50 +332,84 @@ namespace
         // Since the renderers may be global in the form file, we can't know which widget type will use it (without some effort),
         // so instead we just get the properties for all widget types to match on.
         std::set<tgui::String> possibleProperties;
-        importOldFormFileExtractValidProperties(possibleProperties, BitmapButtonProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("BitmapButton")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ButtonProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Button")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ChatBoxProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ChatBox")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ChildWindowProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ChildWindow")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ComboBoxProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ComboBox")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, EditBoxProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("EditBox")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, GroupProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Group")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, KnobProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Knob")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, LabelProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Label")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ListBoxProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ListBox")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, PanelProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Panel")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, PictureProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Picture")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ProgressBarProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ProgressBar")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, RadioButtonProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("RadioButton")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, RangeSliderProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("RangeSlider")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ScrollablePanelProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("ScrollablePanel")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, ScrollbarProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Scrollbar")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, SliderProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Slider")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, SpinButtonProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("SpinButton")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, TabsProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("Tabs")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, TextAreaProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("TextArea")()).second);
-        importOldFormFileExtractValidProperties(possibleProperties, TreeViewProperties().initProperties(
-            tgui::WidgetFactory::getConstructFunction("TreeView")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                BitmapButtonProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("BitmapButton")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                ButtonProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Button")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                ChatBoxProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("ChatBox")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                ChildWindowProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("ChildWindow")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                ComboBoxProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("ComboBox")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                EditBoxProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("EditBox")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                GroupProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Group")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                KnobProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Knob")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                LabelProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Label")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                ListBoxProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("ListBox")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                PanelProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Panel")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                PictureProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Picture")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                ProgressBarProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("ProgressBar")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                RadioButtonProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("RadioButton")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                RangeSliderProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("RangeSlider")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                ScrollablePanelProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("ScrollablePanel")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                ScrollbarProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Scrollbar")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                SliderProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Slider")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                SpinButtonProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("SpinButton")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                TabsProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Tabs")()).second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                TextAreaProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("TextArea")())
+                                                    .second);
+        importOldFormFileExtractValidProperties(possibleProperties,
+                                                TreeViewProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("TreeView")())
+                                                    .second);
 
         // Convert renderer properties from lowercase to the correct case-sensitive string
         importOldFormFileFixRendererProperties(rootNode, possibleProperties);
@@ -393,21 +419,21 @@ namespace
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::ChildWindow::Ptr& formWindow, tgui::Vector2f formSize) :
-    m_guiBuilder      {guiBuilder},
-    m_formWindow      {formWindow},
-    m_scrollablePanel {formWindow->get<tgui::ScrollablePanel>("ScrollablePanel")},
+    m_guiBuilder{guiBuilder},
+    m_formWindow{formWindow},
+    m_scrollablePanel{formWindow->get<tgui::ScrollablePanel>("ScrollablePanel")},
     m_widgetsContainer{m_scrollablePanel->get<tgui::Panel>("WidgetContainer")},
-    m_overlay         {formWindow->get<tgui::Group>("Overlay")},
-    m_filename        {filename}
+    m_overlay{formWindow->get<tgui::Group>("Overlay")},
+    m_filename{filename}
 {
     m_widgets["form"] = nullptr;
 
     m_formWindow->setTitle(filename);
-    m_formWindow->onClose([this]{ m_guiBuilder->closeForm(this); });
-    m_formWindow->onSizeChange([this]{ m_scrollablePanel->setSize(m_formWindow->getClientSize()); });
+    m_formWindow->onClose([this] { m_guiBuilder->closeForm(this); });
+    m_formWindow->onSizeChange([this] { m_scrollablePanel->setSize(m_formWindow->getClientSize()); });
 
     auto eventHandler = tgui::ClickableWidget::create();
-    eventHandler->onMousePress([this](tgui::Vector2f pos){ onFormMousePress(pos); });
+    eventHandler->onMousePress([this](tgui::Vector2f pos) { onFormMousePress(pos); });
     m_scrollablePanel->add(eventHandler, "EventHandler");
 
     setSize(formSize);
@@ -419,7 +445,7 @@ Form::Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::Chi
         square->setRenderer(selectionSquareTheme.getRenderer("Square"));
         square->setSize(tgui::Vector2f{square->getRenderer()->getTexture().getImageSize()});
         square->setVisible(false);
-        square->onMousePress([this,&square](tgui::Vector2f pos){ onSelectionSquarePress(square, pos); });
+        square->onMousePress([this, &square](tgui::Vector2f pos) { onSelectionSquarePress(square, pos); });
         m_scrollablePanel->add(square);
     }
 }
@@ -518,17 +544,15 @@ std::shared_ptr<WidgetInfo> Form::getWidgetByName(const tgui::String& name) cons
     if (name == m_filename)
         return {};
 
-    const auto it = std::find_if(
-        m_widgets.cbegin(),
-        m_widgets.cend(),
-        [&name](const auto& idAndWidgetInfo)
-        {
-            const auto& widgetInfo = idAndWidgetInfo.second;
-            if (widgetInfo)
-                return idAndWidgetInfo.second->name == name;
-            return false;
-        }
-    );
+    const auto it = std::find_if(m_widgets.cbegin(),
+                                 m_widgets.cend(),
+                                 [&name](const auto& idAndWidgetInfo)
+                                 {
+                                     const auto& widgetInfo = idAndWidgetInfo.second;
+                                     if (widgetInfo)
+                                         return idAndWidgetInfo.second->name == name;
+                                     return false;
+                                 });
 
     if (it != m_widgets.end())
         return it->second;
@@ -609,14 +633,14 @@ void Form::updateSelectionSquarePositions()
     if (std::abs(size.y) < 5)
         size.y = 5;
 
-    m_selectionSquares[0]->setPosition({position.x,                  position.y + (size.y / 2.f)}); // Left
-    m_selectionSquares[1]->setPosition({position.x + (size.x / 2.f), position.y}); // Top
+    m_selectionSquares[0]->setPosition({position.x, position.y + (size.y / 2.f)});          // Left
+    m_selectionSquares[1]->setPosition({position.x + (size.x / 2.f), position.y});          // Top
     m_selectionSquares[2]->setPosition({position.x + (size.x / 2.f), position.y + size.y}); // Bottom
-    m_selectionSquares[3]->setPosition({position.x + size.x,         position.y + (size.y / 2.f)}); // Right
-    m_selectionSquares[4]->setPosition({position.x,                  position.y}); // Top left
-    m_selectionSquares[5]->setPosition({position.x,                  position.y + size.y}); // Bottom left
-    m_selectionSquares[6]->setPosition({position.x + size.x,         position.y}); // Top right
-    m_selectionSquares[7]->setPosition({position.x + size.x,         position.y + size.y}); // Bottom right
+    m_selectionSquares[3]->setPosition({position.x + size.x, position.y + (size.y / 2.f)}); // Right
+    m_selectionSquares[4]->setPosition({position.x, position.y});                           // Top left
+    m_selectionSquares[5]->setPosition({position.x, position.y + size.y});                  // Bottom left
+    m_selectionSquares[6]->setPosition({position.x + size.x, position.y});                  // Top right
+    m_selectionSquares[7]->setPosition({position.x + size.x, position.y + size.y});         // Bottom right
 
     // The positions given to the squares where those of its center
     for (auto& square : m_selectionSquares)
@@ -687,9 +711,8 @@ bool Form::rightMouseClick(tgui::Vector2i pos)
     if (!tgui::FloatRect{m_formWindow->getChildWidgetsOffset(), m_formWindow->getClientSize()}.contains(relativeWindowPos))
         return false;
 
-    const tgui::Vector2f relativePanelPos{
-        (pos.x - m_scrollablePanel->get("EventHandler")->getAbsolutePosition().x),
-        (pos.y - m_scrollablePanel->get("EventHandler")->getAbsolutePosition().y)};
+    const tgui::Vector2f relativePanelPos{(pos.x - m_scrollablePanel->get("EventHandler")->getAbsolutePosition().x),
+                                          (pos.y - m_scrollablePanel->get("EventHandler")->getAbsolutePosition().y)};
 
     onFormMousePress(relativePanelPos);
     mouseReleased();
@@ -798,11 +821,13 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
             selectedWidgetPoint = {selectedWidget->getPosition().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
         else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
-            selectedWidgetPoint = {selectedWidget->getPosition().x + selectedWidget->getSize().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
+            selectedWidgetPoint = {selectedWidget->getPosition().x + selectedWidget->getSize().x,
+                                   selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
         else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
             selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y};
         else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
-            selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y + selectedWidget->getSize().y};
+            selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f),
+                                   selectedWidget->getPosition().y + selectedWidget->getSize().y};
 
         float closestDistance = std::numeric_limits<float>::infinity();
         tgui::Widget::Ptr closestWidget = nullptr;
@@ -824,9 +849,9 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
 
             // Don't allow going in the opposite direction when there are no widgets on the chosen side
             if (((keyEvent.code == tgui::Event::KeyboardKey::Left) && (widgetPoint.x >= selectedWidgetPoint.x))
-             || ((keyEvent.code == tgui::Event::KeyboardKey::Right) && (widgetPoint.x <= selectedWidgetPoint.x))
-             || ((keyEvent.code == tgui::Event::KeyboardKey::Up) && (widgetPoint.y >= selectedWidgetPoint.y))
-             || ((keyEvent.code == tgui::Event::KeyboardKey::Down) && (widgetPoint.y <= selectedWidgetPoint.y)))
+                || ((keyEvent.code == tgui::Event::KeyboardKey::Right) && (widgetPoint.x <= selectedWidgetPoint.x))
+                || ((keyEvent.code == tgui::Event::KeyboardKey::Up) && (widgetPoint.y >= selectedWidgetPoint.y))
+                || ((keyEvent.code == tgui::Event::KeyboardKey::Down) && (widgetPoint.y <= selectedWidgetPoint.y)))
                 continue;
 
             const float distance = std::abs(widgetPoint.x - selectedWidgetPoint.x) + std::abs(widgetPoint.y - selectedWidgetPoint.y);
@@ -1022,7 +1047,7 @@ void Form::updateAlignmentLines()
     // Remove all lines that are no longer needed
     for (std::size_t i = m_alignmentLines.size(); i > lines.size(); --i)
     {
-        m_overlay->remove(m_alignmentLines[i-1]);
+        m_overlay->remove(m_alignmentLines[i - 1]);
         m_alignmentLines.pop_back();
     }
 
@@ -1069,12 +1094,17 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(const tgui::Container::Ptr& parent, 
         if (!widget || !widget->isVisible())
             continue;
 
-        if (tgui::FloatRect{widget->getPosition().x + widget->getWidgetOffset().x, widget->getPosition().y + widget->getWidgetOffset().y, widget->getFullSize().x, widget->getFullSize().y}.contains(pos))
+        if (tgui::FloatRect{widget->getPosition().x + widget->getWidgetOffset().x,
+                            widget->getPosition().y + widget->getWidgetOffset().y,
+                            widget->getFullSize().x,
+                            widget->getFullSize().y}
+                .contains(pos))
         {
             if (widget->isContainer())
             {
                 const tgui::Container::Ptr container = std::static_pointer_cast<tgui::Container>(widget);
-                const tgui::Widget::Ptr child = getWidgetBelowMouse(container, pos - container->getPosition() - container->getChildWidgetsOffset());
+                const tgui::Widget::Ptr child = getWidgetBelowMouse(container,
+                                                                    pos - container->getPosition() - container->getChildWidgetsOffset());
                 if (child)
                     return child;
             }
@@ -1090,9 +1120,12 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(const tgui::Container::Ptr& parent, 
         if (!widget || !widget->isVisible())
             continue;
 
-        if (((widget->getSize().x < 5) && (widget->getSize().y < 5) && tgui::FloatRect{widget->getPosition().x - 5, widget->getPosition().y - 5, 10, 10}.contains(pos))
-         || ((widget->getSize().x < 5) && tgui::FloatRect{widget->getPosition().x - 5, widget->getPosition().y, 10, widget->getSize().y}.contains(pos))
-         || ((widget->getSize().y < 5) && tgui::FloatRect{widget->getPosition().x, widget->getPosition().y - 5, widget->getSize().x, 10}.contains(pos)))
+        if (((widget->getSize().x < 5) && (widget->getSize().y < 5)
+             && tgui::FloatRect{widget->getPosition().x - 5, widget->getPosition().y - 5, 10, 10}.contains(pos))
+            || ((widget->getSize().x < 5)
+                && tgui::FloatRect{widget->getPosition().x - 5, widget->getPosition().y, 10, widget->getSize().y}.contains(pos))
+            || ((widget->getSize().y < 5)
+                && tgui::FloatRect{widget->getPosition().x, widget->getPosition().y - 5, widget->getSize().x, 10}.contains(pos)))
         {
             return widget;
         }
@@ -1127,7 +1160,8 @@ void Form::onDrag(tgui::Vector2i mousePos)
 {
     assert(m_selectedWidget != nullptr);
 
-    const tgui::Vector2f pos = tgui::Vector2f{mousePos} - m_formWindow->getPosition() - m_formWindow->getChildWidgetsOffset() + m_scrollablePanel->getContentOffset();
+    const tgui::Vector2f pos = tgui::Vector2f{mousePos} - m_formWindow->getPosition() - m_formWindow->getChildWidgetsOffset()
+                               + m_scrollablePanel->getContentOffset();
     auto selectedWidget = m_selectedWidget->ptr;
 
     bool updated = false;
@@ -1390,9 +1424,8 @@ std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> Form::getAlignmentLines()
 
     const auto selectedWidget = m_selectedWidget->ptr;
     const auto* gui = selectedWidget->getParentGui();
-    if (!m_draggingWidget && !m_draggingSelectionSquare
-     && !gui->isKeyboardModifierPressed(controlModifier)
-     && !gui->isKeyboardModifierPressed(tgui::Event::KeyModifier::Shift))
+    if (!m_draggingWidget && !m_draggingSelectionSquare && !gui->isKeyboardModifierPressed(controlModifier)
+        && !gui->isKeyboardModifierPressed(tgui::Event::KeyModifier::Shift))
         return lines;
 
     const tgui::Vector2f selectedTopLeft = selectedWidget->getAbsolutePosition();

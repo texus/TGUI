@@ -147,9 +147,9 @@ namespace tgui
         /// Mouse buttons
         enum class MouseButton
         {
-            Left,   //!< The left mouse button
-            Right,  //!< The right mouse button
-            Middle  //!< The middle (wheel) mouse button
+            Left,  //!< The left mouse button
+            Right, //!< The right mouse button
+            Middle //!< The middle (wheel) mouse button
         };
 
         /// Modifiers keys
@@ -166,11 +166,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         struct KeyEvent
         {
-            KeyboardKey code;    //!< Code of the key that has been pressed
-            bool        alt;     //!< Is the Alt key pressed?
-            bool        control; //!< Is the Control key pressed?
-            bool        shift;   //!< Is the Shift key pressed?
-            bool        system;  //!< Is the System key pressed?
+            KeyboardKey code; //!< Code of the key that has been pressed
+            bool alt;         //!< Is the Alt key pressed?
+            bool control;     //!< Is the Control key pressed?
+            bool shift;       //!< Is the Shift key pressed?
+            bool system;      //!< Is the System key pressed?
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,8 +196,8 @@ namespace tgui
         struct MouseButtonEvent
         {
             MouseButton button; //!< Code of the button that has been pressed
-            int         x;      //!< X position of the mouse pointer, relative to the left of the owner window
-            int         y;      //!< Y position of the mouse pointer, relative to the top of the owner window
+            int x;              //!< X position of the mouse pointer, relative to the left of the owner window
+            int y;              //!< Y position of the mouse pointer, relative to the top of the owner window
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,8 +206,8 @@ namespace tgui
         struct MouseWheelEvent
         {
             float delta; //!< Wheel offset (positive is up, negative is down). High-precision mice may use non-integral offsets.
-            int   x;     //!< X position of the mouse pointer, relative to the left of the owner window
-            int   y;     //!< Y position of the mouse pointer, relative to the top of the owner window
+            int x;       //!< X position of the mouse pointer, relative to the left of the owner window
+            int y;       //!< Y position of the mouse pointer, relative to the top of the owner window
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,8 +216,8 @@ namespace tgui
         struct FingerEvent
         {
             std::uintptr_t fingerId; //!< Unique id of the finger (must not be 0)
-            int            x;        //!< X position of the mouse pointer, relative to the left of the owner window
-            int            y;        //!< Y position of the mouse pointer, relative to the top of the owner window
+            int x;                   //!< X position of the mouse pointer, relative to the left of the owner window
+            int y;                   //!< Y position of the mouse pointer, relative to the top of the owner window
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,21 +234,21 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class Type
         {
-            LostFocus,              //!< The window lost the focus (no data)
-            GainedFocus,            //!< The window gained the focus (no data)
-            TextEntered,            //!< A character was entered (data in event.text)
-            KeyPressed,             //!< A key was pressed (data in event.key)
-            MouseWheelScrolled,     //!< The mouse wheel was scrolled (data in event.mouseWheel)
-            MouseButtonPressed,     //!< A mouse button was pressed (data in event.mouseButton)
-            MouseButtonReleased,    //!< A mouse button was released (data in event.mouseButton)
-            MouseMoved,             //!< The mouse cursor moved (data in event.mouseMove)
-            MouseEntered,           //!< The mouse cursor entered the content area of the window (no data)
-            MouseLeft,              //!< The mouse cursor left the content area of the window (no data)
-            FingerDown,             //!< A finger touched the window (data in event.touch)
-            FingerMoved,            //!< A finger that was touching has moved (data in event.touch)
-            FingerUp,               //!< A finger is no longer touching (data in event.touch)
-            Resized,                //!< The window was resized (data in event.size)
-            Closed                  //!< The window was closed (no data)
+            LostFocus,           //!< The window lost the focus (no data)
+            GainedFocus,         //!< The window gained the focus (no data)
+            TextEntered,         //!< A character was entered (data in event.text)
+            KeyPressed,          //!< A key was pressed (data in event.key)
+            MouseWheelScrolled,  //!< The mouse wheel was scrolled (data in event.mouseWheel)
+            MouseButtonPressed,  //!< A mouse button was pressed (data in event.mouseButton)
+            MouseButtonReleased, //!< A mouse button was released (data in event.mouseButton)
+            MouseMoved,          //!< The mouse cursor moved (data in event.mouseMove)
+            MouseEntered,        //!< The mouse cursor entered the content area of the window (no data)
+            MouseLeft,           //!< The mouse cursor left the content area of the window (no data)
+            FingerDown,          //!< A finger touched the window (data in event.touch)
+            FingerMoved,         //!< A finger that was touching has moved (data in event.touch)
+            FingerUp,            //!< A finger is no longer touching (data in event.touch)
+            Resized,             //!< The window was resized (data in event.size)
+            Closed               //!< The window was closed (no data)
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -257,18 +257,18 @@ namespace tgui
 
         union
         {
-            KeyEvent              key;               //!< Key event parameters (Event::KeyPressed)
-            TextEvent             text;              //!< Text event parameters (Event::TextEntered)
-            MouseMoveEvent        mouseMove;         //!< Mouse move event parameters (Event::MouseMoved)
-            MouseButtonEvent      mouseButton;       //!< Mouse button event parameters (Event::MouseButtonPressed, Event::MouseButtonReleased)
-            MouseWheelEvent       mouseWheel;        //!< Mouse wheel event parameters (Event::MouseWheelScrolled)
-            FingerEvent           touch;             //!< Touch event parameters (Event::FingerDown, Event::FingerMoved, Event::FingerUp)
-            SizeEvent             size;              //!< Size event parameters (Event::Resized)
+            KeyEvent key;                 //!< Key event parameters (Event::KeyPressed)
+            TextEvent text;               //!< Text event parameters (Event::TextEntered)
+            MouseMoveEvent mouseMove;     //!< Mouse move event parameters (Event::MouseMoved)
+            MouseButtonEvent mouseButton; //!< Mouse button event parameters (Event::MouseButtonPressed, Event::MouseButtonReleased)
+            MouseWheelEvent mouseWheel;   //!< Mouse wheel event parameters (Event::MouseWheelScrolled)
+            FingerEvent touch;            //!< Touch event parameters (Event::FingerDown, Event::FingerMoved, Event::FingerUp)
+            SizeEvent size;               //!< Size event parameters (Event::Resized)
         };
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

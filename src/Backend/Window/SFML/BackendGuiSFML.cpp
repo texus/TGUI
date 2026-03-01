@@ -25,8 +25,8 @@
 #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
 #include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
 
-#include <TGUI/ToolTip.hpp>
 #include <TGUI/Timer.hpp>
+#include <TGUI/ToolTip.hpp>
 
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/WindowsIMM.hpp>
@@ -40,112 +40,213 @@ namespace
     {
         switch (key)
         {
-        case sf::Keyboard::Key::A:          return tgui::Event::KeyboardKey::A;
-        case sf::Keyboard::Key::B:          return tgui::Event::KeyboardKey::B;
-        case sf::Keyboard::Key::C:          return tgui::Event::KeyboardKey::C;
-        case sf::Keyboard::Key::D:          return tgui::Event::KeyboardKey::D;
-        case sf::Keyboard::Key::E:          return tgui::Event::KeyboardKey::E;
-        case sf::Keyboard::Key::F:          return tgui::Event::KeyboardKey::F;
-        case sf::Keyboard::Key::G:          return tgui::Event::KeyboardKey::G;
-        case sf::Keyboard::Key::H:          return tgui::Event::KeyboardKey::H;
-        case sf::Keyboard::Key::I:          return tgui::Event::KeyboardKey::I;
-        case sf::Keyboard::Key::J:          return tgui::Event::KeyboardKey::J;
-        case sf::Keyboard::Key::K:          return tgui::Event::KeyboardKey::K;
-        case sf::Keyboard::Key::L:          return tgui::Event::KeyboardKey::L;
-        case sf::Keyboard::Key::M:          return tgui::Event::KeyboardKey::M;
-        case sf::Keyboard::Key::N:          return tgui::Event::KeyboardKey::N;
-        case sf::Keyboard::Key::O:          return tgui::Event::KeyboardKey::O;
-        case sf::Keyboard::Key::P:          return tgui::Event::KeyboardKey::P;
-        case sf::Keyboard::Key::Q:          return tgui::Event::KeyboardKey::Q;
-        case sf::Keyboard::Key::R:          return tgui::Event::KeyboardKey::R;
-        case sf::Keyboard::Key::S:          return tgui::Event::KeyboardKey::S;
-        case sf::Keyboard::Key::T:          return tgui::Event::KeyboardKey::T;
-        case sf::Keyboard::Key::U:          return tgui::Event::KeyboardKey::U;
-        case sf::Keyboard::Key::V:          return tgui::Event::KeyboardKey::V;
-        case sf::Keyboard::Key::W:          return tgui::Event::KeyboardKey::W;
-        case sf::Keyboard::Key::X:          return tgui::Event::KeyboardKey::X;
-        case sf::Keyboard::Key::Y:          return tgui::Event::KeyboardKey::Y;
-        case sf::Keyboard::Key::Z:          return tgui::Event::KeyboardKey::Z;
-        case sf::Keyboard::Key::Num0:       return tgui::Event::KeyboardKey::Num0;
-        case sf::Keyboard::Key::Num1:       return tgui::Event::KeyboardKey::Num1;
-        case sf::Keyboard::Key::Num2:       return tgui::Event::KeyboardKey::Num2;
-        case sf::Keyboard::Key::Num3:       return tgui::Event::KeyboardKey::Num3;
-        case sf::Keyboard::Key::Num4:       return tgui::Event::KeyboardKey::Num4;
-        case sf::Keyboard::Key::Num5:       return tgui::Event::KeyboardKey::Num5;
-        case sf::Keyboard::Key::Num6:       return tgui::Event::KeyboardKey::Num6;
-        case sf::Keyboard::Key::Num7:       return tgui::Event::KeyboardKey::Num7;
-        case sf::Keyboard::Key::Num8:       return tgui::Event::KeyboardKey::Num8;
-        case sf::Keyboard::Key::Num9:       return tgui::Event::KeyboardKey::Num9;
-        case sf::Keyboard::Key::Escape:     return tgui::Event::KeyboardKey::Escape;
-        case sf::Keyboard::Key::LControl:   return tgui::Event::KeyboardKey::LControl;
-        case sf::Keyboard::Key::LShift:     return tgui::Event::KeyboardKey::LShift;
-        case sf::Keyboard::Key::LAlt:       return tgui::Event::KeyboardKey::LAlt;
-        case sf::Keyboard::Key::LSystem:    return tgui::Event::KeyboardKey::LSystem;
-        case sf::Keyboard::Key::RControl:   return tgui::Event::KeyboardKey::RControl;
-        case sf::Keyboard::Key::RShift:     return tgui::Event::KeyboardKey::RShift;
-        case sf::Keyboard::Key::RAlt:       return tgui::Event::KeyboardKey::RAlt;
-        case sf::Keyboard::Key::RSystem:    return tgui::Event::KeyboardKey::RSystem;
-        case sf::Keyboard::Key::Menu:       return tgui::Event::KeyboardKey::Menu;
-        case sf::Keyboard::Key::LBracket:   return tgui::Event::KeyboardKey::LBracket;
-        case sf::Keyboard::Key::RBracket:   return tgui::Event::KeyboardKey::RBracket;
-        case sf::Keyboard::Key::Semicolon:  return tgui::Event::KeyboardKey::Semicolon;
-        case sf::Keyboard::Key::Comma:      return tgui::Event::KeyboardKey::Comma;
-        case sf::Keyboard::Key::Period:     return tgui::Event::KeyboardKey::Period;
+            case sf::Keyboard::Key::A:
+                return tgui::Event::KeyboardKey::A;
+            case sf::Keyboard::Key::B:
+                return tgui::Event::KeyboardKey::B;
+            case sf::Keyboard::Key::C:
+                return tgui::Event::KeyboardKey::C;
+            case sf::Keyboard::Key::D:
+                return tgui::Event::KeyboardKey::D;
+            case sf::Keyboard::Key::E:
+                return tgui::Event::KeyboardKey::E;
+            case sf::Keyboard::Key::F:
+                return tgui::Event::KeyboardKey::F;
+            case sf::Keyboard::Key::G:
+                return tgui::Event::KeyboardKey::G;
+            case sf::Keyboard::Key::H:
+                return tgui::Event::KeyboardKey::H;
+            case sf::Keyboard::Key::I:
+                return tgui::Event::KeyboardKey::I;
+            case sf::Keyboard::Key::J:
+                return tgui::Event::KeyboardKey::J;
+            case sf::Keyboard::Key::K:
+                return tgui::Event::KeyboardKey::K;
+            case sf::Keyboard::Key::L:
+                return tgui::Event::KeyboardKey::L;
+            case sf::Keyboard::Key::M:
+                return tgui::Event::KeyboardKey::M;
+            case sf::Keyboard::Key::N:
+                return tgui::Event::KeyboardKey::N;
+            case sf::Keyboard::Key::O:
+                return tgui::Event::KeyboardKey::O;
+            case sf::Keyboard::Key::P:
+                return tgui::Event::KeyboardKey::P;
+            case sf::Keyboard::Key::Q:
+                return tgui::Event::KeyboardKey::Q;
+            case sf::Keyboard::Key::R:
+                return tgui::Event::KeyboardKey::R;
+            case sf::Keyboard::Key::S:
+                return tgui::Event::KeyboardKey::S;
+            case sf::Keyboard::Key::T:
+                return tgui::Event::KeyboardKey::T;
+            case sf::Keyboard::Key::U:
+                return tgui::Event::KeyboardKey::U;
+            case sf::Keyboard::Key::V:
+                return tgui::Event::KeyboardKey::V;
+            case sf::Keyboard::Key::W:
+                return tgui::Event::KeyboardKey::W;
+            case sf::Keyboard::Key::X:
+                return tgui::Event::KeyboardKey::X;
+            case sf::Keyboard::Key::Y:
+                return tgui::Event::KeyboardKey::Y;
+            case sf::Keyboard::Key::Z:
+                return tgui::Event::KeyboardKey::Z;
+            case sf::Keyboard::Key::Num0:
+                return tgui::Event::KeyboardKey::Num0;
+            case sf::Keyboard::Key::Num1:
+                return tgui::Event::KeyboardKey::Num1;
+            case sf::Keyboard::Key::Num2:
+                return tgui::Event::KeyboardKey::Num2;
+            case sf::Keyboard::Key::Num3:
+                return tgui::Event::KeyboardKey::Num3;
+            case sf::Keyboard::Key::Num4:
+                return tgui::Event::KeyboardKey::Num4;
+            case sf::Keyboard::Key::Num5:
+                return tgui::Event::KeyboardKey::Num5;
+            case sf::Keyboard::Key::Num6:
+                return tgui::Event::KeyboardKey::Num6;
+            case sf::Keyboard::Key::Num7:
+                return tgui::Event::KeyboardKey::Num7;
+            case sf::Keyboard::Key::Num8:
+                return tgui::Event::KeyboardKey::Num8;
+            case sf::Keyboard::Key::Num9:
+                return tgui::Event::KeyboardKey::Num9;
+            case sf::Keyboard::Key::Escape:
+                return tgui::Event::KeyboardKey::Escape;
+            case sf::Keyboard::Key::LControl:
+                return tgui::Event::KeyboardKey::LControl;
+            case sf::Keyboard::Key::LShift:
+                return tgui::Event::KeyboardKey::LShift;
+            case sf::Keyboard::Key::LAlt:
+                return tgui::Event::KeyboardKey::LAlt;
+            case sf::Keyboard::Key::LSystem:
+                return tgui::Event::KeyboardKey::LSystem;
+            case sf::Keyboard::Key::RControl:
+                return tgui::Event::KeyboardKey::RControl;
+            case sf::Keyboard::Key::RShift:
+                return tgui::Event::KeyboardKey::RShift;
+            case sf::Keyboard::Key::RAlt:
+                return tgui::Event::KeyboardKey::RAlt;
+            case sf::Keyboard::Key::RSystem:
+                return tgui::Event::KeyboardKey::RSystem;
+            case sf::Keyboard::Key::Menu:
+                return tgui::Event::KeyboardKey::Menu;
+            case sf::Keyboard::Key::LBracket:
+                return tgui::Event::KeyboardKey::LBracket;
+            case sf::Keyboard::Key::RBracket:
+                return tgui::Event::KeyboardKey::RBracket;
+            case sf::Keyboard::Key::Semicolon:
+                return tgui::Event::KeyboardKey::Semicolon;
+            case sf::Keyboard::Key::Comma:
+                return tgui::Event::KeyboardKey::Comma;
+            case sf::Keyboard::Key::Period:
+                return tgui::Event::KeyboardKey::Period;
 #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6
-        case sf::Keyboard::Key::Quote:      return tgui::Event::KeyboardKey::Quote;
+            case sf::Keyboard::Key::Quote:
+                return tgui::Event::KeyboardKey::Quote;
 #else
-        case sf::Keyboard::Key::Apostrophe: return tgui::Event::KeyboardKey::Quote;
+            case sf::Keyboard::Key::Apostrophe:
+                return tgui::Event::KeyboardKey::Quote;
 #endif
-        case sf::Keyboard::Key::Slash:      return tgui::Event::KeyboardKey::Slash;
-        case sf::Keyboard::Key::Backslash:  return tgui::Event::KeyboardKey::Backslash;
-        case sf::Keyboard::Key::Equal:      return tgui::Event::KeyboardKey::Equal;
-        case sf::Keyboard::Key::Hyphen:     return tgui::Event::KeyboardKey::Minus;
-        case sf::Keyboard::Key::Space:      return tgui::Event::KeyboardKey::Space;
-        case sf::Keyboard::Key::Enter:      return tgui::Event::KeyboardKey::Enter;
-        case sf::Keyboard::Key::Backspace:  return tgui::Event::KeyboardKey::Backspace;
-        case sf::Keyboard::Key::Tab:        return tgui::Event::KeyboardKey::Tab;
-        case sf::Keyboard::Key::PageUp:     return tgui::Event::KeyboardKey::PageUp;
-        case sf::Keyboard::Key::PageDown:   return tgui::Event::KeyboardKey::PageDown;
-        case sf::Keyboard::Key::End:        return tgui::Event::KeyboardKey::End;
-        case sf::Keyboard::Key::Home:       return tgui::Event::KeyboardKey::Home;
-        case sf::Keyboard::Key::Insert:     return tgui::Event::KeyboardKey::Insert;
-        case sf::Keyboard::Key::Delete:     return tgui::Event::KeyboardKey::Delete;
-        case sf::Keyboard::Key::Add:        return tgui::Event::KeyboardKey::Add;
-        case sf::Keyboard::Key::Subtract:   return tgui::Event::KeyboardKey::Subtract;
-        case sf::Keyboard::Key::Multiply:   return tgui::Event::KeyboardKey::Multiply;
-        case sf::Keyboard::Key::Divide:     return tgui::Event::KeyboardKey::Divide;
-        case sf::Keyboard::Key::Left:       return tgui::Event::KeyboardKey::Left;
-        case sf::Keyboard::Key::Right:      return tgui::Event::KeyboardKey::Right;
-        case sf::Keyboard::Key::Up:         return tgui::Event::KeyboardKey::Up;
-        case sf::Keyboard::Key::Down:       return tgui::Event::KeyboardKey::Down;
-        case sf::Keyboard::Key::Numpad0:    return tgui::Event::KeyboardKey::Numpad0;
-        case sf::Keyboard::Key::Numpad1:    return tgui::Event::KeyboardKey::Numpad1;
-        case sf::Keyboard::Key::Numpad2:    return tgui::Event::KeyboardKey::Numpad2;
-        case sf::Keyboard::Key::Numpad3:    return tgui::Event::KeyboardKey::Numpad3;
-        case sf::Keyboard::Key::Numpad4:    return tgui::Event::KeyboardKey::Numpad4;
-        case sf::Keyboard::Key::Numpad5:    return tgui::Event::KeyboardKey::Numpad5;
-        case sf::Keyboard::Key::Numpad6:    return tgui::Event::KeyboardKey::Numpad6;
-        case sf::Keyboard::Key::Numpad7:    return tgui::Event::KeyboardKey::Numpad7;
-        case sf::Keyboard::Key::Numpad8:    return tgui::Event::KeyboardKey::Numpad8;
-        case sf::Keyboard::Key::Numpad9:    return tgui::Event::KeyboardKey::Numpad9;
-        case sf::Keyboard::Key::F1:         return tgui::Event::KeyboardKey::F1;
-        case sf::Keyboard::Key::F2:         return tgui::Event::KeyboardKey::F2;
-        case sf::Keyboard::Key::F3:         return tgui::Event::KeyboardKey::F3;
-        case sf::Keyboard::Key::F4:         return tgui::Event::KeyboardKey::F4;
-        case sf::Keyboard::Key::F5:         return tgui::Event::KeyboardKey::F5;
-        case sf::Keyboard::Key::F6:         return tgui::Event::KeyboardKey::F6;
-        case sf::Keyboard::Key::F7:         return tgui::Event::KeyboardKey::F7;
-        case sf::Keyboard::Key::F8:         return tgui::Event::KeyboardKey::F8;
-        case sf::Keyboard::Key::F9:         return tgui::Event::KeyboardKey::F9;
-        case sf::Keyboard::Key::F10:        return tgui::Event::KeyboardKey::F10;
-        case sf::Keyboard::Key::F11:        return tgui::Event::KeyboardKey::F11;
-        case sf::Keyboard::Key::F12:        return tgui::Event::KeyboardKey::F12;
-        case sf::Keyboard::Key::F13:        return tgui::Event::KeyboardKey::F13;
-        case sf::Keyboard::Key::F14:        return tgui::Event::KeyboardKey::F14;
-        case sf::Keyboard::Key::F15:        return tgui::Event::KeyboardKey::F15;
-        case sf::Keyboard::Key::Pause:      return tgui::Event::KeyboardKey::Pause;
-        default: // We don't process the other keys
-            return tgui::Event::KeyboardKey::Unknown;
+            case sf::Keyboard::Key::Slash:
+                return tgui::Event::KeyboardKey::Slash;
+            case sf::Keyboard::Key::Backslash:
+                return tgui::Event::KeyboardKey::Backslash;
+            case sf::Keyboard::Key::Equal:
+                return tgui::Event::KeyboardKey::Equal;
+            case sf::Keyboard::Key::Hyphen:
+                return tgui::Event::KeyboardKey::Minus;
+            case sf::Keyboard::Key::Space:
+                return tgui::Event::KeyboardKey::Space;
+            case sf::Keyboard::Key::Enter:
+                return tgui::Event::KeyboardKey::Enter;
+            case sf::Keyboard::Key::Backspace:
+                return tgui::Event::KeyboardKey::Backspace;
+            case sf::Keyboard::Key::Tab:
+                return tgui::Event::KeyboardKey::Tab;
+            case sf::Keyboard::Key::PageUp:
+                return tgui::Event::KeyboardKey::PageUp;
+            case sf::Keyboard::Key::PageDown:
+                return tgui::Event::KeyboardKey::PageDown;
+            case sf::Keyboard::Key::End:
+                return tgui::Event::KeyboardKey::End;
+            case sf::Keyboard::Key::Home:
+                return tgui::Event::KeyboardKey::Home;
+            case sf::Keyboard::Key::Insert:
+                return tgui::Event::KeyboardKey::Insert;
+            case sf::Keyboard::Key::Delete:
+                return tgui::Event::KeyboardKey::Delete;
+            case sf::Keyboard::Key::Add:
+                return tgui::Event::KeyboardKey::Add;
+            case sf::Keyboard::Key::Subtract:
+                return tgui::Event::KeyboardKey::Subtract;
+            case sf::Keyboard::Key::Multiply:
+                return tgui::Event::KeyboardKey::Multiply;
+            case sf::Keyboard::Key::Divide:
+                return tgui::Event::KeyboardKey::Divide;
+            case sf::Keyboard::Key::Left:
+                return tgui::Event::KeyboardKey::Left;
+            case sf::Keyboard::Key::Right:
+                return tgui::Event::KeyboardKey::Right;
+            case sf::Keyboard::Key::Up:
+                return tgui::Event::KeyboardKey::Up;
+            case sf::Keyboard::Key::Down:
+                return tgui::Event::KeyboardKey::Down;
+            case sf::Keyboard::Key::Numpad0:
+                return tgui::Event::KeyboardKey::Numpad0;
+            case sf::Keyboard::Key::Numpad1:
+                return tgui::Event::KeyboardKey::Numpad1;
+            case sf::Keyboard::Key::Numpad2:
+                return tgui::Event::KeyboardKey::Numpad2;
+            case sf::Keyboard::Key::Numpad3:
+                return tgui::Event::KeyboardKey::Numpad3;
+            case sf::Keyboard::Key::Numpad4:
+                return tgui::Event::KeyboardKey::Numpad4;
+            case sf::Keyboard::Key::Numpad5:
+                return tgui::Event::KeyboardKey::Numpad5;
+            case sf::Keyboard::Key::Numpad6:
+                return tgui::Event::KeyboardKey::Numpad6;
+            case sf::Keyboard::Key::Numpad7:
+                return tgui::Event::KeyboardKey::Numpad7;
+            case sf::Keyboard::Key::Numpad8:
+                return tgui::Event::KeyboardKey::Numpad8;
+            case sf::Keyboard::Key::Numpad9:
+                return tgui::Event::KeyboardKey::Numpad9;
+            case sf::Keyboard::Key::F1:
+                return tgui::Event::KeyboardKey::F1;
+            case sf::Keyboard::Key::F2:
+                return tgui::Event::KeyboardKey::F2;
+            case sf::Keyboard::Key::F3:
+                return tgui::Event::KeyboardKey::F3;
+            case sf::Keyboard::Key::F4:
+                return tgui::Event::KeyboardKey::F4;
+            case sf::Keyboard::Key::F5:
+                return tgui::Event::KeyboardKey::F5;
+            case sf::Keyboard::Key::F6:
+                return tgui::Event::KeyboardKey::F6;
+            case sf::Keyboard::Key::F7:
+                return tgui::Event::KeyboardKey::F7;
+            case sf::Keyboard::Key::F8:
+                return tgui::Event::KeyboardKey::F8;
+            case sf::Keyboard::Key::F9:
+                return tgui::Event::KeyboardKey::F9;
+            case sf::Keyboard::Key::F10:
+                return tgui::Event::KeyboardKey::F10;
+            case sf::Keyboard::Key::F11:
+                return tgui::Event::KeyboardKey::F11;
+            case sf::Keyboard::Key::F12:
+                return tgui::Event::KeyboardKey::F12;
+            case sf::Keyboard::Key::F13:
+                return tgui::Event::KeyboardKey::F13;
+            case sf::Keyboard::Key::F14:
+                return tgui::Event::KeyboardKey::F14;
+            case sf::Keyboard::Key::F15:
+                return tgui::Event::KeyboardKey::F15;
+            case sf::Keyboard::Key::Pause:
+                return tgui::Event::KeyboardKey::Pause;
+            default: // We don't process the other keys
+                return tgui::Event::KeyboardKey::Unknown;
         }
     }
 } // anonymous namespace
@@ -154,7 +255,6 @@ namespace
 
 namespace tgui
 {
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     BackendGuiSFML::BackendGuiSFML()
@@ -195,7 +295,8 @@ namespace tgui
         m_backendRenderTarget->setClearColor(clearColor);
 
         // Helper function that calculates the amount of time to sleep, which is 10ms unless a timer will expire before this time
-        const auto getTimerWakeUpTime = []{
+        const auto getTimerWakeUpTime = []
+        {
             Optional<Duration> duration = Timer::getNextScheduledTime();
             if (duration && (*duration < std::chrono::milliseconds(10)))
                 return *duration;
@@ -226,9 +327,8 @@ namespace tgui
                         windowOpen = false;
                         eventProcessed = true;
                     }
-                    else if (event->is<sf::Event::Resized>()
-                          || event->is<sf::Event::MouseEntered>() || event->is<sf::Event::MouseLeft>()
-                          || event->is<sf::Event::FocusGained>() || event->is<sf::Event::FocusLost>())
+                    else if (event->is<sf::Event::Resized>() || event->is<sf::Event::MouseEntered>() || event->is<sf::Event::MouseLeft>()
+                             || event->is<sf::Event::FocusGained>() || event->is<sf::Event::FocusLost>())
                     {
                         eventProcessed = true;
                     }
@@ -248,9 +348,9 @@ namespace tgui
                         windowOpen = false;
                         eventProcessed = true;
                     }
-                    else if ((event.type == sf::Event::Resized)
-                          || (event.type == sf::Event::MouseEntered) || (event.type == sf::Event::MouseLeft)
-                          || (event.type == sf::Event::GainedFocus) || (event.type == sf::Event::LostFocus))
+                    else if ((event.type == sf::Event::Resized) || (event.type == sf::Event::MouseEntered)
+                             || (event.type == sf::Event::MouseLeft) || (event.type == sf::Event::GainedFocus)
+                             || (event.type == sf::Event::LostFocus))
                     {
                         eventProcessed = true;
                     }
@@ -353,7 +453,7 @@ namespace tgui
 
             // If the NumLock is off then we will translate keypad key events to key events for text cursor navigation.
             // This functionality is not yet part of SFML, but is available in PR #3238 (https://github.com/SFML/SFML/pull/3238)
-#if 0
+    #if 0
             static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9), "Numpad0 to Numpad9 need continous ids in KeyboardKey");
             if (!eventKeyPressed->numLock
              && (static_cast<int>(eventTGUI.key.code) >= static_cast<int>(Event::KeyboardKey::Numpad0))
@@ -363,7 +463,7 @@ namespace tgui
                 if (eventTGUI.key.code == Event::KeyboardKey::Unknown) // Numpad5 was pressed which has no function
                     return false; // We didn't handle this key press
             }
-#endif
+    #endif
             return true;
         }
 
@@ -576,17 +676,17 @@ namespace tgui
             {
                 switch (eventSFML.mouseButton.button)
                 {
-                case sf::Mouse::Button::Left:
-                    eventTGUI.mouseButton.button = Event::MouseButton::Left;
-                    break;
-                case sf::Mouse::Button::Middle:
-                    eventTGUI.mouseButton.button = Event::MouseButton::Middle;
-                    break;
-                case sf::Mouse::Button::Right:
-                    eventTGUI.mouseButton.button = Event::MouseButton::Right;
-                    break;
-                default: // This mouse button isn't handled by TGUI
-                    return false;
+                    case sf::Mouse::Button::Left:
+                        eventTGUI.mouseButton.button = Event::MouseButton::Left;
+                        break;
+                    case sf::Mouse::Button::Middle:
+                        eventTGUI.mouseButton.button = Event::MouseButton::Middle;
+                        break;
+                    case sf::Mouse::Button::Right:
+                        eventTGUI.mouseButton.button = Event::MouseButton::Right;
+                        break;
+                    default: // This mouse button isn't handled by TGUI
+                        return false;
                 }
 
                 if (eventSFML.type == sf::Event::MouseButtonPressed)
@@ -695,14 +795,14 @@ namespace tgui
     {
         switch (modifierKey)
         {
-        case Event::KeyModifier::System:
-            return m_modifierKeySystemPressed;
-        case Event::KeyModifier::Control:
-            return m_modifierKeyControlPressed;
-        case Event::KeyModifier::Shift:
-            return m_modifierKeyShiftPressed;
-        case Event::KeyModifier::Alt:
-            return m_modifierKeyAltPressed;
+            case Event::KeyModifier::System:
+                return m_modifierKeySystemPressed;
+            case Event::KeyModifier::Control:
+                return m_modifierKeyControlPressed;
+            case Event::KeyModifier::Shift:
+                return m_modifierKeyShiftPressed;
+            case Event::KeyModifier::Alt:
+                return m_modifierKeyAltPressed;
         }
 
         TGUI_ASSERT(false, "BackendGuiSFML::isKeyboardModifierPressed called with an invalid value");
@@ -737,6 +837,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

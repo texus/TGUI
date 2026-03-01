@@ -47,7 +47,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     GrowHorizontalLayout::GrowHorizontalLayout(const GrowHorizontalLayout& other) :
-        BoxLayout      {other},
+        BoxLayout{other},
         m_widgetLayouts{}
     {
         GrowHorizontalLayout::updateWidgets();
@@ -56,7 +56,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     GrowHorizontalLayout::GrowHorizontalLayout(GrowHorizontalLayout&& other) noexcept :
-        BoxLayout      {std::move(other)},
+        BoxLayout{std::move(other)},
         m_widgetLayouts{}
     {
         GrowHorizontalLayout::updateWidgets();
@@ -151,7 +151,7 @@ namespace tgui
         for (const auto& widget : m_widgets)
         {
             m_widgetLayouts.push_back(bindWidth(widget));
-            m_widgetLayouts.back().connectWidget(this, true, [this]{ updateWidgets(); });
+            m_widgetLayouts.back().connectWidget(this, true, [this] { updateWidgets(); });
         }
     }
 
@@ -178,6 +178,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

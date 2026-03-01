@@ -30,14 +30,14 @@
     #error "TGUI wasn't build with the SFML_GRAPHICS backend"
 #endif
 
-#include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
-#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
 #include <TGUI/Backend/Font/SFML-Graphics/BackendFontSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+#include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
 
 #include <SFML/Graphics.hpp>
 
 #ifdef TGUI_SYSTEM_IOS
-  #include <SFML/Main.hpp>
+    #include <SFML/Main.hpp>
 #endif
 
 namespace tgui
@@ -50,7 +50,6 @@ namespace tgui
         class TGUI_API Gui : public BackendGuiSFML
         {
         public:
-
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Default constructor
             ///
@@ -137,19 +136,19 @@ namespace tgui
             TGUI_NODISCARD sf::RenderTarget* getTarget() const;
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        protected:
 
+        protected:
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Updates the view and changes the size of the root container when needed
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             void updateContainerSize() override;
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        private:
 
+        private:
             sf::RenderTarget* m_target = nullptr;
         };
-    }
-}
+    } // namespace SFML_GRAPHICS
+} // namespace tgui
 
 #endif // TGUI_BACKEND_SFML_GRAPHICS_INCLUDE_HPP

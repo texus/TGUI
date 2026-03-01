@@ -33,7 +33,9 @@ namespace tgui
     namespace
     {
         // This struct is used to be able to use make_shared while still keeping the constructor private.
-        struct MakeSharedTimer : public Timer {};
+        struct MakeSharedTimer : public Timer
+        {
+        };
 
         // Helper function to reduce duplicate code in create function
         template <typename Func>
@@ -48,7 +50,7 @@ namespace tgui
 
             return timer;
         }
-    }
+    } // namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -138,7 +140,10 @@ namespace tgui
 
     void Timer::setCallback(const std::function<void(std::shared_ptr<Timer>)>& callback)
     {
-        m_callback = TGUI_LAMBDA_CAPTURE_EQ_THIS{ callback(shared_from_this()); };
+        m_callback = TGUI_LAMBDA_CAPTURE_EQ_THIS
+        {
+            callback(shared_from_this());
+        };
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,6 +213,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

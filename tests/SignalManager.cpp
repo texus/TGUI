@@ -32,33 +32,50 @@ TEST_CASE("[SignalManager]")
 
     SECTION("connect")
     {
-        unsigned int id = manager->connect("NameOfWidget", "PositionChanged", [](){});
-        REQUIRE(manager->connect("NameOfWidget", "PositionChanged", [](const tgui::Widget::Ptr&, const tgui::String&){}) == ++id);
-        REQUIRE(manager->connect("NameOfWidget", "PositionChanged", [](const tgui::Widget::Ptr&, const tgui::String&){}) == ++id);
-        REQUIRE(manager->connect("NameOfWidget", "PositionChanged", [](){}) == ++id);
+        unsigned int id = manager->connect("NameOfWidget", "PositionChanged", []() {});
+        REQUIRE(manager->connect("NameOfWidget", "PositionChanged", [](const tgui::Widget::Ptr&, const tgui::String&) {}) == ++id);
+        REQUIRE(manager->connect("NameOfWidget", "PositionChanged", [](const tgui::Widget::Ptr&, const tgui::String&) {}) == ++id);
+        REQUIRE(manager->connect("NameOfWidget", "PositionChanged", []() {}) == ++id);
 
         REQUIRE(manager->disconnect(id));
         REQUIRE(!manager->disconnect(id));
 
         const tgui::Widget::Ptr widget2 = tgui::Button::create();
-        REQUIRE(manager->connect("NameOfWidget", "Pressed", [](){}) == ++id);
-        REQUIRE(manager->connect("NameOfWidget", "Pressed", [](int){}, 5) == ++id);
-        REQUIRE(manager->connect("NameOfWidget", "Pressed", [](auto){}, 10.f) == ++id);
-        REQUIRE(manager->connect("NameOfWidget", "Pressed", [](const tgui::Widget::Ptr&, const tgui::String&){}) == ++id);
-        REQUIRE(manager->connect("NameOfWidget", "Pressed", [](auto, auto, auto, const tgui::Widget::Ptr&, const tgui::String&){}, "Hey", 15, 3.f) == ++id);
-        REQUIRE(manager->connect("NameOfWidget", "Pressed", std::bind([](int){}, 5)) == ++id); // NOLINT(modernize-avoid-bind)
+        REQUIRE(manager->connect("NameOfWidget", "Pressed", []() {}) == ++id);
+        REQUIRE(manager->connect("NameOfWidget", "Pressed", [](int) {}, 5) == ++id);
+        REQUIRE(manager->connect("NameOfWidget", "Pressed", [](auto) {}, 10.f) == ++id);
+        REQUIRE(manager->connect("NameOfWidget", "Pressed", [](const tgui::Widget::Ptr&, const tgui::String&) {}) == ++id);
+        REQUIRE(
+            manager->connect("NameOfWidget", "Pressed", [](auto, auto, auto, const tgui::Widget::Ptr&, const tgui::String&) {}, "Hey", 15, 3.f) == ++id);
+        REQUIRE(manager->connect("NameOfWidget", "Pressed", std::bind([](int) {}, 5)) == ++id); // NOLINT(modernize-avoid-bind)
 
         struct Class
         {
-            void signalHandler1() {}
-            void signalHandler2(const tgui::Widget::Ptr&, const tgui::String&) {}
-            void signalHandler3(int, float, const tgui::Widget::Ptr&, const tgui::String&) {}
-            void signalHandler4(int&, const tgui::Widget::Ptr&, const tgui::String&) {}
+            void signalHandler1()
+            {
+            }
+            void signalHandler2(const tgui::Widget::Ptr&, const tgui::String&)
+            {
+            }
+            void signalHandler3(int, float, const tgui::Widget::Ptr&, const tgui::String&)
+            {
+            }
+            void signalHandler4(int&, const tgui::Widget::Ptr&, const tgui::String&)
+            {
+            }
 
-            void signalHandler7() const {}
-            void signalHandler8(const tgui::Widget::Ptr&, const tgui::String&) const {}
-            void signalHandler9(int, float, const tgui::Widget::Ptr&, const tgui::String&) const {}
-            void signalHandler10(int&, const tgui::Widget::Ptr&, const tgui::String&) const {}
+            void signalHandler7() const
+            {
+            }
+            void signalHandler8(const tgui::Widget::Ptr&, const tgui::String&) const
+            {
+            }
+            void signalHandler9(int, float, const tgui::Widget::Ptr&, const tgui::String&) const
+            {
+            }
+            void signalHandler10(int&, const tgui::Widget::Ptr&, const tgui::String&) const
+            {
+            }
         };
 
         int i;
@@ -78,7 +95,7 @@ TEST_CASE("[SignalManager]")
         unsigned int mousePressedCount = 0;
         unsigned int mousePressedCount2 = 0;
 
-        manager->connect("NameOfWidget", "MousePressed", [&](){ mousePressedCount++; });
+        manager->connect("NameOfWidget", "MousePressed", [&]() { mousePressedCount++; });
 
         auto widget = tgui::Button::create();
 
@@ -89,7 +106,7 @@ TEST_CASE("[SignalManager]")
         parent->setPosition({60, 55});
         parent->add(widget, "NameOfWidget");
 
-        manager->connect("NameOfWidget", "MousePressed", [&](const tgui::Widget::Ptr&, const tgui::String&){ mousePressedCount2++; });
+        manager->connect("NameOfWidget", "MousePressed", [&](const tgui::Widget::Ptr&, const tgui::String&) { mousePressedCount2++; });
 
         parent->leftMouseReleased({175, 135});
         REQUIRE(mousePressedCount == 0);

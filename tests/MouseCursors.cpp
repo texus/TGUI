@@ -30,25 +30,24 @@ TEST_CASE("[Mouse cursors]")
 {
     SECTION("All cursor types")
     {
-        const std::array<tgui::Cursor::Type, 17> cursors = {{
-            tgui::Cursor::Type::Arrow,
-            tgui::Cursor::Type::Text,
-            tgui::Cursor::Type::Hand,
-            tgui::Cursor::Type::SizeLeft,
-            tgui::Cursor::Type::SizeRight,
-            tgui::Cursor::Type::SizeTop,
-            tgui::Cursor::Type::SizeBottom,
-            tgui::Cursor::Type::SizeTopLeft,
-            tgui::Cursor::Type::SizeBottomRight,
-            tgui::Cursor::Type::SizeBottomLeft,
-            tgui::Cursor::Type::SizeTopRight,
-            tgui::Cursor::Type::SizeHorizontal,
-            tgui::Cursor::Type::SizeVertical,
-            tgui::Cursor::Type::Crosshair,
-            tgui::Cursor::Type::Help,
-            tgui::Cursor::Type::NotAllowed,
-            tgui::Cursor::Type::Move
-        }};
+        const std::array<tgui::Cursor::Type, 17> cursors = {
+            {tgui::Cursor::Type::Arrow,
+             tgui::Cursor::Type::Text,
+             tgui::Cursor::Type::Hand,
+             tgui::Cursor::Type::SizeLeft,
+             tgui::Cursor::Type::SizeRight,
+             tgui::Cursor::Type::SizeTop,
+             tgui::Cursor::Type::SizeBottom,
+             tgui::Cursor::Type::SizeTopLeft,
+             tgui::Cursor::Type::SizeBottomRight,
+             tgui::Cursor::Type::SizeBottomLeft,
+             tgui::Cursor::Type::SizeTopRight,
+             tgui::Cursor::Type::SizeHorizontal,
+             tgui::Cursor::Type::SizeVertical,
+             tgui::Cursor::Type::Crosshair,
+             tgui::Cursor::Type::Help,
+             tgui::Cursor::Type::NotAllowed,
+             tgui::Cursor::Type::Move}};
 
         bool customCursors = false;
         SECTION("System cursors")
@@ -65,7 +64,7 @@ TEST_CASE("[Mouse cursors]")
                 tgui::Vector2u size;
                 auto pixels = tgui::ImageLoader::loadFromFile("resources/Texture" + tgui::String((index % 8) + 1) + ".png", size);
 
-                REQUIRE_NOTHROW(tgui::Cursor::setStyle(cursor, pixels.get(), size, {0,0}));
+                REQUIRE_NOTHROW(tgui::Cursor::setStyle(cursor, pixels.get(), size, {0, 0}));
 
                 ++index;
             }

@@ -36,10 +36,10 @@
 namespace tgui
 {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-    template<typename T>
+    template <typename T>
     using Optional = std::optional<T>;
 #else
-    template<typename T>
+    template <typename T>
     class Optional
     {
     public:
@@ -62,7 +62,7 @@ namespace tgui
 
         Optional(Optional&& other) noexcept = default;
 
-        template<typename... Args>
+        template <typename... Args>
         void emplace(Args&&... args)
         {
             m_ptr = std::make_unique<T>(args...);
@@ -156,6 +156,6 @@ namespace tgui
         std::unique_ptr<T> m_ptr;
     };
 #endif
-}
+} // namespace tgui
 
 #endif // TGUI_OPTIONAL_HPP

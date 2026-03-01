@@ -22,8 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
 #include <TGUI/Backend/Window/GLFW/BackendGLFW.hpp>
+#include <TGUI/Backend/Window/GLFW/BackendGuiGLFW.hpp>
+
 #include <TGUI/Timer.hpp>
 
 #ifdef TGUI_SYSTEM_WINDOWS
@@ -49,110 +50,212 @@ namespace tgui
     {
         switch (key)
         {
-        case GLFW_KEY_A:             return Event::KeyboardKey::A;
-        case GLFW_KEY_B:             return Event::KeyboardKey::B;
-        case GLFW_KEY_C:             return Event::KeyboardKey::C;
-        case GLFW_KEY_D:             return Event::KeyboardKey::D;
-        case GLFW_KEY_E:             return Event::KeyboardKey::E;
-        case GLFW_KEY_F:             return Event::KeyboardKey::F;
-        case GLFW_KEY_G:             return Event::KeyboardKey::G;
-        case GLFW_KEY_H:             return Event::KeyboardKey::H;
-        case GLFW_KEY_I:             return Event::KeyboardKey::I;
-        case GLFW_KEY_J:             return Event::KeyboardKey::J;
-        case GLFW_KEY_K:             return Event::KeyboardKey::K;
-        case GLFW_KEY_L:             return Event::KeyboardKey::L;
-        case GLFW_KEY_M:             return Event::KeyboardKey::M;
-        case GLFW_KEY_N:             return Event::KeyboardKey::N;
-        case GLFW_KEY_O:             return Event::KeyboardKey::O;
-        case GLFW_KEY_P:             return Event::KeyboardKey::P;
-        case GLFW_KEY_Q:             return Event::KeyboardKey::Q;
-        case GLFW_KEY_R:             return Event::KeyboardKey::R;
-        case GLFW_KEY_S:             return Event::KeyboardKey::S;
-        case GLFW_KEY_T:             return Event::KeyboardKey::T;
-        case GLFW_KEY_U:             return Event::KeyboardKey::U;
-        case GLFW_KEY_V:             return Event::KeyboardKey::V;
-        case GLFW_KEY_W:             return Event::KeyboardKey::W;
-        case GLFW_KEY_X:             return Event::KeyboardKey::X;
-        case GLFW_KEY_Y:             return Event::KeyboardKey::Y;
-        case GLFW_KEY_Z:             return Event::KeyboardKey::Z;
-        case GLFW_KEY_0:             return Event::KeyboardKey::Num0;
-        case GLFW_KEY_1:             return Event::KeyboardKey::Num1;
-        case GLFW_KEY_2:             return Event::KeyboardKey::Num2;
-        case GLFW_KEY_3:             return Event::KeyboardKey::Num3;
-        case GLFW_KEY_4:             return Event::KeyboardKey::Num4;
-        case GLFW_KEY_5:             return Event::KeyboardKey::Num5;
-        case GLFW_KEY_6:             return Event::KeyboardKey::Num6;
-        case GLFW_KEY_7:             return Event::KeyboardKey::Num7;
-        case GLFW_KEY_8:             return Event::KeyboardKey::Num8;
-        case GLFW_KEY_9:             return Event::KeyboardKey::Num9;
-        case GLFW_KEY_ESCAPE:        return Event::KeyboardKey::Escape;
-        case GLFW_KEY_LEFT_CONTROL:  return Event::KeyboardKey::LControl;
-        case GLFW_KEY_LEFT_SHIFT:    return Event::KeyboardKey::LShift;
-        case GLFW_KEY_LEFT_ALT:      return Event::KeyboardKey::LAlt;
-        case GLFW_KEY_LEFT_SUPER:    return Event::KeyboardKey::LSystem;
-        case GLFW_KEY_RIGHT_CONTROL: return Event::KeyboardKey::RControl;
-        case GLFW_KEY_RIGHT_SHIFT:   return Event::KeyboardKey::RShift;
-        case GLFW_KEY_RIGHT_ALT:     return Event::KeyboardKey::RAlt;
-        case GLFW_KEY_RIGHT_SUPER:   return Event::KeyboardKey::RSystem;
-        case GLFW_KEY_MENU:          return Event::KeyboardKey::Menu;
-        case GLFW_KEY_LEFT_BRACKET:  return Event::KeyboardKey::LBracket;
-        case GLFW_KEY_RIGHT_BRACKET: return Event::KeyboardKey::RBracket;
-        case GLFW_KEY_SEMICOLON:     return Event::KeyboardKey::Semicolon;
-        case GLFW_KEY_COMMA:         return Event::KeyboardKey::Comma;
-        case GLFW_KEY_PERIOD:        return Event::KeyboardKey::Period;
-        case GLFW_KEY_APOSTROPHE:    return Event::KeyboardKey::Quote;
-        case GLFW_KEY_SLASH:         return Event::KeyboardKey::Slash;
-        case GLFW_KEY_BACKSLASH:     return Event::KeyboardKey::Backslash;
-        case GLFW_KEY_EQUAL:         return Event::KeyboardKey::Equal;
-        case GLFW_KEY_MINUS:         return Event::KeyboardKey::Minus;
-        case GLFW_KEY_SPACE:         return Event::KeyboardKey::Space;
-        case GLFW_KEY_ENTER:         return Event::KeyboardKey::Enter;
-        case GLFW_KEY_BACKSPACE:     return Event::KeyboardKey::Backspace;
-        case GLFW_KEY_TAB:           return Event::KeyboardKey::Tab;
-        case GLFW_KEY_PAGE_UP:       return Event::KeyboardKey::PageUp;
-        case GLFW_KEY_PAGE_DOWN:     return Event::KeyboardKey::PageDown;
-        case GLFW_KEY_END:           return Event::KeyboardKey::End;
-        case GLFW_KEY_HOME:          return Event::KeyboardKey::Home;
-        case GLFW_KEY_INSERT:        return Event::KeyboardKey::Insert;
-        case GLFW_KEY_DELETE:        return Event::KeyboardKey::Delete;
-        case GLFW_KEY_KP_ADD:        return Event::KeyboardKey::Add;
-        case GLFW_KEY_KP_SUBTRACT:   return Event::KeyboardKey::Subtract;
-        case GLFW_KEY_KP_MULTIPLY:   return Event::KeyboardKey::Multiply;
-        case GLFW_KEY_KP_DIVIDE:     return Event::KeyboardKey::Divide;
-        case GLFW_KEY_KP_DECIMAL:    return Event::KeyboardKey::Period;
-        case GLFW_KEY_KP_EQUAL:      return Event::KeyboardKey::Equal;
-        case GLFW_KEY_LEFT:          return Event::KeyboardKey::Left;
-        case GLFW_KEY_RIGHT:         return Event::KeyboardKey::Right;
-        case GLFW_KEY_UP:            return Event::KeyboardKey::Up;
-        case GLFW_KEY_DOWN:          return Event::KeyboardKey::Down;
-        case GLFW_KEY_KP_0:          return Event::KeyboardKey::Numpad0;
-        case GLFW_KEY_KP_1:          return Event::KeyboardKey::Numpad1;
-        case GLFW_KEY_KP_2:          return Event::KeyboardKey::Numpad2;
-        case GLFW_KEY_KP_3:          return Event::KeyboardKey::Numpad3;
-        case GLFW_KEY_KP_4:          return Event::KeyboardKey::Numpad4;
-        case GLFW_KEY_KP_5:          return Event::KeyboardKey::Numpad5;
-        case GLFW_KEY_KP_6:          return Event::KeyboardKey::Numpad6;
-        case GLFW_KEY_KP_7:          return Event::KeyboardKey::Numpad7;
-        case GLFW_KEY_KP_8:          return Event::KeyboardKey::Numpad8;
-        case GLFW_KEY_KP_9:          return Event::KeyboardKey::Numpad9;
-        case GLFW_KEY_F1:            return Event::KeyboardKey::F1;
-        case GLFW_KEY_F2:            return Event::KeyboardKey::F2;
-        case GLFW_KEY_F3:            return Event::KeyboardKey::F3;
-        case GLFW_KEY_F4:            return Event::KeyboardKey::F4;
-        case GLFW_KEY_F5:            return Event::KeyboardKey::F5;
-        case GLFW_KEY_F6:            return Event::KeyboardKey::F6;
-        case GLFW_KEY_F7:            return Event::KeyboardKey::F7;
-        case GLFW_KEY_F8:            return Event::KeyboardKey::F8;
-        case GLFW_KEY_F9:            return Event::KeyboardKey::F9;
-        case GLFW_KEY_F10:           return Event::KeyboardKey::F10;
-        case GLFW_KEY_F11:           return Event::KeyboardKey::F11;
-        case GLFW_KEY_F12:           return Event::KeyboardKey::F12;
-        case GLFW_KEY_F13:           return Event::KeyboardKey::F13;
-        case GLFW_KEY_F14:           return Event::KeyboardKey::F14;
-        case GLFW_KEY_F15:           return Event::KeyboardKey::F15;
-        case GLFW_KEY_PAUSE:         return Event::KeyboardKey::Pause;
-        default: // We don't process the other keys
-            return Event::KeyboardKey::Unknown;
+            case GLFW_KEY_A:
+                return Event::KeyboardKey::A;
+            case GLFW_KEY_B:
+                return Event::KeyboardKey::B;
+            case GLFW_KEY_C:
+                return Event::KeyboardKey::C;
+            case GLFW_KEY_D:
+                return Event::KeyboardKey::D;
+            case GLFW_KEY_E:
+                return Event::KeyboardKey::E;
+            case GLFW_KEY_F:
+                return Event::KeyboardKey::F;
+            case GLFW_KEY_G:
+                return Event::KeyboardKey::G;
+            case GLFW_KEY_H:
+                return Event::KeyboardKey::H;
+            case GLFW_KEY_I:
+                return Event::KeyboardKey::I;
+            case GLFW_KEY_J:
+                return Event::KeyboardKey::J;
+            case GLFW_KEY_K:
+                return Event::KeyboardKey::K;
+            case GLFW_KEY_L:
+                return Event::KeyboardKey::L;
+            case GLFW_KEY_M:
+                return Event::KeyboardKey::M;
+            case GLFW_KEY_N:
+                return Event::KeyboardKey::N;
+            case GLFW_KEY_O:
+                return Event::KeyboardKey::O;
+            case GLFW_KEY_P:
+                return Event::KeyboardKey::P;
+            case GLFW_KEY_Q:
+                return Event::KeyboardKey::Q;
+            case GLFW_KEY_R:
+                return Event::KeyboardKey::R;
+            case GLFW_KEY_S:
+                return Event::KeyboardKey::S;
+            case GLFW_KEY_T:
+                return Event::KeyboardKey::T;
+            case GLFW_KEY_U:
+                return Event::KeyboardKey::U;
+            case GLFW_KEY_V:
+                return Event::KeyboardKey::V;
+            case GLFW_KEY_W:
+                return Event::KeyboardKey::W;
+            case GLFW_KEY_X:
+                return Event::KeyboardKey::X;
+            case GLFW_KEY_Y:
+                return Event::KeyboardKey::Y;
+            case GLFW_KEY_Z:
+                return Event::KeyboardKey::Z;
+            case GLFW_KEY_0:
+                return Event::KeyboardKey::Num0;
+            case GLFW_KEY_1:
+                return Event::KeyboardKey::Num1;
+            case GLFW_KEY_2:
+                return Event::KeyboardKey::Num2;
+            case GLFW_KEY_3:
+                return Event::KeyboardKey::Num3;
+            case GLFW_KEY_4:
+                return Event::KeyboardKey::Num4;
+            case GLFW_KEY_5:
+                return Event::KeyboardKey::Num5;
+            case GLFW_KEY_6:
+                return Event::KeyboardKey::Num6;
+            case GLFW_KEY_7:
+                return Event::KeyboardKey::Num7;
+            case GLFW_KEY_8:
+                return Event::KeyboardKey::Num8;
+            case GLFW_KEY_9:
+                return Event::KeyboardKey::Num9;
+            case GLFW_KEY_ESCAPE:
+                return Event::KeyboardKey::Escape;
+            case GLFW_KEY_LEFT_CONTROL:
+                return Event::KeyboardKey::LControl;
+            case GLFW_KEY_LEFT_SHIFT:
+                return Event::KeyboardKey::LShift;
+            case GLFW_KEY_LEFT_ALT:
+                return Event::KeyboardKey::LAlt;
+            case GLFW_KEY_LEFT_SUPER:
+                return Event::KeyboardKey::LSystem;
+            case GLFW_KEY_RIGHT_CONTROL:
+                return Event::KeyboardKey::RControl;
+            case GLFW_KEY_RIGHT_SHIFT:
+                return Event::KeyboardKey::RShift;
+            case GLFW_KEY_RIGHT_ALT:
+                return Event::KeyboardKey::RAlt;
+            case GLFW_KEY_RIGHT_SUPER:
+                return Event::KeyboardKey::RSystem;
+            case GLFW_KEY_MENU:
+                return Event::KeyboardKey::Menu;
+            case GLFW_KEY_LEFT_BRACKET:
+                return Event::KeyboardKey::LBracket;
+            case GLFW_KEY_RIGHT_BRACKET:
+                return Event::KeyboardKey::RBracket;
+            case GLFW_KEY_SEMICOLON:
+                return Event::KeyboardKey::Semicolon;
+            case GLFW_KEY_COMMA:
+                return Event::KeyboardKey::Comma;
+            case GLFW_KEY_PERIOD:
+                return Event::KeyboardKey::Period;
+            case GLFW_KEY_APOSTROPHE:
+                return Event::KeyboardKey::Quote;
+            case GLFW_KEY_SLASH:
+                return Event::KeyboardKey::Slash;
+            case GLFW_KEY_BACKSLASH:
+                return Event::KeyboardKey::Backslash;
+            case GLFW_KEY_EQUAL:
+                return Event::KeyboardKey::Equal;
+            case GLFW_KEY_MINUS:
+                return Event::KeyboardKey::Minus;
+            case GLFW_KEY_SPACE:
+                return Event::KeyboardKey::Space;
+            case GLFW_KEY_ENTER:
+                return Event::KeyboardKey::Enter;
+            case GLFW_KEY_BACKSPACE:
+                return Event::KeyboardKey::Backspace;
+            case GLFW_KEY_TAB:
+                return Event::KeyboardKey::Tab;
+            case GLFW_KEY_PAGE_UP:
+                return Event::KeyboardKey::PageUp;
+            case GLFW_KEY_PAGE_DOWN:
+                return Event::KeyboardKey::PageDown;
+            case GLFW_KEY_END:
+                return Event::KeyboardKey::End;
+            case GLFW_KEY_HOME:
+                return Event::KeyboardKey::Home;
+            case GLFW_KEY_INSERT:
+                return Event::KeyboardKey::Insert;
+            case GLFW_KEY_DELETE:
+                return Event::KeyboardKey::Delete;
+            case GLFW_KEY_KP_ADD:
+                return Event::KeyboardKey::Add;
+            case GLFW_KEY_KP_SUBTRACT:
+                return Event::KeyboardKey::Subtract;
+            case GLFW_KEY_KP_MULTIPLY:
+                return Event::KeyboardKey::Multiply;
+            case GLFW_KEY_KP_DIVIDE:
+                return Event::KeyboardKey::Divide;
+            case GLFW_KEY_KP_DECIMAL:
+                return Event::KeyboardKey::Period;
+            case GLFW_KEY_KP_EQUAL:
+                return Event::KeyboardKey::Equal;
+            case GLFW_KEY_LEFT:
+                return Event::KeyboardKey::Left;
+            case GLFW_KEY_RIGHT:
+                return Event::KeyboardKey::Right;
+            case GLFW_KEY_UP:
+                return Event::KeyboardKey::Up;
+            case GLFW_KEY_DOWN:
+                return Event::KeyboardKey::Down;
+            case GLFW_KEY_KP_0:
+                return Event::KeyboardKey::Numpad0;
+            case GLFW_KEY_KP_1:
+                return Event::KeyboardKey::Numpad1;
+            case GLFW_KEY_KP_2:
+                return Event::KeyboardKey::Numpad2;
+            case GLFW_KEY_KP_3:
+                return Event::KeyboardKey::Numpad3;
+            case GLFW_KEY_KP_4:
+                return Event::KeyboardKey::Numpad4;
+            case GLFW_KEY_KP_5:
+                return Event::KeyboardKey::Numpad5;
+            case GLFW_KEY_KP_6:
+                return Event::KeyboardKey::Numpad6;
+            case GLFW_KEY_KP_7:
+                return Event::KeyboardKey::Numpad7;
+            case GLFW_KEY_KP_8:
+                return Event::KeyboardKey::Numpad8;
+            case GLFW_KEY_KP_9:
+                return Event::KeyboardKey::Numpad9;
+            case GLFW_KEY_F1:
+                return Event::KeyboardKey::F1;
+            case GLFW_KEY_F2:
+                return Event::KeyboardKey::F2;
+            case GLFW_KEY_F3:
+                return Event::KeyboardKey::F3;
+            case GLFW_KEY_F4:
+                return Event::KeyboardKey::F4;
+            case GLFW_KEY_F5:
+                return Event::KeyboardKey::F5;
+            case GLFW_KEY_F6:
+                return Event::KeyboardKey::F6;
+            case GLFW_KEY_F7:
+                return Event::KeyboardKey::F7;
+            case GLFW_KEY_F8:
+                return Event::KeyboardKey::F8;
+            case GLFW_KEY_F9:
+                return Event::KeyboardKey::F9;
+            case GLFW_KEY_F10:
+                return Event::KeyboardKey::F10;
+            case GLFW_KEY_F11:
+                return Event::KeyboardKey::F11;
+            case GLFW_KEY_F12:
+                return Event::KeyboardKey::F12;
+            case GLFW_KEY_F13:
+                return Event::KeyboardKey::F13;
+            case GLFW_KEY_F14:
+                return Event::KeyboardKey::F14;
+            case GLFW_KEY_F15:
+                return Event::KeyboardKey::F15;
+            case GLFW_KEY_PAUSE:
+                return Event::KeyboardKey::Pause;
+            default: // We don't process the other keys
+                return Event::KeyboardKey::Unknown;
         }
     }
 
@@ -318,14 +421,15 @@ namespace tgui
         // If the NumLock is off then we will translate keypad key events to key events for text cursor navigation.
         // The state of the NumLock key is only available since GLFW 3.3 and only when the GLFW_LOCK_KEY_MODS input mode is enabled.
 #if GLFW_VERSION_MAJOR > 3 || (GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR >= 3)
-        static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9), "Numpad0 to Numpad9 need continous ids in KeyboardKey");
+        static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9),
+                      "Numpad0 to Numpad9 need continous ids in KeyboardKey");
         if ((static_cast<int>(event.key.code) >= static_cast<int>(Event::KeyboardKey::Numpad0))
-         && (static_cast<int>(event.key.code) <= static_cast<int>(Event::KeyboardKey::Numpad9))
-         && ((mods & GLFW_MOD_NUM_LOCK) == 0) && (glfwGetInputMode(m_window, GLFW_LOCK_KEY_MODS) == GLFW_TRUE))
+            && (static_cast<int>(event.key.code) <= static_cast<int>(Event::KeyboardKey::Numpad9)) && ((mods & GLFW_MOD_NUM_LOCK) == 0)
+            && (glfwGetInputMode(m_window, GLFW_LOCK_KEY_MODS) == GLFW_TRUE))
         {
             event.key.code = translateKeypadKey(event.key.code);
             if (event.key.code == Event::KeyboardKey::Unknown) // Numpad5 was pressed which has no function
-                return {}; // We didn't handle this key press
+                return {};                                     // We didn't handle this key press
         }
 #endif
 
@@ -365,7 +469,7 @@ namespace tgui
     Optional<Event> BackendGuiGLFW::convertMouseButtonEvent(int button, int action, int)
     {
         if (((action != GLFW_PRESS) && (action != GLFW_RELEASE))
-         || ((button != GLFW_MOUSE_BUTTON_LEFT) && (button != GLFW_MOUSE_BUTTON_RIGHT) && (button != GLFW_MOUSE_BUTTON_MIDDLE)))
+            || ((button != GLFW_MOUSE_BUTTON_LEFT) && (button != GLFW_MOUSE_BUTTON_RIGHT) && (button != GLFW_MOUSE_BUTTON_MIDDLE)))
             return {};
 
         Event event;
@@ -404,37 +508,40 @@ namespace tgui
 
     void BackendGuiGLFW::mainLoop(Color clearColor)
     {
-        TGUI_ASSERT(m_window && m_backendRenderTarget, "Gui must be given an GLFWwindow (either at construction or via setWindow function) before mainLoop() is called");
+        TGUI_ASSERT(m_window && m_backendRenderTarget,
+                    "Gui must be given an GLFWwindow (either at construction or via setWindow function) before mainLoop() is called");
 
         m_backendRenderTarget->setClearColor(clearColor);
 
         glfwSwapInterval(1);
         glfwSetWindowUserPointer(m_window, this);
 
-        glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused){
-            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->windowFocusCallback(focused);
-        });
-        glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height){
-            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->sizeCallback(width, height);
-        });
-        glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int codepoint){
-            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->charCallback(codepoint);
-        });
-        glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods){
-            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->keyCallback(key, scancode, action, mods);
-        });
-        glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset){
-            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->scrollCallback(xoffset, yoffset);
-        });
-        glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos){
-            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->cursorPosCallback(xpos, ypos);
-        });
-        glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods){
-            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->mouseButtonCallback(button, action, mods);
-        });
-        glfwSetCursorEnterCallback(m_window, [](GLFWwindow* window, int entered) {
-            static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->cursorEnterCallback(entered);
-        });
+        glfwSetWindowFocusCallback(m_window,
+                                   [](GLFWwindow* window, int focused)
+                                   { static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->windowFocusCallback(focused); });
+        glfwSetFramebufferSizeCallback(m_window,
+                                       [](GLFWwindow* window, int width, int height)
+                                       { static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->sizeCallback(width, height); });
+        glfwSetCharCallback(m_window,
+                            [](GLFWwindow* window, unsigned int codepoint)
+                            { static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->charCallback(codepoint); });
+        glfwSetKeyCallback(m_window,
+                           [](GLFWwindow* window, int key, int scancode, int action, int mods)
+                           { static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->keyCallback(key, scancode, action, mods); });
+        glfwSetScrollCallback(m_window,
+                              [](GLFWwindow* window, double xoffset, double yoffset)
+                              { static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->scrollCallback(xoffset, yoffset); });
+        glfwSetCursorPosCallback(m_window,
+                                 [](GLFWwindow* window, double xpos, double ypos)
+                                 { static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->cursorPosCallback(xpos, ypos); });
+        glfwSetMouseButtonCallback(m_window,
+                                   [](GLFWwindow* window, int button, int action, int mods)
+                                   {
+                                       static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->mouseButtonCallback(button, action, mods);
+                                   });
+        glfwSetCursorEnterCallback(m_window,
+                                   [](GLFWwindow* window, int entered)
+                                   { static_cast<BackendGuiGLFW*>(glfwGetWindowUserPointer(window))->cursorEnterCallback(entered); });
 
         setDrawingUpdatesTime(false);
 
@@ -490,14 +597,17 @@ namespace tgui
     {
         switch (modifierKey)
         {
-        case Event::KeyModifier::System:
-            return (glfwGetKey(m_window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS);
-        case Event::KeyModifier::Control:
-            return (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS);
-        case Event::KeyModifier::Shift:
-            return (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
-        case Event::KeyModifier::Alt:
-            return (glfwGetKey(m_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS);
+            case Event::KeyModifier::System:
+                return (glfwGetKey(m_window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS)
+                       || (glfwGetKey(m_window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS);
+            case Event::KeyModifier::Control:
+                return (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+                       || (glfwGetKey(m_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS);
+            case Event::KeyModifier::Shift:
+                return (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+                       || (glfwGetKey(m_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
+            case Event::KeyModifier::Alt:
+                return (glfwGetKey(m_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) || (glfwGetKey(m_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS);
         }
 
         TGUI_ASSERT(false, "BackendGuiGLFW::isKeyboardModifierPressed called with an invalid value");
@@ -537,6 +647,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -25,9 +25,9 @@
 #ifndef TGUI_SCROLLABLE_PANEL_HPP
 #define TGUI_SCROLLABLE_PANEL_HPP
 
+#include <TGUI/Renderers/ScrollablePanelRenderer.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
-#include <TGUI/Renderers/ScrollablePanelRenderer.hpp>
 
 #include <chrono>
 
@@ -41,8 +41,7 @@ namespace tgui
     class TGUI_API ScrollablePanel : public Panel, public DualScrollbarChildInterface
     {
     public:
-
-        using Ptr = std::shared_ptr<ScrollablePanel>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<ScrollablePanel>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ScrollablePanel>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ScrollablePanel"; //!< Type name of the widget
@@ -189,59 +188,68 @@ namespace tgui
         /// @brief Returns the width of the scrollbars
         /// @return Scrollbar width
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getWidth() or getHorizontalScrollbar()->getWidth() instead") TGUI_NODISCARD float getScrollbarWidth() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getWidth() or getHorizontalScrollbar()->getWidth() instead")
+        TGUI_NODISCARD float getScrollbarWidth() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the vertical scrollbar should be displayed
         /// @param policy  The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->setPolicy(policy) instead") void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->setPolicy(policy) instead")
+        void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the vertical scrollbar should be displayed
         /// @return The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getPolicy() instead")
+        TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the horizontal scrollbar should be displayed
         /// @param policy  The policy for displaying the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setPolicy(policy) instead") void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setPolicy(policy) instead")
+        void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the horizontal scrollbar should be displayed
         /// @return The policy for displaying the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getPolicy() instead")
+        TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes how much the value changes when scrolling or pressing one of the arrows of the vertical scrollbar
         ///
         /// @param scrollAmount  How far should the vertical scrollbar scroll when an arrow is clicked?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->setScrollAmount(scrollAmount) instead") void setVerticalScrollAmount(unsigned int scrollAmount);
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->setScrollAmount(scrollAmount) instead")
+        void setVerticalScrollAmount(unsigned int scrollAmount);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns how much the value changes when scrolling or pressing one of the arrows of the vertical scrollbar
         ///
         /// @return How far should the vertical scrollbar scroll when an arrow is clicked?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getScrollAmount() instead") TGUI_NODISCARD unsigned int getVerticalScrollAmount() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getScrollAmount() instead")
+        TGUI_NODISCARD unsigned int getVerticalScrollAmount() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes how much the value changes when scrolling or pressing one of the arrows of the horizontal scrollbar
         ///
         /// @param scrollAmount  How far should the horizontal scrollbar scroll when an arrow is clicked?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setScrollAmount(scrollAmount) instead") void setHorizontalScrollAmount(unsigned int scrollAmount);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setScrollAmount(scrollAmount) instead")
+        void setHorizontalScrollAmount(unsigned int scrollAmount);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns how much the value changes when scrolling or pressing one of the arrows of the horizontal scrollbar
         ///
         /// @return How far should the horizontal scrollbar scroll when an arrow is clicked?
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getScrollAmount() instead") TGUI_NODISCARD unsigned int getHorizontalScrollAmount() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getScrollAmount() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollAmount() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the vertical scrollbar
@@ -255,7 +263,8 @@ namespace tgui
         ///
         /// @return Value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead")
+        TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the vertical scrollbar
@@ -264,7 +273,8 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead")
+        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
@@ -278,7 +288,8 @@ namespace tgui
         ///
         /// @return Value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -287,7 +298,8 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the vertical scrollbar is currently visible.
@@ -374,8 +386,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -415,8 +427,8 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Update the position, size and value of the scrollbars
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -438,13 +450,13 @@ namespace tgui
         void disconnectAllChildWidgets();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
-        Vector2f         m_contentSize;
-        Vector2f         m_mostBottomRightPosition;
+    protected:
+        Vector2f m_contentSize;
+        Vector2f m_mostBottomRightPosition;
 
         std::chrono::steady_clock::time_point m_lastSuccessfulScrollTime; // Timestamp of the last mouse wheel scroll event
-        Vector2f m_lastSuccessfulScrollPos; // Mouse position at the last mouse wheel scroll event
+        Vector2f m_lastSuccessfulScrollPos;                               // Mouse position at the last mouse wheel scroll event
 
         unsigned int m_verticalScrollAmount = 0;
         unsigned int m_horizontalScrollAmount = 0;
@@ -461,7 +473,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

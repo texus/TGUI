@@ -58,10 +58,7 @@ TEST_CASE("[SvgImage]")
 
         TEST_DRAW_INIT(130, 130, picture)
 
-        SECTION("Without transformations")
-        {
-            TEST_DRAW("Svg.png")
-        }
+        SECTION("Without transformations"){TEST_DRAW("Svg.png")}
 
         SECTION("Moved, scaled and colorized")
         {

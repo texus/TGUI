@@ -26,11 +26,12 @@
 #define TGUI_WIDGET_RENDERER_HPP
 
 #include <TGUI/Config.hpp>
-#include <TGUI/ObjectConverter.hpp>
-#include <TGUI/Loading/DataIO.hpp>
 
-#include <unordered_set>
+#include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/ObjectConverter.hpp>
+
 #include <map>
+#include <unordered_set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -66,11 +67,10 @@ namespace tgui
     class TGUI_API WidgetRenderer
     {
     public:
-
-        WidgetRenderer() = default; //!< Default constructor
-        WidgetRenderer(const WidgetRenderer&); //!< Copy constructor
-        WidgetRenderer(WidgetRenderer&&) = default; //!< Default move constructor
-        WidgetRenderer& operator=(const WidgetRenderer&); //!< Copy assignment operator
+        WidgetRenderer() = default;                            //!< Default constructor
+        WidgetRenderer(const WidgetRenderer&);                 //!< Copy constructor
+        WidgetRenderer(WidgetRenderer&&) = default;            //!< Default move constructor
+        WidgetRenderer& operator=(const WidgetRenderer&);      //!< Copy assignment operator
         WidgetRenderer& operator=(WidgetRenderer&&) = default; //!< Default move assignment operator
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,15 +240,15 @@ namespace tgui
         TGUI_NODISCARD std::shared_ptr<RendererData> clone() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::shared_ptr<RendererData> m_data = RendererData::create();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

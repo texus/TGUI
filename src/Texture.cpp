@@ -22,23 +22,25 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Texture.hpp>
 #include <TGUI/Global.hpp>
-#include <TGUI/Base64.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
-#include <TGUI/Exception.hpp>
-#include <TGUI/TextureManager.hpp>
+
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+
+#include <TGUI/Base64.hpp>
+#include <TGUI/Exception.hpp>
 #include <TGUI/Loading/ImageLoader.hpp>
+#include <TGUI/Texture.hpp>
+#include <TGUI/TextureManager.hpp>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
     #include <SFML/Graphics/Image.hpp>
-    #include <SFML/Graphics/Texture.hpp>
     #include <SFML/Graphics/Shader.hpp>
+    #include <SFML/Graphics/Texture.hpp>
 #endif
 
-#include <memory>
 #include <cstdint>
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,15 +49,16 @@ namespace tgui
     bool Texture::m_defaultSmooth = true;
 
     Texture::TextureLoaderFunc Texture::m_textureLoader = &TextureManager::getTexture;
-    Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader = [](BackendTexture& backendTexture, const String& filename, bool smooth)
-        {
-            Vector2u imageSize;
-            auto pixelPtr = ImageLoader::loadFromFile(filename, imageSize);
-            if (!pixelPtr)
-                return false;
+    Texture::BackendTextureLoaderFunc Texture::m_backendTextureLoader =
+        [](BackendTexture& backendTexture, const String& filename, bool smooth)
+    {
+        Vector2u imageSize;
+        auto pixelPtr = ImageLoader::loadFromFile(filename, imageSize);
+        if (!pixelPtr)
+            return false;
 
-            return backendTexture.load(imageSize, std::move(pixelPtr), smooth);
-        };
+        return backendTexture.load(imageSize, std::move(pixelPtr), smooth);
+    };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -66,26 +69,26 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !defined(TGUI_REMOVE_DEPRECATED_CODE)
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
+    TGUI_IGNORE_DEPRECATED_WARNINGS_START
     Texture::Texture(const sf::Texture& texture, const UIntRect& partRect, const UIntRect& middlePart)
     {
         load(texture, partRect, middlePart);
     }
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
+    TGUI_IGNORE_DEPRECATED_WARNINGS_END
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Texture::Texture(const Texture& other) :
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-        m_shader          {other.m_shader},
+        m_shader{other.m_shader},
 #endif
-        m_data            {other.m_data},
-        m_color           {other.m_color},
-        m_partRect        {other.m_partRect},
-        m_middleRect      {other.m_middleRect},
-        m_id              {other.m_id},
-        m_scaledNineSlice {other.m_scaledNineSlice},
-        m_copyCallback    {other.m_copyCallback},
+        m_data{other.m_data},
+        m_color{other.m_color},
+        m_partRect{other.m_partRect},
+        m_middleRect{other.m_middleRect},
+        m_id{other.m_id},
+        m_scaledNineSlice{other.m_scaledNineSlice},
+        m_copyCallback{other.m_copyCallback},
         m_destructCallback{other.m_destructCallback}
     {
         if (getData() && (m_copyCallback != nullptr))
@@ -96,15 +99,15 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
     Texture::Texture(Texture&& other) noexcept :
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-        m_shader          {std::move(other.m_shader)},
+        m_shader{std::move(other.m_shader)},
 #endif
-        m_data            {std::move(other.m_data)},
-        m_color           {std::move(other.m_color)},
-        m_partRect        {std::move(other.m_partRect)},
-        m_middleRect      {std::move(other.m_middleRect)},
-        m_id              {std::move(other.m_id)},
-        m_scaledNineSlice {std::move(other.m_scaledNineSlice)},
-        m_copyCallback    {std::move(other.m_copyCallback)},
+        m_data{std::move(other.m_data)},
+        m_color{std::move(other.m_color)},
+        m_partRect{std::move(other.m_partRect)},
+        m_middleRect{std::move(other.m_middleRect)},
+        m_id{std::move(other.m_id)},
+        m_scaledNineSlice{std::move(other.m_scaledNineSlice)},
+        m_copyCallback{std::move(other.m_copyCallback)},
         m_destructCallback{std::move(other.m_destructCallback)}
     {
         other.m_data = nullptr;
@@ -129,15 +132,15 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             Texture temp{other};
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-            std::swap(m_shader,           temp.m_shader);
+            std::swap(m_shader, temp.m_shader);
 #endif
-            std::swap(m_data,             temp.m_data);
-            std::swap(m_color,            temp.m_color);
-            std::swap(m_partRect,         temp.m_partRect);
-            std::swap(m_middleRect,       temp.m_middleRect);
-            std::swap(m_id,               temp.m_id);
-            std::swap(m_scaledNineSlice,  temp.m_scaledNineSlice);
-            std::swap(m_copyCallback,     temp.m_copyCallback);
+            std::swap(m_data, temp.m_data);
+            std::swap(m_color, temp.m_color);
+            std::swap(m_partRect, temp.m_partRect);
+            std::swap(m_middleRect, temp.m_middleRect);
+            std::swap(m_id, temp.m_id);
+            std::swap(m_scaledNineSlice, temp.m_scaledNineSlice);
+            std::swap(m_copyCallback, temp.m_copyCallback);
             std::swap(m_destructCallback, temp.m_destructCallback);
         }
 
@@ -151,15 +154,15 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         if (this != &other)
         {
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-            m_shader           = std::move(other.m_shader);
+            m_shader = std::move(other.m_shader);
 #endif
-            m_data             = std::move(other.m_data);
-            m_color            = std::move(other.m_color);
-            m_partRect         = std::move(other.m_partRect);
-            m_middleRect       = std::move(other.m_middleRect);
-            m_id               = std::move(other.m_id);
-            m_scaledNineSlice  = std::move(other.m_scaledNineSlice);
-            m_copyCallback     = std::move(other.m_copyCallback);
+            m_data = std::move(other.m_data);
+            m_color = std::move(other.m_color);
+            m_partRect = std::move(other.m_partRect);
+            m_middleRect = std::move(other.m_middleRect);
+            m_id = std::move(other.m_id);
+            m_scaledNineSlice = std::move(other.m_scaledNineSlice);
+            m_copyCallback = std::move(other.m_copyCallback);
             m_destructCallback = std::move(other.m_destructCallback);
 
             other.m_data = nullptr;
@@ -206,7 +209,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
                 throw Exception{U"Failed to load '" + id + U"'"};
         }
 
-        TGUI_ASSERT(data->svgImage || data->backendTexture, "TextureLoaderFunc returned non-nullptr but didn't initialized backendTexture or svgImage");
+        TGUI_ASSERT(data->svgImage || data->backendTexture,
+                    "TextureLoaderFunc returned non-nullptr but didn't initialized backendTexture or svgImage");
 
         m_id = id;
         setTextureData(data, partRect, middleRect);
@@ -228,7 +232,11 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Texture::loadFromMemory(const std::uint8_t* fileData, std::size_t fileDataSize, const UIntRect& partRect, const UIntRect& middleRect, bool smooth)
+    void Texture::loadFromMemory(const std::uint8_t* fileData,
+                                 std::size_t fileDataSize,
+                                 const UIntRect& partRect,
+                                 const UIntRect& middleRect,
+                                 bool smooth)
     {
         auto data = std::make_shared<TextureData>();
         data->backendTexture = getBackend()->createTexture();
@@ -391,7 +399,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             return false;
 
         const UIntRect& partRect = getPartRect();
-        TGUI_ASSERT(pixel.x <= partRect.width && pixel.y <= partRect.height, "Texture::isTransparentPixel called with pixel outside texture rectangle");
+        TGUI_ASSERT(pixel.x <= partRect.width && pixel.y <= partRect.height,
+                    "Texture::isTransparentPixel called with pixel outside texture rectangle");
 
         // Due to float rounding errors it could happen that we previously thought the position would still be on top of the image,
         // but now that we are using integers we can tell that the position is just outside the image.
@@ -421,14 +430,12 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
     bool Texture::operator==(const Texture& right) const
     {
-        return (m_id == right.m_id)
-            && (!m_id.empty() || (m_data == right.m_data))
-            && (m_partRect == right.m_partRect)
-            && (m_middleRect == right.m_middleRect)
+        return (m_id == right.m_id) && (!m_id.empty() || (m_data == right.m_data)) && (m_partRect == right.m_partRect)
+               && (m_middleRect == right.m_middleRect)
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-            && (m_shader == right.m_shader)
+               && (m_shader == right.m_shader)
 #endif
-            && (m_color == right.m_color);
+               && (m_color == right.m_color);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -497,7 +504,10 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         if (partRect == UIntRect{})
         {
             if (m_data->svgImage)
-                m_partRect = {0, 0, static_cast<unsigned int>(m_data->svgImage->getSize().x), static_cast<unsigned int>(m_data->svgImage->getSize().y)};
+                m_partRect = {0,
+                              0,
+                              static_cast<unsigned int>(m_data->svgImage->getSize().x),
+                              static_cast<unsigned int>(m_data->svgImage->getSize().y)};
             else
             {
                 const Vector2u textureSize = m_data->backendTexture->getSize();
@@ -511,6 +521,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Widgets/TabContainer.hpp>
+
 #include <algorithm>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,12 +46,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TabContainer::TabContainer(const TabContainer& other) :
-        Container          {other},
-        onSelectionChange  {other.onSelectionChange},
+        Container{other},
+        onSelectionChange{other.onSelectionChange},
         onSelectionChanging{other.onSelectionChanging},
-        m_tabs             {get<Tabs>(U"Tabs")},
-        m_tabAlign         {other.m_tabAlign},
-        m_tabFixedSize     {other.m_tabFixedSize}
+        m_tabs{get<Tabs>(U"Tabs")},
+        m_tabAlign{other.m_tabAlign},
+        m_tabFixedSize{other.m_tabFixedSize}
     {
         for (const auto& widget : m_widgets)
         {
@@ -68,14 +69,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TabContainer::TabContainer(TabContainer&& other) noexcept :
-        Container          {std::move(other)},
-        onSelectionChange  {std::move(other.onSelectionChange)},
+        Container{std::move(other)},
+        onSelectionChange{std::move(other.onSelectionChange)},
         onSelectionChanging{std::move(other.onSelectionChanging)},
-        m_panels           {std::move(other.m_panels)},
-        m_selectedPanel    {std::move(other.m_selectedPanel)},
-        m_tabs             {std::move(other.m_tabs)},
-        m_tabAlign         {std::move(other.m_tabAlign)},
-        m_tabFixedSize     {std::move(other.m_tabFixedSize)}
+        m_panels{std::move(other.m_panels)},
+        m_selectedPanel{std::move(other.m_selectedPanel)},
+        m_tabs{std::move(other.m_tabs)},
+        m_tabAlign{std::move(other.m_tabAlign)},
+        m_tabFixedSize{std::move(other.m_tabFixedSize)}
     {
         init();
     }
@@ -87,11 +88,11 @@ namespace tgui
         if (this != &other)
         {
             Container::operator=(other);
-            onSelectionChange   = other.onSelectionChange;
+            onSelectionChange = other.onSelectionChange;
             onSelectionChanging = other.onSelectionChanging;
-            m_tabs              = get<Tabs>(U"Tabs");
-            m_tabAlign          = other.m_tabAlign;
-            m_tabFixedSize      = other.m_tabFixedSize;
+            m_tabs = get<Tabs>(U"Tabs");
+            m_tabAlign = other.m_tabAlign;
+            m_tabFixedSize = other.m_tabFixedSize;
 
             for (const auto& widget : m_widgets)
             {
@@ -115,13 +116,13 @@ namespace tgui
     {
         if (this != &other)
         {
-            onSelectionChange   = std::move(other.onSelectionChange);
+            onSelectionChange = std::move(other.onSelectionChange);
             onSelectionChanging = std::move(other.onSelectionChanging);
-            m_panels            = std::move(other.m_panels);
-            m_selectedPanel     = std::move(other.m_selectedPanel);
-            m_tabs              = std::move(other.m_tabs);
-            m_tabAlign          = std::move(other.m_tabAlign);
-            m_tabFixedSize      = std::move(other.m_tabFixedSize);
+            m_panels = std::move(other.m_panels);
+            m_selectedPanel = std::move(other.m_selectedPanel);
+            m_tabs = std::move(other.m_tabs);
+            m_tabAlign = std::move(other.m_tabAlign);
+            m_tabFixedSize = std::move(other.m_tabFixedSize);
             Container::operator=(std::move(other));
 
             init();
@@ -471,7 +472,8 @@ namespace tgui
         auto tabAlign = TabContainer::TabAlign::Top;
         if (node->propertyValuePairs[U"TabAlignment"])
         {
-            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TabAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TabAlignment"]->value)
+                                         .getString();
             if (alignment == U"Bottom")
                 tabAlign = TabContainer::TabAlign::Bottom;
             else if (alignment != U"Top")
@@ -516,10 +518,12 @@ namespace tgui
     {
         layoutTabs();
         m_tabs->onTabSelect.disconnectAll();
-        m_tabs->onTabSelect([this](){
-            TGUI_ASSERT(m_tabs->getSelectedIndex() >= 0, "TabContainer relies on Tabs::onTabSelect not firing on deselect");
-            select(static_cast<std::size_t>(m_tabs->getSelectedIndex()));
-        });
+        m_tabs->onTabSelect(
+            [this]()
+            {
+                TGUI_ASSERT(m_tabs->getSelectedIndex() >= 0, "TabContainer relies on Tabs::onTabSelect not firing on deselect");
+                select(static_cast<std::size_t>(m_tabs->getSelectedIndex()));
+            });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -541,6 +545,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

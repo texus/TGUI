@@ -25,9 +25,9 @@
 #ifndef TGUI_TABS_BASE_HPP
 #define TGUI_TABS_BASE_HPP
 
-#include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/TabsRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,8 +42,7 @@ namespace tgui
     class TGUI_API TabsBase : public Widget
     {
     public:
-
-        using Ptr = std::shared_ptr<TabsBase>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<TabsBase>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const TabsBase>; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,8 +303,8 @@ namespace tgui
         void mouseNoLongerOnWidget() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -350,23 +349,23 @@ namespace tgui
         void updateTextSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
-        SignalString onTabSelect = {"TabSelected"}; //!< A tab that was selected. Optional parameter: selected item
+    public:
+        SignalString onTabSelect = {"TabSelected"};         //!< A tab that was selected. Optional parameter: selected item
         SignalString onTabRightClick = {"TabRightClicked"}; //!< Right mouse pressed on a tab. Optional parameter: selected item
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
-        int                m_selectedTab = -1;
-        int                m_hoveringTab = -1;
+    protected:
+        int m_selectedTab = -1;
+        int m_hoveringTab = -1;
 
         struct Tab
         {
-            bool   visible;
-            bool   enabled;
-            float  width;
-            Text   text;
+            bool visible;
+            bool enabled;
+            float width;
+            Text text;
             String id;
         };
         std::vector<Tab> m_tabs;
@@ -378,29 +377,29 @@ namespace tgui
         Sprite m_spriteDisabledTab;
 
         // Cached renderer properties
-        Borders   m_bordersCached;
-        Color     m_borderColorCached;
-        Color     m_borderColorHoverCached;
-        Color     m_selectedBorderColorCached;
-        Color     m_selectedBorderColorHoverCached;
-        Color     m_backgroundColorCached;
-        Color     m_backgroundColorHoverCached;
-        Color     m_backgroundColorDisabledCached;
-        Color     m_selectedBackgroundColorCached;
-        Color     m_selectedBackgroundColorHoverCached;
-        Color     m_textColorCached;
-        Color     m_textColorHoverCached;
-        Color     m_textColorDisabledCached;
-        Color     m_selectedTextColorCached;
-        Color     m_selectedTextColorHoverCached;
-        float     m_distanceToSideCached = 0;
-        float     m_roundedBorderRadiusCached = 0;
+        Borders m_bordersCached;
+        Color m_borderColorCached;
+        Color m_borderColorHoverCached;
+        Color m_selectedBorderColorCached;
+        Color m_selectedBorderColorHoverCached;
+        Color m_backgroundColorCached;
+        Color m_backgroundColorHoverCached;
+        Color m_backgroundColorDisabledCached;
+        Color m_selectedBackgroundColorCached;
+        Color m_selectedBackgroundColorHoverCached;
+        Color m_textColorCached;
+        Color m_textColorHoverCached;
+        Color m_textColorDisabledCached;
+        Color m_selectedTextColorCached;
+        Color m_selectedTextColorHoverCached;
+        float m_distanceToSideCached = 0;
+        float m_roundedBorderRadiusCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

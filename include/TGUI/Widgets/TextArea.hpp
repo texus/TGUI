@@ -25,9 +25,9 @@
 #ifndef TGUI_TEXT_AREA_HPP
 #define TGUI_TEXT_AREA_HPP
 
-#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/TextAreaRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,8 +42,7 @@ namespace tgui
     class TGUI_API TextArea : public Widget, public DualScrollbarChildInterface
     {
     public:
-
-        using Ptr = std::shared_ptr<TextArea>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<TextArea>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const TextArea>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "TextArea"; //!< Type name of the widget
@@ -283,7 +282,8 @@ namespace tgui
         ///
         /// The default policy is Automatic, which means it only shows when the text doesn't fit inside the TextArea.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar->setPolicy(policy) instead") void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getVerticalScrollbar->setPolicy(policy) instead")
+        void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the vertical scrollbar should be displayed
@@ -291,7 +291,8 @@ namespace tgui
         ///
         /// The default policy is Automatic, which means it only shows when the text doesn't fit inside the TextArea.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar->getPolicy() instead")
+        TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the horizontal scrollbar should be displayed
@@ -299,7 +300,8 @@ namespace tgui
         ///
         /// The default policy is Never, which means word-wrap will be used to keep the text within the TextArea.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar->setPolicy(policy) instead") void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->setPolicy(policy) instead")
+        void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the horizontal scrollbar should be displayed
@@ -307,7 +309,8 @@ namespace tgui
         ///
         /// The default policy is Never, which means word-wrap will be used to keep the text within the TextArea.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->getPolicy() instead")
+        TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the amount of lines that the text occupies in the TextArea
@@ -362,7 +365,8 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar->getMaxValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar->getMaxValue() instead")
+        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
@@ -376,7 +380,8 @@ namespace tgui
         ///
         /// @return Value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar->getValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->getValue() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -385,7 +390,8 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar->getMaxValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar->getMaxValue() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
@@ -446,8 +452,8 @@ namespace tgui
         void leftMouseButtonNoLongerDown() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function will search after which character the caret should be placed. It will not change the caret position.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -565,16 +571,16 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Implementation of setCaretPosition() that either updates or retains the m_selEnd value.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setCaretPositionImpl(std::size_t charactersBeforeCaret, bool selEndNeedUpdate, bool emitCaretChangedPosition);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the size without the borders
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -648,15 +654,15 @@ namespace tgui
         void updateSelEnd(const Vector2<std::size_t>& newValue);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalString onTextChange = {"TextChanged"};             //!< The text was changed. Optional parameter: new text
         Signal onSelectionChange = {"SelectionChanged"};         //!< Selected text changed
         Signal onCaretPositionChange = {"CaretPositionChanged"}; //!< Caret position changed
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         String m_text;
         float m_lineHeight = 24;
 
@@ -705,18 +711,18 @@ namespace tgui
         // Cached renderer properties
         Borders m_bordersCached;
         Padding m_paddingCached;
-        Color   m_borderColorCached;
-        Color   m_backgroundColorCached;
-        Color   m_caretColorCached;
-        Color   m_selectedTextBackgroundColorCached;
-        float   m_caretWidthCached = 1;
-        float   m_roundedBorderRadiusCached = 0;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_caretColorCached;
+        Color m_selectedTextBackgroundColorCached;
+        float m_caretWidthCached = 1;
+        float m_roundedBorderRadiusCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

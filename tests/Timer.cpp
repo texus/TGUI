@@ -27,7 +27,7 @@
 TEST_CASE("[Timer]")
 {
     unsigned int count = 0;
-    const auto callback = [&count]{ ++count; };
+    const auto callback = [&count] { ++count; };
 
     SECTION("Creating timers")
     {
@@ -100,7 +100,7 @@ TEST_CASE("[Timer]")
         SECTION("Callback")
         {
             unsigned int otherCount = 0;
-            const auto otherCallback = [&otherCount]{ ++otherCount; };
+            const auto otherCallback = [&otherCount] { ++otherCount; };
 
             auto timer = tgui::Timer::create(callback, 250);
             timer->setCallback(otherCallback);

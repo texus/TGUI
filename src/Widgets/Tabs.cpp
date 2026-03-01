@@ -346,9 +346,13 @@ namespace tgui
             if (roundedCorners)
             {
                 states.transform.translate({-borderWidth, 0});
-                target.drawRoundedRectangle(states, {m_tabs[i].width + (2 * borderWidth), getSize().y}, Color::applyOpacity(backgroundColor, m_opacityCached),
-                                            m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
-                states.transform.translate({m_tabs[i].width + (2*borderWidth), 0});
+                target.drawRoundedRectangle(states,
+                                            {m_tabs[i].width + (2 * borderWidth), getSize().y},
+                                            Color::applyOpacity(backgroundColor, m_opacityCached),
+                                            m_roundedBorderRadiusCached,
+                                            m_bordersCached,
+                                            Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                states.transform.translate({m_tabs[i].width + (2 * borderWidth), 0});
             }
             else
             {
@@ -393,8 +397,9 @@ namespace tgui
                     if (i == m_tabs.size() - 1)
                         rightBorderWidth = m_bordersCached.getRight();
 
-                    if ((m_selectedTab >= 0) && (m_hoveringTab >= 0) && (m_borderColorHoverCached.isSet()
-                        && (m_selectedBorderColorCached.isSet() || m_selectedBorderColorHoverCached.isSet())))
+                    if ((m_selectedTab >= 0) && (m_hoveringTab >= 0)
+                        && (m_borderColorHoverCached.isSet()
+                            && (m_selectedBorderColorCached.isSet() || m_selectedBorderColorHoverCached.isSet())))
                     {
                         if ((m_selectedTab == static_cast<int>(i - 1)) || (m_hoveringTab == static_cast<int>(i - 1)))
                             leftBorderWidth /= 2;
@@ -406,8 +411,10 @@ namespace tgui
                     if (i < m_tabs.size() - 1)
                         highlightStates.transform.translate({-borderWidth, 0});
                     highlightStates.transform.translate({-m_tabs[i].width - leftBorderWidth, -m_bordersCached.getTop()});
-                    target.drawBorders(highlightStates, {leftBorderWidth, m_bordersCached.getTop(), rightBorderWidth, m_bordersCached.getBottom()},
-                                       {m_tabs[i].width + leftBorderWidth + rightBorderWidth, getSize().y}, highlightColor);
+                    target.drawBorders(highlightStates,
+                                       {leftBorderWidth, m_bordersCached.getTop(), rightBorderWidth, m_bordersCached.getBottom()},
+                                       {m_tabs[i].width + leftBorderWidth + rightBorderWidth, getSize().y},
+                                       highlightColor);
                 }
             }
 
@@ -418,7 +425,8 @@ namespace tgui
                 target.addClippingLayer(textStates, {{m_distanceToSideCached, 0}, {usableWidth, usableHeight}});
 
             // Draw the text
-            textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabs[i].text.getSize().x) / 2.f), ((usableHeight - m_tabs[i].text.getSize().y) / 2.f)});
+            textStates.transform.translate({m_distanceToSideCached + ((usableWidth - m_tabs[i].text.getSize().x) / 2.f),
+                                            ((usableHeight - m_tabs[i].text.getSize().y) / 2.f)});
             target.drawText(textStates, m_tabs[i].text);
 
             if (clippingRequired)
@@ -434,6 +442,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -25,9 +25,9 @@
 #ifndef TGUI_BUTTON_BASE_HPP
 #define TGUI_BUTTON_BASE_HPP
 
+#include <TGUI/Components.hpp>
 #include <TGUI/Renderers/ButtonRenderer.hpp>
 #include <TGUI/Widgets/ClickableWidget.hpp>
-#include <TGUI/Components.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,8 +39,7 @@ namespace tgui
     class TGUI_API ButtonBase : public ClickableWidget
     {
     public:
-
-        using Ptr = std::shared_ptr<ButtonBase>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<ButtonBase>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ButtonBase>; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,8 +204,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called when the mouse enters the widget. If requested, a callback will be send.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,16 +269,16 @@ namespace tgui
         TGUI_NODISCARD std::shared_ptr<priv::dev::Component> getComponent(const String& name);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         String m_string;
 
-        bool   m_down = false;
+        bool m_down = false;
         priv::dev::ComponentState m_state = priv::dev::ComponentState::Normal;
 
-        bool   m_autoSize = true;
-        bool   m_updatingTextSize = false; // Internal variable so that updateSize knows that it is called from updateTextSize
-        bool   m_ignoreKeyEvents = false; // Whether we ignore space and return key presses or not when the button is focused
+        bool m_autoSize = true;
+        bool m_updatingTextSize = false; // Internal variable so that updateSize knows that it is called from updateTextSize
+        bool m_ignoreKeyEvents = false;  // Whether we ignore space and return key presses or not when the button is focused
 
         Vector2<AbsoluteOrRelativeValue> m_textPosition;
         Vector2f m_textOrigin;
@@ -302,7 +301,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

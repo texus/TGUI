@@ -28,6 +28,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Config.hpp>
+
 #include <TGUI/Rect.hpp>
 
 #include <array>
@@ -43,7 +44,6 @@ namespace tgui
     class TGUI_API Transform
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         ///
@@ -64,9 +64,7 @@ namespace tgui
         /// @param a21  Element (2, 1) of the 3x3 matrix
         /// @param a22  Element (2, 2) of the 3x3 matrix
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        Transform(float a00, float a01, float a02,
-                  float a10, float a11, float a12,
-                  float a20, float a21, float a22);
+        Transform(float a00, float a01, float a02, float a10, float a11, float a12, float a20, float a21, float a22);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructs a transform from a 4x4 matrix
@@ -176,9 +174,9 @@ namespace tgui
         ///
         /// @see combine
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Transform operator *(const Transform& right) const;
-        Transform& operator *=(const Transform& right);
-        TGUI_NODISCARD Vector2f operator *(const Vector2f& right) const;
+        TGUI_NODISCARD Transform operator*(const Transform& right) const;
+        Transform& operator*=(const Transform& right);
+        TGUI_NODISCARD Vector2f operator*(const Vector2f& right) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Rounds the position stored in the transform to the nearest pixel
@@ -196,11 +194,11 @@ namespace tgui
         void roundPosition(Vector2f pixelScale);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         std::array<float, 16> m_matrix; //!< 4x4 matrix defining the transformation
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

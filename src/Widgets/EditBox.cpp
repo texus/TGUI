@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Keyboard.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -34,9 +34,9 @@ namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const char32_t* EditBox::Validator::All   = U".*";
-    const char32_t* EditBox::Validator::Int   = U"[+-]?[0-9]*";
-    const char32_t* EditBox::Validator::UInt  = U"[0-9]*";
+    const char32_t* EditBox::Validator::All = U".*";
+    const char32_t* EditBox::Validator::Int = U"[+-]?[0-9]*";
+    const char32_t* EditBox::Validator::UInt = U"[0-9]*";
     const char32_t* EditBox::Validator::Float = U"[+-]?[0-9]*\\.?[0-9]*";
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
@@ -47,7 +47,7 @@ namespace tgui
 
     EditBox::EditBox(const char* typeName, bool initRenderer) :
         ClickableWidget{typeName, false},
-        m_regex        {m_regexString.toWideString()}  // Not in header to speed up compilation
+        m_regex{m_regexString.toWideString()} // Not in header to speed up compilation
     {
         m_textBeforeSelection.setFont(m_fontCached);
         m_textSelection.setFont(m_fontCached);
@@ -61,11 +61,13 @@ namespace tgui
             m_renderer = makeCopied<EditBoxRenderer>();
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
-            m_defaultText.setColor(getSharedRenderer()->getDefaultTextColor()); // Needs to be set here in case renderer lacks "DefaultTextColor" property
+            m_defaultText.setColor(
+                getSharedRenderer()->getDefaultTextColor()); // Needs to be set here in case renderer lacks "DefaultTextColor" property
 
             setTextSize(getGlobalTextSize());
             setSize({m_textFull.getLineHeight() * 10,
-                     std::round(m_textFull.getLineHeight() * 1.25f) + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
+                     std::round(m_textFull.getLineHeight() * 1.25f) + m_paddingCached.getTopPlusBottom()
+                         + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -294,9 +296,9 @@ namespace tgui
             const float width = getVisibleEditBoxWidth();
             while (!m_displayedText.empty() && (getFullTextWidth() > width))
             {
-                m_displayedText.erase(m_displayedText.length()-1);
+                m_displayedText.erase(m_displayedText.length() - 1);
                 m_textFull.setString(m_displayedText);
-                m_text.erase(m_text.length()-1);
+                m_text.erase(m_text.length() - 1);
             }
 
             m_textBeforeSelection.setString(m_textFull.getString());
@@ -436,7 +438,8 @@ namespace tgui
     {
         if (ClickableWidget::isMouseOnWidget(pos))
         {
-            if (!m_transparentTextureCached || !m_sprite.isSet() || !m_sprite.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+            if (!m_transparentTextureCached || !m_sprite.isSet()
+                || !m_sprite.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
                 return true;
         }
 
@@ -542,7 +545,8 @@ namespace tgui
                     }
                 }
                 // Check if the mouse is on the right of the text AND there is a possibility to scroll
-                else if ((pos.x > m_bordersCached.getLeft() + m_paddingCached.getLeft() + width - textOffset) && (getFullTextWidth() > width))
+                else if ((pos.x > m_bordersCached.getLeft() + m_paddingCached.getLeft() + width - textOffset)
+                         && (getFullTextWidth() > width))
                 {
                     // Move the text by a few pixels
                     if (m_textFull.getCharacterSize() > 10)
@@ -606,10 +610,10 @@ namespace tgui
             else if (keyboard::isKeyPressMoveCaretWordEnd(event))
                 moveCaretWordEnd();
             else if (keyboard::isKeyPressMoveCaretLineStart(event) || keyboard::isKeyPressMoveCaretUp(event)
-                  || keyboard::isKeyPressMoveCaretDocumentBegin(event) || (event.code == Event::KeyboardKey::PageUp))
+                     || keyboard::isKeyPressMoveCaretDocumentBegin(event) || (event.code == Event::KeyboardKey::PageUp))
                 updateSelEnd(0);
             else if (keyboard::isKeyPressMoveCaretLineEnd(event) || keyboard::isKeyPressMoveCaretDown(event)
-                  || keyboard::isKeyPressMoveCaretDocumentEnd(event) || (event.code == Event::KeyboardKey::PageDown))
+                     || keyboard::isKeyPressMoveCaretDocumentEnd(event) || (event.code == Event::KeyboardKey::PageDown))
                 updateSelEnd(m_text.length());
             else
                 caretMoved = false;
@@ -632,25 +636,15 @@ namespace tgui
 
     bool EditBox::canHandleKeyPress(const Event::KeyEvent& event)
     {
-        if ((event.code == Event::KeyboardKey::Enter)
-         || (event.code == Event::KeyboardKey::Backspace)
-         || (event.code == Event::KeyboardKey::Delete)
-         || (event.code == Event::KeyboardKey::PageUp)
-         || (event.code == Event::KeyboardKey::PageDown)
-         || (keyboard::isKeyPressCopy(event))
-         || (keyboard::isKeyPressCut(event))
-         || (keyboard::isKeyPressPaste(event))
-         || (keyboard::isKeyPressSelectAll(event))
-         || (keyboard::isKeyPressMoveCaretLeft(event))
-         || (keyboard::isKeyPressMoveCaretRight(event))
-         || (keyboard::isKeyPressMoveCaretWordBegin(event))
-         || (keyboard::isKeyPressMoveCaretWordEnd(event))
-         || keyboard::isKeyPressMoveCaretLineStart(event)
-         || keyboard::isKeyPressMoveCaretDocumentBegin(event)
-         || keyboard::isKeyPressMoveCaretLineEnd(event)
-         || keyboard::isKeyPressMoveCaretDocumentEnd(event)
-         || (keyboard::isKeyPressMoveCaretUp(event) && !m_navWidgetUp.lock())
-         || (keyboard::isKeyPressMoveCaretDown(event) && !m_navWidgetDown.lock()))
+        if ((event.code == Event::KeyboardKey::Enter) || (event.code == Event::KeyboardKey::Backspace)
+            || (event.code == Event::KeyboardKey::Delete) || (event.code == Event::KeyboardKey::PageUp)
+            || (event.code == Event::KeyboardKey::PageDown) || (keyboard::isKeyPressCopy(event)) || (keyboard::isKeyPressCut(event))
+            || (keyboard::isKeyPressPaste(event)) || (keyboard::isKeyPressSelectAll(event)) || (keyboard::isKeyPressMoveCaretLeft(event))
+            || (keyboard::isKeyPressMoveCaretRight(event)) || (keyboard::isKeyPressMoveCaretWordBegin(event))
+            || (keyboard::isKeyPressMoveCaretWordEnd(event)) || keyboard::isKeyPressMoveCaretLineStart(event)
+            || keyboard::isKeyPressMoveCaretDocumentBegin(event) || keyboard::isKeyPressMoveCaretLineEnd(event)
+            || keyboard::isKeyPressMoveCaretDocumentEnd(event) || (keyboard::isKeyPressMoveCaretUp(event) && !m_navWidgetUp.lock())
+            || (keyboard::isKeyPressMoveCaretDown(event) && !m_navWidgetDown.lock()))
         {
             return true;
         }
@@ -759,8 +753,10 @@ namespace tgui
         }
         else if (property == U"CaretWidth")
         {
-            m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - getSharedRenderer()->getCaretWidth()) / 2.0f), m_caret.getPosition().y});
-            m_caret.setSize({getSharedRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
+            m_caret.setPosition({m_caret.getPosition().x + ((m_caret.getSize().x - getSharedRenderer()->getCaretWidth()) / 2.0f),
+                                 m_caret.getPosition().y});
+            m_caret.setSize(
+                {getSharedRenderer()->getCaretWidth(), getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()});
         }
         else if ((property == U"TextColor") || (property == U"TextColorDisabled") || (property == U"TextColorFocused"))
         {
@@ -848,9 +844,9 @@ namespace tgui
         }
         else if (property == U"CaretColorFocused")
         {
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
+            TGUI_IGNORE_DEPRECATED_WARNINGS_START
             m_caretColorFocusedCached = getSharedRenderer()->getCaretColorFocused();
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
+            TGUI_IGNORE_DEPRECATED_WARNINGS_END
         }
         else if (property == U"SelectedTextBackgroundColor")
         {
@@ -914,7 +910,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             else if (getInputValidator() == EditBox::Validator::Float)
                 node->propertyValuePairs[U"InputValidator"] = std::make_unique<DataIO::ValueNode>("Float");
             else
-                node->propertyValuePairs[U"InputValidator"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize({getInputValidator()}));
+                node->propertyValuePairs[U"InputValidator"] = std::make_unique<DataIO::ValueNode>(
+                    Serializer::serialize({getInputValidator()}));
         }
 
         if (!m_text.empty())
@@ -922,9 +919,11 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         if (!getDefaultText().empty())
             node->propertyValuePairs[U"DefaultText"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(getDefaultText()));
         if (getPasswordCharacter() != '\0')
-            node->propertyValuePairs[U"PasswordCharacter"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(String(getPasswordCharacter())));
+            node->propertyValuePairs[U"PasswordCharacter"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(String(getPasswordCharacter())));
         if (getMaximumCharacters() != 0)
-            node->propertyValuePairs[U"MaximumCharacters"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(getMaximumCharacters()));
+            node->propertyValuePairs[U"MaximumCharacters"] = std::make_unique<DataIO::ValueNode>(
+                String::fromNumber(getMaximumCharacters()));
         if (isTextWidthLimited())
             node->propertyValuePairs[U"TextWidthLimited"] = std::make_unique<DataIO::ValueNode>("true");
         if (isReadOnly())
@@ -944,18 +943,21 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         if (node->propertyValuePairs[U"Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Text"]->value).getString());
         if (node->propertyValuePairs[U"DefaultText"])
-            setDefaultText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"DefaultText"]->value).getString());
+            setDefaultText(
+                Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"DefaultText"]->value).getString());
         if (node->propertyValuePairs[U"MaximumCharacters"])
             setMaximumCharacters(node->propertyValuePairs[U"MaximumCharacters"]->value.toUInt());
         if (node->propertyValuePairs[U"TextWidthLimited"])
-            setTextWidthLimited(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"TextWidthLimited"]->value).getBool());
+            setTextWidthLimited(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"TextWidthLimited"]->value).getBool());
         if (node->propertyValuePairs[U"ReadOnly"])
             setReadOnly(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ReadOnly"]->value).getBool());
         if (node->propertyValuePairs[U"Suffix"])
             setSuffix(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Suffix"]->value).getString());
         if (node->propertyValuePairs[U"PasswordCharacter"])
         {
-            const String pass = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"PasswordCharacter"]->value).getString();
+            const String pass = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"PasswordCharacter"]->value)
+                                    .getString();
             if (!pass.empty())
                 setPasswordCharacter(pass[0]);
         }
@@ -979,7 +981,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             else if (node->propertyValuePairs[U"InputValidator"]->value == U"Float")
                 setInputValidator(EditBox::Validator::Float);
             else
-                setInputValidator(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"InputValidator"]->value).getString());
+                setInputValidator(
+                    Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"InputValidator"]->value).getString());
         }
     }
 
@@ -1120,7 +1123,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         const float textOffset = m_textFull.getExtraHorizontalPadding();
         float textX = m_paddingCached.getLeft() - m_textCropPosition + textOffset;
-        const float textY = m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) - m_textFull.getSize().y) / 2.f);
+        const float textY = m_paddingCached.getTop()
+                            + (((getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) - m_textFull.getSize().y) / 2.f);
 
         // Check if the layout wasn't left
         if (m_textAlignment != HorizontalAlignment::Left)
@@ -1163,7 +1167,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             textX += m_textBeforeSelection.findCharacterPos(charsBeforeSelection).x;
 
             // Set the position and size of the rectangle that gets drawn behind the selected text
-            m_selectedTextBackground.setSize({m_textSelection.findCharacterPos(m_selChars).x, getInnerSize().y - m_paddingCached.getTopPlusBottom()});
+            m_selectedTextBackground.setSize(
+                {m_textSelection.findCharacterPos(m_selChars).x, getInnerSize().y - m_paddingCached.getTopPlusBottom()});
             m_selectedTextBackground.setPosition({textX, m_paddingCached.getTop()});
 
             // Set the text selected text on the correct position
@@ -1196,7 +1201,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             // position jumps between its initial and later positions. Other backends (SFML and GLFW) currently ignore the rectangle.
             const Vector2f textPos = {m_bordersCached.getLeft() + m_paddingCached.getLeft(), textY};
             const auto absoluteTextPos = getAbsolutePosition(textPos);
-            const FloatRect inputRect = {absoluteTextPos, getAbsolutePosition({textPos.x, textPos.y + m_textFull.getSize().y}) - absoluteTextPos};
+            const FloatRect inputRect = {absoluteTextPos,
+                                         getAbsolutePosition({textPos.x, textPos.y + m_textFull.getSize().y}) - absoluteTextPos};
             m_parentGui->updateTextCursorPosition(inputRect, getAbsolutePosition({caretLeft + m_caret.getSize().x, textY}));
         }
     }
@@ -1248,7 +1254,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
             // If the caret is too far on the right then adjust the cropping
             if (m_textCropPosition + getVisibleEditBoxWidth() - (2 * m_textFull.getExtraHorizontalPadding()) < caretPosition)
-                m_textCropPosition = static_cast<unsigned int>(caretPosition - getVisibleEditBoxWidth() + (2 * m_textFull.getExtraHorizontalPadding()));
+                m_textCropPosition = static_cast<unsigned int>(
+                    caretPosition - getVisibleEditBoxWidth() + (2 * m_textFull.getExtraHorizontalPadding()));
 
             // If the caret is too far on the left then adjust the cropping
             if (m_textCropPosition > caretPosition)
@@ -1288,7 +1295,8 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     {
         // Check if the text is auto sized
         if ((m_textSize == 0) && !getSharedRenderer()->getTextSize())
-            m_textSizeCached = Text::findBestTextSize(m_fontCached, (getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) * 0.8f);
+            m_textSizeCached = Text::findBestTextSize(m_fontCached,
+                                                      (getInnerSize().y - m_paddingCached.getBottom() - m_paddingCached.getTop()) * 0.8f);
 
         m_textFull.setCharacterSize(m_textSizeCached);
         m_textSuffix.setCharacterSize(m_textSizeCached);
@@ -1306,9 +1314,9 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             while (!m_displayedText.empty() && (getFullTextWidth() > width))
             {
                 // The text doesn't fit inside the EditBox, so the last character must be deleted.
-                m_displayedText.erase(m_displayedText.length()-1);
+                m_displayedText.erase(m_displayedText.length() - 1);
                 m_textFull.setString(m_displayedText);
-                m_text.erase(m_text.length()-1);
+                m_text.erase(m_text.length() - 1);
                 textChanged = true;
             }
 
@@ -1400,9 +1408,9 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
                 return;
 
             // Erase the character
-            m_displayedText.erase(m_selEnd-1, 1);
+            m_displayedText.erase(m_selEnd - 1, 1);
             m_textFull.setString(m_displayedText);
-            m_text.erase(m_selEnd-1, 1);
+            m_text.erase(m_selEnd - 1, 1);
 
             // Set the caret back on the correct position
             setCaretPosition(m_selEnd - 1);
@@ -1542,7 +1550,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         {
             if (skippedWhitespace)
             {
-                if (isWhitespace(m_text[i-1]))
+                if (isWhitespace(m_text[i - 1]))
                 {
                     updateSelEnd(i);
                     done = true;
@@ -1551,7 +1559,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
             }
             else
             {
-                if (!isWhitespace(m_text[i-1]))
+                if (!isWhitespace(m_text[i - 1]))
                     skippedWhitespace = true;
             }
         }
@@ -1636,8 +1644,12 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         if ((m_roundedBorderRadiusCached > 0) && !m_sprite.isSet())
         {
-            target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(backgroundColor, m_opacityCached),
-                                        m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(borderColor, m_opacityCached));
+            target.drawRoundedRectangle(states,
+                                        getSize(),
+                                        Color::applyOpacity(backgroundColor, m_opacityCached),
+                                        m_roundedBorderRadiusCached,
+                                        m_bordersCached,
+                                        Color::applyOpacity(borderColor, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
         else
@@ -1669,12 +1681,15 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
         float suffixSpace = 0;
         if (!m_textSuffix.getString().empty())
         {
-            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-                {getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
+            target.addClippingLayer(states,
+                                    {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                                     {getInnerSize().x - m_paddingCached.getLeftPlusRight(),
+                                      getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             const float textOffset = m_textFull.getExtraHorizontalPadding();
             const Vector2f offset{getInnerSize().x - m_paddingCached.getRight() - textOffset - m_textSuffix.getSize().x,
-                                  m_paddingCached.getTop() + ((getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_textSuffix.getSize().y) / 2.f)};
+                                  m_paddingCached.getTop()
+                                      + ((getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_textSuffix.getSize().y) / 2.f)};
 
             states.transform.translate(offset);
             target.drawText(states, m_textSuffix);
@@ -1687,8 +1702,10 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         // Draw the text
         {
-            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-                {getInnerSize().x - m_paddingCached.getLeftPlusRight() - suffixSpace, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
+            target.addClippingLayer(states,
+                                    {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                                     {getInnerSize().x - m_paddingCached.getLeftPlusRight() - suffixSpace,
+                                      getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             if (!m_textBeforeSelection.getString().empty() || !m_textSelection.getString().empty())
             {
@@ -1697,7 +1714,9 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
                 if (!m_textSelection.getString().empty())
                 {
                     states.transform.translate(m_selectedTextBackground.getPosition());
-                    target.drawFilledRect(states, m_selectedTextBackground.getSize(), Color::applyOpacity(m_selectedTextBackgroundColorCached, m_opacityCached));
+                    target.drawFilledRect(states,
+                                          m_selectedTextBackground.getSize(),
+                                          Color::applyOpacity(m_selectedTextBackgroundColorCached, m_opacityCached));
                     states.transform.translate(-m_selectedTextBackground.getPosition());
 
                     target.drawText(states, m_textSelection);
@@ -1733,6 +1752,6 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_END
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

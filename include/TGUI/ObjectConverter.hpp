@@ -25,12 +25,12 @@
 #ifndef TGUI_OBJECT_CONVERTER_HPP
 #define TGUI_OBJECT_CONVERTER_HPP
 
-#include <TGUI/TextStyle.hpp>
-#include <TGUI/Variant.hpp>
-#include <TGUI/Outline.hpp>
-#include <TGUI/Texture.hpp>
 #include <TGUI/Color.hpp>
 #include <TGUI/Font.hpp>
+#include <TGUI/Outline.hpp>
+#include <TGUI/TextStyle.hpp>
+#include <TGUI/Texture.hpp>
+#include <TGUI/Variant.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -83,10 +83,10 @@ namespace tgui
         /// @param string  String to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(const String& string) :
-            m_type      {Type::String},
-            m_value     {string},
+            m_type{Type::String},
+            m_value{string},
             m_serialized{true},
-            m_string    {string}
+            m_string{string}
         {
         }
 
@@ -96,7 +96,7 @@ namespace tgui
         /// @param font  Font to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(Font font) :
-            m_type {Type::Font},
+            m_type{Type::Font},
             m_value{std::move(font)}
         {
         }
@@ -107,7 +107,7 @@ namespace tgui
         /// @param color  Color to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(Color color) :
-            m_type {Type::Color},
+            m_type{Type::Color},
             m_value{color}
         {
         }
@@ -118,7 +118,7 @@ namespace tgui
         /// @param value  Boolean to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(bool value) :
-            m_type {Type::Bool},
+            m_type{Type::Bool},
             m_value{value}
         {
         }
@@ -130,7 +130,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
         ObjectConverter(T number) :
-            m_type {Type::Number},
+            m_type{Type::Number},
             m_value{static_cast<float>(number)}
         {
         }
@@ -141,7 +141,7 @@ namespace tgui
         /// @param outline  Outline to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(const Outline& outline) :
-            m_type {Type::Outline},
+            m_type{Type::Outline},
             m_value{outline}
         {
         }
@@ -152,7 +152,7 @@ namespace tgui
         /// @param texture  Texture to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(const Texture& texture) :
-            m_type {Type::Texture},
+            m_type{Type::Texture},
             m_value{texture}
         {
         }
@@ -163,7 +163,7 @@ namespace tgui
         /// @param style  Text style to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(TextStyle style) :
-            m_type {Type::TextStyle},
+            m_type{Type::TextStyle},
             m_value{TextStyles(style)}
         {
         }
@@ -174,7 +174,7 @@ namespace tgui
         /// @param style  Text style to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(TextStyles style) :
-            m_type {Type::TextStyle},
+            m_type{Type::TextStyle},
             m_value{style}
         {
         }
@@ -185,7 +185,7 @@ namespace tgui
         /// @param data  Renderer data to store
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ObjectConverter(std::shared_ptr<RendererData> data) :
-            m_type {Type::RendererData},
+            m_type{Type::RendererData},
             m_value{std::move(data)}
         {
         }
@@ -291,6 +291,7 @@ namespace tgui
         TGUI_NODISCARD bool operator!=(const ObjectConverter& right) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private:
         Type m_type = Type::None;
 
@@ -301,7 +302,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

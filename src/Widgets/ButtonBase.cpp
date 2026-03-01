@@ -54,22 +54,22 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ButtonBase::ButtonBase(const ButtonBase& other) :
-        ClickableWidget               {other},
-        m_string                      {other.m_string},
-        m_down                        {other.m_down},
-        m_state                       {other.m_state},
-        m_autoSize                    {other.m_autoSize},
-        m_updatingTextSize            {false},
-        m_textPosition                {other.m_textPosition},
-        m_textOrigin                  {other.m_textOrigin},
-        background                    {other.background},
-        text                          {other.text},
-        m_stylePropertiesNames        {},
-        m_stylePropertiesGlobalNames  {},
-        m_namedComponents             {},
-        m_backgroundComponent         {std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background)},
-        m_textComponent               {std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)},
-        m_components                  {}
+        ClickableWidget{other},
+        m_string{other.m_string},
+        m_down{other.m_down},
+        m_state{other.m_state},
+        m_autoSize{other.m_autoSize},
+        m_updatingTextSize{false},
+        m_textPosition{other.m_textPosition},
+        m_textOrigin{other.m_textOrigin},
+        background{other.background},
+        text{other.text},
+        m_stylePropertiesNames{},
+        m_stylePropertiesGlobalNames{},
+        m_namedComponents{},
+        m_backgroundComponent{std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background)},
+        m_textComponent{std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)},
+        m_components{}
     {
         ButtonBase::initComponents();
     }
@@ -77,22 +77,22 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ButtonBase::ButtonBase(ButtonBase&& other) noexcept :
-        ClickableWidget               {std::move(other)},
-        m_string                      {std::move(other.m_string)},
-        m_down                        {std::move(other.m_down)},
-        m_state                       {std::move(other.m_state)},
-        m_autoSize                    {std::move(other.m_autoSize)},
-        m_updatingTextSize            {false},
-        m_textPosition                {std::move(other.m_textPosition)},
-        m_textOrigin                  {std::move(other.m_textOrigin)},
-        background                    {std::move(other.background)},
-        text                          {std::move(other.text)},
-        m_stylePropertiesNames        {},
-        m_stylePropertiesGlobalNames  {},
-        m_namedComponents             {},
-        m_backgroundComponent         {std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background)},
-        m_textComponent               {std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)},
-        m_components                  {}
+        ClickableWidget{std::move(other)},
+        m_string{std::move(other.m_string)},
+        m_down{std::move(other.m_down)},
+        m_state{std::move(other.m_state)},
+        m_autoSize{std::move(other.m_autoSize)},
+        m_updatingTextSize{false},
+        m_textPosition{std::move(other.m_textPosition)},
+        m_textOrigin{std::move(other.m_textOrigin)},
+        background{std::move(other.background)},
+        text{std::move(other.text)},
+        m_stylePropertiesNames{},
+        m_stylePropertiesGlobalNames{},
+        m_namedComponents{},
+        m_backgroundComponent{std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background)},
+        m_textComponent{std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text)},
+        m_components{}
     {
         ButtonBase::initComponents();
     }
@@ -106,21 +106,21 @@ namespace tgui
             text.style.disconnectCallback(m_textStyleChangedCallbackId);
 
             ClickableWidget::operator=(other);
-            m_string                       = other.m_string;
-            m_down                         = other.m_down;
-            m_state                        = other.m_state;
-            m_autoSize                     = other.m_autoSize;
-            m_updatingTextSize             = false;
-            m_textPosition                 = other.m_textPosition;
-            m_textOrigin                   = other.m_textOrigin;
-            background                     = other.background;
-            text                           = other.text;
-            m_stylePropertiesNames         = {};
-            m_stylePropertiesGlobalNames   = {};
-            m_namedComponents              = {};
-            m_backgroundComponent          = std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background);
-            m_textComponent                = std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text);
-            m_components                   = {};
+            m_string = other.m_string;
+            m_down = other.m_down;
+            m_state = other.m_state;
+            m_autoSize = other.m_autoSize;
+            m_updatingTextSize = false;
+            m_textPosition = other.m_textPosition;
+            m_textOrigin = other.m_textOrigin;
+            background = other.background;
+            text = other.text;
+            m_stylePropertiesNames = {};
+            m_stylePropertiesGlobalNames = {};
+            m_namedComponents = {};
+            m_backgroundComponent = std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background);
+            m_textComponent = std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text);
+            m_components = {};
 
             ButtonBase::initComponents();
         }
@@ -137,21 +137,21 @@ namespace tgui
             text.style.disconnectCallback(m_textStyleChangedCallbackId);
 
             ClickableWidget::operator=(std::move(other));
-            m_string                       = std::move(other.m_string);
-            m_down                         = std::move(other.m_down);
-            m_state                        = std::move(other.m_state);
-            m_autoSize                     = std::move(other.m_autoSize);
-            m_updatingTextSize             = false;
-            m_textPosition                 = std::move(other.m_textPosition);
-            m_textOrigin                   = std::move(other.m_textOrigin);
-            background                     = std::move(other.background);
-            text                           = std::move(other.text);
-            m_stylePropertiesNames         = {};
-            m_stylePropertiesGlobalNames   = {};
-            m_namedComponents              = {};
-            m_backgroundComponent          = std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background);
-            m_textComponent                = std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text);
-            m_components                   = {};
+            m_string = std::move(other.m_string);
+            m_down = std::move(other.m_down);
+            m_state = std::move(other.m_state);
+            m_autoSize = std::move(other.m_autoSize);
+            m_updatingTextSize = false;
+            m_textPosition = std::move(other.m_textPosition);
+            m_textOrigin = std::move(other.m_textOrigin);
+            background = std::move(other.background);
+            text = std::move(other.text);
+            m_stylePropertiesNames = {};
+            m_stylePropertiesGlobalNames = {};
+            m_namedComponents = {};
+            m_backgroundComponent = std::make_shared<priv::dev::BackgroundComponent>(*other.m_backgroundComponent, &background);
+            m_textComponent = std::make_shared<priv::dev::TextComponent>(*other.m_textComponent, &text);
+            m_components = {};
 
             ButtonBase::initComponents();
         }
@@ -356,11 +356,15 @@ namespace tgui
         else if (property == U"TextColorDisabled")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDisabled(), priv::dev::ComponentState::Disabled);
         else if (property == U"TextColorDownDisabled")
-            priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDownDisabled(), priv::dev::ComponentState::DisabledActive);
+            priv::dev::setOptionalPropertyValue(text.color,
+                                                getSharedRenderer()->getTextColorDownDisabled(),
+                                                priv::dev::ComponentState::DisabledActive);
         else if (property == U"TextColorFocused")
             priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorFocused(), priv::dev::ComponentState::Focused);
         else if (property == U"TextColorDownFocused")
-            priv::dev::setOptionalPropertyValue(text.color, getSharedRenderer()->getTextColorDownFocused(), priv::dev::ComponentState::FocusedActive);
+            priv::dev::setOptionalPropertyValue(text.color,
+                                                getSharedRenderer()->getTextColorDownFocused(),
+                                                priv::dev::ComponentState::FocusedActive);
         else if (property == U"TextStyle")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyle(), priv::dev::ComponentState::Normal);
         else if (property == U"TextStyleDown")
@@ -372,11 +376,15 @@ namespace tgui
         else if (property == U"TextStyleDisabled")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDisabled(), priv::dev::ComponentState::Disabled);
         else if (property == U"TextStyleDownDisabled")
-            priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDownDisabled(), priv::dev::ComponentState::DisabledActive);
+            priv::dev::setOptionalPropertyValue(text.style,
+                                                getSharedRenderer()->getTextStyleDownDisabled(),
+                                                priv::dev::ComponentState::DisabledActive);
         else if (property == U"TextStyleFocused")
             priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleFocused(), priv::dev::ComponentState::Focused);
         else if (property == U"TextStyleDownFocused")
-            priv::dev::setOptionalPropertyValue(text.style, getSharedRenderer()->getTextStyleDownFocused(), priv::dev::ComponentState::FocusedActive);
+            priv::dev::setOptionalPropertyValue(text.style,
+                                                getSharedRenderer()->getTextStyleDownFocused(),
+                                                priv::dev::ComponentState::FocusedActive);
         else if (property == U"Texture")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTexture(), priv::dev::ComponentState::Normal);
         else if (property == U"TextureDown")
@@ -384,47 +392,85 @@ namespace tgui
         else if (property == U"TextureHover")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureHover(), priv::dev::ComponentState::Hover);
         else if (property == U"TextureDownHover")
-            priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDownHover(), priv::dev::ComponentState::ActiveHover);
+            priv::dev::setOptionalPropertyValue(background.texture,
+                                                getSharedRenderer()->getTextureDownHover(),
+                                                priv::dev::ComponentState::ActiveHover);
         else if (property == U"TextureDisabled")
-            priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDisabled(), priv::dev::ComponentState::Disabled);
+            priv::dev::setOptionalPropertyValue(background.texture,
+                                                getSharedRenderer()->getTextureDisabled(),
+                                                priv::dev::ComponentState::Disabled);
         else if (property == U"TextureDownDisabled")
-            priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDownDisabled(), priv::dev::ComponentState::Disabled);
+            priv::dev::setOptionalPropertyValue(background.texture,
+                                                getSharedRenderer()->getTextureDownDisabled(),
+                                                priv::dev::ComponentState::Disabled);
         else if (property == U"TextureFocused")
             priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureFocused(), priv::dev::ComponentState::Focused);
         else if (property == U"TextureDownFocused")
-            priv::dev::setOptionalPropertyValue(background.texture, getSharedRenderer()->getTextureDownFocused(), priv::dev::ComponentState::FocusedActive);
+            priv::dev::setOptionalPropertyValue(background.texture,
+                                                getSharedRenderer()->getTextureDownFocused(),
+                                                priv::dev::ComponentState::FocusedActive);
         else if (property == U"BorderColor")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColor(), priv::dev::ComponentState::Normal);
+            priv::dev::setOptionalPropertyValue(background.borderColor,
+                                                getSharedRenderer()->getBorderColor(),
+                                                priv::dev::ComponentState::Normal);
         else if (property == U"BorderColorDown")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDown(), priv::dev::ComponentState::Active);
+            priv::dev::setOptionalPropertyValue(background.borderColor,
+                                                getSharedRenderer()->getBorderColorDown(),
+                                                priv::dev::ComponentState::Active);
         else if (property == U"BorderColorHover")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorHover(), priv::dev::ComponentState::Hover);
+            priv::dev::setOptionalPropertyValue(background.borderColor,
+                                                getSharedRenderer()->getBorderColorHover(),
+                                                priv::dev::ComponentState::Hover);
         else if (property == U"BorderColorDownHover")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDownHover(), priv::dev::ComponentState::ActiveHover);
+            priv::dev::setOptionalPropertyValue(background.borderColor,
+                                                getSharedRenderer()->getBorderColorDownHover(),
+                                                priv::dev::ComponentState::ActiveHover);
         else if (property == U"BorderColorDisabled")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDisabled(), priv::dev::ComponentState::Disabled);
+            priv::dev::setOptionalPropertyValue(background.borderColor,
+                                                getSharedRenderer()->getBorderColorDisabled(),
+                                                priv::dev::ComponentState::Disabled);
         else if (property == U"BorderColorDownDisabled")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDownDisabled(), priv::dev::ComponentState::DisabledActive);
+            priv::dev::setOptionalPropertyValue(background.borderColor,
+                                                getSharedRenderer()->getBorderColorDownDisabled(),
+                                                priv::dev::ComponentState::DisabledActive);
         else if (property == U"BorderColorFocused")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorFocused(), priv::dev::ComponentState::Focused);
+            priv::dev::setOptionalPropertyValue(background.borderColor,
+                                                getSharedRenderer()->getBorderColorFocused(),
+                                                priv::dev::ComponentState::Focused);
         else if (property == U"BorderColorDownFocused")
-            priv::dev::setOptionalPropertyValue(background.borderColor, getSharedRenderer()->getBorderColorDownFocused(), priv::dev::ComponentState::FocusedActive);
+            priv::dev::setOptionalPropertyValue(background.borderColor,
+                                                getSharedRenderer()->getBorderColorDownFocused(),
+                                                priv::dev::ComponentState::FocusedActive);
         else if (property == U"BackgroundColor")
             priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColor(), priv::dev::ComponentState::Normal);
         else if (property == U"BackgroundColorDown")
-            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDown(), priv::dev::ComponentState::Active);
+            priv::dev::setOptionalPropertyValue(background.color,
+                                                getSharedRenderer()->getBackgroundColorDown(),
+                                                priv::dev::ComponentState::Active);
         else if (property == U"BackgroundColorHover")
-            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorHover(), priv::dev::ComponentState::Hover);
+            priv::dev::setOptionalPropertyValue(background.color,
+                                                getSharedRenderer()->getBackgroundColorHover(),
+                                                priv::dev::ComponentState::Hover);
         else if (property == U"BackgroundColorDownHover")
-            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDownHover(), priv::dev::ComponentState::ActiveHover);
+            priv::dev::setOptionalPropertyValue(background.color,
+                                                getSharedRenderer()->getBackgroundColorDownHover(),
+                                                priv::dev::ComponentState::ActiveHover);
         else if (property == U"BackgroundColorDisabled")
-            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDisabled(), priv::dev::ComponentState::Disabled);
+            priv::dev::setOptionalPropertyValue(background.color,
+                                                getSharedRenderer()->getBackgroundColorDisabled(),
+                                                priv::dev::ComponentState::Disabled);
         else if (property == U"BackgroundColorDownDisabled")
-            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDownDisabled(), priv::dev::ComponentState::DisabledActive);
+            priv::dev::setOptionalPropertyValue(background.color,
+                                                getSharedRenderer()->getBackgroundColorDownDisabled(),
+                                                priv::dev::ComponentState::DisabledActive);
         else if (property == U"BackgroundColorFocused")
-            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorFocused(), priv::dev::ComponentState::Focused);
+            priv::dev::setOptionalPropertyValue(background.color,
+                                                getSharedRenderer()->getBackgroundColorFocused(),
+                                                priv::dev::ComponentState::Focused);
         else if (property == U"BackgroundColorDownFocused")
-            priv::dev::setOptionalPropertyValue(background.color, getSharedRenderer()->getBackgroundColorDownFocused(), priv::dev::ComponentState::FocusedActive);
+            priv::dev::setOptionalPropertyValue(background.color,
+                                                getSharedRenderer()->getBackgroundColorDownFocused(),
+                                                priv::dev::ComponentState::FocusedActive);
         else if (property == U"TextOutlineThickness")
         {
             m_textComponent->setOutlineThickness(getSharedRenderer()->getTextOutlineThickness());
@@ -552,9 +598,7 @@ namespace tgui
         m_backgroundComponent->addComponent(m_textComponent);
         addComponent(m_backgroundComponent);
 
-        m_textStyleChangedCallbackId = text.style.connectCallback([this]{
-            updateTextPosition();
-        });
+        m_textStyleChangedCallbackId = text.style.connectCallback([this] { updateTextPosition(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,6 +627,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

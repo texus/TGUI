@@ -23,16 +23,18 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "Tests.hpp"
-#include <cmath>
 
 #include <TGUI/Config.hpp>
+
+#include <cmath>
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>
 #endif
 
 #if TGUI_HAS_BACKEND_SDL_GPU
-    #include <TGUI/Backend/SDL-GPU.hpp>
     #include <TGUI/extlibs/IncludeStbImageWrite.hpp>
+
+    #include <TGUI/Backend/SDL-GPU.hpp>
 #endif
 
 namespace
@@ -52,12 +54,12 @@ namespace
         widget->setPosition({40, 30});
         widget->setSize({150, 100});
 
-        widget->onMousePress([&](tgui::Vector2f pos){ mouseCallback(mousePressedCount, pos); });
-        widget->onMouseRelease([&](tgui::Vector2f pos){ mouseCallback(mouseReleasedCount, pos); });
-        widget->onClick([&](tgui::Vector2f pos){ mouseCallback(clickedCount, pos); });
-        widget->onRightMousePress([&](tgui::Vector2f pos){ mouseCallback(rightMousePressedCount, pos); });
-        widget->onRightMouseRelease([&](tgui::Vector2f pos){ mouseCallback(rightMouseReleasedCount, pos); });
-        widget->onRightClick([&](tgui::Vector2f pos){ mouseCallback(rightClickedCount, pos); });
+        widget->onMousePress([&](tgui::Vector2f pos) { mouseCallback(mousePressedCount, pos); });
+        widget->onMouseRelease([&](tgui::Vector2f pos) { mouseCallback(mouseReleasedCount, pos); });
+        widget->onClick([&](tgui::Vector2f pos) { mouseCallback(clickedCount, pos); });
+        widget->onRightMousePress([&](tgui::Vector2f pos) { mouseCallback(rightMousePressedCount, pos); });
+        widget->onRightMouseRelease([&](tgui::Vector2f pos) { mouseCallback(rightMouseReleasedCount, pos); });
+        widget->onRightClick([&](tgui::Vector2f pos) { mouseCallback(rightClickedCount, pos); });
 
         SECTION("isMouseOnWidget")
         {
@@ -187,8 +189,8 @@ void testWidgetSignals(const tgui::Widget::Ptr& widget)
         unsigned int mouseEnteredCount = 0;
         unsigned int mouseLeftCount = 0;
 
-        widget->onMouseEnter([&]{ genericCallback(mouseEnteredCount); });
-        widget->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
+        widget->onMouseEnter([&] { genericCallback(mouseEnteredCount); });
+        widget->onMouseLeave([&] { genericCallback(mouseLeftCount); });
 
         auto parent = tgui::Panel::create({300, 200});
         parent->setPosition({30, 25});
@@ -233,7 +235,7 @@ void testClickableWidgetSignals(const tgui::Panel::Ptr& widget)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void testScrollbarAccess(tgui::ScrollbarAccessor *scrollbar)
+void testScrollbarAccess(tgui::ScrollbarAccessor* scrollbar)
 {
     scrollbar->setValue(10);
     REQUIRE(scrollbar->getValue() == 10);
@@ -294,16 +296,16 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
     (void)targetPtr;
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()) && targetPtr) \
+    if (std::dynamic_pointer_cast<tgui::BackendRendererSFML>(tgui::getBackend()->getRenderer()) && targetPtr)
     {
         auto* target = reinterpret_cast<sf::RenderTexture*>(targetPtr);
         target->clear({25, 130, 10});
         gui.draw();
         target->display();
         (void)target->getTexture().copyToImage().saveToFile(filename);
-#ifdef TGUI_ENABLE_DRAW_TESTS
+    #ifdef TGUI_ENABLE_DRAW_TESTS
         compareImageFiles(filename, "expected/" + tgui::String(filename));
-#endif
+    #endif
         return;
     }
 #endif // TGUI_HAS_BACKEND_SFML_GRAPHICS
@@ -321,7 +323,9 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         tgui::RelFloatRect view = gui.getView();
         viewport.updateParentSize({static_cast<float>(imageSize.x), static_cast<float>(imageSize.y)});
         view.updateParentSize({viewport.getWidth(), viewport.getHeight()});
-        gui.getBackendRenderTarget()->setView(view.getRect(), viewport.getRect(), {static_cast<float>(imageSize.x), static_cast<float>(imageSize.y)});
+        gui.getBackendRenderTarget()->setView(view.getRect(),
+                                              viewport.getRect(),
+                                              {static_cast<float>(imageSize.x), static_cast<float>(imageSize.y)});
         gui.getContainer()->setSize(tgui::Vector2f{view.getWidth(), view.getHeight()});
 
         SDL_GPUDevice* device = std::static_pointer_cast<tgui::BackendRendererSDLGPU>(tgui::getBackend()->getRenderer())->getInternalDevice();
@@ -385,13 +389,12 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         void* pixelData = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
 
         int dataLength = 0;
-        unsigned char* pngData = stbi_write_png_to_mem(
-            static_cast<const unsigned char*>(pixelData),
-            static_cast<int>(textureCreateInfo.width * 4),
-            static_cast<int>(textureCreateInfo.width),
-            static_cast<int>(textureCreateInfo.height),
-            4,
-            &dataLength);
+        unsigned char* pngData = stbi_write_png_to_mem(static_cast<const unsigned char*>(pixelData),
+                                                       static_cast<int>(textureCreateInfo.width * 4),
+                                                       static_cast<int>(textureCreateInfo.width),
+                                                       static_cast<int>(textureCreateInfo.height),
+                                                       4,
+                                                       &dataLength);
         if (!pngData || dataLength <= 0)
         {
             assert(false);
@@ -405,11 +408,11 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
         SDL_ReleaseGPUTransferBuffer(device, transferBuffer);
         SDL_ReleaseGPUTexture(device, texture);
 
-#ifdef TGUI_ENABLE_DRAW_TESTS
-        // Comparing the output files is not possible because the expected images were rendered with SFML (and thus might differ slightly).
-        // However this line can be uncommented if the files in the expected folder were replaced with ones generated with the SDL_GPU backend.
-        //compareImageFiles(filename, "expected/" + tgui::String(filename));
-#endif
+    #ifdef TGUI_ENABLE_DRAW_TESTS
+            // Comparing the output files is not possible because the expected images were rendered with SFML (and thus might differ slightly).
+            // However this line can be uncommented if the files in the expected folder were replaced with ones generated with the SDL_GPU backend.
+            //compareImageFiles(filename, "expected/" + tgui::String(filename));
+    #endif
         return;
     }
 #endif // TGUI_HAS_BACKEND_SDL_GPU

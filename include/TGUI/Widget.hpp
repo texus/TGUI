@@ -27,23 +27,24 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Signal.hpp>
-#include <TGUI/Font.hpp>
-#include <TGUI/Sprite.hpp>
-#include <TGUI/Layout.hpp>
-#include <TGUI/String.hpp>
-#include <TGUI/Vector2.hpp>
-#include <TGUI/Duration.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+
+#include <TGUI/Any.hpp>
 #include <TGUI/CopiedPtr.hpp>
 #include <TGUI/Cursor.hpp>
+#include <TGUI/Duration.hpp>
 #include <TGUI/Event.hpp>
-#include <TGUI/Any.hpp>
-#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Font.hpp>
+#include <TGUI/Layout.hpp>
 #include <TGUI/Loading/DataIO.hpp>
-#include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Renderers/WidgetRenderer.hpp>
+#include <TGUI/Signal.hpp>
+#include <TGUI/Sprite.hpp>
+#include <TGUI/String.hpp>
+#include <TGUI/Vector2.hpp>
 
 #include <unordered_set>
 
@@ -55,9 +56,9 @@
 namespace aurora
 {
     using tgui::CopiedPtr;
-    using tgui::makeCopied;
     using tgui::downcast;
-}
+    using tgui::makeCopied;
+} // namespace aurora
 
 namespace tgui
 {
@@ -65,7 +66,7 @@ namespace tgui
     class Container;
 
     enum class ShowEffectType;
-}
+} // namespace tgui
 
 namespace tgui
 {
@@ -73,7 +74,7 @@ namespace tgui
     {
         class Animation;
     }
-}
+} // namespace tgui
 
 namespace tgui
 {
@@ -83,8 +84,7 @@ namespace tgui
     class TGUI_API Widget : public std::enable_shared_from_this<Widget>
     {
     public:
-
-        using Ptr = std::shared_ptr<Widget>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Widget>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Widget>; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1154,8 +1154,8 @@ namespace tgui
         virtual void updateTextSize();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         using SavingRenderersMap = std::map<const Widget*, std::pair<std::unique_ptr<DataIO::Node>, String>>;
         using LoadingRenderersMap = std::map<String, std::shared_ptr<RendererData>>;
 
@@ -1197,15 +1197,16 @@ namespace tgui
         void recalculateBoundSizeLayouts();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
-        SignalVector2f      onPositionChange   = {"PositionChanged"};         //!< The position of the widget changed. Optional parameter: new position
-        SignalVector2f      onSizeChange       = {"SizeChanged"};             //!< The size of the widget changed. Optional parameter: new size
-        Signal              onFocus            = {"Focused"};                 //!< The widget was focused
-        Signal              onUnfocus          = {"Unfocused"};               //!< The widget was unfocused
-        Signal              onMouseEnter       = {"MouseEntered"};            //!< The mouse entered the widget
-        Signal              onMouseLeave       = {"MouseLeft"};               //!< The mouse left the widget
-        SignalShowEffect    onShowEffectFinish = {"ShowEffectFinished"};      //!< A show or hide effect finished. Optional parameters: effect type, new widget visibility or both
+    public:
+        SignalVector2f onPositionChange = {"PositionChanged"}; //!< The position of the widget changed. Optional parameter: new position
+        SignalVector2f onSizeChange = {"SizeChanged"};         //!< The size of the widget changed. Optional parameter: new size
+        Signal onFocus = {"Focused"};                          //!< The widget was focused
+        Signal onUnfocus = {"Unfocused"};                      //!< The widget was unfocused
+        Signal onMouseEnter = {"MouseEntered"};                //!< The mouse entered the widget
+        Signal onMouseLeave = {"MouseLeft"};                   //!< The mouse left the widget
+        SignalShowEffect onShowEffectFinish = {
+            "ShowEffectFinished"}; //!< A show or hide effect finished. Optional parameters: effect type, new widget visibility or both
 
         /// @brief An animation has finished
         ///
@@ -1213,11 +1214,11 @@ namespace tgui
         /// The showWithEffect and hideWithEffect functions also trigger the onShowEffectFinish signal when the effect ends.
         ///
         /// Optional parameter: animation type
-        SignalAnimationType onAnimationFinish  = {"AnimationFinished"};
+        SignalAnimationType onAnimationFinish = {"AnimationFinished"};
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         String m_type;
         String m_name;
 
@@ -1307,7 +1308,7 @@ namespace tgui
         bool m_ignoreMouseEvents = false;
 
         // Cached renderer properties
-        Font  m_fontCached = Font::getGlobalFont();
+        Font m_fontCached = Font::getGlobalFont();
         float m_opacityCached = 1;
         bool m_transparentTextureCached = false;
         unsigned int m_textSizeCached = 0;
@@ -1318,7 +1319,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

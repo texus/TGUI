@@ -26,12 +26,13 @@
 #define TGUI_LAYOUT_HPP
 
 #include <TGUI/Config.hpp>
-#include <TGUI/Vector2.hpp>
-#include <TGUI/AbsoluteOrRelativeValue.hpp>
 
-#include <type_traits>
+#include <TGUI/AbsoluteOrRelativeValue.hpp>
+#include <TGUI/Vector2.hpp>
+
 #include <functional>
 #include <memory>
+#include <type_traits>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,8 +48,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     enum class Orientation
     {
-        Vertical,   //!< Vertical orientation
-        Horizontal  //!< Horizontal orientation
+        Vertical,  //!< Vertical orientation
+        Horizontal //!< Horizontal orientation
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +69,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     enum class VerticalAlignment
     {
-        Top ,   //!< Align to the top
+        Top,    //!< Align to the top
         Center, //!< Center the object vertically
         Bottom  //!< Align to the bottom
     };
@@ -80,14 +81,14 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     enum class AutoLayout
     {
-        Manual,     //!< Position and size need to be manually set. This is the default.
-        Top,        //!< Places the widget on on the top and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
-        Left,       //!< Places the widget on the left side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
-        Right,      //!< Places the widget on the right side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
-        Bottom,     //!< Places the widget on on the bottom and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
-        Leftmost,   //!< Places the widget on the left side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no widget uses Top or Bottom alignment.
-        Rightmost,  //!< Places the widget on the right side and sets height to 100%. Width needs to be manually set. Same as Right alignment if no widget uses Top or Bottom alignment.
-        Fill        //!< Sets the position and size to fill the entire area that isn't already taken by components with the other AutoLayout values.
+        Manual, //!< Position and size need to be manually set. This is the default.
+        Top, //!< Places the widget on on the top and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
+        Left, //!< Places the widget on the left side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
+        Right, //!< Places the widget on the right side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
+        Bottom, //!< Places the widget on on the bottom and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
+        Leftmost, //!< Places the widget on the left side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no widget uses Top or Bottom alignment.
+        Rightmost, //!< Places the widget on the right side and sets height to 100%. Width needs to be manually set. Same as Right alignment if no widget uses Top or Bottom alignment.
+        Fill //!< Sets the position and size to fill the entire area that isn't already taken by components with the other AutoLayout values.
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +99,6 @@ namespace tgui
     class TGUI_API Layout
     {
     public:
-
         /// The operation which the layout has to perform to find its value
         enum class Operation
         {
@@ -121,8 +121,8 @@ namespace tgui
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,8 +272,8 @@ namespace tgui
         TGUI_NODISCARD Layout* getRightOperand() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // If a widget is bound, inform it that the layout no longer binds it
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,14 +296,14 @@ namespace tgui
         void parseBindingString(const String& expression, Widget* widget, bool xAxis);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         float m_value = 0;
         Layout* m_parent = nullptr;
         Operation m_operation = Operation::Value;
         std::unique_ptr<Layout> m_leftOperand = nullptr; // The left operand of the operation in case the operation is a math operation
         std::unique_ptr<Layout> m_rightOperand = nullptr; // The left operand of the operation in case the operation is a math operation
-        Widget* m_boundWidget = nullptr; // The widget on which this layout depends in case the operation is a binding
+        Widget* m_boundWidget = nullptr;                  // The widget on which this layout depends in case the operation is a binding
         String m_boundString; // String referring to a widget on which this layout depends in case the layout was created from a string and contains a binding operation
         std::function<void()> m_connectedWidgetCallback = nullptr; // Function to call when the value of the layout changes in case the layout and sublayouts are not all constants
         int m_callingCallbackCount = 0; // Used to detect that connectWidget is called in an infinity loop if certain layouts depend on each other
@@ -319,7 +319,6 @@ namespace tgui
     class TGUI_API Layout2d
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor to implicitly construct from a tgui::Vector2f.
         ///
@@ -391,8 +390,8 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         Layout x;
         Layout y;
     };
@@ -509,10 +508,10 @@ namespace tgui
 
         /// @brief Bind to the maximum value of two layouts
         TGUI_NODISCARD TGUI_API Layout bindMax(const Layout& value1, const Layout& value2);
-    }
+    } // namespace bind_functions
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

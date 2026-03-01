@@ -25,8 +25,8 @@
 #ifndef TGUI_RANGE_SLIDER_HPP
 #define TGUI_RANGE_SLIDER_HPP
 
-#include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/RangeSliderRenderer.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,8 +38,7 @@ namespace tgui
     class TGUI_API RangeSlider : public Widget
     {
     public:
-
-        using Ptr = std::shared_ptr<RangeSlider>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<RangeSlider>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const RangeSlider>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "RangeSlider"; //!< Type name of the widget
@@ -240,8 +239,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -286,13 +285,13 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalRange onRangeChange = {"RangeChanged"}; //!< Value of the slider changed. Optional parameter: new value
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::pair<FloatRect, FloatRect> m_thumbs;
 
         // When the mouse went down, did it go down on top of the thumb? If so, which one and where?
@@ -305,8 +304,8 @@ namespace tgui
         float m_selectionEnd = 0;
         float m_step = 1;
 
-        Orientation m_orientation = Orientation::Horizontal; // Is the slider drawn horizontally or vertically?
-        Orientation m_imageOrientation = Orientation::Horizontal;  // Does the loaded image lie horizontally or vertically?
+        Orientation m_orientation = Orientation::Horizontal;      // Is the slider drawn horizontally or vertically?
+        Orientation m_imageOrientation = Orientation::Horizontal; // Does the loaded image lie horizontally or vertically?
 
         Sprite m_spriteTrack;
         Sprite m_spriteTrackHover;
@@ -317,18 +316,18 @@ namespace tgui
 
         // Cached renderer properties
         Borders m_bordersCached;
-        Color   m_borderColorCached;
-        Color   m_borderColorHoverCached;
-        Color   m_thumbColorCached;
-        Color   m_thumbColorHoverCached;
-        Color   m_trackColorCached;
-        Color   m_trackColorHoverCached;
-        Color   m_selectedTrackColorCached;
-        Color   m_selectedTrackColorHoverCached;
+        Color m_borderColorCached;
+        Color m_borderColorHoverCached;
+        Color m_thumbColorCached;
+        Color m_thumbColorHoverCached;
+        Color m_trackColorCached;
+        Color m_trackColorHoverCached;
+        Color m_selectedTrackColorCached;
+        Color m_selectedTrackColorHoverCached;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

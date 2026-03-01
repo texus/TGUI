@@ -31,18 +31,18 @@ TEST_CASE("[RadioButton]")
 
     SECTION("Signals")
     {
-        radioButton->onCheck([](){});
-        radioButton->onCheck([](bool){});
+        radioButton->onCheck([]() {});
+        radioButton->onCheck([](bool) {});
 
-        radioButton->onUncheck([](){});
-        radioButton->onUncheck([](bool){});
+        radioButton->onUncheck([]() {});
+        radioButton->onUncheck([](bool) {});
 
-        radioButton->onChange([](){});
-        radioButton->onChange([](bool){});
+        radioButton->onChange([]() {});
+        radioButton->onChange([](bool) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Checked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Unchecked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Changed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Checked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Unchecked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(radioButton)->getSignal("Changed").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -485,41 +485,45 @@ TEST_CASE("[RadioButton]")
         renderer.setOpacity(0.7f);
         radioButton->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTextColorHover(tgui::Color::Magenta);
-                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
-                                        renderer.setBorderColorHover(tgui::Color::Yellow);
-                                        renderer.setTextStyle(tgui::TextStyle::Bold);
-                                        if (textured)
-                                            renderer.setTextureUncheckedHover("resources/Texture3.png");
-                                     };
+        auto setHoverRenderer = [&](bool textured)
+        {
+            renderer.setTextColorHover(tgui::Color::Magenta);
+            renderer.setBackgroundColorHover(tgui::Color::Cyan);
+            renderer.setBorderColorHover(tgui::Color::Yellow);
+            renderer.setTextStyle(tgui::TextStyle::Bold);
+            if (textured)
+                renderer.setTextureUncheckedHover("resources/Texture3.png");
+        };
 
-        auto setDisabledRenderer = [&](bool textured){
-                                        renderer.setTextColorDisabled({128, 128, 0});
-                                        renderer.setBackgroundColorDisabled({0, 128, 128});
-                                        renderer.setBorderColorDisabled({128, 0, 128});
-                                        renderer.setTextStyle(tgui::TextStyle::Italic);
-                                        if (textured)
-                                            renderer.setTextureUncheckedDisabled("resources/Texture5.png");
-                                    };
+        auto setDisabledRenderer = [&](bool textured)
+        {
+            renderer.setTextColorDisabled({128, 128, 0});
+            renderer.setBackgroundColorDisabled({0, 128, 128});
+            renderer.setBorderColorDisabled({128, 0, 128});
+            renderer.setTextStyle(tgui::TextStyle::Italic);
+            if (textured)
+                renderer.setTextureUncheckedDisabled("resources/Texture5.png");
+        };
 
-        auto setCheckedHoverRenderer = [&](bool textured){
-                                            renderer.setTextColorCheckedHover({192, 64, 0});
-                                            renderer.setBackgroundColorCheckedHover({0, 192, 64});
-                                            renderer.setBorderColorCheckedHover({64, 0, 192});
-                                            renderer.setTextStyleChecked(tgui::TextStyles{tgui::TextStyle::Bold | tgui::TextStyle::Italic});
-                                            if (textured)
-                                                renderer.setTextureCheckedHover("resources/Texture4.png");
-                                         };
+        auto setCheckedHoverRenderer = [&](bool textured)
+        {
+            renderer.setTextColorCheckedHover({192, 64, 0});
+            renderer.setBackgroundColorCheckedHover({0, 192, 64});
+            renderer.setBorderColorCheckedHover({64, 0, 192});
+            renderer.setTextStyleChecked(tgui::TextStyles{tgui::TextStyle::Bold | tgui::TextStyle::Italic});
+            if (textured)
+                renderer.setTextureCheckedHover("resources/Texture4.png");
+        };
 
-        auto setCheckedDisabledRenderer = [&](bool textured){
-                                            renderer.setTextColorCheckedDisabled({64, 192, 0});
-                                            renderer.setBackgroundColorCheckedDisabled({0, 64, 192});
-                                            renderer.setBorderColorCheckedDisabled({192, 0, 64});
-                                            renderer.setTextStyleChecked(tgui::TextStyles{tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough});
-                                            if (textured)
-                                                renderer.setTextureCheckedDisabled("resources/Texture6.png");
-                                        };
+        auto setCheckedDisabledRenderer = [&](bool textured)
+        {
+            renderer.setTextColorCheckedDisabled({64, 192, 0});
+            renderer.setBackgroundColorCheckedDisabled({0, 64, 192});
+            renderer.setBorderColorCheckedDisabled({192, 0, 64});
+            renderer.setTextStyleChecked(tgui::TextStyles{tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough});
+            if (textured)
+                renderer.setTextureCheckedDisabled("resources/Texture6.png");
+        };
 
         const auto mousePos = radioButton->getPosition() + (radioButton->getSize() / 2.f);
 

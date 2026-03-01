@@ -27,9 +27,9 @@
 
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widget.hpp>
+    #include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,8 +43,7 @@ namespace tgui
     class TGUI_API CustomWidgetForBindings : public Widget
     {
     public:
-
-        using Ptr = std::shared_ptr<CustomWidgetForBindings>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<CustomWidgetForBindings>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CustomWidgetForBindings>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "CustomWidget"; //!< Type name of the widget
@@ -244,8 +243,8 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -264,37 +263,36 @@ namespace tgui
         void mouseLeftWidget() override;
 
     public:
-
-        std::function<void(Vector2f)>                   implPositionChanged;
-        std::function<void(Vector2f)>                   implSizeChanged;
-        std::function<void(bool)>                       implVisibleChanged;
-        std::function<void(bool)>                       implEnableChanged;
-        std::function<void(bool)>                       implFocusChanged;
-        std::function<bool()>                           implCanGainFocus;
-        std::function<Vector2f()>                       implGetFullSize;
-        std::function<Vector2f()>                       implGetWidgetOffset;
-        std::function<bool(Duration)>                   implUpdateTimeFunction;
-        std::function<bool(Vector2f)>                   implMouseOnWidget;
-        std::function<bool(Vector2f)>                   implLeftMousePressed;
-        std::function<void(Vector2f)>                   implLeftMouseReleased;
-        std::function<void(Vector2f)>                   implRightMousePressed;
-        std::function<void(Vector2f)>                   implRightMouseReleased;
-        std::function<void(Vector2f)>                   implMouseMoved;
-        std::function<void(const Event::KeyEvent&)>     implKeyPressed;
-        std::function<void(char32_t)>                   implTextEntered;
-        std::function<bool(float, Vector2f, bool)>      implScrolled;
-        std::function<void()>                           implMouseNoLongerOnWidget;
-        std::function<void()>                           implLeftMouseButtonNoLongerDown;
-        std::function<void()>                           implMouseEnteredWidget;
-        std::function<void()>                           implMouseLeftWidget;
-        std::function<bool(const String&)>              implRendererChanged;
+        std::function<void(Vector2f)> implPositionChanged;
+        std::function<void(Vector2f)> implSizeChanged;
+        std::function<void(bool)> implVisibleChanged;
+        std::function<void(bool)> implEnableChanged;
+        std::function<void(bool)> implFocusChanged;
+        std::function<bool()> implCanGainFocus;
+        std::function<Vector2f()> implGetFullSize;
+        std::function<Vector2f()> implGetWidgetOffset;
+        std::function<bool(Duration)> implUpdateTimeFunction;
+        std::function<bool(Vector2f)> implMouseOnWidget;
+        std::function<bool(Vector2f)> implLeftMousePressed;
+        std::function<void(Vector2f)> implLeftMouseReleased;
+        std::function<void(Vector2f)> implRightMousePressed;
+        std::function<void(Vector2f)> implRightMouseReleased;
+        std::function<void(Vector2f)> implMouseMoved;
+        std::function<void(const Event::KeyEvent&)> implKeyPressed;
+        std::function<void(char32_t)> implTextEntered;
+        std::function<bool(float, Vector2f, bool)> implScrolled;
+        std::function<void()> implMouseNoLongerOnWidget;
+        std::function<void()> implLeftMouseButtonNoLongerDown;
+        std::function<void()> implMouseEnteredWidget;
+        std::function<void()> implMouseLeftWidget;
+        std::function<bool(const String&)> implRendererChanged;
         std::function<void(BackendRenderTarget&, RenderStates)> implDrawFunction;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 #endif // TGUI_REMOVE_DEPRECATED_CODE
 

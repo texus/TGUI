@@ -49,43 +49,43 @@ namespace tgui
         int typeRaylib = MOUSE_CURSOR_DEFAULT;
         switch (type)
         {
-        case Cursor::Type::Arrow:
-            typeRaylib = MOUSE_CURSOR_ARROW;
-            break;
-        case Cursor::Type::Text:
-            typeRaylib = MOUSE_CURSOR_IBEAM;
-            break;
-        case Cursor::Type::Help: // BackendRaylib doesn't support Cursor::Type::Help
-        case Cursor::Type::Hand:
-            typeRaylib = MOUSE_CURSOR_POINTING_HAND;
-            break;
-        case Cursor::Type::SizeLeft:
-        case Cursor::Type::SizeRight:
-        case Cursor::Type::SizeHorizontal:
-            typeRaylib = MOUSE_CURSOR_RESIZE_EW;
-            break;
-        case Cursor::Type::SizeTop:
-        case Cursor::Type::SizeBottom:
-        case Cursor::Type::SizeVertical:
-            typeRaylib = MOUSE_CURSOR_RESIZE_NS;
-            break;
-        case Cursor::Type::SizeBottomRight:
-        case Cursor::Type::SizeTopLeft:
-            typeRaylib = MOUSE_CURSOR_RESIZE_NWSE;
-            break;
-        case Cursor::Type::SizeBottomLeft:
-        case Cursor::Type::SizeTopRight:
-            typeRaylib = MOUSE_CURSOR_RESIZE_NESW;
-            break;
-        case Cursor::Type::Crosshair:
-            typeRaylib = MOUSE_CURSOR_CROSSHAIR;
-            break;
-        case Cursor::Type::NotAllowed:
-            typeRaylib = MOUSE_CURSOR_NOT_ALLOWED;
-            break;
-        case Cursor::Type::Move:
-            typeRaylib = MOUSE_CURSOR_RESIZE_ALL;
-            break;
+            case Cursor::Type::Arrow:
+                typeRaylib = MOUSE_CURSOR_ARROW;
+                break;
+            case Cursor::Type::Text:
+                typeRaylib = MOUSE_CURSOR_IBEAM;
+                break;
+            case Cursor::Type::Help: // BackendRaylib doesn't support Cursor::Type::Help
+            case Cursor::Type::Hand:
+                typeRaylib = MOUSE_CURSOR_POINTING_HAND;
+                break;
+            case Cursor::Type::SizeLeft:
+            case Cursor::Type::SizeRight:
+            case Cursor::Type::SizeHorizontal:
+                typeRaylib = MOUSE_CURSOR_RESIZE_EW;
+                break;
+            case Cursor::Type::SizeTop:
+            case Cursor::Type::SizeBottom:
+            case Cursor::Type::SizeVertical:
+                typeRaylib = MOUSE_CURSOR_RESIZE_NS;
+                break;
+            case Cursor::Type::SizeBottomRight:
+            case Cursor::Type::SizeTopLeft:
+                typeRaylib = MOUSE_CURSOR_RESIZE_NWSE;
+                break;
+            case Cursor::Type::SizeBottomLeft:
+            case Cursor::Type::SizeTopRight:
+                typeRaylib = MOUSE_CURSOR_RESIZE_NESW;
+                break;
+            case Cursor::Type::Crosshair:
+                typeRaylib = MOUSE_CURSOR_CROSSHAIR;
+                break;
+            case Cursor::Type::NotAllowed:
+                typeRaylib = MOUSE_CURSOR_NOT_ALLOWED;
+                break;
+            case Cursor::Type::Move:
+                typeRaylib = MOUSE_CURSOR_RESIZE_ALL;
+                break;
         }
 
         SetMouseCursor(typeRaylib);
@@ -97,14 +97,14 @@ namespace tgui
     {
         switch (modifierKey)
         {
-        case Event::KeyModifier::System:
-            return IsKeyDown(KEY_LEFT_SUPER) || IsKeyDown(KEY_RIGHT_SUPER);
-        case Event::KeyModifier::Control:
-            return IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
-        case Event::KeyModifier::Shift:
-            return IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
-        case Event::KeyModifier::Alt:
-            return IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
+            case Event::KeyModifier::System:
+                return IsKeyDown(KEY_LEFT_SUPER) || IsKeyDown(KEY_RIGHT_SUPER);
+            case Event::KeyModifier::Control:
+                return IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
+            case Event::KeyModifier::Shift:
+                return IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+            case Event::KeyModifier::Alt:
+                return IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
         }
 
         TGUI_ASSERT(false, "BackendRaylib::isKeyboardModifierPressed called with an invalid value");
@@ -148,6 +148,6 @@ namespace tgui
     }
 #endif
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -432,20 +432,18 @@ namespace tgui
                 target.drawFilledRect(states, arrowSize, arrowBackColor);
 
                 target.drawTriangle(states,
-                    {{arrowSize.x / 5, arrowSize.y * 4/5}, arrowVertexColor},
-                    {{arrowSize.x / 2, arrowSize.y / 5}, arrowVertexColor},
-                    {{arrowSize.x * 4/5, arrowSize.y * 4/5}, arrowVertexColor}
-                );
+                                    {{arrowSize.x / 5, arrowSize.y * 4 / 5}, arrowVertexColor},
+                                    {{arrowSize.x / 2, arrowSize.y / 5}, arrowVertexColor},
+                                    {{arrowSize.x * 4 / 5, arrowSize.y * 4 / 5}, arrowVertexColor});
             }
             else // Spin button lies horizontal
             {
                 target.drawFilledRect(states, {arrowSize.y, arrowSize.x}, arrowBackColor);
 
                 target.drawTriangle(states,
-                    {{arrowSize.y * 4/5, arrowSize.x / 5}, arrowVertexColor},
-                    {{arrowSize.y / 5, arrowSize.x / 2}, arrowVertexColor},
-                    {{arrowSize.y * 4/5, arrowSize.x * 4/5}, arrowVertexColor}
-                );
+                                    {{arrowSize.y * 4 / 5, arrowSize.x / 5}, arrowVertexColor},
+                                    {{arrowSize.y / 5, arrowSize.x / 2}, arrowVertexColor},
+                                    {{arrowSize.y * 4 / 5, arrowSize.x * 4 / 5}, arrowVertexColor});
             }
         }
 
@@ -456,7 +454,9 @@ namespace tgui
 
             if (m_borderBetweenArrowsCached > 0)
             {
-                target.drawFilledRect(states, {arrowSize.x, m_borderBetweenArrowsCached}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {arrowSize.x, m_borderBetweenArrowsCached},
+                                      Color::applyOpacity(m_borderColorCached, m_opacityCached));
                 states.transform.translate({0, m_borderBetweenArrowsCached});
             }
         }
@@ -466,7 +466,9 @@ namespace tgui
 
             if (m_borderBetweenArrowsCached > 0)
             {
-                target.drawFilledRect(states, {m_borderBetweenArrowsCached, arrowSize.x}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {m_borderBetweenArrowsCached, arrowSize.x},
+                                      Color::applyOpacity(m_borderColorCached, m_opacityCached));
                 states.transform.translate({m_borderBetweenArrowsCached, 0});
             }
         }
@@ -498,20 +500,18 @@ namespace tgui
                 target.drawFilledRect(states, arrowSize, arrowBackColor);
 
                 target.drawTriangle(states,
-                    {{arrowSize.x / 5, arrowSize.y / 5}, arrowVertexColor},
-                    {{arrowSize.x / 2, arrowSize.y * 4/5}, arrowVertexColor},
-                    {{arrowSize.x * 4/5, arrowSize.y / 5}, arrowVertexColor}
-                );
+                                    {{arrowSize.x / 5, arrowSize.y / 5}, arrowVertexColor},
+                                    {{arrowSize.x / 2, arrowSize.y * 4 / 5}, arrowVertexColor},
+                                    {{arrowSize.x * 4 / 5, arrowSize.y / 5}, arrowVertexColor});
             }
             else // Spin button lies horizontal
             {
                 target.drawFilledRect(states, {arrowSize.y, arrowSize.x}, arrowBackColor);
 
                 target.drawTriangle(states,
-                    {{arrowSize.y / 5, arrowSize.x / 5}, arrowVertexColor},
-                    {{arrowSize.y * 4/5, arrowSize.x / 2}, arrowVertexColor},
-                    {{arrowSize.y / 5, arrowSize.x * 4/5}, arrowVertexColor}
-                );
+                                    {{arrowSize.y / 5, arrowSize.x / 5}, arrowVertexColor},
+                                    {{arrowSize.y * 4 / 5, arrowSize.x / 2}, arrowVertexColor},
+                                    {{arrowSize.y / 5, arrowSize.x * 4 / 5}, arrowVertexColor});
             }
         }
     }
@@ -521,29 +521,31 @@ namespace tgui
     void SpinButton::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall)
     {
         const std::weak_ptr<SpinButton> widgetPtr = std::static_pointer_cast<SpinButton>(shared_from_this());
-        Timer::scheduleCallback([widgetPtr, clickedTime]()
-        {
-            const SpinButton::Ptr spinButton = widgetPtr.lock();
-            if (spinButton)
+        Timer::scheduleCallback(
+            [widgetPtr, clickedTime]()
             {
-                // Mouse still over and the mouse press is current
-                if (!spinButton->m_mouseHover || !spinButton->m_mouseDown || spinButton->m_lastMousePressTime != clickedTime)
-                    return;
+                const SpinButton::Ptr spinButton = widgetPtr.lock();
+                if (spinButton)
+                {
+                    // Mouse still over and the mouse press is current
+                    if (!spinButton->m_mouseHover || !spinButton->m_mouseDown || spinButton->m_lastMousePressTime != clickedTime)
+                        return;
 
-                if (spinButton->m_value < spinButton->m_maximum &&
-                    spinButton->m_mouseDownOnTopArrow && spinButton->m_mouseHoverOnTopArrow)
-                {
-                    spinButton->setValue(spinButton->m_value + spinButton->m_step);
-                    spinButton->callMousePressPeriodically(clickedTime, true);
+                    if (spinButton->m_value < spinButton->m_maximum && spinButton->m_mouseDownOnTopArrow
+                        && spinButton->m_mouseHoverOnTopArrow)
+                    {
+                        spinButton->setValue(spinButton->m_value + spinButton->m_step);
+                        spinButton->callMousePressPeriodically(clickedTime, true);
+                    }
+                    else if (spinButton->m_value > spinButton->m_minimum && !spinButton->m_mouseDownOnTopArrow
+                             && !spinButton->m_mouseHoverOnTopArrow)
+                    {
+                        spinButton->setValue(spinButton->m_value - spinButton->m_step);
+                        spinButton->callMousePressPeriodically(clickedTime, true);
+                    }
                 }
-                else if (spinButton->m_value > spinButton->m_minimum &&
-                         !spinButton->m_mouseDownOnTopArrow && !spinButton->m_mouseHoverOnTopArrow)
-                {
-                    spinButton->setValue(spinButton->m_value - spinButton->m_step);
-                    spinButton->callMousePressPeriodically(clickedTime, true);
-                }
-            }
-        }, std::chrono::milliseconds(repeatedCall ? 50 : 300));
+            },
+            std::chrono::milliseconds(repeatedCall ? 50 : 300));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,6 +556,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

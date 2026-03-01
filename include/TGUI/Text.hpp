@@ -25,11 +25,11 @@
 #ifndef TGUI_TEXT_HPP
 #define TGUI_TEXT_HPP
 
-#include <TGUI/Font.hpp>
 #include <TGUI/Color.hpp>
-#include <TGUI/Vector2.hpp>
-#include <TGUI/TextStyle.hpp>
+#include <TGUI/Font.hpp>
 #include <TGUI/RenderStates.hpp>
+#include <TGUI/TextStyle.hpp>
+#include <TGUI/Vector2.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +52,6 @@ namespace tgui
     class TGUI_API Text
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Describes a text piece, before turning it into an actual Text object
         ///
@@ -63,10 +62,10 @@ namespace tgui
         {
             unsigned int characterSize = 0;
             unsigned int style = 0;
-            Color        color;
-            String       link;
-            String       text;
-            Vector2u     gapSize;
+            Color color;
+            String link;
+            String text;
+            Vector2u gapSize;
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +95,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the width of a single line of text
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static float getLineWidth(const String &text, const Font& font, unsigned int characterSize, TextStyles textStyle = {});
+        TGUI_NODISCARD static float getLineWidth(const String& text, const Font& font, unsigned int characterSize, TextStyles textStyle = {});
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Finds the best character size for the text
@@ -131,11 +130,13 @@ namespace tgui
         ///
         /// @return Lines of text pieces (either the same as the input or more lines when some were split)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::vector<std::vector<Blueprint>> wordWrap(float maxWidth, const std::vector<std::vector<Blueprint>>& lines, const Font& font);
+        TGUI_NODISCARD static std::vector<std::vector<Blueprint>> wordWrap(float maxWidth,
+                                                                           const std::vector<std::vector<Blueprint>>& lines,
+                                                                           const Font& font);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,18 +343,18 @@ namespace tgui
         TGUI_NODISCARD std::shared_ptr<BackendText> getBackendText() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         std::shared_ptr<BackendText> m_backendText;
-        Vector2f     m_position;
-        Font         m_font;
-        Color        m_color;
-        Color        m_outlineColor;
-        float        m_opacity = 1;
+        Vector2f m_position;
+        Font m_font;
+        Color m_color;
+        Color m_outlineColor;
+        float m_opacity = 1;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

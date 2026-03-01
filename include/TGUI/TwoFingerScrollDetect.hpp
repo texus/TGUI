@@ -41,7 +41,6 @@ namespace tgui
     class TGUI_API TwoFingerScrollDetect
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the detector that a finger began touching
         /// @param fingerId  Id for the finger that is unique for at least as long as the finger is held down
@@ -85,8 +84,8 @@ namespace tgui
         float getDelta(float scale);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Calculates the centroid position of all fingers
         /// @warning This function should only be called when isScrolling() returns true.
@@ -94,13 +93,13 @@ namespace tgui
         Vector2f calculateFingerCentroid();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         std::unordered_map<std::uintptr_t, Vector2f> m_fingerPositions;
         Vector2f m_initialCentroidPosition;
         Vector2f m_lastCentroidPosition;
         bool m_trackingActive = true; // When three fingers touch, we stop trying to detect scrolling until all fingers are released again
     };
-}
+} // namespace tgui
 
 #endif // TGUI_TWO_FINGER_SCROLL_DETECT_HPP

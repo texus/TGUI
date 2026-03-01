@@ -57,7 +57,8 @@ struct ProgressBarProperties : public WidgetProperties
         pair.first["Value"] = {"UInt", tgui::String::fromNumber(progressBar->getValue())};
         pair.first["Text"] = {"String", progressBar->getText()};
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(progressBar->getTextSize())};
-        pair.first["FillDirection"] = {"Enum{LeftToRight,RightToLeft,TopToBottom,BottomToTop}", serializeFillDirection(progressBar->getFillDirection())};
+        pair.first["FillDirection"] = {"Enum{LeftToRight,RightToLeft,TopToBottom,BottomToTop}",
+                                       serializeFillDirection(progressBar->getFillDirection())};
 
         const auto renderer = progressBar->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
@@ -75,7 +76,6 @@ struct ProgressBarProperties : public WidgetProperties
     }
 
 private:
-
     TGUI_NODISCARD static tgui::ProgressBar::FillDirection deserializeFillDirection(tgui::String value)
     {
         value = value.trim().toLower();

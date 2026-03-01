@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/ObjectConverter.hpp>
-#include <TGUI/Loading/Serializer.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/ObjectConverter.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -49,7 +49,8 @@ namespace tgui
     const Font& ObjectConverter::getFont()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::Font || m_type == Type::String, "ObjectConverter must contain font or serialized object to retrieve its font");
+        TGUI_ASSERT(m_type == Type::Font || m_type == Type::String,
+                    "ObjectConverter must contain font or serialized object to retrieve its font");
 
         if (m_type == Type::String)
         {
@@ -65,7 +66,8 @@ namespace tgui
     const Color& ObjectConverter::getColor()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::Color || m_type == Type::String, "ObjectConverter must contain color or serialized object to retrieve its color");
+        TGUI_ASSERT(m_type == Type::Color || m_type == Type::String,
+                    "ObjectConverter must contain color or serialized object to retrieve its color");
 
         if (m_type == Type::String)
         {
@@ -81,7 +83,8 @@ namespace tgui
     bool ObjectConverter::getBool()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::Bool || m_type == Type::String, "ObjectConverter must contain bool or serialized object to retrieve its bool value");
+        TGUI_ASSERT(m_type == Type::Bool || m_type == Type::String,
+                    "ObjectConverter must contain bool or serialized object to retrieve its bool value");
 
         if (m_type == Type::String)
         {
@@ -97,7 +100,8 @@ namespace tgui
     float ObjectConverter::getNumber()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::Number || m_type == Type::String, "ObjectConverter must contain number or serialized object to retrieve its numeric value");
+        TGUI_ASSERT(m_type == Type::Number || m_type == Type::String,
+                    "ObjectConverter must contain number or serialized object to retrieve its numeric value");
 
         if (m_type == Type::String)
         {
@@ -113,7 +117,8 @@ namespace tgui
     const Outline& ObjectConverter::getOutline()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::Outline || m_type == Type::String, "ObjectConverter must contain outline or serialized object to retrieve its outline");
+        TGUI_ASSERT(m_type == Type::Outline || m_type == Type::String,
+                    "ObjectConverter must contain outline or serialized object to retrieve its outline");
 
         if (m_type == Type::String)
         {
@@ -129,7 +134,8 @@ namespace tgui
     const Texture& ObjectConverter::getTexture()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::Texture || m_type == Type::String, "ObjectConverter must contain texture or serialized object to retrieve its texture");
+        TGUI_ASSERT(m_type == Type::Texture || m_type == Type::String,
+                    "ObjectConverter must contain texture or serialized object to retrieve its texture");
 
         if (m_type == Type::String)
         {
@@ -145,7 +151,8 @@ namespace tgui
     const TextStyles& ObjectConverter::getTextStyle()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::TextStyle || m_type == Type::String, "ObjectConverter must contain text style or serialized object to retrieve its text style");
+        TGUI_ASSERT(m_type == Type::TextStyle || m_type == Type::String,
+                    "ObjectConverter must contain text style or serialized object to retrieve its text style");
 
         if (m_type == Type::String)
         {
@@ -161,7 +168,8 @@ namespace tgui
     const std::shared_ptr<RendererData>& ObjectConverter::getRenderer()
     {
         TGUI_ASSERT(m_type != Type::None, "Empty ObjectConverter object shouldn't be accessed");
-        TGUI_ASSERT(m_type == Type::RendererData || m_type == Type::String, "ObjectConverter must contain renderer data or serialized object to retrieve its renderer data");
+        TGUI_ASSERT(m_type == Type::RendererData || m_type == Type::String,
+                    "ObjectConverter must contain renderer data or serialized object to retrieve its renderer data");
 
         if (m_type == Type::String)
         {
@@ -191,28 +199,28 @@ namespace tgui
 
         switch (m_type)
         {
-        case Type::None:
-            return true;
-        case Type::String:
-            return m_string == right.m_string;
-        case Type::Bool:
-            return m_value.get<bool>() == right.m_value.get<bool>();
-        case Type::Font:
-            return m_value.get<Font>() == right.m_value.get<Font>();
-        case Type::Color:
-            return m_value.get<Color>() == right.m_value.get<Color>();
-        case Type::Number:
-            return m_value.get<float>() == right.m_value.get<float>();
-        case Type::Outline:
-            return m_value.get<Outline>() == right.m_value.get<Outline>();
-        case Type::Texture:
-            return m_value.get<Texture>() == right.m_value.get<Texture>();
-        case Type::TextStyle:
-            return m_value.get<TextStyles>() == right.m_value.get<TextStyles>();
-        case Type::RendererData:
-            return m_value.get<std::shared_ptr<RendererData>>() == right.m_value.get<std::shared_ptr<RendererData>>();
-        default: // This case should never occur, but prevents a warning that control reaches end of non-void function
-            return false;
+            case Type::None:
+                return true;
+            case Type::String:
+                return m_string == right.m_string;
+            case Type::Bool:
+                return m_value.get<bool>() == right.m_value.get<bool>();
+            case Type::Font:
+                return m_value.get<Font>() == right.m_value.get<Font>();
+            case Type::Color:
+                return m_value.get<Color>() == right.m_value.get<Color>();
+            case Type::Number:
+                return m_value.get<float>() == right.m_value.get<float>();
+            case Type::Outline:
+                return m_value.get<Outline>() == right.m_value.get<Outline>();
+            case Type::Texture:
+                return m_value.get<Texture>() == right.m_value.get<Texture>();
+            case Type::TextStyle:
+                return m_value.get<TextStyles>() == right.m_value.get<TextStyles>();
+            case Type::RendererData:
+                return m_value.get<std::shared_ptr<RendererData>>() == right.m_value.get<std::shared_ptr<RendererData>>();
+            default: // This case should never occur, but prevents a warning that control reaches end of non-void function
+                return false;
         }
     }
 
@@ -224,6 +232,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

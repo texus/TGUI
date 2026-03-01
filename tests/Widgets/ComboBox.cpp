@@ -31,12 +31,12 @@ TEST_CASE("[ComboBox]")
 
     SECTION("Signals")
     {
-        comboBox->onItemSelect([](){});
-        comboBox->onItemSelect([](int){});
-        comboBox->onItemSelect([](const tgui::String&){});
-        comboBox->onItemSelect([](const tgui::String&, const tgui::String&){});
+        comboBox->onItemSelect([]() {});
+        comboBox->onItemSelect([](int) {});
+        comboBox->onItemSelect([](const tgui::String&) {});
+        comboBox->onItemSelect([](const tgui::String&, const tgui::String&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(comboBox)->getSignal("ItemSelected").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(comboBox)->getSignal("ItemSelected").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -338,7 +338,8 @@ TEST_CASE("[ComboBox]")
             auto container = tgui::Group::create({400.f, 300.f});
             container->add(comboBox);
 
-            auto mouseClick = [container](tgui::Vector2f pos) {
+            auto mouseClick = [container](tgui::Vector2f pos)
+            {
                 container->mouseMoved(pos);
                 container->leftMousePressed(pos);
                 container->leftMouseReleased(pos);
@@ -546,7 +547,7 @@ TEST_CASE("[ComboBox]")
             REQUIRE(renderer->getDefaultTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getRoundedBorderRadius() == 5);
 
-            REQUIRE(renderer->getListBox()->propertyValuePairs.size() >= 2);  // Also contains Scrollbar from default White theme
+            REQUIRE(renderer->getListBox()->propertyValuePairs.size() >= 2); // Also contains Scrollbar from default White theme
             REQUIRE(renderer->getListBox()->propertyValuePairs["BackgroundColor"].getColor() == tgui::Color::Red);
             REQUIRE(renderer->getListBox()->propertyValuePairs["TextColor"].getColor() == tgui::Color::Blue);
         }
@@ -555,9 +556,9 @@ TEST_CASE("[ComboBox]")
         {
             const tgui::Texture textureBackground("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
             const tgui::Texture textureBackgroundDisabled("resources/Black.png", {0, 154, 48, 48}, {16, 16, 16, 16});
-            const tgui::Texture textureArrow("resources/Black.png", {92,  0, 32, 32});
+            const tgui::Texture textureArrow("resources/Black.png", {92, 0, 32, 32});
             const tgui::Texture textureArrowHover("resources/Black.png", {92, 32, 32, 32});
-            const tgui::Texture textureArrowDisabled("resources/Black.png", {92,  0, 32, 32});
+            const tgui::Texture textureArrowDisabled("resources/Black.png", {92, 0, 32, 32});
 
             SECTION("set serialized property")
             {
@@ -636,14 +637,16 @@ TEST_CASE("[ComboBox]")
         renderer.setOpacity(0.7f);
         comboBox->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
+        auto setHoverRenderer = [&](bool textured)
+        {
             renderer.setArrowBackgroundColorHover(tgui::Color::Yellow);
             renderer.setArrowColorHover(tgui::Color::Black);
             if (textured)
                 renderer.setTextureArrowHover("resources/Texture3.png");
         };
 
-        auto setDisabledRenderer = [&](bool textured){
+        auto setDisabledRenderer = [&](bool textured)
+        {
             renderer.setTextColorDisabled({128, 128, 0});
             renderer.setBackgroundColorDisabled({0, 128, 128});
             renderer.setArrowBackgroundColorDisabled({128, 0, 128});
@@ -665,20 +668,14 @@ TEST_CASE("[ComboBox]")
         {
             SECTION("No selected item")
             {
-                SECTION("No hover")
-                {
-                    TEST_DRAW("ComboBox_NoSelectedNoHover.png")
-                }
+                SECTION("No hover"){TEST_DRAW("ComboBox_NoSelectedNoHover.png")}
 
                 SECTION("Hover")
                 {
                     comboBox->mouseMoved(mousePos);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ComboBox_NoSelectedHover_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ComboBox_NoSelectedHover_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer(false);
                         TEST_DRAW("ComboBox_NoSelectedHover_HoverSet.png")
@@ -690,20 +687,14 @@ TEST_CASE("[ComboBox]")
             {
                 comboBox->setSelectedItem("2");
 
-                SECTION("No hover")
-                {
-                    TEST_DRAW("ComboBox_SelectedNoHover.png")
-                }
+                SECTION("No hover"){TEST_DRAW("ComboBox_SelectedNoHover.png")}
 
                 SECTION("Hover selected")
                 {
                     comboBox->mouseMoved(mousePos);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ComboBox_SelectedHoverSelected_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ComboBox_SelectedHoverSelected_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer(false);
                         TEST_DRAW("ComboBox_SelectedHoverSelected_HoverSet.png")
@@ -731,20 +722,14 @@ TEST_CASE("[ComboBox]")
 
             SECTION("No selected item")
             {
-                SECTION("No hover")
-                {
-                    TEST_DRAW("ComboBox_NoSelectedNoHover_Textured.png")
-                }
+                SECTION("No hover"){TEST_DRAW("ComboBox_NoSelectedNoHover_Textured.png")}
 
                 SECTION("Hover")
                 {
                     comboBox->mouseMoved(mousePos);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ComboBox_NoSelectedHover_NoHoverSet_Textured.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ComboBox_NoSelectedHover_NoHoverSet_Textured.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer(true);
                         TEST_DRAW("ComboBox_NoSelectedHover_HoverSet_Textured.png")
@@ -756,20 +741,14 @@ TEST_CASE("[ComboBox]")
             {
                 comboBox->setSelectedItem("2");
 
-                SECTION("No hover")
-                {
-                    TEST_DRAW("ComboBox_SelectedNoHover_Textured.png")
-                }
+                SECTION("No hover"){TEST_DRAW("ComboBox_SelectedNoHover_Textured.png")}
 
                 SECTION("Hover selected")
                 {
                     comboBox->mouseMoved(mousePos);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ComboBox_SelectedHoverSelected_NoHoverSet_Textured.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ComboBox_SelectedHoverSelected_NoHoverSet_Textured.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer(true);
                         TEST_DRAW("ComboBox_SelectedHoverSelected_HoverSet_Textured.png")

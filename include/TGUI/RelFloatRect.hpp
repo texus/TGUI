@@ -50,8 +50,10 @@ namespace tgui
         /// @param width  Width of the rectangle
         /// @param height Height of the rectangle
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr RelFloatRect(AbsoluteOrRelativeValue left, AbsoluteOrRelativeValue top,
-                               AbsoluteOrRelativeValue width, AbsoluteOrRelativeValue height) :
+        constexpr RelFloatRect(AbsoluteOrRelativeValue left,
+                               AbsoluteOrRelativeValue top,
+                               AbsoluteOrRelativeValue width,
+                               AbsoluteOrRelativeValue height) :
             m_left{left},
             m_top{top},
             m_width{width},
@@ -130,14 +132,14 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         AbsoluteOrRelativeValue m_left;
         AbsoluteOrRelativeValue m_top;
         AbsoluteOrRelativeValue m_width;
         AbsoluteOrRelativeValue m_height;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

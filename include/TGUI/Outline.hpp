@@ -25,8 +25,8 @@
 #ifndef TGUI_OUTLINE_HPP
 #define TGUI_OUTLINE_HPP
 
-#include <TGUI/Vector2.hpp>
 #include <TGUI/AbsoluteOrRelativeValue.hpp>
+#include <TGUI/Vector2.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,16 +37,15 @@ namespace tgui
     class TGUI_API Outline
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor that initializes the outline
         ///
         /// @param size  Width and height of the outline in all directions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         constexpr Outline(AbsoluteOrRelativeValue size = 0) :
-            m_left  {size},
-            m_top   {size},
-            m_right {size},
+            m_left{size},
+            m_top{size},
+            m_right{size},
             m_bottom{size}
         {
         }
@@ -58,9 +57,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
         constexpr Outline(T size) :
-            m_left  {size},
-            m_top   {size},
-            m_right {size},
+            m_left{size},
+            m_top{size},
+            m_right{size},
             m_bottom{size}
         {
         }
@@ -72,9 +71,9 @@ namespace tgui
         /// @param height  Height of the top and bottom outline
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         constexpr Outline(AbsoluteOrRelativeValue width, AbsoluteOrRelativeValue height) :
-            m_left  {width},
-            m_top   {height},
-            m_right {width},
+            m_left{width},
+            m_top{height},
+            m_right{width},
             m_bottom{height}
         {
         }
@@ -87,10 +86,13 @@ namespace tgui
         /// @param rightBorderWidth   Width of the right outline
         /// @param bottomBorderHeight Height of the bottom outline
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        constexpr Outline(AbsoluteOrRelativeValue leftBorderWidth, AbsoluteOrRelativeValue topBorderHeight, AbsoluteOrRelativeValue rightBorderWidth, AbsoluteOrRelativeValue bottomBorderHeight) :
-            m_left  {leftBorderWidth},
-            m_top   {topBorderHeight},
-            m_right {rightBorderWidth},
+        constexpr Outline(AbsoluteOrRelativeValue leftBorderWidth,
+                          AbsoluteOrRelativeValue topBorderHeight,
+                          AbsoluteOrRelativeValue rightBorderWidth,
+                          AbsoluteOrRelativeValue bottomBorderHeight) :
+            m_left{leftBorderWidth},
+            m_top{topBorderHeight},
+            m_right{rightBorderWidth},
             m_bottom{bottomBorderHeight}
         {
         }
@@ -173,7 +175,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD constexpr bool operator==(const Outline& outline) const
         {
-            return (getLeft() == outline.getLeft()) && (getTop() == outline.getTop()) && (getRight() == outline.getRight()) && (getBottom() == outline.getBottom());
+            return (getLeft() == outline.getLeft()) && (getTop() == outline.getTop()) && (getRight() == outline.getRight())
+                   && (getBottom() == outline.getBottom());
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,10 +198,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD constexpr Outline operator+(const Outline& other) const
         {
-            return {getLeft() + other.getLeft(),
-                    getTop() + other.getTop(),
-                    getRight() + other.getRight(),
-                    getBottom() + other.getBottom()};
+            return {getLeft() + other.getLeft(), getTop() + other.getTop(), getRight() + other.getRight(), getBottom() + other.getBottom()};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,10 +208,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD constexpr Outline operator-(const Outline& other) const
         {
-            return {getLeft() - other.getLeft(),
-                    getTop() - other.getTop(),
-                    getRight() - other.getRight(),
-                    getBottom() - other.getBottom()};
+            return {getLeft() - other.getLeft(), getTop() - other.getTop(), getRight() - other.getRight(), getBottom() - other.getBottom()};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -264,16 +261,17 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD String toString() const
         {
-            return U"(" + m_left.toString() + U", " + m_top.toString() + U", " + m_right.toString() + U", " + m_bottom.toString() + U")";
+            return U"(" + m_left.toString() + U", " + m_top.toString() + U", " + m_right.toString() + U", " + m_bottom.toString()
+                   + U")";
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
-        AbsoluteOrRelativeValue m_left = 0;      //!< Width of the left outline
-        AbsoluteOrRelativeValue m_top = 0;       //!< Height of the top outline
-        AbsoluteOrRelativeValue m_right = 0;     //!< Width of the right outline
-        AbsoluteOrRelativeValue m_bottom = 0;    //!< Height of the bottom outline
+    private:
+        AbsoluteOrRelativeValue m_left = 0;   //!< Width of the left outline
+        AbsoluteOrRelativeValue m_top = 0;    //!< Height of the top outline
+        AbsoluteOrRelativeValue m_right = 0;  //!< Width of the right outline
+        AbsoluteOrRelativeValue m_bottom = 0; //!< Height of the bottom outline
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +280,7 @@ namespace tgui
     using Padding = Outline;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

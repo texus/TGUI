@@ -63,14 +63,16 @@ struct SpinControlProperties : public WidgetProperties
         pair.second["SpinButton.ButtonsBorders"] = {"Outline", tgui::Serializer::serialize(buttonRenderer->getBorders())};
         pair.second["SpinButton.BorderBetweenArrows"] = {"Float", tgui::Serializer::serialize(buttonRenderer->getBorderBetweenArrows())};
         pair.second["SpinButton.ButtonsBackgroundColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBackgroundColor())};
-        pair.second["SpinButton.ButtonsBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBackgroundColorHover())};
+        pair.second["SpinButton.ButtonsBackgroundColorHover"] = {"Color",
+                                                                 tgui::Serializer::serialize(buttonRenderer->getBackgroundColorHover())};
         pair.second["SpinButton.ArrowColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getArrowColor())};
         pair.second["SpinButton.ArrowColorHover"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getArrowColorHover())};
         pair.second["SpinButton.ButtonsBorderColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBorderColor())};
         pair.second["SpinButton.TextureArrowUp"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowUp())};
         pair.second["SpinButton.TextureArrowUpHover"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowUpHover())};
         pair.second["SpinButton.TextureArrowDown"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowDown())};
-        pair.second["SpinButton.TextureArrowDownHover"] = {"Texture", tgui::Serializer::serialize(buttonRenderer->getTextureArrowDownHover())};
+        pair.second["SpinButton.TextureArrowDownHover"] = {"Texture",
+                                                           tgui::Serializer::serialize(buttonRenderer->getTextureArrowDownHover())};
 
         const auto textRenderer = spinControl->getSpinTextSharedRenderer();
         pair.second["SpinText.Padding"] = {"Outline", textRenderer->getPadding().toString()};
@@ -79,7 +81,8 @@ struct SpinControlProperties : public WidgetProperties
         pair.second["SpinText.TextColorDisabled"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColorDisabled())};
         pair.second["SpinText.TextColorFocused"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColorFocused())};
         pair.second["SpinText.SelectedTextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getSelectedTextColor())};
-        pair.second["SpinText.SelectedTextBackgroundColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getSelectedTextBackgroundColor())};
+        pair.second["SpinText.SelectedTextBackgroundColor"] = {"Color",
+                                                               tgui::Serializer::serialize(textRenderer->getSelectedTextBackgroundColor())};
         pair.second["SpinText.DefaultTextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getDefaultTextColor())};
         pair.second["SpinText.BackgroundColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColor())};
         pair.second["SpinText.BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(textRenderer->getBackgroundColorHover())};

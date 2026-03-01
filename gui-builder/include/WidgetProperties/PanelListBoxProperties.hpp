@@ -48,7 +48,8 @@ struct PanelListBoxProperties : public ScrollablePanelProperties
         auto panel = widget->cast<tgui::PanelListBox>();
         pair.first["ItemsHeight"] = {"Float", tgui::String::fromNumber(panel->getItemsHeight().getValue())};
         pair.first["MaximumItems"] = {"size_t", tgui::String::fromNumber(panel->getMaximumItems())};
-        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getVerticalScrollbar()->getPolicy())};
+        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
+                                         serializeScrollbarPolicy(panel->getVerticalScrollbar()->getPolicy())};
         return pair;
     }
 };

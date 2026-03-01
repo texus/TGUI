@@ -31,14 +31,14 @@ TEST_CASE("[MenuBar]")
 
     SECTION("Signals")
     {
-        menuBar->onMenuItemClick([](){});
-        menuBar->onMenuItemClick([](const tgui::String&){});
-        menuBar->onMenuItemClick([](const std::vector<tgui::String>&){});
+        menuBar->onMenuItemClick([]() {});
+        menuBar->onMenuItemClick([](const tgui::String&) {});
+        menuBar->onMenuItemClick([](const std::vector<tgui::String>&) {});
 
-        menuBar->connectMenuItem("File", "Save", [](){});
-        menuBar->connectMenuItem({"Help", "About", "Version"}, [](){});
+        menuBar->connectMenuItem("File", "Save", []() {});
+        menuBar->connectMenuItem({"Help", "About", "Version"}, []() {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(menuBar)->getSignal("MenuItemClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(menuBar)->getSignal("MenuItemClicked").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -347,7 +347,8 @@ TEST_CASE("[MenuBar]")
         // The menu bar needs to be attached to a Gui object as it will create a new widget when a menu opens.
         // All events also need to be send to the gui to determine to which widget the event goes.
         globalGui->add(menuBar);
-        auto simulateLeftMouseClick = [](int x, int y){
+        auto simulateLeftMouseClick = [](int x, int y)
+        {
             tgui::Event event;
             event.type = tgui::Event::Type::MouseMoved;
             event.mouseMove.x = x;
@@ -463,7 +464,8 @@ TEST_CASE("[MenuBar]")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureItemBackground", tgui::Serializer::serialize(textureItemBackground)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedItemBackground", tgui::Serializer::serialize(textureSelectedItemBackground)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextureSelectedItemBackground", tgui::Serializer::serialize(textureSelectedItemBackground)));
             }
 
             SECTION("set object property")

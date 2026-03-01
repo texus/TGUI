@@ -29,119 +29,119 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_OUTLINE(CLASS, NAME) \
-    tgui::Outline CLASS::get##NAME() const \
-    { \
+#define TGUI_RENDERER_PROPERTY_OUTLINE(CLASS, NAME)                           \
+    tgui::Outline CLASS::get##NAME() const                                    \
+    {                                                                         \
         const auto it = m_data->propertyValuePairs.find(tgui::String(#NAME)); \
-        if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getOutline(); \
-        return {}; \
-    } \
-    void CLASS::set##NAME(const tgui::Outline& outline) \
-    { \
-        setProperty(tgui::String(#NAME), {outline}); \
+        if (it != m_data->propertyValuePairs.end())                           \
+            return it->second.getOutline();                                   \
+        return {};                                                            \
+    }                                                                         \
+    void CLASS::set##NAME(const tgui::Outline& outline)                       \
+    {                                                                         \
+        setProperty(tgui::String(#NAME), {outline});                          \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_COLOR(CLASS, NAME, DEFAULT) \
-    tgui::Color CLASS::get##NAME() const \
-    { \
+#define TGUI_RENDERER_PROPERTY_COLOR(CLASS, NAME, DEFAULT)                    \
+    tgui::Color CLASS::get##NAME() const                                      \
+    {                                                                         \
         const auto it = m_data->propertyValuePairs.find(tgui::String(#NAME)); \
-        if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getColor(); \
-        return DEFAULT; \
-    } \
-    void CLASS::set##NAME(tgui::Color color) \
-    { \
-        setProperty(tgui::String(#NAME), {color}); \
+        if (it != m_data->propertyValuePairs.end())                           \
+            return it->second.getColor();                                     \
+        return DEFAULT;                                                       \
+    }                                                                         \
+    void CLASS::set##NAME(tgui::Color color)                                  \
+    {                                                                         \
+        setProperty(tgui::String(#NAME), {color});                            \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_TEXT_STYLE(CLASS, NAME, DEFAULT) \
-    tgui::TextStyles CLASS::get##NAME() const \
-    { \
+#define TGUI_RENDERER_PROPERTY_TEXT_STYLE(CLASS, NAME, DEFAULT)               \
+    tgui::TextStyles CLASS::get##NAME() const                                 \
+    {                                                                         \
         const auto it = m_data->propertyValuePairs.find(tgui::String(#NAME)); \
-        if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getTextStyle(); \
-        return DEFAULT; \
-    } \
-    void CLASS::set##NAME(tgui::TextStyles style) \
-    { \
-        setProperty(tgui::String(#NAME), tgui::ObjectConverter{style}); \
+        if (it != m_data->propertyValuePairs.end())                           \
+            return it->second.getTextStyle();                                 \
+        return DEFAULT;                                                       \
+    }                                                                         \
+    void CLASS::set##NAME(tgui::TextStyles style)                             \
+    {                                                                         \
+        setProperty(tgui::String(#NAME), tgui::ObjectConverter{style});       \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_GET_NUMBER(CLASS, NAME, DEFAULT) \
-    float CLASS::get##NAME() const \
-    { \
+#define TGUI_RENDERER_PROPERTY_GET_NUMBER(CLASS, NAME, DEFAULT)               \
+    float CLASS::get##NAME() const                                            \
+    {                                                                         \
         const auto it = m_data->propertyValuePairs.find(tgui::String(#NAME)); \
-        if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getNumber(); \
-        return DEFAULT; \
+        if (it != m_data->propertyValuePairs.end())                           \
+            return it->second.getNumber();                                    \
+        return DEFAULT;                                                       \
     }
 
-#define TGUI_RENDERER_PROPERTY_NUMBER(CLASS, NAME, DEFAULT) \
-    TGUI_RENDERER_PROPERTY_GET_NUMBER(CLASS, NAME, DEFAULT) \
-    void CLASS::set##NAME(float number) \
-    { \
+#define TGUI_RENDERER_PROPERTY_NUMBER(CLASS, NAME, DEFAULT)              \
+    TGUI_RENDERER_PROPERTY_GET_NUMBER(CLASS, NAME, DEFAULT)              \
+    void CLASS::set##NAME(float number)                                  \
+    {                                                                    \
         setProperty(tgui::String(#NAME), tgui::ObjectConverter{number}); \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_GET_BOOL(CLASS, NAME, DEFAULT) \
-    bool CLASS::get##NAME() const \
-    { \
+#define TGUI_RENDERER_PROPERTY_GET_BOOL(CLASS, NAME, DEFAULT)                 \
+    bool CLASS::get##NAME() const                                             \
+    {                                                                         \
         const auto it = m_data->propertyValuePairs.find(tgui::String(#NAME)); \
-        if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getBool(); \
-        return DEFAULT; \
+        if (it != m_data->propertyValuePairs.end())                           \
+            return it->second.getBool();                                      \
+        return DEFAULT;                                                       \
     }
 
-#define TGUI_RENDERER_PROPERTY_BOOL(CLASS, NAME, DEFAULT) \
-    TGUI_RENDERER_PROPERTY_GET_BOOL(CLASS, NAME, DEFAULT) \
-    void CLASS::set##NAME(bool flag) \
-    { \
+#define TGUI_RENDERER_PROPERTY_BOOL(CLASS, NAME, DEFAULT)              \
+    TGUI_RENDERER_PROPERTY_GET_BOOL(CLASS, NAME, DEFAULT)              \
+    void CLASS::set##NAME(bool flag)                                   \
+    {                                                                  \
         setProperty(tgui::String(#NAME), tgui::ObjectConverter{flag}); \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_TEXTURE(CLASS, NAME) \
-    const tgui::Texture& CLASS::get##NAME() const \
-    { \
+#define TGUI_RENDERER_PROPERTY_TEXTURE(CLASS, NAME)                           \
+    const tgui::Texture& CLASS::get##NAME() const                             \
+    {                                                                         \
         const auto it = m_data->propertyValuePairs.find(tgui::String(#NAME)); \
-        if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getTexture(); \
-        m_data->propertyValuePairs[tgui::String(#NAME)] = {tgui::Texture{}}; \
-        return m_data->propertyValuePairs[tgui::String(#NAME)].getTexture(); \
-    } \
-    void CLASS::set##NAME(const tgui::Texture& texture) \
-    { \
-        setProperty(tgui::String(#NAME), {texture}); \
+        if (it != m_data->propertyValuePairs.end())                           \
+            return it->second.getTexture();                                   \
+        m_data->propertyValuePairs[tgui::String(#NAME)] = {tgui::Texture{}};  \
+        return m_data->propertyValuePairs[tgui::String(#NAME)].getTexture();  \
+    }                                                                         \
+    void CLASS::set##NAME(const tgui::Texture& texture)                       \
+    {                                                                         \
+        setProperty(tgui::String(#NAME), {texture});                          \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define TGUI_RENDERER_PROPERTY_RENDERER_WITH_DEFAULT(CLASS, NAME, RENDERER, DEFAULT) \
-    std::shared_ptr<tgui::RendererData> CLASS::get##NAME() const \
-    { \
-        const auto it = m_data->propertyValuePairs.find(tgui::String(#NAME)); \
-        if (it != m_data->propertyValuePairs.end()) \
-            return it->second.getRenderer(); \
-        const auto& renderer = tgui::Theme::getDefault()->getRendererNoThrow(RENDERER); \
+#define TGUI_RENDERER_PROPERTY_RENDERER_WITH_DEFAULT(CLASS, NAME, RENDERER, DEFAULT)         \
+    std::shared_ptr<tgui::RendererData> CLASS::get##NAME() const                             \
+    {                                                                                        \
+        const auto it = m_data->propertyValuePairs.find(tgui::String(#NAME));                \
+        if (it != m_data->propertyValuePairs.end())                                          \
+            return it->second.getRenderer();                                                 \
+        const auto& renderer = tgui::Theme::getDefault()->getRendererNoThrow(RENDERER);      \
         m_data->propertyValuePairs[tgui::String(#NAME)] = {renderer ? renderer : (DEFAULT)}; \
-        return renderer; \
-    } \
-    void CLASS::set##NAME(std::shared_ptr<tgui::RendererData> renderer) \
-    { \
-        if (renderer) \
-            setProperty(tgui::String(#NAME), {std::move(renderer)}); \
-        else \
-            setProperty(tgui::String(#NAME), {tgui::RendererData::create()}); \
+        return renderer;                                                                     \
+    }                                                                                        \
+    void CLASS::set##NAME(std::shared_ptr<tgui::RendererData> renderer)                      \
+    {                                                                                        \
+        if (renderer)                                                                        \
+            setProperty(tgui::String(#NAME), {std::move(renderer)});                         \
+        else                                                                                 \
+            setProperty(tgui::String(#NAME), {tgui::RendererData::create()});                \
     }
 
 #define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME, RENDERER) \

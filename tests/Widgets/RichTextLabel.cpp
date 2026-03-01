@@ -31,10 +31,10 @@ TEST_CASE("[RichTextLabel]")
 
     SECTION("Signals")
     {
-        label->onDoubleClick([](){});
-        label->onDoubleClick([](const tgui::String&){});
+        label->onDoubleClick([]() {});
+        label->onDoubleClick([](const tgui::String&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(label)->getSignal("DoubleClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(label)->getSignal("DoubleClicked").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -322,10 +322,14 @@ TEST_CASE("[RichTextLabel]")
         label->getRenderer()->setOpacity(0.7f);
 
         label->setText(
-            U"The RichTextLabel widget supports formatting text with <b>bold</b>, <i>italics</i>, <u>underlined</u> and even <s>strikethrough</s>. "
-            U"Each letter can have a separate <size=15>size</size> or <color=blue>color</color>. This allows for some <b><color=#ff0000>C</color><color=#ffbf00>O</color>"
-            U"<color=#80ff00>L</color><color=#00ff40>O</color><color=#00ffff>R</color><color=#0040ff>F</color><color=#7f00ff>U</color><color=#ff00bf>L</color></b> text. "
-            U"You can even include icons such as <img=resources/TreeViewCollapsed.png> and images:\n<img=\"resources/image.png\">\n\nLines that are too long will wrap around and a vertical scrollbar "
+            U"The RichTextLabel widget supports formatting text with <b>bold</b>, <i>italics</i>, <u>underlined</u> and even "
+            U"<s>strikethrough</s>. "
+            U"Each letter can have a separate <size=15>size</size> or <color=blue>color</color>. This allows for some "
+            U"<b><color=#ff0000>C</color><color=#ffbf00>O</color>"
+            U"<color=#80ff00>L</color><color=#00ff40>O</color><color=#00ffff>R</color><color=#0040ff>F</color><color=#7f00ff>U</"
+            U"color><color=#ff00bf>L</color></b> text. "
+            U"You can even include icons such as <img=resources/TreeViewCollapsed.png> and "
+            U"images:\n<img=\"resources/image.png\">\n\nLines that are too long will wrap around and a vertical scrollbar "
             U"can be <url=link>included</url> when there are <url>too many lines</url>!\n\n\n\n\n\n\n\n");
 
         TEST_DRAW("RichTextLabel.png")

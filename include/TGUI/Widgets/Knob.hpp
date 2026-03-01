@@ -25,8 +25,8 @@
 #ifndef TGUI_KNOB_HPP
 #define TGUI_KNOB_HPP
 
-#include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/KnobRenderer.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,8 +38,7 @@ namespace tgui
     class TGUI_API Knob : public Widget
     {
     public:
-
-        using Ptr = std::shared_ptr<Knob>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Knob>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Knob>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "Knob"; //!< Type name of the widget
@@ -236,8 +235,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -282,13 +281,13 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalFloat onValueChange = {"ValueChanged"}; //!< The value of the knob changed. Optional parameter: new value
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         bool m_clockwiseTurning = true; // Does rotating clockwise increment the value?
         float m_startRotation = 270;
         float m_endRotation = 270;
@@ -304,16 +303,15 @@ namespace tgui
 
         // Cached renderer properties
         Borders m_bordersCached;
-        Color   m_borderColorCached;
-        Color   m_backgroundColorCached;
-        Color   m_thumbColorCached;
-        float   m_imageRotationCached = 0;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_thumbColorCached;
+        float m_imageRotationCached = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif // TGUI_KNOB_HPP
-

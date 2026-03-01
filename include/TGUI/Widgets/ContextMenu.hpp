@@ -25,8 +25,8 @@
 #ifndef TGUI_CONTEXT_MENU_HPP
 #define TGUI_CONTEXT_MENU_HPP
 
-#include <TGUI/Widgets/MenuWidgetBase.hpp>
 #include <TGUI/Renderers/ContextMenuRenderer.hpp>
+#include <TGUI/Widgets/MenuWidgetBase.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,8 +40,7 @@ namespace tgui
     class TGUI_API ContextMenu : public MenuWidgetBase
     {
     public:
-
-        using Ptr = std::shared_ptr<ContextMenu>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<ContextMenu>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ContextMenu>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ContextMenu"; //!< Type name of the widget
@@ -180,16 +179,14 @@ namespace tgui
                 {
                     if (clickedMenuItem == hierarchy)
                         std::invoke(handler, args...);
-                }
-            );
+                });
 #else
             return onMenuItemClick.connect(
-                [f=std::function<void(const Args&...)>(handler),args...,hierarchy](const std::vector<String>& clickedMenuItem)
+                [f = std::function<void(const Args&...)>(handler), args..., hierarchy](const std::vector<String>& clickedMenuItem)
                 {
                     if (clickedMenuItem == hierarchy)
                         f(args...);
-                }
-            );
+                });
 #endif
         }
 
@@ -373,7 +370,6 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
     protected:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -449,15 +445,15 @@ namespace tgui
         void drawOpenMenu(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         Menu m_menu;
         bool m_menuOpen = false;
         float m_itemHeight = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -36,11 +36,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     enum TextStyle : unsigned int
     {
-        Regular       = 0,      //!< Regular characters, no style
-        Bold          = 1 << 0, //!< Bold characters
-        Italic        = 1 << 1, //!< Italic characters
-        Underlined    = 1 << 2, //!< Underlined characters
-        StrikeThrough = 1 << 3  //!< Strike through characters
+        Regular = 0,           //!< Regular characters, no style
+        Bold = 1 << 0,         //!< Bold characters
+        Italic = 1 << 1,       //!< Italic characters
+        Underlined = 1 << 2,   //!< Underlined characters
+        StrikeThrough = 1 << 3 //!< Strike through characters
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,6 @@ namespace tgui
     class TGUI_API TextStyles
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates the object without a text style
         ///
@@ -120,15 +119,15 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
-        bool         m_isSet; // Stores the flag indicating whether this object has been explicitly initialized or created from default.
+    private:
+        bool m_isSet; // Stores the flag indicating whether this object has been explicitly initialized or created from default.
 
         unsigned int m_style; // Stores the text styles represented by this object.
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

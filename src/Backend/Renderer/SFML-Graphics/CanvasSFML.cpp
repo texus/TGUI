@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
-#include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
 #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRenderTargetSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/BackendTextureSFML.hpp>
+#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 
 #include <array>
 
@@ -46,7 +46,7 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(const CanvasSFML& other) :
-        CanvasBase  {other},
+        CanvasBase{other},
         m_customView{other.m_customView}
     {
         setSize(other.getSize());
@@ -55,11 +55,11 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     CanvasSFML::CanvasSFML(CanvasSFML&& other) noexcept :
-        CanvasBase     {std::move(other)},
+        CanvasBase{std::move(other)},
 #if SFML_VERSION_MAJOR >= 3
         m_renderTexture{std::move(other.m_renderTexture)},
 #endif
-        m_customView   {std::move(other.m_customView)}
+        m_customView{std::move(other.m_customView)}
     {
 #if SFML_VERSION_MAJOR < 3
         setSize(getSize()); // sf::RenderTexture did not support move yet
@@ -267,10 +267,15 @@ namespace tgui
 
         sf::RenderStates statesSFML;
         const std::array<float, 16>& transformMatrix = states.transform.getMatrix();
-        statesSFML.transform = sf::Transform(
-            transformMatrix[0], transformMatrix[4], transformMatrix[12],
-            transformMatrix[1], transformMatrix[5], transformMatrix[13],
-            transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+        statesSFML.transform = sf::Transform(transformMatrix[0],
+                                             transformMatrix[4],
+                                             transformMatrix[12],
+                                             transformMatrix[1],
+                                             transformMatrix[5],
+                                             transformMatrix[13],
+                                             transformMatrix[3],
+                                             transformMatrix[7],
+                                             transformMatrix[15]);
         statesSFML.transform.translate({sprite.getPosition().x, sprite.getPosition().y});
 
         TGUI_ASSERT(std::dynamic_pointer_cast<BackendTextureSFML>(sprite.getTexture().getData()->backendTexture),
@@ -295,7 +300,8 @@ namespace tgui
 #endif
         }
 
-        static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
+        static_assert(sizeof(Vertex) == sizeof(sf::Vertex),
+                      "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
         const auto* sfmlVertices = reinterpret_cast<const sf::Vertex*>(triangleVertices.get());
         m_renderTexture.draw(sfmlVertices, indices.size(), sf::PrimitiveType::Triangles, statesSFML);
     }
@@ -311,7 +317,8 @@ namespace tgui
 
     void CanvasSFML::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        TGUI_ASSERT(dynamic_cast<BackendRenderTargetSFML*>(&target), "CanvasSFML requires a render target of type BackendRenderTargetSFML");
+        TGUI_ASSERT(dynamic_cast<BackendRenderTargetSFML*>(&target),
+                    "CanvasSFML requires a render target of type BackendRenderTargetSFML");
 
         const Vector2f size = getSize();
         const sf::Texture& texture = m_renderTexture.getTexture();
@@ -324,10 +331,15 @@ namespace tgui
 
         sf::RenderStates statesSFML;
         statesSFML.texture = &texture;
-        statesSFML.transform = sf::Transform(
-            transformMatrix[0], transformMatrix[4], transformMatrix[12],
-            transformMatrix[1], transformMatrix[5], transformMatrix[13],
-            transformMatrix[3], transformMatrix[7], transformMatrix[15]);
+        statesSFML.transform = sf::Transform(transformMatrix[0],
+                                             transformMatrix[4],
+                                             transformMatrix[12],
+                                             transformMatrix[1],
+                                             transformMatrix[5],
+                                             transformMatrix[13],
+                                             transformMatrix[3],
+                                             transformMatrix[7],
+                                             transformMatrix[15]);
 
 #if SFML_VERSION_MAJOR >= 3
         statesSFML.coordinateType = sf::CoordinateType::Normalized;
@@ -344,7 +356,9 @@ namespace tgui
             {{textureSize.x, textureSize.y}, vertexColorSFML, {1, 1}},
         }};
 
-        static_cast<BackendRenderTargetSFML&>(target).getTarget()->draw(verticesSFML.data(), verticesSFML.size(), sf::PrimitiveType::Triangles, statesSFML);
+        static_cast<BackendRenderTargetSFML&>(target)
+            .getTarget()
+            ->draw(verticesSFML.data(), verticesSFML.size(), sf::PrimitiveType::Triangles, statesSFML);
 #else
         // We use textureSize instead of size for the vertices coordinates to keep rendering stable when the size is changing and
         // the width and height aren't integer values.
@@ -354,14 +368,12 @@ namespace tgui
             {{0, textureSize.y}, vertexColor, {0, 1}},
             {{textureSize.x, textureSize.y}, vertexColor, {1, 1}},
         }};
-        const std::array<unsigned int, 6> indices = {{
-            0, 2, 1,
-            1, 2, 3
-        }};
+        const std::array<unsigned int, 6> indices = {{0, 2, 1, 1, 2, 3}};
 
         // Creating an sf::Vertex costs time because its constructor can't be inlined. Since our own Vertex struct has an identical memory layout,
         // we will create an array of our own Vertex objects and then use a reinterpret_cast to turn them into sf::Vertex.
-        static_assert(sizeof(Vertex) == sizeof(sf::Vertex), "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
+        static_assert(sizeof(Vertex) == sizeof(sf::Vertex),
+                      "Size of sf::Vertex has to match with tgui::Vertex for optimization to work");
 
         auto verticesSFML = MakeUniqueForOverwrite<Vertex[]>(indices.size());
         for (std::size_t i = 0; i < indices.size(); ++i)
@@ -376,7 +388,9 @@ namespace tgui
             verticesSFML[i].texCoords.y = vertices[indices[i]].texCoords.y * textureSize.y;
         }
 
-        static_cast<BackendRenderTargetSFML&>(target).getTarget()->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indices.size(), sf::PrimitiveType::Triangles, statesSFML);
+        static_cast<BackendRenderTargetSFML&>(target)
+            .getTarget()
+            ->draw(reinterpret_cast<const sf::Vertex*>(verticesSFML.get()), indices.size(), sf::PrimitiveType::Triangles, statesSFML);
 #endif
     }
 
@@ -388,6 +402,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/ScrollablePanel.hpp>
-#include <TGUI/Vector2.hpp>
 #include <TGUI/Keyboard.hpp>
+#include <TGUI/Vector2.hpp>
+#include <TGUI/Widgets/ScrollablePanel.hpp>
 
 #include <algorithm>
 
@@ -51,18 +51,18 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanel::ScrollablePanel(const ScrollablePanel& other) :
-        Panel                       {other},
-        DualScrollbarChildInterface {other},
-        m_contentSize               {other.m_contentSize},
-        m_mostBottomRightPosition   {other.m_mostBottomRightPosition},
-        m_verticalScrollAmount      {other.m_verticalScrollAmount},
-        m_horizontalScrollAmount    {other.m_horizontalScrollAmount},
+        Panel{other},
+        DualScrollbarChildInterface{other},
+        m_contentSize{other.m_contentSize},
+        m_mostBottomRightPosition{other.m_mostBottomRightPosition},
+        m_verticalScrollAmount{other.m_verticalScrollAmount},
+        m_horizontalScrollAmount{other.m_horizontalScrollAmount},
         m_verticalScrollbarWasVisibleOnSizeUpdate{other.m_verticalScrollbarWasVisibleOnSizeUpdate},
         m_horizontalScrollbarWasVisibleOnSizeUpdate{other.m_horizontalScrollbarWasVisibleOnSizeUpdate},
         m_recalculatingSizeDuringUpdateScrollbars{false},
-        m_stuckInUpdateScrollbars   {false},
+        m_stuckInUpdateScrollbars{false},
         m_connectedPositionCallbacks{},
-        m_connectedSizeCallbacks    {}
+        m_connectedSizeCallbacks{}
     {
         if (m_contentSize == Vector2f{0, 0})
         {
@@ -74,18 +74,18 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ScrollablePanel::ScrollablePanel(ScrollablePanel&& other) noexcept :
-        Panel                       {std::move(other)},
-        DualScrollbarChildInterface {std::move(other)},
-        m_contentSize               {std::move(other.m_contentSize)},
-        m_mostBottomRightPosition   {std::move(other.m_mostBottomRightPosition)},
-        m_verticalScrollAmount      {std::move(other.m_verticalScrollAmount)},
-        m_horizontalScrollAmount    {std::move(other.m_horizontalScrollAmount)},
+        Panel{std::move(other)},
+        DualScrollbarChildInterface{std::move(other)},
+        m_contentSize{std::move(other.m_contentSize)},
+        m_mostBottomRightPosition{std::move(other.m_mostBottomRightPosition)},
+        m_verticalScrollAmount{std::move(other.m_verticalScrollAmount)},
+        m_horizontalScrollAmount{std::move(other.m_horizontalScrollAmount)},
         m_verticalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_verticalScrollbarWasVisibleOnSizeUpdate)},
         m_horizontalScrollbarWasVisibleOnSizeUpdate{std::move(other.m_horizontalScrollbarWasVisibleOnSizeUpdate)},
         m_recalculatingSizeDuringUpdateScrollbars{false},
-        m_stuckInUpdateScrollbars   {false},
+        m_stuckInUpdateScrollbars{false},
         m_connectedPositionCallbacks{std::move(other.m_connectedPositionCallbacks)},
-        m_connectedSizeCallbacks    {std::move(other.m_connectedSizeCallbacks)}
+        m_connectedSizeCallbacks{std::move(other.m_connectedSizeCallbacks)}
     {
         disconnectAllChildWidgets();
 
@@ -104,10 +104,10 @@ namespace tgui
         {
             Panel::operator=(other);
             DualScrollbarChildInterface::operator=(other);
-            m_contentSize               = other.m_contentSize;
-            m_mostBottomRightPosition   = other.m_mostBottomRightPosition;
-            m_verticalScrollAmount      = other.m_verticalScrollAmount;
-            m_horizontalScrollAmount    = other.m_horizontalScrollAmount;
+            m_contentSize = other.m_contentSize;
+            m_mostBottomRightPosition = other.m_mostBottomRightPosition;
+            m_verticalScrollAmount = other.m_verticalScrollAmount;
+            m_horizontalScrollAmount = other.m_horizontalScrollAmount;
             m_verticalScrollbarWasVisibleOnSizeUpdate = other.m_verticalScrollbarWasVisibleOnSizeUpdate;
             m_horizontalScrollbarWasVisibleOnSizeUpdate = other.m_horizontalScrollbarWasVisibleOnSizeUpdate;
             m_recalculatingSizeDuringUpdateScrollbars = false;
@@ -131,10 +131,10 @@ namespace tgui
     {
         if (this != &other)
         {
-            m_contentSize               = std::move(other.m_contentSize);
-            m_mostBottomRightPosition   = std::move(other.m_mostBottomRightPosition);
-            m_verticalScrollAmount      = std::move(other.m_verticalScrollAmount);
-            m_horizontalScrollAmount    = std::move(other.m_horizontalScrollAmount);
+            m_contentSize = std::move(other.m_contentSize);
+            m_mostBottomRightPosition = std::move(other.m_mostBottomRightPosition);
+            m_verticalScrollAmount = std::move(other.m_verticalScrollAmount);
+            m_horizontalScrollAmount = std::move(other.m_horizontalScrollAmount);
             m_verticalScrollbarWasVisibleOnSizeUpdate = std::move(other.m_verticalScrollbarWasVisibleOnSizeUpdate);
             m_horizontalScrollbarWasVisibleOnSizeUpdate = std::move(other.m_horizontalScrollbarWasVisibleOnSizeUpdate);
             m_recalculatingSizeDuringUpdateScrollbars = false;
@@ -220,10 +220,8 @@ namespace tgui
 
         if (m_contentSize == Vector2f{0, 0})
         {
-            const Vector2f bottomRight{
-                widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
-                widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y
-            };
+            const Vector2f bottomRight{widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
+                                       widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y};
             m_mostBottomRightPosition.x = std::max(bottomRight.x, m_mostBottomRightPosition.x);
             m_mostBottomRightPosition.y = std::max(bottomRight.y, m_mostBottomRightPosition.y);
 
@@ -254,10 +252,8 @@ namespace tgui
 
         if (m_contentSize == Vector2f{0, 0})
         {
-            const Vector2f bottomRight{
-                widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
-                widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y
-            };
+            const Vector2f bottomRight{widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
+                                       widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y};
             if ((bottomRight.x == m_mostBottomRightPosition.x) || (bottomRight.y == m_mostBottomRightPosition.y))
             {
                 recalculateMostBottomRightPosition();
@@ -486,7 +482,11 @@ namespace tgui
             isDragging = m_verticalScrollbar->leftMousePressed(pos - getPosition());
         else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
             isDragging = m_horizontalScrollbar->leftMousePressed(pos - getPosition());
-        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x,
+                           getPosition().y + getChildWidgetsOffset().y,
+                           getInnerSize().x,
+                           getInnerSize().y}
+                     .contains(pos))
         {
             isDragging = Panel::leftMousePressed({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
                                                   pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
@@ -503,7 +503,11 @@ namespace tgui
             m_verticalScrollbar->leftMouseReleased(pos - getPosition());
         else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
             m_horizontalScrollbar->leftMouseReleased(pos - getPosition());
-        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x,
+                           getPosition().y + getChildWidgetsOffset().y,
+                           getInnerSize().x,
+                           getInnerSize().y}
+                     .contains(pos))
         {
             Panel::leftMouseReleased({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
                                       pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
@@ -518,7 +522,11 @@ namespace tgui
             m_verticalScrollbar->rightMousePressed(pos - getPosition());
         else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
             m_horizontalScrollbar->rightMousePressed(pos - getPosition());
-        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x,
+                           getPosition().y + getChildWidgetsOffset().y,
+                           getInnerSize().x,
+                           getInnerSize().y}
+                     .contains(pos))
         {
             Panel::rightMousePressed({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
                                       pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
@@ -533,7 +541,11 @@ namespace tgui
             m_verticalScrollbar->rightMouseReleased(pos - getPosition());
         else if (m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()))
             m_horizontalScrollbar->rightMouseReleased(pos - getPosition());
-        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+        else if (FloatRect{getPosition().x + getChildWidgetsOffset().x,
+                           getPosition().y + getChildWidgetsOffset().y,
+                           getInnerSize().x,
+                           getInnerSize().y}
+                     .contains(pos))
         {
             Panel::rightMouseReleased({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
                                        pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
@@ -555,7 +567,11 @@ namespace tgui
         }
         else // Mouse not on scrollbar or dragging the scrollbar thumb
         {
-            if (FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, getInnerSize().x, getInnerSize().y}.contains(pos))
+            if (FloatRect{getPosition().x + getChildWidgetsOffset().x,
+                          getPosition().y + getChildWidgetsOffset().y,
+                          getInnerSize().x,
+                          getInnerSize().y}
+                    .contains(pos))
             {
                 Panel::mouseMoved({pos.x + static_cast<float>(m_horizontalScrollbar->getValue()),
                                    pos.y + static_cast<float>(m_verticalScrollbar->getValue())});
@@ -585,25 +601,30 @@ namespace tgui
         // we should continue scrolling the panel instead of passing the event to the child.
         // We will pass the event to the child if the mouse moved or the last scroll event on the panel was more than a second ago.
         const bool allowChildScrolling = ((m_lastSuccessfulScrollTime == std::chrono::steady_clock::time_point())
-                                       || (pos != m_lastSuccessfulScrollPos)
-                                       || (Duration{std::chrono::steady_clock::now() - m_lastSuccessfulScrollTime} > Duration{std::chrono::seconds(1)}));
+                                          || (pos != m_lastSuccessfulScrollPos)
+                                          || (Duration{std::chrono::steady_clock::now() - m_lastSuccessfulScrollTime}
+                                              > Duration{std::chrono::seconds(1)}));
 
         // First try to pass the scroll event to a child widget
         if (allowChildScrolling
-         && FloatRect{getPosition().x + getChildWidgetsOffset().x, getPosition().y + getChildWidgetsOffset().y, innerSize.x, innerSize.y}.contains(pos)
-         && Container::scrolled(delta, pos + getContentOffset(), touch))
+            && FloatRect{getPosition().x + getChildWidgetsOffset().x,
+                         getPosition().y + getChildWidgetsOffset().y,
+                         innerSize.x,
+                         innerSize.y}
+                   .contains(pos)
+            && Container::scrolled(delta, pos + getContentOffset(), touch))
         {
             m_lastSuccessfulScrollTime = std::chrono::steady_clock::time_point(); // Reset the time as the panel didn't process this event
-            return true; // A child widget swallowed the event
+            return true;                                                          // A child widget swallowed the event
         }
 
         // If the scroll event wasn't handled by a child widget then pass them to the scrollbars in this panel
         const bool horizontalScrollbarCanMove = (m_horizontalScrollbar->getViewportSize() < m_horizontalScrollbar->getMaximum());
         const bool verticalScrollbarCanMove = (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum());
         bool scrollbarMoved = false;
-        if (horizontalScrollbarCanMove
-         && !touch
-         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed(m_parentGui)))
+        if (horizontalScrollbarCanMove && !touch
+            && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
+                || keyboard::isShiftPressed(m_parentGui)))
         {
             scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
@@ -671,13 +692,16 @@ namespace tgui
     {
         const auto oldStates = states;
 
-        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(),
-                                    getSize().y - m_bordersCached.getTopPlusBottom()};
+        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(), getSize().y - m_bordersCached.getTopPlusBottom()};
 
         if ((m_roundedBorderRadius > 0) && !m_spriteBackground.isSet())
         {
-            target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached),
-                                        m_roundedBorderRadius, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+            target.drawRoundedRectangle(states,
+                                        getSize(),
+                                        Color::applyOpacity(m_backgroundColorCached, m_opacityCached),
+                                        m_roundedBorderRadius,
+                                        m_bordersCached,
+                                        Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
         else
@@ -697,8 +721,7 @@ namespace tgui
         }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
-        Vector2f contentSize = {innerSize.x - m_paddingCached.getLeftPlusRight(),
-                                innerSize.y - m_paddingCached.getTopPlusBottom()};
+        Vector2f contentSize = {innerSize.x - m_paddingCached.getLeftPlusRight(), innerSize.y - m_paddingCached.getTopPlusBottom()};
 
         if (m_verticalScrollbar->isShown())
             contentSize.x -= m_verticalScrollbar->getSize().x;
@@ -715,8 +738,8 @@ namespace tgui
         {
             target.addClippingLayer(states, {{}, contentSize});
 
-            states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()),
-                                        -static_cast<float>(m_verticalScrollbar->getValue())});
+            states.transform.translate(
+                {-static_cast<float>(m_horizontalScrollbar->getValue()), -static_cast<float>(m_verticalScrollbar->getValue())});
 
             Container::draw(target, states); // NOLINT(bugprone-parent-virtual-call)
             target.removeClippingLayer();
@@ -746,7 +769,8 @@ namespace tgui
         }
         else if (property == U"ScrollbarWidth")
         {
-            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth()
+                                                                                : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setWidth(width);
             m_horizontalScrollbar->setHeight(width);
             updateScrollbars();
@@ -767,7 +791,8 @@ namespace tgui
     std::unique_ptr<DataIO::Node> ScrollablePanel::save(SavingRenderersMap& renderers) const
     {
         auto node = Panel::save(renderers);
-        node->propertyValuePairs[U"ContentSize"] = std::make_unique<DataIO::ValueNode>(U"(" + String::fromNumber(m_contentSize.x) + U", " + String::fromNumber(m_contentSize.y) + U")");
+        node->propertyValuePairs[U"ContentSize"] = std::make_unique<DataIO::ValueNode>(
+            U"(" + String::fromNumber(m_contentSize.x) + U", " + String::fromNumber(m_contentSize.y) + U")");
 
         saveScrollbarPolicies(node);
 
@@ -834,11 +859,13 @@ namespace tgui
         if (horizontalScrollbarVisible)
         {
             m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
-            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
+            m_verticalScrollbar->setViewportSize(
+                static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
 
             if (m_verticalScrollbar->isShown())
             {
-                m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
+                m_horizontalScrollbar->setViewportSize(
+                    static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
                 m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
             }
             else
@@ -850,20 +877,24 @@ namespace tgui
             if (m_verticalScrollbar->isShown())
             {
                 m_horizontalScrollbar->setSize(scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_horizontalScrollbar->getSize().y);
-                m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
+                m_horizontalScrollbar->setViewportSize(
+                    static_cast<unsigned int>(m_horizontalScrollbar->getViewportSize() - m_verticalScrollbar->getSize().x));
 
                 if (m_horizontalScrollbar->isShown())
                 {
                     m_verticalScrollbar->setSize(m_verticalScrollbar->getSize().x, scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
-                    m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
+                    m_verticalScrollbar->setViewportSize(
+                        static_cast<unsigned int>(m_verticalScrollbar->getViewportSize() - m_horizontalScrollbar->getSize().y));
                 }
             }
             else
                 m_horizontalScrollbar->setSize(scrollbarSpace.x, m_horizontalScrollbar->getSize().y);
         }
 
-        m_verticalScrollbar->setPosition(m_bordersCached.getLeft() + scrollbarSpace.x - m_verticalScrollbar->getSize().x, m_bordersCached.getTop());
-        m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), m_bordersCached.getTop() + scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
+        m_verticalScrollbar->setPosition(m_bordersCached.getLeft() + scrollbarSpace.x - m_verticalScrollbar->getSize().x,
+                                         m_bordersCached.getTop());
+        m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(),
+                                           m_bordersCached.getTop() + scrollbarSpace.y - m_horizontalScrollbar->getSize().y);
 
         if (m_verticalScrollAmount == 0)
             m_verticalScrollbar->setScrollAmount(getGlobalTextSize() * 5);
@@ -873,7 +904,8 @@ namespace tgui
 
         const bool horizontalScrollbarShown = m_horizontalScrollbar->isShown();
         const bool verticalScrollbarShown = m_verticalScrollbar->isShown();
-        if ((m_horizontalScrollbarWasVisibleOnSizeUpdate != horizontalScrollbarShown) || (m_verticalScrollbarWasVisibleOnSizeUpdate != verticalScrollbarShown))
+        if ((m_horizontalScrollbarWasVisibleOnSizeUpdate != horizontalScrollbarShown)
+            || (m_verticalScrollbarWasVisibleOnSizeUpdate != verticalScrollbarShown))
         {
             // We will allow widgets to update once when the scrollbars become visible or are hidden.
             // If we reach this point a second time, then changing the scrollbars affected the widgets
@@ -900,10 +932,8 @@ namespace tgui
 
         for (const auto& widget : m_widgets)
         {
-            const Vector2f bottomRight{
-                widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
-                widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y
-            };
+            const Vector2f bottomRight{widget->getPosition().x - (widget->getOrigin().x * widget->getSize().x) + widget->getFullSize().x,
+                                       widget->getPosition().y - (widget->getOrigin().y * widget->getSize().y) + widget->getFullSize().y};
             m_mostBottomRightPosition.x = std::max(bottomRight.x, m_mostBottomRightPosition.x);
             m_mostBottomRightPosition.y = std::max(bottomRight.y, m_mostBottomRightPosition.y);
         }
@@ -913,7 +943,11 @@ namespace tgui
 
     void ScrollablePanel::connectPositionAndSize(const Widget::Ptr& widget)
     {
-        const auto updateFunc = [this]{ recalculateMostBottomRightPosition(); updateScrollbars(); };
+        const auto updateFunc = [this]
+        {
+            recalculateMostBottomRightPosition();
+            updateScrollbars();
+        };
         m_connectedPositionCallbacks[widget] = widget->onPositionChange(updateFunc);
         m_connectedSizeCallbacks[widget] = widget->onSizeChange(updateFunc);
     }
@@ -939,6 +973,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

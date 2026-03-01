@@ -43,8 +43,7 @@ namespace tgui
     class TGUI_API Container : public Widget
     {
     public:
-
-        using Ptr = std::shared_ptr<Container>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Container>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Container>; //!< Shared constant widget pointer
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +103,7 @@ namespace tgui
         /// @param function Comparison function object (i.e. an object that satisfies the requirements of Compare) which
         ///                 returns true if the first argument is less than (i.e. is ordered before) the second.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template<typename Function>
+        template <typename Function>
         void sortWidgets(Function&& function)
         {
             std::sort(m_widgets.begin(), m_widgets.end(), std::forward<Function>(function));
@@ -544,8 +543,8 @@ namespace tgui
         void updateChildrenWithAutoLayout();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -596,7 +595,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Try to focus the given child widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool tryFocusWidget(const Widget::Ptr &widget, bool reverseWidgetOrder, bool recursive);
+        bool tryFocusWidget(const Widget::Ptr& widget, bool reverseWidgetOrder, bool recursive);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Transform the mouse position for the child widget based its origin, rotation and scaling.
@@ -619,8 +618,8 @@ namespace tgui
         void loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::vector<Widget::Ptr> m_widgets;
 
         Widget::Ptr m_widgetBelowMouse;
@@ -645,8 +644,7 @@ namespace tgui
     class TGUI_API RootContainer : public Container
     {
     public:
-
-        using Ptr = std::shared_ptr<RootContainer>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<RootContainer>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const RootContainer>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "RootContainer"; //!< Type name of the widget
@@ -691,8 +689,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns a nullptr.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -705,7 +703,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

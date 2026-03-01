@@ -48,9 +48,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     BitmapButton::BitmapButton(const BitmapButton& other) :
-        Button               (other),
-        icon                 (other.icon),
-        m_imageComponent     (std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon)),
+        Button(other),
+        icon(other.icon),
+        m_imageComponent(std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon)),
         m_relativeGlyphHeight(other.m_relativeGlyphHeight)
     {
         initComponentsBitmapButton();
@@ -59,9 +59,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     BitmapButton::BitmapButton(BitmapButton&& other) noexcept :
-        Button               (std::move(other)),
-        icon                 (std::move(other.icon)),
-        m_imageComponent     (std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon)),
+        Button(std::move(other)),
+        icon(std::move(other.icon)),
+        m_imageComponent(std::make_shared<priv::dev::ImageComponent>(*other.m_imageComponent, &icon)),
         m_relativeGlyphHeight(std::move(other.m_relativeGlyphHeight))
     {
         initComponentsBitmapButton();
@@ -202,7 +202,8 @@ namespace tgui
         if (node->propertyValuePairs[U"Image"])
             setImage(Deserializer::deserialize(ObjectConverter::Type::Texture, node->propertyValuePairs[U"Image"]->value).getTexture());
         if (node->propertyValuePairs[U"ImageScaling"])
-            setImageScaling(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"ImageScaling"]->value).getNumber());
+            setImageScaling(
+                Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"ImageScaling"]->value).getNumber());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,7 +232,8 @@ namespace tgui
                 const Vector2f innerSize = m_backgroundComponent->getClientSize();
 
                 // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-                Widget::setSize({m_imageComponent->getSize().x + (innerSize.y - m_imageComponent->getSize().y) + borders.getLeft() + borders.getRight(),
+                Widget::setSize({m_imageComponent->getSize().x + (innerSize.y - m_imageComponent->getSize().y) + borders.getLeft()
+                                     + borders.getRight(),
                                  getSize().y});
             }
             else
@@ -241,7 +243,8 @@ namespace tgui
 
                 // NOLINTNEXTLINE(bugprone-parent-virtual-call)
                 Widget::setSize({m_imageComponent->getSize().x + distanceBetweenTextAndImage + m_textComponent->getSize().x
-                                + spaceAroundImageAndText + borders.getLeft() + borders.getRight(), getSize().y});
+                                     + spaceAroundImageAndText + borders.getLeft() + borders.getRight(),
+                                 getSize().y});
             }
 
             m_backgroundComponent->setSize(getSize());
@@ -267,8 +270,9 @@ namespace tgui
         else
         {
             const Vector2f innerSize = m_backgroundComponent->getClientSize();
-            m_imageComponent->setSize({(m_relativeGlyphHeight * innerSize.y) * icon.getValue().getImageSize().x / icon.getValue().getImageSize().y,
-                                       (m_relativeGlyphHeight * innerSize.y)});
+            m_imageComponent->setSize(
+                {(m_relativeGlyphHeight * innerSize.y) * icon.getValue().getImageSize().x / icon.getValue().getImageSize().y,
+                 (m_relativeGlyphHeight * innerSize.y)});
         }
     }
 
@@ -304,10 +308,12 @@ namespace tgui
         m_textPosition.x.updateParentSize(innerSize.x);
         m_textPosition.y.updateParentSize(innerSize.y);
 
-        m_imageComponent->setPosition({m_textPosition.x.getValue() - (m_textOrigin.x * contentSize.x),
-                                       m_textPosition.y.getValue() - (m_textOrigin.y * contentSize.y) + ((contentSize.y - m_imageComponent->getSize().y) / 2.f)});
-        m_textComponent->setPosition({m_imageComponent->getPosition().x + m_imageComponent->getSize().x + distanceBetweenTextAndImage,
-                                      m_textPosition.y.getValue() - (m_textOrigin.y * contentSize.y) + ((contentSize.y - m_textComponent->getSize().y) / 2.f)});
+        m_imageComponent->setPosition(
+            {m_textPosition.x.getValue() - (m_textOrigin.x * contentSize.x),
+             m_textPosition.y.getValue() - (m_textOrigin.y * contentSize.y) + ((contentSize.y - m_imageComponent->getSize().y) / 2.f)});
+        m_textComponent->setPosition(
+            {m_imageComponent->getPosition().x + m_imageComponent->getSize().x + distanceBetweenTextAndImage,
+             m_textPosition.y.getValue() - (m_textOrigin.y * contentSize.y) + ((contentSize.y - m_textComponent->getSize().y) / 2.f)});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,6 +324,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

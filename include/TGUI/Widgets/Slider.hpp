@@ -25,8 +25,8 @@
 #ifndef TGUI_SLIDER_HPP
 #define TGUI_SLIDER_HPP
 
-#include <TGUI/Widget.hpp>
 #include <TGUI/Renderers/SliderRenderer.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,8 +38,7 @@ namespace tgui
     class TGUI_API Slider : public Widget
     {
     public:
-
-        using Ptr = std::shared_ptr<Slider>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Slider>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Slider>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "Slider"; //!< Type name of the widget
@@ -290,8 +289,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -336,13 +335,13 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalFloat onValueChange = {"ValueChanged"}; //!< Value of the slider changed. Optional parameter: new value
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         FloatRect m_thumb;
 
         // When the mouse went down, did it go down on top of the thumb? If so, where?
@@ -354,12 +353,12 @@ namespace tgui
         float m_value = 0;
         float m_step = 1;
 
-        bool m_invertedDirection = false; // Are min and max swapped?
+        bool m_invertedDirection = false;  // Are min and max swapped?
         bool m_changeValueOnScroll = true; // Does mouseScroll event change slider value?
 
-        Orientation m_orientation = Orientation::Horizontal; // Is the slider drawn horizontally or vertically?
-        Orientation m_imageOrientation = Orientation::Horizontal;  // Does the loaded image lie horizontally or vertically?
-        bool m_orientationLocked = false; // Will setSize change the orientation or not?
+        Orientation m_orientation = Orientation::Horizontal;      // Is the slider drawn horizontally or vertically?
+        Orientation m_imageOrientation = Orientation::Horizontal; // Does the loaded image lie horizontally or vertically?
+        bool m_orientationLocked = false;                         // Will setSize change the orientation or not?
 
         Sprite m_spriteTrack;
         Sprite m_spriteTrackHover;
@@ -368,17 +367,17 @@ namespace tgui
 
         // Cached renderer properties
         Borders m_bordersCached;
-        Color   m_borderColorCached;
-        Color   m_borderColorHoverCached;
-        Color   m_thumbColorCached;
-        Color   m_thumbColorHoverCached;
-        Color   m_trackColorCached;
-        Color   m_trackColorHoverCached;
-        bool    m_thumbWithinTrackCached = false;
+        Color m_borderColorCached;
+        Color m_borderColorHoverCached;
+        Color m_thumbColorCached;
+        Color m_thumbColorHoverCached;
+        Color m_trackColorCached;
+        Color m_trackColorHoverCached;
+        bool m_thumbWithinTrackCached = false;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

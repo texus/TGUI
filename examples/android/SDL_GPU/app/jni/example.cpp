@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/TGUI.hpp>
+
 #include <TGUI/Backend/SDL-GPU.hpp>
 
 #include <SDL3/SDL_main.h>
@@ -66,16 +67,14 @@ bool runExample(tgui::BackendGui& gui)
     auto button = tgui::Button::create("Hello");
     button->setPosition(50, 50);
     button->setSize(200, 50);
-    button->onPress([=]{ editBox->setText("World"); });
+    button->onPress([=] { editBox->setText("World"); });
     gui.add(button);
 
     // Set the background and let is change depending on the screen orientation.
     // As long as we don't manually set a view, the gui view will match the window size.
     setBackground(gui, gui.getView().getSize());
 
-    gui.onViewChange([guiPtr=&gui](tgui::FloatRect view){
-        setBackground(*guiPtr, view.getSize());
-    });
+    gui.onViewChange([guiPtr = &gui](tgui::FloatRect view) { setBackground(*guiPtr, view.getSize()); });
 
     return true;
 }
@@ -111,7 +110,7 @@ SDL_GPUDevice* createGpuDevice()
     SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_INDIRECT_DRAW_FIRST_INSTANCE_BOOLEAN, false);
     SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_ANISOTROPY_BOOLEAN, false);
 
-    SDL_GPUDevice *device = SDL_CreateGPUDeviceWithProperties(props);
+    SDL_GPUDevice* device = SDL_CreateGPUDeviceWithProperties(props);
     SDL_DestroyProperties(props);
 
     return device;
@@ -124,7 +123,8 @@ int main(int, char**)
 
     SDL_GPUDevice* device = createGpuDevice();
     SDL_Window* window = SDL_CreateWindow("TGUI window with SDL",
-                                          800, 600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
+                                          800,
+                                          600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
                                           SDL_WINDOW_FULLSCREEN | SDL_WINDOW_RESIZABLE);
     SDL_ClaimWindowForGPUDevice(device, window);
 

@@ -30,14 +30,14 @@
 
 #include <raylib.h>
 
-#include <unordered_map>
 #include <map>
+#include <unordered_map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a function that we deprecated
 
-namespace tgui
+    namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @since TGUI 1.3
@@ -45,7 +45,6 @@ namespace tgui
     class TGUI_API BackendRaylib : public Backend
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the look of a certain mouse cursor by using a bitmap
         ///
@@ -82,7 +81,8 @@ namespace tgui
         ///
         /// @return Whether queries modifier key is being pressed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead") TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
+        TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead")
+        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the contents of the clipboard

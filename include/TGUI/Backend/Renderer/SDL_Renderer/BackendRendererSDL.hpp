@@ -25,10 +25,10 @@
 #ifndef TGUI_BACKEND_RENDERER_SDL_HPP
 #define TGUI_BACKEND_RENDERER_SDL_HPP
 
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
-#include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRenderTargetSDL.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
 
 #include <memory>
 
@@ -44,7 +44,6 @@ namespace tgui
     class TGUI_API BackendRendererSDL : public BackendRenderer
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Initializes the backend renderer
         ///
@@ -85,12 +84,12 @@ namespace tgui
         void setActiveRenderer(SDL_Renderer* renderer);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         SDL_Renderer* m_renderer = nullptr;
         unsigned int m_maxTextureSize = 0;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

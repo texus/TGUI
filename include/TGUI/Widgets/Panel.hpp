@@ -25,8 +25,8 @@
 #ifndef TGUI_PANEL_HPP
 #define TGUI_PANEL_HPP
 
-#include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Renderers/PanelRenderer.hpp>
+#include <TGUI/Widgets/Group.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,8 +38,7 @@ namespace tgui
     class TGUI_API Panel : public Group
     {
     public:
-
-        using Ptr = std::shared_ptr<Panel>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Panel>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Panel>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "Panel"; //!< Type name of the widget
@@ -167,8 +166,8 @@ namespace tgui
         TGUI_NODISCARD static bool getEventBubbling();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -198,31 +197,34 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public:
+        SignalVector2f onMousePress = {"MousePressed"}; //!< The mouse went down on the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onMouseRelease = {
+            "MouseReleased"}; //!< The mouse was released on top of the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onClick = {"Clicked"}; //!< The panel was clicked. Optional parameter: mouse position relative to panel
+        SignalVector2f onDoubleClick = {"DoubleClicked"}; //!< The panel was double clicked. Optional parameter: mouse position relative to panel
 
-        SignalVector2f onMousePress   = {"MousePressed"};   //!< The mouse went down on the panel. Optional parameter: mouse position relative to panel
-        SignalVector2f onMouseRelease = {"MouseReleased"};  //!< The mouse was released on top of the panel. Optional parameter: mouse position relative to panel
-        SignalVector2f onClick        = {"Clicked"};        //!< The panel was clicked. Optional parameter: mouse position relative to panel
-        SignalVector2f onDoubleClick  = {"DoubleClicked"};  //!< The panel was double clicked. Optional parameter: mouse position relative to panel
-
-        SignalVector2f onRightMousePress   = {"RightMousePressed"};   //!< The right mouse button went down on the panel. Optional parameter: mouse position relative to panel
-        SignalVector2f onRightMouseRelease = {"RightMouseReleased"};  //!< The right mouse button was released on top of the panel. Optional parameter: mouse position relative to panel
-        SignalVector2f onRightClick        = {"RightClicked"};        //!< The panel was right clicked. Optional parameter: mouse position relative to panel
+        SignalVector2f onRightMousePress = {
+            "RightMousePressed"}; //!< The right mouse button went down on the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onRightMouseRelease = {
+            "RightMouseReleased"}; //!< The right mouse button was released on top of the panel. Optional parameter: mouse position relative to panel
+        SignalVector2f onRightClick = {"RightClicked"}; //!< The panel was right clicked. Optional parameter: mouse position relative to panel
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         static bool m_eventBubbling;
 
         // Cached renderer properties
         Borders m_bordersCached;
-        Color   m_borderColorCached;
-        Color   m_backgroundColorCached;
-        Sprite  m_spriteBackground;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Sprite m_spriteBackground;
 
-        float   m_roundedBorderRadius = 0;
+        float m_roundedBorderRadius = 0;
 
-        bool    m_rightMouseDown = false;
+        bool m_rightMouseDown = false;
 
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
@@ -231,7 +233,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

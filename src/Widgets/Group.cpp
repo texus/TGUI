@@ -148,8 +148,7 @@ namespace tgui
     {
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
 
-        const Vector2f innerSize = {getSize().x - m_paddingCached.getLeftPlusRight(),
-                                    getSize().y - m_paddingCached.getTopPlusBottom()};
+        const Vector2f innerSize = {getSize().x - m_paddingCached.getLeftPlusRight(), getSize().y - m_paddingCached.getTopPlusBottom()};
 
         target.addClippingLayer(states, {{}, innerSize});
 
@@ -166,6 +165,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -55,12 +55,12 @@ namespace tgui
 
     SpinControl::SpinControl(const SpinControl& other) :
         SubwidgetContainer{other},
-        onValueChange     {other.onValueChange},
-        m_decimalPlaces   {other.m_decimalPlaces},
-        m_useWideArrows   {other.m_useWideArrows},
-        m_spinButtonWidth {other.m_spinButtonWidth},
-        m_spinButton      {m_container->get<SpinButton>(U"SpinButton")},
-        m_spinText        {m_container->get<EditBox>(U"SpinText")}
+        onValueChange{other.onValueChange},
+        m_decimalPlaces{other.m_decimalPlaces},
+        m_useWideArrows{other.m_useWideArrows},
+        m_spinButtonWidth{other.m_spinButtonWidth},
+        m_spinButton{m_container->get<SpinButton>(U"SpinButton")},
+        m_spinText{m_container->get<EditBox>(U"SpinText")}
     {
         init();
     }
@@ -69,12 +69,12 @@ namespace tgui
 
     SpinControl::SpinControl(SpinControl&& other) noexcept :
         SubwidgetContainer{std::move(other)},
-        onValueChange     {std::move(other.onValueChange)},
-        m_decimalPlaces   {std::move(other.m_decimalPlaces)},
-        m_useWideArrows   {std::move(other.m_useWideArrows)},
-        m_spinButtonWidth {std::move(other.m_spinButtonWidth)},
-        m_spinButton      {std::move(other.m_spinButton)},
-        m_spinText        {std::move(other.m_spinText)}
+        onValueChange{std::move(other.onValueChange)},
+        m_decimalPlaces{std::move(other.m_decimalPlaces)},
+        m_useWideArrows{std::move(other.m_useWideArrows)},
+        m_spinButtonWidth{std::move(other.m_spinButtonWidth)},
+        m_spinButton{std::move(other.m_spinButton)},
+        m_spinText{std::move(other.m_spinText)}
     {
         init();
     }
@@ -86,12 +86,12 @@ namespace tgui
         if (this != &other)
         {
             SubwidgetContainer::operator=(other);
-            onValueChange     = other.onValueChange;
-            m_decimalPlaces   = other.m_decimalPlaces;
-            m_useWideArrows   = other.m_useWideArrows;
+            onValueChange = other.onValueChange;
+            m_decimalPlaces = other.m_decimalPlaces;
+            m_useWideArrows = other.m_useWideArrows;
             m_spinButtonWidth = other.m_spinButtonWidth;
-            m_spinButton      = m_container->get<SpinButton>(U"SpinButton");
-            m_spinText        = m_container->get<EditBox>(U"SpinText");
+            m_spinButton = m_container->get<SpinButton>(U"SpinButton");
+            m_spinText = m_container->get<EditBox>(U"SpinText");
 
             init();
         }
@@ -105,12 +105,12 @@ namespace tgui
     {
         if (this != &other)
         {
-            onValueChange     = std::move(other.onValueChange);
-            m_decimalPlaces   = std::move(other.m_decimalPlaces);
-            m_useWideArrows   = std::move(other.m_useWideArrows);
+            onValueChange = std::move(other.onValueChange);
+            m_decimalPlaces = std::move(other.m_decimalPlaces);
+            m_useWideArrows = std::move(other.m_useWideArrows);
             m_spinButtonWidth = std::move(other.m_spinButtonWidth);
-            m_spinButton      = std::move(other.m_spinButton);
-            m_spinText        = std::move(other.m_spinText);
+            m_spinButton = std::move(other.m_spinButton);
+            m_spinText = std::move(other.m_spinText);
             SubwidgetContainer::operator=(std::move(other));
 
             init();
@@ -313,7 +313,8 @@ namespace tgui
 
         TGUI_IGNORE_DEPRECATED_WARNINGS_START
         if (node->propertyValuePairs[U"UseWideArrows"])
-            setUseWideArrows(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"UseWideArrows"]->value).getBool());
+            setUseWideArrows(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"UseWideArrows"]->value).getBool());
         TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
         if (node->propertyValuePairs[U"SpinButtonWidth"])
@@ -336,30 +337,34 @@ namespace tgui
         m_spinButton->setPosition(bindRight(m_spinText), bindTop(m_spinText));
 
         m_spinButton->onValueChange.disconnectAll();
-        m_spinButton->onValueChange([this](const float val) {
-            setString(String::fromNumberRounded(val, m_decimalPlaces));
-            onValueChange.emit(this, val);
-        });
+        m_spinButton->onValueChange(
+            [this](const float val)
+            {
+                setString(String::fromNumberRounded(val, m_decimalPlaces));
+                onValueChange.emit(this, val);
+            });
 
         m_spinText->onReturnOrUnfocus.disconnectAll();
-        m_spinText->onReturnOrUnfocus([this](const String& text) {
-            const float curValue = m_spinButton->getValue();
-            const float defValue = m_spinButton->getMaximum() + 1;
-            const float val = text.toFloat(defValue);
-            if (val == defValue || !inRange(val))
+        m_spinText->onReturnOrUnfocus(
+            [this](const String& text)
             {
-                setString(String::fromNumberRounded(curValue, m_decimalPlaces));
-            }
-            else if (curValue != val)
-            {
-                m_spinButton->setValue(val);
+                const float curValue = m_spinButton->getValue();
+                const float defValue = m_spinButton->getMaximum() + 1;
+                const float val = text.toFloat(defValue);
+                if (val == defValue || !inRange(val))
+                {
+                    setString(String::fromNumberRounded(curValue, m_decimalPlaces));
+                }
+                else if (curValue != val)
+                {
+                    m_spinButton->setValue(val);
 
-                // Display actual value because SpinButton can round entered number
-                setString(String::fromNumberRounded(m_spinButton->getValue(), m_decimalPlaces));
-            }
-            else
-                setString(String::fromNumberRounded(val, m_decimalPlaces));
-        });
+                    // Display actual value because SpinButton can round entered number
+                    setString(String::fromNumberRounded(m_spinButton->getValue(), m_decimalPlaces));
+                }
+                else
+                    setString(String::fromNumberRounded(val, m_decimalPlaces));
+            });
 
         const auto buttonSize = m_spinButton->getSize();
         const auto txtSize = m_spinText->getSize();
@@ -397,6 +402,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

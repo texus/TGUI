@@ -25,10 +25,10 @@
 #ifndef TGUI_BACKEND_TEXT_HPP
 #define TGUI_BACKEND_TEXT_HPP
 
-#include <TGUI/Text.hpp>
-
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
+
+#include <TGUI/Text.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,7 +40,6 @@ namespace tgui
     class TGUI_API BackendText
     {
     public:
-
         /// Type of the data that is passed to BackendRenderTarget where the actual rendering happens
         using TextVertexData = std::vector<std::pair<std::shared_ptr<BackendTexture>, std::shared_ptr<std::vector<Vertex>>>>;
 
@@ -165,8 +164,8 @@ namespace tgui
         TGUI_NODISCARD TextVertexData getVertexData(bool includeOutline = true, bool includeText = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Recreates all vertices if required
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,18 +174,28 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function used by updateVertices to add vertices for a glyph
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void addGlyphQuad(std::vector<Vertex>& vertices, Vector2f position, const Vertex::Color& color,
-                                 const FontGlyph& glyph, float fontScale, float italicShear);
+        static void addGlyphQuad(std::vector<Vertex>& vertices,
+                                 Vector2f position,
+                                 const Vertex::Color& color,
+                                 const FontGlyph& glyph,
+                                 float fontScale,
+                                 float italicShear);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function used by updateVertices to add vertices for a line
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        static void addLine(std::vector<Vertex>& vertices, float lineLength, float lineTop, const Vertex::Color& color,
-                            float offset, float thickness, float outlineThickness, float fontScale);
+        static void addLine(std::vector<Vertex>& vertices,
+                            float lineLength,
+                            float lineTop,
+                            const Vertex::Color& color,
+                            float offset,
+                            float thickness,
+                            float outlineThickness,
+                            float fontScale);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::shared_ptr<BackendFont> m_font;
         unsigned int m_lastFontTextureVersion = 0;
 
@@ -202,7 +211,7 @@ namespace tgui
         std::shared_ptr<std::vector<Vertex>> m_outlineVertices;
         bool m_verticesNeedUpdate = true;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -178,7 +178,7 @@ namespace tgui
         {
             const auto& texture = getSharedRenderer()->getTexture();
 
-            if (!m_sprite.isSet() && m_size.x.isConstant() && m_size.y.isConstant() && (getSize() == Vector2f{0,0}))
+            if (!m_sprite.isSet() && m_size.x.isConstant() && m_size.y.isConstant() && (getSize() == Vector2f{0, 0}))
                 setSize(Vector2f{texture.getImageSize()});
 
             m_sprite.setTexture(texture);
@@ -199,7 +199,8 @@ namespace tgui
         auto node = Widget::save(renderers);
 
         if (m_ignoringMouseEvents)
-            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
+            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(m_ignoringMouseEvents));
 
         return node;
     }
@@ -211,7 +212,9 @@ namespace tgui
         Widget::load(node, renderers);
 
         if (node->propertyValuePairs[U"IgnoreMouseEvents"])
-            m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool();
+            m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool,
+                                                              node->propertyValuePairs[U"IgnoreMouseEvents"]->value)
+                                        .getBool();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,6 +247,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
