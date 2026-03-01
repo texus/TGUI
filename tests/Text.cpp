@@ -22,6 +22,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "TGUI/Color.hpp"
 #include "Tests.hpp"
 
 TEST_CASE("[Text]")
@@ -71,6 +72,33 @@ TEST_CASE("[Text]")
         REQUIRE(text.getStyle() == tgui::TextStyle::Regular);
         text.setStyle(tgui::TextStyle::Italic);
         REQUIRE(text.getStyle() == tgui::TextStyle::Italic);
+    }
+
+    SECTION("Outline")
+    {
+        REQUIRE(text.getOutlineColor() == tgui::Color());
+        text.setOutlineColor(tgui::Color::Black);
+        REQUIRE(text.getOutlineColor() == tgui::Color::Black);
+        text.setOutlineColor(tgui::Color::White);
+        REQUIRE(text.getOutlineColor() == tgui::Color::White);
+        text.setOutlineColor(tgui::Color::Red);
+        REQUIRE(text.getOutlineColor() == tgui::Color::Red);
+        text.setOutlineColor(tgui::Color::Green);
+        REQUIRE(text.getOutlineColor() == tgui::Color::Green);
+        text.setOutlineColor(tgui::Color::Blue);
+        REQUIRE(text.getOutlineColor() == tgui::Color::Blue);
+        text.setOutlineColor(tgui::Color::Yellow);
+        REQUIRE(text.getOutlineColor() == tgui::Color::Yellow);
+        text.setOutlineColor(tgui::Color::Magenta);
+        REQUIRE(text.getOutlineColor() == tgui::Color::Magenta);
+        text.setOutlineColor(tgui::Color::Cyan);
+        REQUIRE(text.getOutlineColor() == tgui::Color::Cyan);
+        text.setOutlineColor(tgui::Color::Transparent);
+        REQUIRE(text.getOutlineColor() == tgui::Color::Transparent);
+        text.setOutlineColor(tgui::Color());
+        REQUIRE(text.getOutlineColor() == tgui::Color());
+        text.setOutlineColor(tgui::Color(1, 2, 3, 4));
+        REQUIRE(text.getOutlineColor() == tgui::Color{1, 2, 3, 4});
     }
 
     SECTION("Size")
