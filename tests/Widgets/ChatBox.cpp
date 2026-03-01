@@ -180,6 +180,15 @@ TEST_CASE("[ChatBox]")
         REQUIRE(!chatBox->getLinesStartFromTop());
     }
 
+    SECTION("Lines below others")
+    {
+        REQUIRE(chatBox->getNewLinesBelowOthers());
+        chatBox->setNewLinesBelowOthers(false);
+        REQUIRE(!chatBox->getNewLinesBelowOthers());
+        chatBox->setNewLinesBelowOthers(true);
+        REQUIRE(chatBox->getNewLinesBelowOthers());
+    }
+
     SECTION("Scrollbar access")
     {
         chatBox->setSize(200, 100);
