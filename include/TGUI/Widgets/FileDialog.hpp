@@ -25,15 +25,16 @@
 #ifndef TGUI_FILE_DIALOG_HPP
 #define TGUI_FILE_DIALOG_HPP
 
-#include <TGUI/Widgets/Label.hpp>
-#include <TGUI/Widgets/Button.hpp>
-#include <TGUI/Widgets/EditBox.hpp>
-#include <TGUI/Widgets/ComboBox.hpp>
-#include <TGUI/Widgets/ListView.hpp>
-#include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Renderers/FileDialogRenderer.hpp>
-#include <TGUI/Filesystem.hpp>
 #include <TGUI/Config.hpp>
+
+#include <TGUI/Filesystem.hpp>
+#include <TGUI/Renderers/FileDialogRenderer.hpp>
+#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>
+#include <TGUI/Widgets/EditBox.hpp>
+#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/ListView.hpp>
 
 #include <tuple>
 
@@ -60,8 +61,7 @@ namespace tgui
     class TGUI_API FileDialog : public ChildWindow
     {
     public:
-
-        using Ptr = std::shared_ptr<FileDialog>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<FileDialog>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const FileDialog>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "FileDialog"; //!< Type name of the widget
@@ -84,7 +84,9 @@ namespace tgui
         ///
         /// @return The new file dialog
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static FileDialog::Ptr create(const String& title = "Open file", const String& confirmButtonText = "Open", bool allowCreateFolder = false);
+        TGUI_NODISCARD static FileDialog::Ptr create(const String& title = "Open file",
+                                                     const String& confirmButtonText = "Open",
+                                                     bool allowCreateFolder = false);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor
@@ -311,7 +313,9 @@ namespace tgui
         /// @param sizeColumnText     Caption to display in the header of the size column
         /// @param modifiedColumnText Caption to display in the header of the last modification date column
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void setListViewColumnCaptions(const String& nameColumnText = "Name", const String& sizeColumnText = "Size", const String& modifiedColumnText = "Modified");
+        void setListViewColumnCaptions(const String& nameColumnText = "Name",
+                                       const String& sizeColumnText = "Size",
+                                       const String& modifiedColumnText = "Modified");
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the names of the list view columns
@@ -409,8 +413,8 @@ namespace tgui
         void textEntered(char32_t key) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -450,8 +454,8 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Changes the directory that is shown in the dialog
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -518,8 +522,8 @@ namespace tgui
         void connectSignals();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         /// One or more files were selected and the confirm button was pressed. This signal fires before onClose.
         /// Optional parameter: selected file or vector of selected files
         /// @see getSelectedPaths
@@ -529,8 +533,8 @@ namespace tgui
         Signal onCancel = {"Cancelled"};
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         Button::Ptr m_buttonBack;
         Button::Ptr m_buttonForward;
         Button::Ptr m_buttonUp;
@@ -568,7 +572,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

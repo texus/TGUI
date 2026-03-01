@@ -24,10 +24,11 @@
 
 #if TGUI_BUILD_CXX20_MODULE
     #include <SFML/Graphics.hpp>
-    import tgui;
-    import tgui.backend.sfml_opengl3;
+import tgui;
+import tgui.backend.sfml_opengl3;
 #else
     #include <TGUI/TGUI.hpp>
+
     #include <TGUI/Backend/SFML-OpenGL3.hpp>
 #endif
 

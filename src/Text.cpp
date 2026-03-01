@@ -22,13 +22,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Text.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+
+#include <TGUI/Text.hpp>
 
 #include <algorithm>
-#include <vector>
 #include <cmath>
+#include <vector>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -277,7 +278,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    float Text::getLineWidth(const String &text, const Font& font, unsigned int characterSize, TextStyles textStyle)
+    float Text::getLineWidth(const String& text, const Font& font, unsigned int characterSize, TextStyles textStyle)
     {
         if (font == nullptr)
             return 0.0f;
@@ -321,8 +322,11 @@ namespace tgui
         for (unsigned int i = 0; i < static_cast<unsigned int>(height); ++i)
             textSizes[i] = i + 1;
 
-        const auto high = std::lower_bound(textSizes.cbegin(), textSizes.cend(), height,
-                                           [&](unsigned int charSize, float h) { return std::max(font.getLineSpacing(charSize), font.getFontHeight(charSize)) < h; });
+        const auto high = std::lower_bound(textSizes.cbegin(),
+                                           textSizes.cend(),
+                                           height,
+                                           [&](unsigned int charSize, float h)
+                                           { return std::max(font.getLineSpacing(charSize), font.getFontHeight(charSize)) < h; });
         if (high == textSizes.end())
             return static_cast<unsigned int>(height);
 
@@ -401,7 +405,7 @@ namespace tgui
                 index++;
 
             // Implement the word-wrap by removing the last few characters from the line
-            if (text[index-1] != U'\n')
+            if (text[index - 1] != U'\n')
             {
                 const std::size_t indexWithoutWordWrap = index;
                 if ((index < text.length()) && (!isWhitespace(text[index])))
@@ -416,7 +420,7 @@ namespace tgui
             }
 
             result += text.substr(oldIndex, index - oldIndex);
-            if ((index < text.length()) && (text[index-1] != U'\n'))
+            if ((index < text.length()) && (text[index - 1] != U'\n'))
                 result += U'\n';
         }
 
@@ -473,7 +477,8 @@ namespace tgui
                 while (index < lineLength)
                 {
                     const auto& inputPiece = inputLine[pieceIndex];
-                    TGUI_ASSERT(!inputPiece.text.empty() || (inputPiece.gapSize != Vector2u{}), "Blueprint text in Text::wordWrap is not allowed to be empty")
+                    TGUI_ASSERT(!inputPiece.text.empty() || (inputPiece.gapSize != Vector2u{}),
+                                "Blueprint text in Text::wordWrap is not allowed to be empty")
 
                     char32_t curChar;
                     float charWidth;
@@ -482,14 +487,16 @@ namespace tgui
                     {
                         curChar = 0;
                         charWidth = static_cast<float>(inputPiece.gapSize.x);
-                        TGUI_ASSERT(inputLine[pieceIndex].text.empty() && (pieceCharIndex == 0), "Blueprint gap in Text::wordWrap should have an empty text");
+                        TGUI_ASSERT(inputLine[pieceIndex].text.empty() && (pieceCharIndex == 0),
+                                    "Blueprint gap in Text::wordWrap should have an empty text");
                     }
                     else // Normal text piece instead of a gap
                     {
                         curChar = inputPiece.text[pieceCharIndex];
 
                         const bool boldStyle = ((inputPiece.style & TextStyle::Bold) != 0);
-                        TGUI_ASSERT(curChar != U'\n' && curChar != U'\r', "Newline characters must be removed before calling Text::wordWrap with blueprints")
+                        TGUI_ASSERT(curChar != U'\n' && curChar != U'\r',
+                                    "Newline characters must be removed before calling Text::wordWrap with blueprints")
                         if (curChar == U'\t')
                             charWidth = font.getGlyph(U' ', inputPiece.characterSize, boldStyle).advance * 4;
                         else
@@ -497,13 +504,18 @@ namespace tgui
 
                         if (pieceCharIndex > 0)
                             kerning = font.getKerning(prevChar, curChar, inputPiece.characterSize, boldStyle);
-                        else if ((pieceIndex > 0) && !inputLine[pieceIndex-1].text.empty())
+                        else if ((pieceIndex > 0) && !inputLine[pieceIndex - 1].text.empty())
                         {
                             // If this is the first character of the text piece but there was already another piece in front
                             // of it on the same line then we need to figure out the kerning between the two pieces.
-                            const bool bold = ((inputLine[pieceIndex-1].style & TextStyle::Bold) != 0) && ((inputLine[pieceIndex].style & TextStyle::Bold) != 0);
-                            const unsigned int characterSize = std::min(inputLine[pieceIndex-1].characterSize, inputLine[pieceIndex].characterSize);
-                            kerning = font.getKerning(inputLine[pieceIndex-1].text.back(), inputLine[pieceIndex].text.front(), characterSize, bold);
+                            const bool bold = ((inputLine[pieceIndex - 1].style & TextStyle::Bold) != 0)
+                                              && ((inputLine[pieceIndex].style & TextStyle::Bold) != 0);
+                            const unsigned int characterSize = std::min(inputLine[pieceIndex - 1].characterSize,
+                                                                        inputLine[pieceIndex].characterSize);
+                            kerning = font.getKerning(inputLine[pieceIndex - 1].text.back(),
+                                                      inputLine[pieceIndex].text.front(),
+                                                      characterSize,
+                                                      bold);
                         }
                     }
 
@@ -540,7 +552,8 @@ namespace tgui
                 }
 
                 // Implement the word-wrap by removing the last few characters from the line
-                if ((index < lineLength) && ((inputLine[pieceIndex].gapSize != Vector2u{}) || !isWhitespace(inputLine[pieceIndex].text[pieceCharIndex])))
+                if ((index < lineLength)
+                    && ((inputLine[pieceIndex].gapSize != Vector2u{}) || !isWhitespace(inputLine[pieceIndex].text[pieceCharIndex])))
                 {
                     const std::size_t indexWithoutWordWrap = index;
                     const std::size_t pieceIndexWithoutWordWrap = pieceIndex;
@@ -645,6 +658,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

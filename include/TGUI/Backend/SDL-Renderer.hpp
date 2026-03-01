@@ -30,9 +30,9 @@
     #error "TGUI wasn't build with the SDL_RENDERER backend"
 #endif
 
-#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
 #include <TGUI/Backend/Font/SDL_ttf/BackendFontSDLttf.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 
 namespace tgui
 {
@@ -44,7 +44,6 @@ namespace tgui
         class TGUI_API Gui : public BackendGuiSDL
         {
         public:
-
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Default constructor
             ///
@@ -92,8 +91,8 @@ namespace tgui
             void makeWindowCurrent();
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        protected:
 
+        protected:
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Shows the drawn content with SDL_RenderPresent
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,11 +106,11 @@ namespace tgui
 #endif
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        protected:
 
+        protected:
             SDL_Renderer* m_renderer = nullptr;
         };
-    }
-}
+    } // namespace SDL_RENDERER
+} // namespace tgui
 
 #endif // TGUI_BACKEND_SDL_RENDERER_INCLUDE_HPP

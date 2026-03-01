@@ -22,11 +22,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Loading/Deserializer.hpp>
-#include <TGUI/Loading/DataIO.hpp>
-#include <TGUI/Renderers/WidgetRenderer.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Global.hpp>
+
+#include <TGUI/Backend/Window/Backend.hpp>
+
+#include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Renderers/WidgetRenderer.hpp>
 
 #include <cstdint>
 
@@ -36,7 +38,8 @@ namespace tgui
     {
         unsigned char hexToDec(char32_t c)
         {
-            TGUI_ASSERT((c >= U'0' && c <= U'9') || (c >= U'a' && c <= U'f'), "hexToDec must be called with digit or lowercase hex character");
+            TGUI_ASSERT((c >= U'0' && c <= U'9') || (c >= U'a' && c <= U'f'),
+                        "hexToDec must be called with digit or lowercase hex character");
 
             if (c == U'a')
                 return 10;
@@ -73,9 +76,9 @@ namespace tgui
 
         bool readUIntRect(String value, UIntRect& rect, bool rectRequiresFourValues)
         {
-            if (!value.empty() && (value[0] == '(') && (value[value.length()-1] == ')'))
+            if (!value.empty() && (value[0] == '(') && (value[value.length() - 1] == ')'))
             {
-                std::vector<String> tokens = Deserializer::split(value.substr(1, value.size()-2), ',');
+                std::vector<String> tokens = Deserializer::split(value.substr(1, value.size() - 2), ',');
                 if (tokens.size() == 4)
                 {
                     rect = {tokens[0].toUInt(), tokens[1].toUInt(), tokens[2].toUInt(), tokens[3].toUInt()};
@@ -100,9 +103,11 @@ namespace tgui
 
         ObjectConverter deserializeBool(const String& str)
         {
-            if (viewEqualIgnoreCase(str, U"true") || viewEqualIgnoreCase(str, U"yes") || viewEqualIgnoreCase(str, U"on") || viewEqualIgnoreCase(str, U"1"))
+            if (viewEqualIgnoreCase(str, U"true") || viewEqualIgnoreCase(str, U"yes") || viewEqualIgnoreCase(str, U"on")
+                || viewEqualIgnoreCase(str, U"1"))
                 return {true};
-            if (viewEqualIgnoreCase(str, U"false") || viewEqualIgnoreCase(str, U"no") || viewEqualIgnoreCase(str, U"off") || viewEqualIgnoreCase(str, U"0"))
+            if (viewEqualIgnoreCase(str, U"false") || viewEqualIgnoreCase(str, U"no") || viewEqualIgnoreCase(str, U"off")
+                || viewEqualIgnoreCase(str, U"0"))
                 return {false};
 
             throw Exception{U"Failed to deserialize boolean from '" + str + U"'"};
@@ -159,7 +164,8 @@ namespace tgui
                 for (std::size_t i = 1; i < str.length(); ++i)
                 {
                     if ((str[i] < '0' || str[i] > '9') && (str[i] < 'a' || str[i] > 'f'))
-                        throw Exception{U"Failed to deserialize color '" + str + U"'. Value started but '#' but contained an invalid character afterwards."};
+                        throw Exception{U"Failed to deserialize color '" + str
+                                        + U"'. Value started but '#' but contained an invalid character afterwards."};
                 }
 
                 // Parse the different types of strings (#123, #1234, #112233 and #11223344)
@@ -203,8 +209,8 @@ namespace tgui
                 str.erase(0, 3);
 
             // Remove the first and last characters when they are brackets
-            if ((str[0] == '(') && (str[str.length()-1] == ')'))
-                str = str.substr(1, str.length()-2);
+            if ((str[0] == '(') && (str[str.length() - 1] == ')'))
+                str = str.substr(1, str.length() - 2);
 
             const std::vector<String> tokens = Deserializer::split(str, ',');
             if (tokens.size() == 3 || tokens.size() == 4)
@@ -223,12 +229,12 @@ namespace tgui
         ObjectConverter deserializeString(const String& value)
         {
             // Only deserialize the string when it is surrounded with quotes
-            if ((value.size() >= 2) && ((value[0] == '"') && (value[value.length()-1] == '"')))
+            if ((value.size() >= 2) && ((value[0] == '"') && (value[value.length() - 1] == '"')))
             {
-                String result = value.substr(1, value.length()-2);
+                String result = value.substr(1, value.length() - 2);
 
                 std::size_t backslashPos = 0;
-                while ((backslashPos = result.find('\\', backslashPos)) < result.size()-1)
+                while ((backslashPos = result.find('\\', backslashPos)) < result.size() - 1)
                 {
                     result.erase(backslashPos, 1);
 
@@ -323,7 +329,8 @@ namespace tgui
                 }
 
                 if (!filenameFound)
-                    throw Exception{U"Failed to deserialize texture '" + value + U"'. Failed to find the closing quote of the filename."};
+                    throw Exception{
+                        U"Failed to deserialize texture '" + value + U"'. Failed to find the closing quote of the filename."};
 
                 // There may be optional parameters
                 while (removeWhitespace(value, c))
@@ -351,7 +358,8 @@ namespace tgui
                     }
 
                     if (word.empty())
-                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Expected 'Part', 'Middle' or 'ScaledMiddle' in front of opening bracket."};
+                        throw Exception{U"Failed to deserialize texture '" + value
+                                        + U"'. Expected 'Part', 'Middle' or 'ScaledMiddle' in front of opening bracket."};
 
                     bool rectRequiresFourValues = true;
                     UIntRect* rect = nullptr;
@@ -374,7 +382,8 @@ namespace tgui
                         std::advance(c, 12);
                     }
                     else
-                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Unexpected word '" + word + U"' in front of opening bracket. Expected 'Part', 'Middle' or 'ScaledMiddle'."};
+                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Unexpected word '" + word
+                                        + U"' in front of opening bracket. Expected 'Part', 'Middle' or 'ScaledMiddle'."};
 
                     const auto endOffset = static_cast<std::size_t>(c - value.cbegin());
                     auto closeBracketPos = value.find(U')', endOffset);
@@ -384,7 +393,8 @@ namespace tgui
                             throw Exception{U"Failed to parse " + word + U" rectangle while deserializing texture '" + value + U"'."};
                     }
                     else
-                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Failed to find closing bracket for " + word + U" rectangle."};
+                        throw Exception{U"Failed to deserialize texture '" + value + U"'. Failed to find closing bracket for " + word
+                                        + U" rectangle."};
 
                     std::advance(c, static_cast<std::ptrdiff_t>(closeBracketPos - endOffset + 1));
                 }
@@ -395,12 +405,16 @@ namespace tgui
             {
                 const auto foundIndex = filename.find(U";base64,");
                 if (foundIndex == String::npos)
-                    throw Exception{U"Failed to deserialize texture '" + value + U"'. Filename started with 'data:' but wasn't in format 'data:image/TYPE;base64,DATA'."};
+                    throw Exception{U"Failed to deserialize texture '" + value
+                                    + U"'. Filename started with 'data:' but wasn't in format 'data:image/TYPE;base64,DATA'."};
 
                 const auto dataIndex = foundIndex + 8;
                 const std::string& encodedData = filename.toStdString();
 
-                texture.loadFromBase64(CharStringView(encodedData.data() + dataIndex, encodedData.length() - dataIndex), partRect, middleRect, smooth);
+                texture.loadFromBase64(CharStringView(encodedData.data() + dataIndex, encodedData.length() - dataIndex),
+                                       partRect,
+                                       middleRect,
+                                       smooth);
                 return texture;
             }
 
@@ -444,7 +458,8 @@ namespace tgui
 
             auto rendererData = RendererData::create();
             for (const auto& pair : node->propertyValuePairs)
-                rendererData->propertyValuePairs[pair.first] = ObjectConverter(pair.second->value); // Did not compile with VS2015 Update 2 when using braces
+                rendererData->propertyValuePairs[pair.first] = ObjectConverter(
+                    pair.second->value); // Did not compile with VS2015 Update 2 when using braces
 
             for (const auto& child : node->children)
             {
@@ -457,22 +472,20 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
+    } // namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::unordered_map<ObjectConverter::Type, Deserializer::DeserializeFunc> Deserializer::m_deserializers =
-        {
-            {ObjectConverter::Type::Bool, deserializeBool},
-            {ObjectConverter::Type::Font, deserializeFont},
-            {ObjectConverter::Type::Color, deserializeColor},
-            {ObjectConverter::Type::String, deserializeString},
-            {ObjectConverter::Type::Number, deserializeNumber},
-            {ObjectConverter::Type::Outline, deserializeOutline},
-            {ObjectConverter::Type::Texture, deserializeTexture},
-            {ObjectConverter::Type::TextStyle, deserializeTextStyle},
-            {ObjectConverter::Type::RendererData, deserializeRendererData}
-        };
+        {{ObjectConverter::Type::Bool, deserializeBool},
+         {ObjectConverter::Type::Font, deserializeFont},
+         {ObjectConverter::Type::Color, deserializeColor},
+         {ObjectConverter::Type::String, deserializeString},
+         {ObjectConverter::Type::Number, deserializeNumber},
+         {ObjectConverter::Type::Outline, deserializeOutline},
+         {ObjectConverter::Type::Texture, deserializeTexture},
+         {ObjectConverter::Type::TextStyle, deserializeTextStyle},
+         {ObjectConverter::Type::RendererData, deserializeRendererData}};
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -504,7 +517,8 @@ namespace tgui
 
         std::size_t start = 0;
         std::size_t end = 0;
-        while ((end = str.find(delim, start)) != String::npos) {
+        while ((end = str.find(delim, start)) != String::npos)
+        {
             tokens.push_back(str.substr(start, end - start).trim());
             start = end + 1;
         }
@@ -514,6 +528,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

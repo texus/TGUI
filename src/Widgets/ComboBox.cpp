@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/ComboBox.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/Widgets/ComboBox.hpp>
 
 #include <cmath>
 
@@ -59,33 +59,33 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(const ComboBox& other) :
-        Widget                              {other},
-        onItemSelect                        {other.onItemSelect},
-        m_nrOfItemsToDisplay                {other.m_nrOfItemsToDisplay},
-        m_listBox                           {ListBox::copy(other.m_listBox)},
-        m_text                              {other.m_text},
-        m_defaultText                       {other.m_defaultText},
-        m_changeItemOnScroll                {other.m_changeItemOnScroll},
-        m_expandDirection                   {other.m_expandDirection},
-        m_spriteBackground                  {other.m_spriteBackground},
-        m_spriteBackgroundDisabled          {other.m_spriteBackgroundDisabled},
-        m_spriteArrow                       {other.m_spriteArrow},
-        m_spriteArrowHover                  {other.m_spriteArrowHover},
-        m_spriteArrowDisabled               {other.m_spriteArrowDisabled},
-        m_bordersCached                     {other.m_bordersCached},
-        m_paddingCached                     {other.m_paddingCached},
-        m_borderColorCached                 {other.m_borderColorCached},
-        m_backgroundColorCached             {other.m_backgroundColorCached},
-        m_backgroundColorDisabledCached     {other.m_backgroundColorDisabledCached},
-        m_arrowColorCached                  {other.m_arrowColorCached},
-        m_arrowColorHoverCached             {other.m_arrowColorHoverCached},
-        m_arrowColorDisabledCached          {other.m_arrowColorDisabledCached},
-        m_arrowBackgroundColorCached        {other.m_arrowBackgroundColorCached},
-        m_arrowBackgroundColorHoverCached   {other.m_arrowBackgroundColorHoverCached},
+        Widget{other},
+        onItemSelect{other.onItemSelect},
+        m_nrOfItemsToDisplay{other.m_nrOfItemsToDisplay},
+        m_listBox{ListBox::copy(other.m_listBox)},
+        m_text{other.m_text},
+        m_defaultText{other.m_defaultText},
+        m_changeItemOnScroll{other.m_changeItemOnScroll},
+        m_expandDirection{other.m_expandDirection},
+        m_spriteBackground{other.m_spriteBackground},
+        m_spriteBackgroundDisabled{other.m_spriteBackgroundDisabled},
+        m_spriteArrow{other.m_spriteArrow},
+        m_spriteArrowHover{other.m_spriteArrowHover},
+        m_spriteArrowDisabled{other.m_spriteArrowDisabled},
+        m_bordersCached{other.m_bordersCached},
+        m_paddingCached{other.m_paddingCached},
+        m_borderColorCached{other.m_borderColorCached},
+        m_backgroundColorCached{other.m_backgroundColorCached},
+        m_backgroundColorDisabledCached{other.m_backgroundColorDisabledCached},
+        m_arrowColorCached{other.m_arrowColorCached},
+        m_arrowColorHoverCached{other.m_arrowColorHoverCached},
+        m_arrowColorDisabledCached{other.m_arrowColorDisabledCached},
+        m_arrowBackgroundColorCached{other.m_arrowBackgroundColorCached},
+        m_arrowBackgroundColorHoverCached{other.m_arrowBackgroundColorHoverCached},
         m_arrowBackgroundColorDisabledCached{other.m_arrowBackgroundColorDisabledCached},
-        m_textColorCached                   {other.m_textColorCached},
-        m_textColorDisabledCached           {other.m_textColorDisabledCached},
-        m_roundedBorderRadiusCached         {other.m_roundedBorderRadiusCached}
+        m_textColorCached{other.m_textColorCached},
+        m_textColorDisabledCached{other.m_textColorDisabledCached},
+        m_roundedBorderRadiusCached{other.m_roundedBorderRadiusCached}
     {
         initListBox();
     }
@@ -93,33 +93,33 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ComboBox::ComboBox(ComboBox&& other) noexcept :
-        Widget                              {std::move(other)},
-        onItemSelect                        {std::move(other.onItemSelect)},
-        m_nrOfItemsToDisplay                {std::move(other.m_nrOfItemsToDisplay)},
-        m_listBox                           {std::move(other.m_listBox)},
-        m_text                              {std::move(other.m_text)},
-        m_defaultText                       {std::move(other.m_defaultText)},
-        m_changeItemOnScroll                {std::move(other.m_changeItemOnScroll)},
-        m_expandDirection                   {std::move(other.m_expandDirection)},
-        m_spriteBackground                  {std::move(other.m_spriteBackground)},
-        m_spriteBackgroundDisabled          {std::move(other.m_spriteBackgroundDisabled)},
-        m_spriteArrow                       {std::move(other.m_spriteArrow)},
-        m_spriteArrowHover                  {std::move(other.m_spriteArrowHover)},
-        m_spriteArrowDisabled               {std::move(other.m_spriteArrowDisabled)},
-        m_bordersCached                     {std::move(other.m_bordersCached)},
-        m_paddingCached                     {std::move(other.m_paddingCached)},
-        m_borderColorCached                 {std::move(other.m_borderColorCached)},
-        m_backgroundColorCached             {std::move(other.m_backgroundColorCached)},
-        m_backgroundColorDisabledCached     {std::move(other.m_backgroundColorDisabledCached)},
-        m_arrowColorCached                  {std::move(other.m_arrowColorCached)},
-        m_arrowColorHoverCached             {std::move(other.m_arrowColorHoverCached)},
-        m_arrowColorDisabledCached          {std::move(other.m_arrowColorDisabledCached)},
-        m_arrowBackgroundColorCached        {std::move(other.m_arrowBackgroundColorCached)},
-        m_arrowBackgroundColorHoverCached   {std::move(other.m_arrowBackgroundColorHoverCached)},
+        Widget{std::move(other)},
+        onItemSelect{std::move(other.onItemSelect)},
+        m_nrOfItemsToDisplay{std::move(other.m_nrOfItemsToDisplay)},
+        m_listBox{std::move(other.m_listBox)},
+        m_text{std::move(other.m_text)},
+        m_defaultText{std::move(other.m_defaultText)},
+        m_changeItemOnScroll{std::move(other.m_changeItemOnScroll)},
+        m_expandDirection{std::move(other.m_expandDirection)},
+        m_spriteBackground{std::move(other.m_spriteBackground)},
+        m_spriteBackgroundDisabled{std::move(other.m_spriteBackgroundDisabled)},
+        m_spriteArrow{std::move(other.m_spriteArrow)},
+        m_spriteArrowHover{std::move(other.m_spriteArrowHover)},
+        m_spriteArrowDisabled{std::move(other.m_spriteArrowDisabled)},
+        m_bordersCached{std::move(other.m_bordersCached)},
+        m_paddingCached{std::move(other.m_paddingCached)},
+        m_borderColorCached{std::move(other.m_borderColorCached)},
+        m_backgroundColorCached{std::move(other.m_backgroundColorCached)},
+        m_backgroundColorDisabledCached{std::move(other.m_backgroundColorDisabledCached)},
+        m_arrowColorCached{std::move(other.m_arrowColorCached)},
+        m_arrowColorHoverCached{std::move(other.m_arrowColorHoverCached)},
+        m_arrowColorDisabledCached{std::move(other.m_arrowColorDisabledCached)},
+        m_arrowBackgroundColorCached{std::move(other.m_arrowBackgroundColorCached)},
+        m_arrowBackgroundColorHoverCached{std::move(other.m_arrowBackgroundColorHoverCached)},
         m_arrowBackgroundColorDisabledCached{std::move(other.m_arrowBackgroundColorDisabledCached)},
-        m_textColorCached                   {std::move(other.m_textColorCached)},
-        m_textColorDisabledCached           {std::move(other.m_textColorDisabledCached)},
-        m_roundedBorderRadiusCached         {std::move(other.m_roundedBorderRadiusCached)}
+        m_textColorCached{std::move(other.m_textColorCached)},
+        m_textColorDisabledCached{std::move(other.m_textColorDisabledCached)},
+        m_roundedBorderRadiusCached{std::move(other.m_roundedBorderRadiusCached)}
     {
         initListBox();
     }
@@ -133,32 +133,32 @@ namespace tgui
             ComboBox temp{other};
             Widget::operator=(other);
 
-            std::swap(onItemSelect,                         temp.onItemSelect);
-            std::swap(m_nrOfItemsToDisplay,                 temp.m_nrOfItemsToDisplay);
-            std::swap(m_listBox,                            temp.m_listBox);
-            std::swap(m_text,                               temp.m_text);
-            std::swap(m_defaultText,                        temp.m_defaultText);
-            std::swap(m_changeItemOnScroll,                 temp.m_changeItemOnScroll);
-            std::swap(m_expandDirection,                    temp.m_expandDirection);
-            std::swap(m_spriteBackground,                   temp.m_spriteBackground);
-            std::swap(m_spriteBackgroundDisabled,           temp.m_spriteBackgroundDisabled);
-            std::swap(m_spriteArrow,                        temp.m_spriteArrow);
-            std::swap(m_spriteArrowHover,                   temp.m_spriteArrowHover);
-            std::swap(m_spriteArrowDisabled,                temp.m_spriteArrowDisabled);
-            std::swap(m_bordersCached,                      temp.m_bordersCached);
-            std::swap(m_paddingCached,                      temp.m_paddingCached);
-            std::swap(m_borderColorCached,                  temp.m_borderColorCached);
-            std::swap(m_backgroundColorCached,              temp.m_backgroundColorCached);
-            std::swap(m_backgroundColorDisabledCached,      temp.m_backgroundColorDisabledCached);
-            std::swap(m_arrowColorCached,                   temp.m_arrowColorCached);
-            std::swap(m_arrowColorHoverCached,              temp.m_arrowColorHoverCached);
-            std::swap(m_arrowColorDisabledCached,           temp.m_arrowColorDisabledCached);
-            std::swap(m_arrowBackgroundColorCached,         temp.m_arrowBackgroundColorCached);
-            std::swap(m_arrowBackgroundColorHoverCached,    temp.m_arrowBackgroundColorHoverCached);
+            std::swap(onItemSelect, temp.onItemSelect);
+            std::swap(m_nrOfItemsToDisplay, temp.m_nrOfItemsToDisplay);
+            std::swap(m_listBox, temp.m_listBox);
+            std::swap(m_text, temp.m_text);
+            std::swap(m_defaultText, temp.m_defaultText);
+            std::swap(m_changeItemOnScroll, temp.m_changeItemOnScroll);
+            std::swap(m_expandDirection, temp.m_expandDirection);
+            std::swap(m_spriteBackground, temp.m_spriteBackground);
+            std::swap(m_spriteBackgroundDisabled, temp.m_spriteBackgroundDisabled);
+            std::swap(m_spriteArrow, temp.m_spriteArrow);
+            std::swap(m_spriteArrowHover, temp.m_spriteArrowHover);
+            std::swap(m_spriteArrowDisabled, temp.m_spriteArrowDisabled);
+            std::swap(m_bordersCached, temp.m_bordersCached);
+            std::swap(m_paddingCached, temp.m_paddingCached);
+            std::swap(m_borderColorCached, temp.m_borderColorCached);
+            std::swap(m_backgroundColorCached, temp.m_backgroundColorCached);
+            std::swap(m_backgroundColorDisabledCached, temp.m_backgroundColorDisabledCached);
+            std::swap(m_arrowColorCached, temp.m_arrowColorCached);
+            std::swap(m_arrowColorHoverCached, temp.m_arrowColorHoverCached);
+            std::swap(m_arrowColorDisabledCached, temp.m_arrowColorDisabledCached);
+            std::swap(m_arrowBackgroundColorCached, temp.m_arrowBackgroundColorCached);
+            std::swap(m_arrowBackgroundColorHoverCached, temp.m_arrowBackgroundColorHoverCached);
             std::swap(m_arrowBackgroundColorDisabledCached, temp.m_arrowBackgroundColorDisabledCached);
-            std::swap(m_textColorCached,                    temp.m_textColorCached);
-            std::swap(m_textColorDisabledCached,            temp.m_textColorDisabledCached);
-            std::swap(m_roundedBorderRadiusCached,          temp.m_roundedBorderRadiusCached);
+            std::swap(m_textColorCached, temp.m_textColorCached);
+            std::swap(m_textColorDisabledCached, temp.m_textColorDisabledCached);
+            std::swap(m_roundedBorderRadiusCached, temp.m_roundedBorderRadiusCached);
         }
 
         return *this;
@@ -170,32 +170,32 @@ namespace tgui
     {
         if (this != &other)
         {
-            onItemSelect                         = std::move(other.onItemSelect);
-            m_nrOfItemsToDisplay                 = std::move(other.m_nrOfItemsToDisplay);
-            m_listBox                            = std::move(other.m_listBox);
-            m_text                               = std::move(other.m_text);
-            m_defaultText                        = std::move(other.m_defaultText);
-            m_changeItemOnScroll                 = std::move(other.m_changeItemOnScroll);
-            m_expandDirection                    = std::move(other.m_expandDirection);
-            m_spriteBackground                   = std::move(other.m_spriteBackground);
-            m_spriteBackgroundDisabled           = std::move(other.m_spriteBackgroundDisabled);
-            m_spriteArrow                        = std::move(other.m_spriteArrow);
-            m_spriteArrowHover                   = std::move(other.m_spriteArrowHover);
-            m_spriteArrowDisabled                = std::move(other.m_spriteArrowDisabled);
-            m_bordersCached                      = std::move(other.m_bordersCached);
-            m_paddingCached                      = std::move(other.m_paddingCached);
-            m_borderColorCached                  = std::move(other.m_borderColorCached);
-            m_backgroundColorCached              = std::move(other.m_backgroundColorCached);
-            m_backgroundColorDisabledCached      = std::move(other.m_backgroundColorDisabledCached);
-            m_arrowColorCached                   = std::move(other.m_arrowColorCached);
-            m_arrowColorHoverCached              = std::move(other.m_arrowColorHoverCached);
-            m_arrowColorDisabledCached           = std::move(other.m_arrowColorDisabledCached);
-            m_arrowBackgroundColorCached         = std::move(other.m_arrowBackgroundColorCached);
-            m_arrowBackgroundColorHoverCached    = std::move(other.m_arrowBackgroundColorHoverCached);
+            onItemSelect = std::move(other.onItemSelect);
+            m_nrOfItemsToDisplay = std::move(other.m_nrOfItemsToDisplay);
+            m_listBox = std::move(other.m_listBox);
+            m_text = std::move(other.m_text);
+            m_defaultText = std::move(other.m_defaultText);
+            m_changeItemOnScroll = std::move(other.m_changeItemOnScroll);
+            m_expandDirection = std::move(other.m_expandDirection);
+            m_spriteBackground = std::move(other.m_spriteBackground);
+            m_spriteBackgroundDisabled = std::move(other.m_spriteBackgroundDisabled);
+            m_spriteArrow = std::move(other.m_spriteArrow);
+            m_spriteArrowHover = std::move(other.m_spriteArrowHover);
+            m_spriteArrowDisabled = std::move(other.m_spriteArrowDisabled);
+            m_bordersCached = std::move(other.m_bordersCached);
+            m_paddingCached = std::move(other.m_paddingCached);
+            m_borderColorCached = std::move(other.m_borderColorCached);
+            m_backgroundColorCached = std::move(other.m_backgroundColorCached);
+            m_backgroundColorDisabledCached = std::move(other.m_backgroundColorDisabledCached);
+            m_arrowColorCached = std::move(other.m_arrowColorCached);
+            m_arrowColorHoverCached = std::move(other.m_arrowColorHoverCached);
+            m_arrowColorDisabledCached = std::move(other.m_arrowColorDisabledCached);
+            m_arrowBackgroundColorCached = std::move(other.m_arrowBackgroundColorCached);
+            m_arrowBackgroundColorHoverCached = std::move(other.m_arrowBackgroundColorHoverCached);
             m_arrowBackgroundColorDisabledCached = std::move(other.m_arrowBackgroundColorDisabledCached);
-            m_textColorCached                    = std::move(other.m_textColorCached);
-            m_textColorDisabledCached            = std::move(other.m_textColorDisabledCached);
-            m_roundedBorderRadiusCached          = std::move(other.m_roundedBorderRadiusCached);
+            m_textColorCached = std::move(other.m_textColorCached);
+            m_textColorDisabledCached = std::move(other.m_textColorDisabledCached);
+            m_roundedBorderRadiusCached = std::move(other.m_roundedBorderRadiusCached);
             Widget::operator=(std::move(other));
         }
 
@@ -261,7 +261,8 @@ namespace tgui
 
         if (m_spriteArrow.isSet())
         {
-            m_spriteArrow.setSize({m_spriteArrow.getTexture().getImageSize().x * (height / m_spriteArrow.getTexture().getImageSize().y), height});
+            m_spriteArrow.setSize(
+                {m_spriteArrow.getTexture().getImageSize().x * (height / m_spriteArrow.getTexture().getImageSize().y), height});
             m_spriteArrowHover.setSize(m_spriteArrow.getSize());
             m_spriteArrowDisabled.setSize(m_spriteArrow.getSize());
         }
@@ -623,7 +624,8 @@ namespace tgui
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {
-            if (!m_transparentTextureCached || !m_spriteBackground.isSet() || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+            if (!m_transparentTextureCached || !m_spriteBackground.isSet()
+                || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
                 return true;
         }
 
@@ -675,7 +677,9 @@ namespace tgui
         if (delta < 0)
         {
             // Select the next item
-            const std::size_t nextIndex = (m_listBox->getSelectedItemIndex() < 0) ? 0 : static_cast<std::size_t>(m_listBox->getSelectedItemIndex()) + 1;
+            const std::size_t nextIndex = (m_listBox->getSelectedItemIndex() < 0)
+                                              ? 0
+                                              : static_cast<std::size_t>(m_listBox->getSelectedItemIndex()) + 1;
             if (nextIndex < m_listBox->getItemCount())
             {
                 m_listBox->setSelectedItemByIndex(nextIndex);
@@ -886,7 +890,8 @@ namespace tgui
             node->propertyValuePairs[U"ExpandDirection"] = std::make_unique<DataIO::ValueNode>("Up");
 
         if (m_listBox->getSelectedItemIndex() >= 0)
-            node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_listBox->getSelectedItemIndex()));
+            node->propertyValuePairs[U"SelectedItemIndex"] = std::make_unique<DataIO::ValueNode>(
+                String::fromNumber(m_listBox->getSelectedItemIndex()));
 
         return node;
     }
@@ -913,7 +918,8 @@ namespace tgui
                 for (std::size_t i = 0; i < node->propertyValuePairs[U"Items"]->valueList.size(); ++i)
                 {
                     addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Items"]->valueList[i]).getString(),
-                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"ItemIds"]->valueList[i]).getString());
+                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"ItemIds"]->valueList[i])
+                                .getString());
                 }
             }
             else // There are no item ids
@@ -935,7 +941,9 @@ namespace tgui
         if (node->propertyValuePairs[U"SelectedItemIndex"])
             setSelectedItemByIndex(node->propertyValuePairs[U"SelectedItemIndex"]->value.toUInt());
         if (node->propertyValuePairs[U"ChangeItemOnScroll"])
-            m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ChangeItemOnScroll"]->value).getBool();
+            m_changeItemOnScroll = Deserializer::deserialize(ObjectConverter::Type::Bool,
+                                                             node->propertyValuePairs[U"ChangeItemOnScroll"]->value)
+                                       .getBool();
 
         if (node->propertyValuePairs[U"ExpandDirection"])
         {
@@ -966,12 +974,14 @@ namespace tgui
         const Padding padding = m_listBox->getSharedRenderer()->getPadding();
 
         if (m_nrOfItemsToDisplay > 0)
-            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * (std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1))))
-                                             + borders.getTop() + borders.getBottom() + padding.getTop() + padding.getBottom()});
+            m_listBox->setSize({getSize().x,
+                                (m_listBox->getItemHeight()
+                                 * (std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1))))
+                                    + borders.getTop() + borders.getBottom() + padding.getTop() + padding.getBottom()});
         else
-            m_listBox->setSize({getSize().x, (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1))
-                                             + borders.getTop() + borders.getBottom() + padding.getTop() + padding.getBottom()});
-
+            m_listBox->setSize({getSize().x,
+                                (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1)) + borders.getTop()
+                                    + borders.getBottom() + padding.getTop() + padding.getBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1000,7 +1010,7 @@ namespace tgui
         if (direction == ExpandDirection::Automatic)
         {
             if ((getAbsolutePosition().y + getSize().y + m_listBox->getSize().y - m_bordersCached.getBottom() > container->getSize().y)
-             && (getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop() > 0))
+                && (getAbsolutePosition().y - m_listBox->getSize().y + m_bordersCached.getTop() > 0))
                 direction = ExpandDirection::Up;
             else
                 direction = ExpandDirection::Down;
@@ -1052,12 +1062,14 @@ namespace tgui
     {
         m_listBox->setVisible(false);
 
-        m_listBox->onUnfocus([this](){
-            if (!m_mouseHover)
-                hideListBox();
-        });
+        m_listBox->onUnfocus(
+            [this]()
+            {
+                if (!m_mouseHover)
+                    hideListBox();
+            });
 
-        m_listBox->onMouseRelease([this](){ hideListBox(); });
+        m_listBox->onMouseRelease([this]() { hideListBox(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1072,8 +1084,12 @@ namespace tgui
 
         if ((m_roundedBorderRadiusCached > 0) && !m_spriteBackground.isSet())
         {
-            target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(backgroundColor, m_opacityCached),
-                                        m_roundedBorderRadiusCached, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+            target.drawRoundedRectangle(states,
+                                        getSize(),
+                                        Color::applyOpacity(backgroundColor, m_opacityCached),
+                                        m_roundedBorderRadiusCached,
+                                        m_bordersCached,
+                                        Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
         else
@@ -1129,7 +1145,12 @@ namespace tgui
             if ((m_roundedBorderRadiusCached > 0) && (m_roundedBorderRadiusCached > m_bordersCached.getTop()))
             {
                 const float roundedRadius = m_roundedBorderRadiusCached - m_bordersCached.getTop();
-                target.drawRoundedRectangle(states, {arrowSize, arrowSize}, Color::applyOpacity(arrowBackgroundColor, m_opacityCached), roundedRadius, {}, {});
+                target.drawRoundedRectangle(states,
+                                            {arrowSize, arrowSize},
+                                            Color::applyOpacity(arrowBackgroundColor, m_opacityCached),
+                                            roundedRadius,
+                                            {},
+                                            {});
             }
             else
                 target.drawFilledRect(states, {arrowSize, arrowSize}, Color::applyOpacity(arrowBackgroundColor, m_opacityCached));
@@ -1143,21 +1164,23 @@ namespace tgui
                 arrowVertexColor = Vertex::Color(m_arrowColorCached);
 
             target.drawTriangle(states,
-                {{arrowSize / 5, arrowSize / 4}, arrowVertexColor},
-                {{arrowSize / 2, arrowSize * 3/4}, arrowVertexColor},
-                {{arrowSize * 4/5, arrowSize / 4}, arrowVertexColor}
-            );
+                                {{arrowSize / 5, arrowSize / 4}, arrowVertexColor},
+                                {{arrowSize / 2, arrowSize * 3 / 4}, arrowVertexColor},
+                                {{arrowSize * 4 / 5, arrowSize / 4}, arrowVertexColor});
         }
 
         // Draw the selected item
         const int selectedItemIndex = getSelectedItemIndex();
         if (((selectedItemIndex >= 0) && !m_text.getString().empty()) || ((selectedItemIndex < 0) && !m_defaultText.getString().empty()))
         {
-            target.addClippingLayer(statesForText, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-                {getInnerSize().x - m_paddingCached.getLeftPlusRight() - arrowSize, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
+            target.addClippingLayer(statesForText,
+                                    {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                                     {getInnerSize().x - m_paddingCached.getLeftPlusRight() - arrowSize,
+                                      getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
-            statesForText.transform.translate({m_paddingCached.getLeft() + m_text.getExtraHorizontalPadding(),
-                                               m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTopPlusBottom()) - m_text.getSize().y) / 2.0f)});
+            statesForText.transform.translate(
+                {m_paddingCached.getLeft() + m_text.getExtraHorizontalPadding(),
+                 m_paddingCached.getTop() + (((getInnerSize().y - m_paddingCached.getTopPlusBottom()) - m_text.getSize().y) / 2.0f)});
 
             if (selectedItemIndex >= 0)
                 target.drawText(statesForText, m_text);
@@ -1176,6 +1199,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

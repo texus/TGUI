@@ -47,13 +47,17 @@ struct ChildWindowProperties : public WidgetProperties
         else if (property == "PositionLocked")
             childWindow->setPositionLocked(parseBoolean(value, false));
         else if (property == "MinimumWidth")
-            childWindow->setMinimumSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), childWindow->getMinimumSize().y});
+            childWindow->setMinimumSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(),
+                                         childWindow->getMinimumSize().y});
         else if (property == "MinimumHeight")
-            childWindow->setMinimumSize({childWindow->getMinimumSize().x, tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
+            childWindow->setMinimumSize({childWindow->getMinimumSize().x,
+                                         tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
         else if (property == "MaximumWidth")
-            childWindow->setMaximumSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), childWindow->getMaximumSize().y});
+            childWindow->setMaximumSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(),
+                                         childWindow->getMaximumSize().y});
         else if (property == "MaximumHeight")
-            childWindow->setMaximumSize({childWindow->getMaximumSize().x, tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
+            childWindow->setMaximumSize({childWindow->getMaximumSize().x,
+                                         tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -94,7 +98,6 @@ struct ChildWindowProperties : public WidgetProperties
     }
 
 private:
-
     TGUI_NODISCARD static unsigned int deserializeTitleButtons(const tgui::String& value)
     {
         unsigned int decodedTitleButtons = tgui::ChildWindow::TitleButton::None;

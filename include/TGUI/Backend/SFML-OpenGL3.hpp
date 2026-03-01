@@ -30,9 +30,9 @@
     #error "TGUI wasn't build with the SFML_OPENGL3 backend"
 #endif
 
-#include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+#include <TGUI/Backend/Window/SFML/BackendSFML.hpp>
 
 namespace tgui
 {
@@ -44,7 +44,6 @@ namespace tgui
         class TGUI_API Gui : public BackendGuiSFML
         {
         public:
-
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Default constructor
             ///
@@ -69,7 +68,7 @@ namespace tgui
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             void setWindow(sf::Window& window);
         };
-    }
-}
+    } // namespace SFML_OPENGL3
+} // namespace tgui
 
 #endif // TGUI_BACKEND_SFML_OPENGL3_INCLUDE_HPP

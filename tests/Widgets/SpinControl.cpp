@@ -30,10 +30,10 @@ TEST_CASE("[spinControl]")
 
     SECTION("Signals")
     {
-        spinControl->onValueChange([](){});
-        spinControl->onValueChange([](float){});
+        spinControl->onValueChange([]() {});
+        spinControl->onValueChange([](float) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(spinControl)->getSignal("ValueChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(spinControl)->getSignal("ValueChanged").connect([] {}));
     }
 
     SECTION("WidgetType")

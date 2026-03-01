@@ -33,10 +33,11 @@
     #else
         #include <SDL_ttf.h>
     #endif
-    import tgui;
-    import tgui.backend.sdl_renderer;
+import tgui;
+import tgui.backend.sdl_renderer;
 #else
     #include <TGUI/TGUI.hpp>
+
     #include <TGUI/Backend/SDL-Renderer.hpp>
 #endif
 
@@ -53,7 +54,7 @@ void run_application(SDL_Window* window, SDL_Renderer* renderer)
 }
 
 // Note that no error checking is performed on SDL initialization in this example code
-int main(int, char **)
+int main(int, char**)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -62,8 +63,10 @@ int main(int, char **)
     SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
 #else
     SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-Renderer)",
-                                          SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                          800, 600,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          800,
+                                          600,
                                           SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 #endif

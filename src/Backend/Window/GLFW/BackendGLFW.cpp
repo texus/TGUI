@@ -112,14 +112,15 @@ namespace tgui
 
         switch (modifierKey)
         {
-        case Event::KeyModifier::System:
-            return (glfwGetKey(window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS);
-        case Event::KeyModifier::Control:
-            return (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS);
-        case Event::KeyModifier::Shift:
-            return (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
-        case Event::KeyModifier::Alt:
-            return (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS);
+            case Event::KeyModifier::System:
+                return (glfwGetKey(window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS);
+            case Event::KeyModifier::Control:
+                return (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+                       || (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS);
+            case Event::KeyModifier::Shift:
+                return (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
+            case Event::KeyModifier::Alt:
+                return (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) || (glfwGetKey(window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS);
         }
 
         TGUI_ASSERT(false, "BackendGLFW::isKeyboardModifierPressed called with an invalid value");
@@ -169,78 +170,78 @@ namespace tgui
 #if GLFW_VERSION_MAJOR > 3 || (GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR >= 4)
         switch (type)
         {
-        case Cursor::Type::Arrow:
-            typeGLFW = GLFW_ARROW_CURSOR;
-            break;
-        case Cursor::Type::Text:
-            typeGLFW = GLFW_IBEAM_CURSOR;
-            break;
-        case Cursor::Type::Help: // BackendGLFW doesn't support Cursor::Type::Help
-        case Cursor::Type::Hand:
-            typeGLFW = GLFW_POINTING_HAND_CURSOR;
-            break;
-        case Cursor::Type::SizeLeft:
-        case Cursor::Type::SizeRight:
-        case Cursor::Type::SizeHorizontal:
-            typeGLFW = GLFW_RESIZE_EW_CURSOR;
-            break;
-        case Cursor::Type::SizeTop:
-        case Cursor::Type::SizeBottom:
-        case Cursor::Type::SizeVertical:
-            typeGLFW = GLFW_RESIZE_NS_CURSOR;
-            break;
-        case Cursor::Type::SizeBottomRight:
-        case Cursor::Type::SizeTopLeft:
-            typeGLFW = GLFW_RESIZE_NWSE_CURSOR;
-            break;
-        case Cursor::Type::SizeBottomLeft:
-        case Cursor::Type::SizeTopRight:
-            typeGLFW = GLFW_RESIZE_NESW_CURSOR;
-            break;
-        case Cursor::Type::Crosshair:
-            typeGLFW = GLFW_CROSSHAIR_CURSOR;
-            break;
-        case Cursor::Type::NotAllowed:
-            typeGLFW = GLFW_NOT_ALLOWED_CURSOR;
-            break;
-        case Cursor::Type::Move:
-            typeGLFW = GLFW_RESIZE_ALL_CURSOR;
-            break;
+            case Cursor::Type::Arrow:
+                typeGLFW = GLFW_ARROW_CURSOR;
+                break;
+            case Cursor::Type::Text:
+                typeGLFW = GLFW_IBEAM_CURSOR;
+                break;
+            case Cursor::Type::Help: // BackendGLFW doesn't support Cursor::Type::Help
+            case Cursor::Type::Hand:
+                typeGLFW = GLFW_POINTING_HAND_CURSOR;
+                break;
+            case Cursor::Type::SizeLeft:
+            case Cursor::Type::SizeRight:
+            case Cursor::Type::SizeHorizontal:
+                typeGLFW = GLFW_RESIZE_EW_CURSOR;
+                break;
+            case Cursor::Type::SizeTop:
+            case Cursor::Type::SizeBottom:
+            case Cursor::Type::SizeVertical:
+                typeGLFW = GLFW_RESIZE_NS_CURSOR;
+                break;
+            case Cursor::Type::SizeBottomRight:
+            case Cursor::Type::SizeTopLeft:
+                typeGLFW = GLFW_RESIZE_NWSE_CURSOR;
+                break;
+            case Cursor::Type::SizeBottomLeft:
+            case Cursor::Type::SizeTopRight:
+                typeGLFW = GLFW_RESIZE_NESW_CURSOR;
+                break;
+            case Cursor::Type::Crosshair:
+                typeGLFW = GLFW_CROSSHAIR_CURSOR;
+                break;
+            case Cursor::Type::NotAllowed:
+                typeGLFW = GLFW_NOT_ALLOWED_CURSOR;
+                break;
+            case Cursor::Type::Move:
+                typeGLFW = GLFW_RESIZE_ALL_CURSOR;
+                break;
         }
 #else
         switch (type)
         {
-        case Cursor::Type::SizeBottomRight:
-        case Cursor::Type::SizeTopLeft:
-        case Cursor::Type::SizeBottomLeft:
-        case Cursor::Type::SizeTopRight:
-        case Cursor::Type::Arrow:
-            typeGLFW = GLFW_ARROW_CURSOR;
-            break;
-        case Cursor::Type::Text:
-            typeGLFW = GLFW_IBEAM_CURSOR;
-            break;
-        case Cursor::Type::Help: // BackendGLFW doesn't support Cursor::Type::Help
-        case Cursor::Type::Hand:
-            typeGLFW = GLFW_HAND_CURSOR;
-            break;
-        case Cursor::Type::SizeLeft:
-        case Cursor::Type::SizeRight:
-        case Cursor::Type::SizeHorizontal:
-            typeGLFW = GLFW_HRESIZE_CURSOR;
-            break;
-        case Cursor::Type::SizeTop:
-        case Cursor::Type::SizeBottom:
-        case Cursor::Type::SizeVertical:
-            typeGLFW = GLFW_VRESIZE_CURSOR;
-            break;
-        case Cursor::Type::Move: // GLFW_RESIZE_ALL_CURSOR was only added in GLFW 3.4
-        case Cursor::Type::Crosshair:
-            typeGLFW = GLFW_CROSSHAIR_CURSOR;
-            break;
-        case Cursor::Type::NotAllowed:
-            TGUI_PRINT_WARNING("BackendGLFW doesn't support Cursor::Type::NotAllowed with GLFW < 3.4");
-            break;
+            case Cursor::Type::SizeBottomRight:
+            case Cursor::Type::SizeTopLeft:
+            case Cursor::Type::SizeBottomLeft:
+            case Cursor::Type::SizeTopRight:
+            case Cursor::Type::Arrow:
+                typeGLFW = GLFW_ARROW_CURSOR;
+                break;
+            case Cursor::Type::Text:
+                typeGLFW = GLFW_IBEAM_CURSOR;
+                break;
+            case Cursor::Type::Help: // BackendGLFW doesn't support Cursor::Type::Help
+            case Cursor::Type::Hand:
+                typeGLFW = GLFW_HAND_CURSOR;
+                break;
+            case Cursor::Type::SizeLeft:
+            case Cursor::Type::SizeRight:
+            case Cursor::Type::SizeHorizontal:
+                typeGLFW = GLFW_HRESIZE_CURSOR;
+                break;
+            case Cursor::Type::SizeTop:
+            case Cursor::Type::SizeBottom:
+            case Cursor::Type::SizeVertical:
+                typeGLFW = GLFW_VRESIZE_CURSOR;
+                break;
+            case Cursor::Type::Move: // GLFW_RESIZE_ALL_CURSOR was only added in GLFW 3.4
+            case Cursor::Type::Crosshair:
+                typeGLFW = GLFW_CROSSHAIR_CURSOR;
+                break;
+            case Cursor::Type::NotAllowed:
+                TGUI_PRINT_WARNING("BackendGLFW doesn't support Cursor::Type::NotAllowed with GLFW < 3.4");
+                break;
         }
 #endif
 
@@ -307,6 +308,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

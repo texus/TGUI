@@ -25,8 +25,8 @@
 #ifndef TGUI_BACKEND_RENDER_TARGET_SDL_HPP
 #define TGUI_BACKEND_RENDER_TARGET_SDL_HPP
 
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/SDL_Renderer/BackendTextureSDL.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,7 +38,6 @@ namespace tgui
     class TGUI_API BackendRenderTargetSDL : public BackendRenderTarget
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,12 +80,16 @@ namespace tgui
         /// @param indexCount   Amount of elements in the indices array
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                             const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
+        void drawVertexArray(const RenderStates& states,
+                             const Vertex* vertices,
+                             std::size_t vertexCount,
+                             const unsigned int* indices,
+                             std::size_t indexCount,
+                             const std::shared_ptr<BackendTexture>& texture) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called from addClippingLayer and removeClippingLayer to apply the clipping
         ///
@@ -98,14 +101,14 @@ namespace tgui
         void updateClipping(FloatRect clipRect, FloatRect clipViewport) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         SDL_Renderer* m_renderer = nullptr;
         Transform m_projectionTransform;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

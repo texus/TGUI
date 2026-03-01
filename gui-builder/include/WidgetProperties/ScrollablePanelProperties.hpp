@@ -39,9 +39,11 @@ struct ScrollablePanelProperties : public PanelProperties
         else if (property == "HorizontalScrollbarPolicy")
             panel->getHorizontalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "ContentWidth")
-            panel->setContentSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), panel->getContentSize().y});
+            panel->setContentSize(
+                {tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), panel->getContentSize().y});
         else if (property == "ContentHeight")
-            panel->setContentSize({panel->getContentSize().x, tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
+            panel->setContentSize(
+                {panel->getContentSize().x, tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -50,8 +52,10 @@ struct ScrollablePanelProperties : public PanelProperties
     {
         auto pair = PanelProperties::initProperties(widget);
         auto panel = widget->cast<tgui::ScrollablePanel>();
-        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getVerticalScrollbar()->getPolicy())};
-        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(panel->getHorizontalScrollbar()->getPolicy())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
+                                                 serializeScrollbarPolicy(panel->getVerticalScrollbar()->getPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
+                                                   serializeScrollbarPolicy(panel->getHorizontalScrollbar()->getPolicy())};
         pair.first["ContentWidth"] = {"Float", tgui::String::fromNumber(panel->getContentSize().x)};
         pair.first["ContentHeight"] = {"Float", tgui::String::fromNumber(panel->getContentSize().y)};
 

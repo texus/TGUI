@@ -31,34 +31,34 @@ TEST_CASE("[Panel]")
 
     SECTION("Signals")
     {
-        panel->onMousePress([](){});
-        panel->onMousePress([](tgui::Vector2f){});
+        panel->onMousePress([]() {});
+        panel->onMousePress([](tgui::Vector2f) {});
 
-        panel->onMouseRelease([](){});
-        panel->onMouseRelease([](tgui::Vector2f){});
+        panel->onMouseRelease([]() {});
+        panel->onMouseRelease([](tgui::Vector2f) {});
 
-        panel->onClick([](){});
-        panel->onClick([](tgui::Vector2f){});
+        panel->onClick([]() {});
+        panel->onClick([](tgui::Vector2f) {});
 
-        panel->onDoubleClick([](){});
-        panel->onDoubleClick([](tgui::Vector2f){});
+        panel->onDoubleClick([]() {});
+        panel->onDoubleClick([](tgui::Vector2f) {});
 
-        panel->onRightMousePress([](){});
-        panel->onRightMousePress([](tgui::Vector2f){});
+        panel->onRightMousePress([]() {});
+        panel->onRightMousePress([](tgui::Vector2f) {});
 
-        panel->onRightMouseRelease([](){});
-        panel->onRightMouseRelease([](tgui::Vector2f){});
+        panel->onRightMouseRelease([]() {});
+        panel->onRightMouseRelease([](tgui::Vector2f) {});
 
-        panel->onRightClick([](){});
-        panel->onRightClick([](tgui::Vector2f){});
+        panel->onRightClick([]() {});
+        panel->onRightClick([](tgui::Vector2f) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("MousePressed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("MouseReleased").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("Clicked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("DoubleClicked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightMousePressed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightMouseReleased").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("MousePressed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("MouseReleased").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("Clicked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("DoubleClicked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightMousePressed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightMouseReleased").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panel)->getSignal("RightClicked").connect([] {}));
     }
 
     SECTION("WidgetType")

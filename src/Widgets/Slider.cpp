@@ -267,7 +267,7 @@ namespace tgui
     {
         // Round to nearest allowed value
         if (m_step != 0)
-           value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
+            value = m_minimum + (std::round((value - m_minimum) / m_step) * m_step);
 
         // When the value is below the minimum or above the maximum then adjust it
         if (value < m_minimum)
@@ -444,8 +444,10 @@ namespace tgui
             }
 
             float value = m_thumbWithinTrackCached
-                ? m_maximum - (((pos.y - m_mouseDownOnThumbPos.y) / (getSize().y - m_thumb.height)) * (m_maximum - m_minimum))
-                : m_maximum - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y) * (m_maximum - m_minimum));
+                              ? m_maximum - (((pos.y - m_mouseDownOnThumbPos.y) / (getSize().y - m_thumb.height)) * (m_maximum - m_minimum))
+                              : m_maximum
+                                    - (((pos.y + (m_thumb.height / 2.0f) - m_mouseDownOnThumbPos.y) / getSize().y)
+                                       * (m_maximum - m_minimum));
 
             if (m_invertedDirection)
                 value = m_maximum - (value - m_minimum);
@@ -455,7 +457,8 @@ namespace tgui
             // Set the thumb position for smooth scrolling
             const float thumbTop = pos.y - m_mouseDownOnThumbPos.y;
             if ((m_thumbWithinTrackCached && ((thumbTop > 0) && (thumbTop + m_thumb.height < getSize().y)))
-             || (!m_thumbWithinTrackCached && ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))))
+                || (!m_thumbWithinTrackCached
+                    && ((thumbTop + (m_thumb.height / 2.0f) > 0) && (thumbTop + (m_thumb.height / 2.0f) < getSize().y))))
                 m_thumb.top = thumbTop;
             else
                 updateThumbPosition();
@@ -471,8 +474,9 @@ namespace tgui
             }
 
             float value = m_thumbWithinTrackCached
-                ? (((pos.x - m_mouseDownOnThumbPos.x) / (getSize().x - m_thumb.width)) * (m_maximum - m_minimum)) + m_minimum
-                : (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum)) + m_minimum;
+                              ? (((pos.x - m_mouseDownOnThumbPos.x) / (getSize().x - m_thumb.width)) * (m_maximum - m_minimum)) + m_minimum
+                              : (((pos.x + (m_thumb.width / 2.0f) - m_mouseDownOnThumbPos.x) / getSize().x) * (m_maximum - m_minimum))
+                                    + m_minimum;
 
             if (m_invertedDirection)
                 value = m_maximum - (value - m_minimum);
@@ -482,7 +486,8 @@ namespace tgui
             // Set the thumb position for smooth scrolling
             const float thumbLeft = pos.x - m_mouseDownOnThumbPos.x;
             if ((m_thumbWithinTrackCached && ((thumbLeft > 0) && (thumbLeft + m_thumb.width < getSize().x)))
-             || (!m_thumbWithinTrackCached && ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))))
+                || (!m_thumbWithinTrackCached
+                    && ((thumbLeft + (m_thumb.width / 2.0f) > 0) && (thumbLeft + (m_thumb.width / 2.0f) < getSize().x))))
                 m_thumb.left = thumbLeft;
             else
                 updateThumbPosition();
@@ -627,7 +632,8 @@ namespace tgui
         node->propertyValuePairs[U"Value"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_value));
         node->propertyValuePairs[U"Step"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_step));
         node->propertyValuePairs[U"InvertedDirection"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_invertedDirection));
-        node->propertyValuePairs[U"ChangeValueOnScroll"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_changeValueOnScroll));
+        node->propertyValuePairs[U"ChangeValueOnScroll"] = std::make_unique<DataIO::ValueNode>(
+            Serializer::serialize(m_changeValueOnScroll));
         return node;
     }
 
@@ -646,9 +652,11 @@ namespace tgui
         if (node->propertyValuePairs[U"Step"])
             setStep(node->propertyValuePairs[U"Step"]->value.toFloat());
         if (node->propertyValuePairs[U"InvertedDirection"])
-            setInvertedDirection(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"InvertedDirection"]->value).getBool());
+            setInvertedDirection(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"InvertedDirection"]->value).getBool());
         if (node->propertyValuePairs[U"ChangeValueOnScroll"])
-            setChangeValueOnScroll(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ChangeValueOnScroll"]->value).getBool());
+            setChangeValueOnScroll(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"ChangeValueOnScroll"]->value).getBool());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -736,9 +744,15 @@ namespace tgui
             {
                 // Draw the borders around the thumb
                 if (m_mouseHover && m_borderColorHoverCached.isSet())
-                    target.drawBorders(states, m_bordersCached, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
+                    target.drawBorders(states,
+                                       m_bordersCached,
+                                       {m_thumb.width, m_thumb.height},
+                                       Color::applyOpacity(m_borderColorHoverCached, m_opacityCached));
                 else
-                    target.drawBorders(states, m_bordersCached, {m_thumb.width, m_thumb.height}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                    target.drawBorders(states,
+                                       m_bordersCached,
+                                       {m_thumb.width, m_thumb.height},
+                                       Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
                 states.transform.translate(m_bordersCached.getOffset());
             }
@@ -761,6 +775,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

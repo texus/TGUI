@@ -27,8 +27,8 @@
 
 #include <raylib.h>
 
-#include <numeric>
 #include <cmath>
+#include <numeric>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -86,14 +86,25 @@ namespace tgui
         int codePointInt = static_cast<int>(codePoint);
 #if (RAYLIB_VERSION_MAJOR > 5) || (RAYLIB_VERSION_MAJOR == 5 && RAYLIB_VERSION_MINOR >= 6)
         int glyphCount;
-        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(scaledTextSize), &codePointInt, 1, FONT_DEFAULT, &glyphCount);
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(),
+                                             static_cast<int>(m_fileSize),
+                                             static_cast<int>(scaledTextSize),
+                                             &codePointInt,
+                                             1,
+                                             FONT_DEFAULT,
+                                             &glyphCount);
         if (!glyphsInfo)
             return false;
 
         const bool glyphHasBitmap = glyphCount > 0 ? (glyphsInfo[0].image.data != nullptr) : false;
         UnloadFontData(glyphsInfo, glyphCount);
 #else
-        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(scaledTextSize), &codePointInt, 1, FONT_DEFAULT);
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(),
+                                             static_cast<int>(m_fileSize),
+                                             static_cast<int>(scaledTextSize),
+                                             &codePointInt,
+                                             1,
+                                             FONT_DEFAULT);
         if (!glyphsInfo)
             return false;
 
@@ -110,14 +121,20 @@ namespace tgui
         std::array<int, 3> codePoints = {{'a', 'g', 0x00CA}};
 #if (RAYLIB_VERSION_MAJOR > 5) || (RAYLIB_VERSION_MAJOR == 5 && RAYLIB_VERSION_MINOR >= 6)
         int glyphCount;
-        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(scaledTextSize),
-                                             codePoints.data(), static_cast<int>(codePoints.size()), FONT_DEFAULT, &glyphCount);
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(),
+                                             static_cast<int>(m_fileSize),
+                                             static_cast<int>(scaledTextSize),
+                                             codePoints.data(),
+                                             static_cast<int>(codePoints.size()),
+                                             FONT_DEFAULT,
+                                             &glyphCount);
         if (!glyphsInfo)
             return static_cast<int>(scaledTextSize);
 
         int ascent;
-        if (glyphCount > 0 && glyphsInfo[glyphCount-1].value == 0x00CA && glyphsInfo[glyphCount-1].image.height) // height of capital e-circumflex
-            ascent = glyphsInfo[glyphCount-1].image.height;
+        if (glyphCount > 0 && glyphsInfo[glyphCount - 1].value == 0x00CA
+            && glyphsInfo[glyphCount - 1].image.height) // height of capital e-circumflex
+            ascent = glyphsInfo[glyphCount - 1].image.height;
         else if (glyphCount > 0 && glyphsInfo[0].value == 'a' && glyphsInfo[0].image.height) // height of "a"
             ascent = glyphsInfo[0].image.height + glyphsInfo[0].offsetY;
         else // Fall back to just using font size
@@ -132,8 +149,12 @@ namespace tgui
 
         UnloadFontData(glyphsInfo, static_cast<int>(codePoints.size()));
 #else
-        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(scaledTextSize),
-                                             codePoints.data(), static_cast<int>(codePoints.size()), FONT_DEFAULT);
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(),
+                                             static_cast<int>(m_fileSize),
+                                             static_cast<int>(scaledTextSize),
+                                             codePoints.data(),
+                                             static_cast<int>(codePoints.size()),
+                                             FONT_DEFAULT);
         if (!glyphsInfo)
             return static_cast<int>(scaledTextSize);
 
@@ -177,13 +198,17 @@ namespace tgui
 
             std::array<int, 96> codePoints;
             std::iota(codePoints.begin(), codePoints.begin() + 95, 32); // Fill the array with codepoints 32-126
-            codePoints[95] = 0x00CA; // capital e-circumflex to estimate font ascent
+            codePoints[95] = 0x00CA;                                    // capital e-circumflex to estimate font ascent
 
 #if (RAYLIB_VERSION_MAJOR > 5) || (RAYLIB_VERSION_MAJOR == 5 && RAYLIB_VERSION_MINOR >= 6)
             int glyphCount;
-            GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize),
+            GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(),
+                                                 static_cast<int>(m_fileSize),
                                                  static_cast<int>(m_correctedTextSizes[scaledTextSize]),
-                                                 codePoints.data(), static_cast<int>(codePoints.size()), FONT_DEFAULT, &glyphCount);
+                                                 codePoints.data(),
+                                                 static_cast<int>(codePoints.size()),
+                                                 FONT_DEFAULT,
+                                                 &glyphCount);
             if (glyphsInfo)
             {
                 // Raylib has no way of getting the font ascent and only provides a character offset from the top instead of the baseline.
@@ -217,9 +242,12 @@ namespace tgui
                 m_glyphs.insert({constructGlyphKey(U'a', scaledTextSize, bold, scaledOutlineThickness), FontGlyph()});
             }
 #else
-            GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize),
+            GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(),
+                                                 static_cast<int>(m_fileSize),
                                                  static_cast<int>(m_correctedTextSizes[scaledTextSize]),
-                                                 codePoints.data(), static_cast<int>(codePoints.size()), FONT_DEFAULT);
+                                                 codePoints.data(),
+                                                 static_cast<int>(codePoints.size()),
+                                                 FONT_DEFAULT);
             if (glyphsInfo)
             {
                 // Raylib has no way of getting the font ascent and only provides a character offset from the top instead of the baseline.
@@ -227,8 +255,8 @@ namespace tgui
                 // not exist in the font then we will use the height of the "a" glyph plus the offset from the top position.
                 if (glyphsInfo[95].image.height) // height of capital e-circumflex
                     m_cachedAscents[scaledTextSize] = glyphsInfo[95].image.height;
-                else if (glyphsInfo[97-32].image.height) // height of "a"
-                    m_cachedAscents[scaledTextSize] = glyphsInfo[97-32].image.height + glyphsInfo[97-32].offsetY;
+                else if (glyphsInfo[97 - 32].image.height) // height of "a"
+                    m_cachedAscents[scaledTextSize] = glyphsInfo[97 - 32].image.height + glyphsInfo[97 - 32].offsetY;
                 else // Fall back to just using font size
                     m_cachedAscents[scaledTextSize] = static_cast<int>(scaledTextSize);
 
@@ -253,7 +281,13 @@ namespace tgui
         int codePointInt = static_cast<int>(codePoint);
 #if (RAYLIB_VERSION_MAJOR > 5) || (RAYLIB_VERSION_MAJOR == 5 && RAYLIB_VERSION_MINOR >= 6)
         int glyphCount;
-        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(m_correctedTextSizes[scaledTextSize]), &codePointInt, 1, FONT_DEFAULT, &glyphCount);
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(),
+                                             static_cast<int>(m_fileSize),
+                                             static_cast<int>(m_correctedTextSizes[scaledTextSize]),
+                                             &codePointInt,
+                                             1,
+                                             FONT_DEFAULT,
+                                             &glyphCount);
         if (!glyphsInfo || glyphCount == 0)
         {
             // If the glyph couldn't be loaded then it's undefined whether the LoadFontData returns a nullptr (because it calls calloc with 0 objects).
@@ -265,7 +299,12 @@ namespace tgui
         FontGlyph glyph = loadGlyph(glyphsInfo[0], codePoint, scaledTextSize, bold, scaledOutlineThickness);
         UnloadFontData(glyphsInfo, glyphCount);
 #else
-        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(), static_cast<int>(m_fileSize), static_cast<int>(m_correctedTextSizes[scaledTextSize]), &codePointInt, 1, FONT_DEFAULT);
+        GlyphInfo* glyphsInfo = LoadFontData(m_fileContents.get(),
+                                             static_cast<int>(m_fileSize),
+                                             static_cast<int>(m_correctedTextSizes[scaledTextSize]),
+                                             &codePointInt,
+                                             1,
+                                             FONT_DEFAULT);
         if (!glyphsInfo)
             return m_glyphs.insert({glyphKey, FontGlyph()}).first->second;
 
@@ -404,9 +443,8 @@ namespace tgui
             glyph.bounds.height = static_cast<float>(glyphInfo.image.height + (2 * outlineInt)) / m_fontScale;
 
             const auto imagePixels = static_cast<const std::uint8_t*>(glyphInfo.image.data);
-            if ((glyphInfo.image.mipmaps == 1)
-             && (glyphInfo.image.format == PIXELFORMAT_UNCOMPRESSED_GRAYSCALE)
-             && (glyphInfo.image.width > 0) && (glyphInfo.image.height > 0))
+            if ((glyphInfo.image.mipmaps == 1) && (glyphInfo.image.format == PIXELFORMAT_UNCOMPRESSED_GRAYSCALE)
+                && (glyphInfo.image.width > 0) && (glyphInfo.image.height > 0))
             {
                 const unsigned int imageWidth = static_cast<unsigned int>(glyphInfo.image.width);
                 const unsigned int imageHeight = static_cast<unsigned int>(glyphInfo.image.height);
@@ -416,9 +454,11 @@ namespace tgui
                 // We leave a small padding around characters, so that filtering doesn't pollute them with pixels from neighbors.
                 const unsigned int padding = 2;
                 if (bold)
-                    glyph.textureRect = findAvailableGlyphRect(imageWidth + 1 + (2 * outlineUInt) + (2 * padding), imageHeight + (2 * outlineUInt) + (2 * padding));
+                    glyph.textureRect = findAvailableGlyphRect(imageWidth + 1 + (2 * outlineUInt) + (2 * padding),
+                                                               imageHeight + (2 * outlineUInt) + (2 * padding));
                 else
-                    glyph.textureRect = findAvailableGlyphRect(imageWidth + (2 * outlineUInt) + (2 * padding), imageHeight + (2 * outlineUInt) + (2 * padding));
+                    glyph.textureRect = findAvailableGlyphRect(imageWidth + (2 * outlineUInt) + (2 * padding),
+                                                               imageHeight + (2 * outlineUInt) + (2 * padding));
                 glyph.textureRect.left += padding;
                 glyph.textureRect.top += padding;
                 glyph.textureRect.width -= 2 * padding;
@@ -444,7 +484,7 @@ namespace tgui
                             }
 
                             const std::size_t index = glyph.textureRect.left + static_cast<std::size_t>(outlineInt + x)
-                                + ((glyph.textureRect.top + static_cast<std::size_t>(outlineInt + y)) * m_textureSize);
+                                                      + ((glyph.textureRect.top + static_cast<std::size_t>(outlineInt + y)) * m_textureSize);
                             m_pixels[index * 4 + 3] = pixelValue;
                         }
                     }
@@ -567,6 +607,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

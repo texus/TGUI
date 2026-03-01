@@ -50,10 +50,10 @@ namespace tgui
 
     EditBoxSlider::EditBoxSlider(const EditBoxSlider& other) :
         SubwidgetContainer{other},
-        onValueChange     {other.onValueChange},
-        m_decimalPlaces   {other.m_decimalPlaces},
-        m_editBox         {m_container->get<EditBox>(U"EditBox")},
-        m_slider          {m_container->get<Slider>(U"Slider")}
+        onValueChange{other.onValueChange},
+        m_decimalPlaces{other.m_decimalPlaces},
+        m_editBox{m_container->get<EditBox>(U"EditBox")},
+        m_slider{m_container->get<Slider>(U"Slider")}
     {
         init();
     }
@@ -62,10 +62,10 @@ namespace tgui
 
     EditBoxSlider::EditBoxSlider(EditBoxSlider&& other) noexcept :
         SubwidgetContainer{std::move(other)},
-        onValueChange     {std::move(other.onValueChange)},
-        m_decimalPlaces   {std::move(other.m_decimalPlaces)},
-        m_editBox         {std::move(other.m_editBox)},
-        m_slider          {std::move(other.m_slider)}
+        onValueChange{std::move(other.onValueChange)},
+        m_decimalPlaces{std::move(other.m_decimalPlaces)},
+        m_editBox{std::move(other.m_editBox)},
+        m_slider{std::move(other.m_slider)}
     {
         init();
     }
@@ -77,10 +77,10 @@ namespace tgui
         if (this != &other)
         {
             SubwidgetContainer::operator=(other);
-            onValueChange   = other.onValueChange;
+            onValueChange = other.onValueChange;
             m_decimalPlaces = other.m_decimalPlaces;
-            m_editBox       = m_container->get<EditBox>(U"EditBox");
-            m_slider        = m_container->get<Slider>(U"Slider");
+            m_editBox = m_container->get<EditBox>(U"EditBox");
+            m_slider = m_container->get<Slider>(U"Slider");
 
             init();
         }
@@ -94,10 +94,10 @@ namespace tgui
     {
         if (this != &other)
         {
-            onValueChange   = std::move(other.onValueChange);
+            onValueChange = std::move(other.onValueChange);
             m_decimalPlaces = std::move(other.m_decimalPlaces);
-            m_editBox       = std::move(other.m_editBox);
-            m_slider        = std::move(other.m_slider);
+            m_editBox = std::move(other.m_editBox);
+            m_slider = std::move(other.m_slider);
             SubwidgetContainer::operator=(std::move(other));
 
             init();
@@ -185,7 +185,8 @@ namespace tgui
 
     Vector2f EditBoxSlider::getFullSize() const
     {
-        return {m_slider->getFullSize().x, m_editBox->getSize().y + m_slider->getSize().y + ((m_slider->getFullSize().y - m_slider->getSize().y) / 2.f)};
+        return {m_slider->getFullSize().x,
+                m_editBox->getSize().y + m_slider->getSize().y + ((m_slider->getFullSize().y - m_slider->getSize().y) / 2.f)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,26 +322,32 @@ namespace tgui
         m_slider->setPosition(bindLeft(m_editBox), bindBottom(m_editBox));
 
         m_slider->onValueChange.disconnectAll();
-        m_slider->onValueChange([this](const float val) {
-            setString(String::fromNumberRounded(val, m_decimalPlaces));
-            onValueChange.emit(this, val);
-        });
+        m_slider->onValueChange(
+            [this](const float val)
+            {
+                setString(String::fromNumberRounded(val, m_decimalPlaces));
+                onValueChange.emit(this, val);
+            });
 
         m_editBox->onTextChange.disconnectAll();
-        m_editBox->onTextChange([this](const String &text) {
-            const float value = text.toFloat();
+        m_editBox->onTextChange(
+            [this](const String& text)
+            {
+                const float value = text.toFloat();
 
-            if (inRange(value))
-                m_slider->setValue(value);
-        });
+                if (inRange(value))
+                    m_slider->setValue(value);
+            });
 
         m_editBox->onReturnOrUnfocus.disconnectAll();
-        m_editBox->onReturnOrUnfocus([this](const String &text) {
-            const float val = text.toFloat();
+        m_editBox->onReturnOrUnfocus(
+            [this](const String& text)
+            {
+                const float val = text.toFloat();
 
-            if (!inRange(val))
-                setString(String::fromNumberRounded(m_slider->getValue(), m_decimalPlaces));
-        });
+                if (!inRange(val))
+                    setString(String::fromNumberRounded(m_slider->getValue(), m_decimalPlaces));
+            });
 
         const Vector2f editBoxSize = m_editBox->getSize();
         const Vector2f sliderSize = m_slider->getSize();
@@ -378,6 +385,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -52,7 +52,6 @@ namespace tgui
     class TGUI_API BackendFontSDLttf : public BackendFont
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Destructor that cleans up the SDL resources
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,8 +216,8 @@ namespace tgui
         TGUI_NODISCARD TTF_Font* getInternalFont(unsigned int characterSize);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Finds the location and thickness of the underline, for the getUnderlinePosition and getUnderlineThickness functions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,11 +229,16 @@ namespace tgui
         UIntRect findAvailableGlyphRect(unsigned int width, unsigned int height);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         struct Row
         {
-            Row(unsigned int rowTop, unsigned int rowHeight) : width(0), top(rowTop), height(rowHeight) {}
+            Row(unsigned int rowTop, unsigned int rowHeight) :
+                width(0),
+                top(rowTop),
+                height(rowHeight)
+            {
+            }
 
             unsigned int width;  //!< Current width of the row
             unsigned int top;    //!< Y position of the row into the texture
@@ -252,7 +256,7 @@ namespace tgui
         std::unordered_map<unsigned int, std::pair<int, int>> m_cachedUnderlineInfo; // character size -> (underline vertical offset, underline thickness)
 
         std::unordered_map<std::uint64_t, FontGlyph> m_glyphs;
-        unsigned int     m_nextRow = 3; //!< Y position of the next new row in the texture (first 2 rows contain pixels for underlining)
+        unsigned int m_nextRow = 3; //!< Y position of the next new row in the texture (first 2 rows contain pixels for underlining)
         std::vector<Row> m_rows;
 
         std::unique_ptr<std::uint8_t[]> m_pixels;
@@ -260,7 +264,7 @@ namespace tgui
         unsigned int m_textureSize = 0;
         unsigned int m_textureVersion = 0;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

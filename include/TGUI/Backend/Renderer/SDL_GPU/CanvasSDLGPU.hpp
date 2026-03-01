@@ -25,11 +25,12 @@
 #ifndef TGUI_CANVAS_SDL_GPU_HPP
 #define TGUI_CANVAS_SDL_GPU_HPP
 
-#include <TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp>
-#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
-#include <TGUI/Widgets/CanvasBase.hpp>
-
 #include <TGUI/extlibs/IncludeSDL.hpp>
+
+#include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp>
+
+#include <TGUI/Widgets/CanvasBase.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,8 +61,7 @@ namespace tgui
     class TGUI_API CanvasSDLGPU : public CanvasBase
     {
     public:
-
-        using Ptr = std::shared_ptr<CanvasSDLGPU>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<CanvasSDLGPU>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CanvasSDLGPU>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "CanvasSDLGPU"; //!< Type name of the widget
@@ -144,20 +144,20 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         Vector2u m_textureSize;
         std::shared_ptr<BackendTextureSDLGPU> m_backendTexture;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

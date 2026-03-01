@@ -25,8 +25,9 @@
 #ifndef TGUI_CANVAS_GLES2_HPP
 #define TGUI_CANVAS_GLES2_HPP
 
-#include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
+
 #include <TGUI/Widgets/CanvasBase.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,8 +61,7 @@ namespace tgui
     class TGUI_API CanvasGLES2 : public CanvasBase
     {
     public:
-
-        using Ptr = std::shared_ptr<CanvasGLES2>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<CanvasGLES2>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CanvasGLES2>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "CanvasGLES2"; //!< Type name of the widget
@@ -144,23 +144,23 @@ namespace tgui
         unsigned int bindFramebuffer() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         unsigned int m_textureId = 0;
         unsigned int m_frameBuffer = 0;
         Vector2u m_textureSize;
         Vector2u m_usedTextureSize;
         std::shared_ptr<BackendTextureGLES2> m_backendTexture = std::make_shared<BackendTextureGLES2>();
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

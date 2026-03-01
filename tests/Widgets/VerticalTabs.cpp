@@ -31,10 +31,10 @@ TEST_CASE("[VerticalTabs]")
 
     SECTION("Signals")
     {
-        tabs->onTabSelect([](){});
-        tabs->onTabSelect([](const tgui::String&){});
+        tabs->onTabSelect([]() {});
+        tabs->onTabSelect([](const tgui::String&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(tabs)->getSignal("TabSelected").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(tabs)->getSignal("TabSelected").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -235,7 +235,7 @@ TEST_CASE("[VerticalTabs]")
         REQUIRE(!tabs->getTabVisible(2)); // Tab that doesn't exist can't be visible
 
         tabs->setTabVisible(0, false);
-        tabs->setTabVisible(2, true);  // Showing tab that doesn't exist has no effect
+        tabs->setTabVisible(2, true); // Showing tab that doesn't exist has no effect
 
         REQUIRE(!tabs->getTabVisible(0));
         REQUIRE(tabs->getTabVisible(1));
@@ -254,7 +254,7 @@ TEST_CASE("[VerticalTabs]")
         REQUIRE(!tabs->getTabEnabled(2)); // Tab that doesn't exist can't be enabled
 
         tabs->setTabEnabled(0, false);
-        tabs->setTabEnabled(2, true);  // Enabling tab that doesn't exist has no effect
+        tabs->setTabEnabled(2, true); // Enabling tab that doesn't exist has no effect
 
         REQUIRE(!tabs->getTabEnabled(0));
         REQUIRE(tabs->getTabEnabled(1));
@@ -502,17 +502,18 @@ TEST_CASE("[VerticalTabs]")
         renderer.setOpacity(0.7f);
         tabs->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
-                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
-                                        renderer.setSelectedBackgroundColorHover(tgui::Color::Blue);
-                                        renderer.setTextColorHover(tgui::Color::Magenta);
-                                        renderer.setSelectedTextColorHover(tgui::Color::Yellow);
-                                        if (textured)
-                                        {
-                                            renderer.setTextureTabHover("resources/Texture3.png");
-                                            renderer.setTextureSelectedTabHover("resources/Texture4.png");
-                                        }
-                                     };
+        auto setHoverRenderer = [&](bool textured)
+        {
+            renderer.setBackgroundColorHover(tgui::Color::Cyan);
+            renderer.setSelectedBackgroundColorHover(tgui::Color::Blue);
+            renderer.setTextColorHover(tgui::Color::Magenta);
+            renderer.setSelectedTextColorHover(tgui::Color::Yellow);
+            if (textured)
+            {
+                renderer.setTextureTabHover("resources/Texture3.png");
+                renderer.setTextureSelectedTabHover("resources/Texture4.png");
+            }
+        };
 
         SECTION("Colored")
         {

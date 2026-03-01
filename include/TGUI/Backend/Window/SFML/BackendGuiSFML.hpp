@@ -26,6 +26,7 @@
 #define TGUI_BACKEND_GUI_SFML_HPP
 
 #include <TGUI/Config.hpp>
+
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
 #include <SFML/Window.hpp>
@@ -39,7 +40,6 @@ namespace tgui
     class TGUI_API BackendGuiSFML : public BackendGui
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         ///
@@ -144,55 +144,61 @@ namespace tgui
             if (!m_window)
                 return;
 
-            m_window->handleEvents([this,&handlers...](auto&& event) {
-                using EventType = decltype(event);
-
-                // We can't properly detect whether the handlers are valid (e.g. when using an invalid event type),
-                // but we can do some tests that will give errors on handlers that are wrong but almost correct.
-                static_assert(!std::disjunction_v<std::is_invocable_r<bool, Ts, EventType, bool>...>, "Handler for handleWindowEvents can't have both an extra bool argument and a bool return type");
-
-                // If any of the handlers return a bool then they will be executed before the event is passed to the gui.
-                // The returned boolean then decides whether the gui should still process the event or not.
-                // Only one of the handlers should match at most, but letting the compiler figure out which handler to
-                // call by creating an overload set is tricky because only handlers with a bool returns should be called here.
-                auto callIfMatchesAndReturnsBool = [&event](auto&& handler)
+            m_window->handleEvents(
+                [this, &handlers...](auto&& event)
                 {
-                    // std::is_invocable_r_v would still return true if the type is convertable to bool, so we use std::invoke_result_t to test the return type
-                    using FuncType = decltype(handler);
-                    if constexpr (std::is_invocable_v<FuncType, EventType>)
+                    using EventType = decltype(event);
+
+                    // We can't properly detect whether the handlers are valid (e.g. when using an invalid event type),
+                    // but we can do some tests that will give errors on handlers that are wrong but almost correct.
+                    static_assert(!std::disjunction_v<std::is_invocable_r<bool, Ts, EventType, bool>...>,
+                                  "Handler for handleWindowEvents can't have both an extra bool argument and a bool return type");
+
+                    // If any of the handlers return a bool then they will be executed before the event is passed to the gui.
+                    // The returned boolean then decides whether the gui should still process the event or not.
+                    // Only one of the handlers should match at most, but letting the compiler figure out which handler to
+                    // call by creating an overload set is tricky because only handlers with a bool returns should be called here.
+                    auto callIfMatchesAndReturnsBool = [&event](auto&& handler)
                     {
-                        if constexpr (std::is_same_v<std::invoke_result_t<FuncType, EventType>, bool>)
-                            return std::invoke(std::forward<FuncType>(handler), std::forward<EventType>(event));
-                        else
+                        // std::is_invocable_r_v would still return true if the type is convertable to bool, so we use std::invoke_result_t to test the return type
+                        using FuncType = decltype(handler);
+                        if constexpr (std::is_invocable_v<FuncType, EventType>)
                         {
-                            static_assert(std::is_same_v<std::invoke_result_t<FuncType, EventType>, void>, "Handler for handleWindowEvents must have either 'void' or 'bool' return type");
-                            return true;
+                            if constexpr (std::is_same_v<std::invoke_result_t<FuncType, EventType>, bool>)
+                                return std::invoke(std::forward<FuncType>(handler), std::forward<EventType>(event));
+                            else
+                            {
+                                static_assert(std::is_same_v<std::invoke_result_t<FuncType, EventType>, void>,
+                                              "Handler for handleWindowEvents must have either 'void' or 'bool' return type");
+                                return true;
+                            }
                         }
-                    }
-                    else
-                        return true;
-                };
-                const bool passEventToGui = (callIfMatchesAndReturnsBool(std::forward<Ts>(handlers)) && ...);
+                        else
+                            return true;
+                    };
+                    const bool passEventToGui = (callIfMatchesAndReturnsBool(std::forward<Ts>(handlers)) && ...);
 
-                // Let the gui handle the event
-                bool eventHandledByGui = false;
-                if (passEventToGui)
-                    eventHandledByGui = handleEvent(std::forward<EventType>(event));
+                    // Let the gui handle the event
+                    bool eventHandledByGui = false;
+                    if (passEventToGui)
+                        eventHandledByGui = handleEvent(std::forward<EventType>(event));
 
-                // After the gui has handled the events, we call the handlers that return nothing.
-                // These handlers can have an optional bool parameter that indicates whether the event was processed by the gui.
-                auto callIfMatchesAndReturnsVoid = [&event](auto&& handler, auto&&... extraArgs)
-                {
-                    using FuncType = decltype(handler);
-                    if constexpr (std::is_invocable_v<FuncType, EventType, decltype(extraArgs)...>)
+                    // After the gui has handled the events, we call the handlers that return nothing.
+                    // These handlers can have an optional bool parameter that indicates whether the event was processed by the gui.
+                    auto callIfMatchesAndReturnsVoid = [&event](auto&& handler, auto&&... extraArgs)
                     {
-                        if constexpr (std::is_same_v<std::invoke_result_t<FuncType, EventType, decltype(extraArgs)...>, void>)
-                            std::invoke(std::forward<FuncType>(handler), std::forward<EventType>(event), std::forward<decltype(extraArgs)>(extraArgs)...);
-                    }
-                };
-                (callIfMatchesAndReturnsVoid(std::forward<Ts>(handlers)), ...);
-                (callIfMatchesAndReturnsVoid(std::forward<Ts>(handlers), eventHandledByGui), ...);
-            });
+                        using FuncType = decltype(handler);
+                        if constexpr (std::is_invocable_v<FuncType, EventType, decltype(extraArgs)...>)
+                        {
+                            if constexpr (std::is_same_v<std::invoke_result_t<FuncType, EventType, decltype(extraArgs)...>, void>)
+                                std::invoke(std::forward<FuncType>(handler),
+                                            std::forward<EventType>(event),
+                                            std::forward<decltype(extraArgs)>(extraArgs)...);
+                        }
+                    };
+                    (callIfMatchesAndReturnsVoid(std::forward<Ts>(handlers)), ...);
+                    (callIfMatchesAndReturnsVoid(std::forward<Ts>(handlers), eventHandledByGui), ...);
+                });
         }
 #endif
 
@@ -295,8 +301,8 @@ namespace tgui
         TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the window which the gui should use
         ///
@@ -310,8 +316,8 @@ namespace tgui
         void updateContainerSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         sf::Window* m_window = nullptr;
 
         bool m_modifierKeySystemPressed = false;
@@ -321,7 +327,7 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

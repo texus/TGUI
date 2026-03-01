@@ -27,9 +27,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Core.hpp>
 #include <TGUI/AllWidgets.hpp>
-
+#include <TGUI/Core.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
 #include <TGUI/Loading/Serializer.hpp>
 

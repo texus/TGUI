@@ -25,8 +25,8 @@
 #include <TGUI/String.hpp>
 
 #include <algorithm>
-#include <cctype> // tolower, toupper, isspace
-#include <cwctype> // iswspace, iswalpha
+#include <cctype>   // tolower, toupper, isspace
+#include <cwctype>  // iswspace, iswalpha
 #include <iterator> // distance
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
@@ -37,14 +37,14 @@ namespace
 {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD inline bool compareCharIgnoreCase(char32_t char1, char32_t char2) {
+    TGUI_NODISCARD inline bool compareCharIgnoreCase(char32_t char1, char32_t char2)
+    {
         if (char1 == char2)
             return true;
         if ((char1 < 128) && (char2 < 128))
             return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
         return false;
     }
-
 } // anonymous namespace
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ namespace tgui
     bool isWhitespace(char32_t character)
     {
         // wchar_t is only 2 bytes on Windows
-        TGUI_IF_CONSTEXPR (sizeof(wchar_t) < 4)
+        TGUI_IF_CONSTEXPR(sizeof(wchar_t) < 4)
         {
             if (character > 0xFFFF)
                 return false;
@@ -81,7 +81,7 @@ namespace tgui
     bool isAlpha(char32_t character)
     {
         // wchar_t is only 2 bytes on Windows
-        TGUI_IF_CONSTEXPR (sizeof(wchar_t) < 4)
+        TGUI_IF_CONSTEXPR(sizeof(wchar_t) < 4)
         {
             if (character > 0xFFFF)
                 return false;
@@ -197,11 +197,16 @@ namespace tgui
 
     String String::trim() const
     {
-        const auto firstIt = std::find_if(m_string.cbegin(), m_string.cend(), [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); });
+        const auto firstIt = std::find_if(m_string.cbegin(),
+                                          m_string.cend(),
+                                          [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); });
         if (firstIt == m_string.end())
             return {};
 
-        const auto lastIt = std::find_if(m_string.crbegin(), m_string.crend(), [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); }).base();
+        const auto lastIt = std::find_if(m_string.crbegin(),
+                                         m_string.crend(),
+                                         [](char32_t c) { return (c >= 256) || !std::isspace(static_cast<unsigned char>(c)); })
+                                .base();
         return String(firstIt, lastIt);
     }
 
@@ -262,7 +267,11 @@ namespace tgui
         if (substring.length() > length())
             return false;
 
-        return std::equal(m_string.cbegin(), m_string.cbegin() + static_cast<std::ptrdiff_t>(substring.length()), substring.cbegin(), substring.cend(), &compareCharIgnoreCase);
+        return std::equal(m_string.cbegin(),
+                          m_string.cbegin() + static_cast<std::ptrdiff_t>(substring.length()),
+                          substring.cbegin(),
+                          substring.cend(),
+                          &compareCharIgnoreCase);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,8 +290,11 @@ namespace tgui
         if (substring.length() > length())
             return false;
 
-        return std::equal(m_string.cbegin() + static_cast<std::ptrdiff_t>(length() - substring.length()), m_string.cend(),
-                          substring.cbegin(), substring.cend(), &compareCharIgnoreCase);
+        return std::equal(m_string.cbegin() + static_cast<std::ptrdiff_t>(length() - substring.length()),
+                          m_string.cend(),
+                          substring.cbegin(),
+                          substring.cend(),
+                          &compareCharIgnoreCase);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -483,19 +495,25 @@ namespace tgui
 
     String::String(const std::string& str, std::size_t pos, std::size_t count) :
         m_string(utf::convertUtf8toUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos),
-                                         ((count != npos) && (pos + count < str.length())) ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count)) : str.cend()))
+                                         ((count != npos) && (pos + count < str.length()))
+                                             ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count))
+                                             : str.cend()))
     {
     }
 
     String::String(const std::wstring& str, std::size_t pos, std::size_t count) :
         m_string(utf::convertWidetoUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos),
-                                         ((count != npos) && (pos + count < str.length())) ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count)) : str.cend()))
+                                         ((count != npos) && (pos + count < str.length()))
+                                             ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count))
+                                             : str.cend()))
     {
     }
 
     String::String(const std::u16string& str, std::size_t pos, std::size_t count) :
         m_string(utf::convertUtf16toUtf32(str.cbegin() + static_cast<std::ptrdiff_t>(pos),
-                                          ((count != npos) && (pos + count < str.length())) ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count)) : str.cend()))
+                                          ((count != npos) && (pos + count < str.length()))
+                                              ? (str.cbegin() + static_cast<std::ptrdiff_t>(pos + count))
+                                              : str.cend()))
     {
     }
 
@@ -806,12 +824,12 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    String::const_reference String::operator [](std::size_t index) const
+    String::const_reference String::operator[](std::size_t index) const
     {
         return m_string[index];
     }
 
-    String::reference String::operator [](std::size_t index)
+    String::reference String::operator[](std::size_t index)
     {
         return m_string[index];
     }
@@ -2342,6 +2360,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

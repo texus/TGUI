@@ -25,9 +25,9 @@
 #ifndef TGUI_STRING_VIEW_HPP
 #define TGUI_STRING_VIEW_HPP
 
-#include <string>
-#include <cctype> // tolower
 #include <algorithm> // equal, min
+#include <cctype>    // tolower
+#include <string>
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
     #include <string_view>
@@ -45,9 +45,9 @@ namespace tgui
             // Allow using operator ""sv
             // Note that this only affects code placed inside the tgui namespace.
             using namespace std::literals::string_view_literals;
-        }
-    }
-}
+        } // namespace string_view_literals
+    } // namespace literals
+} // namespace tgui
 #endif
 
 namespace tgui
@@ -62,7 +62,7 @@ namespace tgui
         using type = Type;
     };
 
-    template<typename Type>
+    template <typename Type>
     using TypeIdentity_t = typename TypeIdentity<Type>::type;
 
     template <typename CharType>
@@ -122,7 +122,7 @@ namespace tgui
 
         TGUI_NODISCARD constexpr const CharType& back() const
         {
-            return m_string[m_length-1];
+            return m_string[m_length - 1];
         }
 
         TGUI_NODISCARD constexpr const CharType* data() const noexcept
@@ -183,7 +183,7 @@ namespace tgui
                 bool found = true;
                 for (std::size_t j = 1; j < strView.length(); ++j)
                 {
-                    if (m_string[i+j] != strView[j])
+                    if (m_string[i + j] != strView[j])
                     {
                         found = false;
                         break;
@@ -218,54 +218,54 @@ namespace tgui
     template <typename CharType>
     TGUI_NODISCARD constexpr bool operator==(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
-       return lhs.compare(rhs) == 0;
+        return lhs.compare(rhs) == 0;
     }
 
     template <typename CharType>
     TGUI_NODISCARD constexpr bool operator!=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
-       return lhs.compare(rhs) != 0;
+        return lhs.compare(rhs) != 0;
     }
 
     template <typename CharType>
     TGUI_NODISCARD constexpr bool operator<(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
-       return lhs.compare(rhs) < 0;
+        return lhs.compare(rhs) < 0;
     }
 
     template <typename CharType>
     TGUI_NODISCARD constexpr bool operator<=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
-       return lhs.compare(rhs) <= 0;
+        return lhs.compare(rhs) <= 0;
     }
 
     template <typename CharType>
     TGUI_NODISCARD constexpr bool operator>(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
-       return lhs.compare(rhs) > 0;
+        return lhs.compare(rhs) > 0;
     }
 
     template <typename CharType>
     TGUI_NODISCARD constexpr bool operator>=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
-       return lhs.compare(rhs) >= 0;
+        return lhs.compare(rhs) >= 0;
     }
 
     using StringView = StringViewImpl<char32_t>;
     using CharStringView = StringViewImpl<char>;
 
-    // Allow using operator ""sv
-    // Note that this only affects code placed inside the tgui namespace.
-#if defined(__clang__)
-#   pragma clang diagnostic push
-#   pragma clang diagnostic ignored "-Wuser-defined-literals"
-#elif defined(__GNUC__)
-#   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wliteral-suffix"
-#elif defined (_MSC_VER)
-#   pragma warning(push)
-#   pragma warning(disable: 4455) // literal suffix identifiers that do not start with an underscore are reserved
-#endif
+        // Allow using operator ""sv
+        // Note that this only affects code placed inside the tgui namespace.
+    #if defined(__clang__)
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wuser-defined-literals"
+    #elif defined(__GNUC__)
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wliteral-suffix"
+    #elif defined(_MSC_VER)
+        #pragma warning(push)
+        #pragma warning(disable : 4455) // literal suffix identifiers that do not start with an underscore are reserved
+    #endif
     inline namespace literals
     {
         inline namespace string_view_literals
@@ -289,15 +289,15 @@ namespace tgui
             {
                 return StringViewImpl<char32_t>{str, len};
             }
-        }
-    }
-#if defined(__clang__)
-#   pragma clang diagnostic pop
-#elif defined(__GNUC__)
-#   pragma GCC diagnostic pop
-#elif defined (_MSC_VER)
-#   pragma warning(pop)
-#endif
+        } // namespace string_view_literals
+    } // namespace literals
+    #if defined(__clang__)
+        #pragma clang diagnostic pop
+    #elif defined(__GNUC__)
+        #pragma GCC diagnostic pop
+    #elif defined(_MSC_VER)
+        #pragma warning(pop)
+    #endif
 
 #endif // TGUI_COMPILED_WITH_CPP_VER
 
@@ -311,15 +311,18 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewEqualIgnoreCase(CharStringView view1, CharStringView view2)
     {
-        return std::equal(view1.begin(), view1.end(), view2.begin(), view2.end(),
-            [](char char1, char char2)
-            {
-                if (char1 == char2)
-                    return true;
-                else
-                    return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
-            }
-        );
+        return std::equal(view1.begin(),
+                          view1.end(),
+                          view2.begin(),
+                          view2.end(),
+                          [](char char1, char char2)
+                          {
+                              if (char1 == char2)
+                                  return true;
+                              else
+                                  return std::tolower(static_cast<unsigned char>(char1))
+                                         == std::tolower(static_cast<unsigned char>(char2));
+                          });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,17 +335,20 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_NODISCARD inline bool viewEqualIgnoreCase(StringView view1, StringView view2)
     {
-        return std::equal(view1.begin(), view1.end(), view2.begin(), view2.end(),
-            [](char32_t char1, char32_t char2)
-            {
-                if (char1 == char2)
-                    return true;
-                else if ((char1 < 128) && (char2 < 128))
-                    return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
-                else
-                    return false;
-            }
-        );
+        return std::equal(view1.begin(),
+                          view1.end(),
+                          view2.begin(),
+                          view2.end(),
+                          [](char32_t char1, char32_t char2)
+                          {
+                              if (char1 == char2)
+                                  return true;
+                              else if ((char1 < 128) && (char2 < 128))
+                                  return std::tolower(static_cast<unsigned char>(char1))
+                                         == std::tolower(static_cast<unsigned char>(char2));
+                              else
+                                  return false;
+                          });
     }
 
 #if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
@@ -492,7 +498,8 @@ namespace tgui
         if (viewToLookFor.length() > viewToLookInto.length())
             return false;
 
-        return CharStringView(viewToLookInto.data() + (viewToLookInto.length() - viewToLookFor.length()), viewToLookFor.length()).compare(viewToLookFor) == 0;
+        return CharStringView(viewToLookInto.data() + (viewToLookInto.length() - viewToLookFor.length()), viewToLookFor.length()).compare(viewToLookFor)
+               == 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -550,7 +557,8 @@ namespace tgui
         if (viewToLookFor.length() > viewToLookInto.length())
             return false;
 
-        return StringView(viewToLookInto.data() + (viewToLookInto.length() - viewToLookFor.length()), viewToLookFor.length()).compare(viewToLookFor) == 0;
+        return StringView(viewToLookInto.data() + (viewToLookInto.length() - viewToLookFor.length()), viewToLookFor.length()).compare(viewToLookFor)
+               == 0;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -566,7 +574,7 @@ namespace tgui
         return !viewToLookInto.empty() && (viewToLookInto.back() == charToLookFor);
     }
 #endif
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

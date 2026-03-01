@@ -35,7 +35,7 @@ TEST_CASE("[tabContainer]")
         tabContainer->onSelectionChanging([]() {});
         tabContainer->onSelectionChanging([](int, bool*) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(tabContainer)->getSignal("SelectionChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(tabContainer)->getSignal("SelectionChanged").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -139,7 +139,7 @@ TEST_CASE("[tabContainer]")
     {
         SECTION("SelectionChanged")
         {
-            tabContainer->setSize({ 300, 100 });
+            tabContainer->setSize({300, 100});
             tabContainer->setTabsHeight(20);
 
             unsigned int tabContainerSelectedCount = 0;
@@ -161,13 +161,13 @@ TEST_CASE("[tabContainer]")
             tabContainer->select(0);
             REQUIRE(tabContainerSelectedCount == 4);
 
-            const tgui::Vector2f mousePos1{ 200, 10 };
+            const tgui::Vector2f mousePos1{200, 10};
             tabContainer->leftMousePressed(mousePos1);
             tabContainer->leftMouseReleased(mousePos1);
             REQUIRE(tabContainer->getTabText(static_cast<std::size_t>(tabContainer->getSelectedIndex())) == "3");
             REQUIRE(tabContainerSelectedCount == 5);
 
-            const tgui::Vector2f mousePos2{ 199, 10 };
+            const tgui::Vector2f mousePos2{199, 10};
             tabContainer->leftMousePressed(mousePos2);
             tabContainer->leftMouseReleased(mousePos2);
             REQUIRE(tabContainer->getTabText(static_cast<std::size_t>(tabContainer->getSelectedIndex())) == "2");
@@ -181,14 +181,15 @@ TEST_CASE("[tabContainer]")
         SECTION("SelectionChanging")
         {
             unsigned int tabContainerSelectedCount = 0;
-            tabContainer->onSelectionChanging([&tabContainerSelectedCount](int idx, bool* Vetoed)
-            {
-                if (idx == 2)
+            tabContainer->onSelectionChanging(
+                [&tabContainerSelectedCount](int idx, bool* Vetoed)
                 {
-                    *Vetoed = true;
-                }
-                tabContainerSelectedCount++;
-            });
+                    if (idx == 2)
+                    {
+                        *Vetoed = true;
+                    }
+                    tabContainerSelectedCount++;
+                });
 
             tabContainer->addTab("1");
             tabContainer->addTab("2");

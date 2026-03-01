@@ -22,15 +22,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <TGUI/extlibs/IncludeSDL.hpp>
+
 #include <TGUI/Backend/Window/SDL/BackendGuiSDL.hpp>
 #include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 
-#include <TGUI/extlibs/IncludeSDL.hpp>
-
 #include <TGUI/Timer.hpp>
 
-#include <thread>
 #include <cmath>
+#include <thread>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,141 +41,268 @@ namespace tgui
         switch (key)
         {
 #if SDL_MAJOR_VERSION >= 3
-        case SDLK_A:            return Event::KeyboardKey::A;
-        case SDLK_B:            return Event::KeyboardKey::B;
-        case SDLK_C:            return Event::KeyboardKey::C;
-        case SDLK_D:            return Event::KeyboardKey::D;
-        case SDLK_E:            return Event::KeyboardKey::E;
-        case SDLK_F:            return Event::KeyboardKey::F;
-        case SDLK_G:            return Event::KeyboardKey::G;
-        case SDLK_H:            return Event::KeyboardKey::H;
-        case SDLK_I:            return Event::KeyboardKey::I;
-        case SDLK_J:            return Event::KeyboardKey::J;
-        case SDLK_K:            return Event::KeyboardKey::K;
-        case SDLK_L:            return Event::KeyboardKey::L;
-        case SDLK_M:            return Event::KeyboardKey::M;
-        case SDLK_N:            return Event::KeyboardKey::N;
-        case SDLK_O:            return Event::KeyboardKey::O;
-        case SDLK_P:            return Event::KeyboardKey::P;
-        case SDLK_Q:            return Event::KeyboardKey::Q;
-        case SDLK_R:            return Event::KeyboardKey::R;
-        case SDLK_S:            return Event::KeyboardKey::S;
-        case SDLK_T:            return Event::KeyboardKey::T;
-        case SDLK_U:            return Event::KeyboardKey::U;
-        case SDLK_V:            return Event::KeyboardKey::V;
-        case SDLK_W:            return Event::KeyboardKey::W;
-        case SDLK_X:            return Event::KeyboardKey::X;
-        case SDLK_Y:            return Event::KeyboardKey::Y;
-        case SDLK_Z:            return Event::KeyboardKey::Z;
+            case SDLK_A:
+                return Event::KeyboardKey::A;
+            case SDLK_B:
+                return Event::KeyboardKey::B;
+            case SDLK_C:
+                return Event::KeyboardKey::C;
+            case SDLK_D:
+                return Event::KeyboardKey::D;
+            case SDLK_E:
+                return Event::KeyboardKey::E;
+            case SDLK_F:
+                return Event::KeyboardKey::F;
+            case SDLK_G:
+                return Event::KeyboardKey::G;
+            case SDLK_H:
+                return Event::KeyboardKey::H;
+            case SDLK_I:
+                return Event::KeyboardKey::I;
+            case SDLK_J:
+                return Event::KeyboardKey::J;
+            case SDLK_K:
+                return Event::KeyboardKey::K;
+            case SDLK_L:
+                return Event::KeyboardKey::L;
+            case SDLK_M:
+                return Event::KeyboardKey::M;
+            case SDLK_N:
+                return Event::KeyboardKey::N;
+            case SDLK_O:
+                return Event::KeyboardKey::O;
+            case SDLK_P:
+                return Event::KeyboardKey::P;
+            case SDLK_Q:
+                return Event::KeyboardKey::Q;
+            case SDLK_R:
+                return Event::KeyboardKey::R;
+            case SDLK_S:
+                return Event::KeyboardKey::S;
+            case SDLK_T:
+                return Event::KeyboardKey::T;
+            case SDLK_U:
+                return Event::KeyboardKey::U;
+            case SDLK_V:
+                return Event::KeyboardKey::V;
+            case SDLK_W:
+                return Event::KeyboardKey::W;
+            case SDLK_X:
+                return Event::KeyboardKey::X;
+            case SDLK_Y:
+                return Event::KeyboardKey::Y;
+            case SDLK_Z:
+                return Event::KeyboardKey::Z;
 #else
-        case SDLK_a:            return Event::KeyboardKey::A;
-        case SDLK_b:            return Event::KeyboardKey::B;
-        case SDLK_c:            return Event::KeyboardKey::C;
-        case SDLK_d:            return Event::KeyboardKey::D;
-        case SDLK_e:            return Event::KeyboardKey::E;
-        case SDLK_f:            return Event::KeyboardKey::F;
-        case SDLK_g:            return Event::KeyboardKey::G;
-        case SDLK_h:            return Event::KeyboardKey::H;
-        case SDLK_i:            return Event::KeyboardKey::I;
-        case SDLK_j:            return Event::KeyboardKey::J;
-        case SDLK_k:            return Event::KeyboardKey::K;
-        case SDLK_l:            return Event::KeyboardKey::L;
-        case SDLK_m:            return Event::KeyboardKey::M;
-        case SDLK_n:            return Event::KeyboardKey::N;
-        case SDLK_o:            return Event::KeyboardKey::O;
-        case SDLK_p:            return Event::KeyboardKey::P;
-        case SDLK_q:            return Event::KeyboardKey::Q;
-        case SDLK_r:            return Event::KeyboardKey::R;
-        case SDLK_s:            return Event::KeyboardKey::S;
-        case SDLK_t:            return Event::KeyboardKey::T;
-        case SDLK_u:            return Event::KeyboardKey::U;
-        case SDLK_v:            return Event::KeyboardKey::V;
-        case SDLK_w:            return Event::KeyboardKey::W;
-        case SDLK_x:            return Event::KeyboardKey::X;
-        case SDLK_y:            return Event::KeyboardKey::Y;
-        case SDLK_z:            return Event::KeyboardKey::Z;
+            case SDLK_a:
+                return Event::KeyboardKey::A;
+            case SDLK_b:
+                return Event::KeyboardKey::B;
+            case SDLK_c:
+                return Event::KeyboardKey::C;
+            case SDLK_d:
+                return Event::KeyboardKey::D;
+            case SDLK_e:
+                return Event::KeyboardKey::E;
+            case SDLK_f:
+                return Event::KeyboardKey::F;
+            case SDLK_g:
+                return Event::KeyboardKey::G;
+            case SDLK_h:
+                return Event::KeyboardKey::H;
+            case SDLK_i:
+                return Event::KeyboardKey::I;
+            case SDLK_j:
+                return Event::KeyboardKey::J;
+            case SDLK_k:
+                return Event::KeyboardKey::K;
+            case SDLK_l:
+                return Event::KeyboardKey::L;
+            case SDLK_m:
+                return Event::KeyboardKey::M;
+            case SDLK_n:
+                return Event::KeyboardKey::N;
+            case SDLK_o:
+                return Event::KeyboardKey::O;
+            case SDLK_p:
+                return Event::KeyboardKey::P;
+            case SDLK_q:
+                return Event::KeyboardKey::Q;
+            case SDLK_r:
+                return Event::KeyboardKey::R;
+            case SDLK_s:
+                return Event::KeyboardKey::S;
+            case SDLK_t:
+                return Event::KeyboardKey::T;
+            case SDLK_u:
+                return Event::KeyboardKey::U;
+            case SDLK_v:
+                return Event::KeyboardKey::V;
+            case SDLK_w:
+                return Event::KeyboardKey::W;
+            case SDLK_x:
+                return Event::KeyboardKey::X;
+            case SDLK_y:
+                return Event::KeyboardKey::Y;
+            case SDLK_z:
+                return Event::KeyboardKey::Z;
 #endif
-        case SDLK_0:            return Event::KeyboardKey::Num0;
-        case SDLK_1:            return Event::KeyboardKey::Num1;
-        case SDLK_2:            return Event::KeyboardKey::Num2;
-        case SDLK_3:            return Event::KeyboardKey::Num3;
-        case SDLK_4:            return Event::KeyboardKey::Num4;
-        case SDLK_5:            return Event::KeyboardKey::Num5;
-        case SDLK_6:            return Event::KeyboardKey::Num6;
-        case SDLK_7:            return Event::KeyboardKey::Num7;
-        case SDLK_8:            return Event::KeyboardKey::Num8;
-        case SDLK_9:            return Event::KeyboardKey::Num9;
-        case SDLK_ESCAPE:       return Event::KeyboardKey::Escape;
-        case SDLK_LCTRL:        return Event::KeyboardKey::LControl;
-        case SDLK_LSHIFT:       return Event::KeyboardKey::LShift;
-        case SDLK_LALT:         return Event::KeyboardKey::LAlt;
-        case SDLK_LGUI:         return Event::KeyboardKey::LSystem;
-        case SDLK_RCTRL:        return Event::KeyboardKey::RControl;
-        case SDLK_RSHIFT:       return Event::KeyboardKey::RShift;
-        case SDLK_RALT:         return Event::KeyboardKey::RAlt;
-        case SDLK_RGUI:         return Event::KeyboardKey::RSystem;
-        case SDLK_MENU:         return Event::KeyboardKey::Menu;
-        case SDLK_LEFTBRACKET:  return Event::KeyboardKey::LBracket;
-        case SDLK_RIGHTBRACKET: return Event::KeyboardKey::RBracket;
-        case SDLK_SEMICOLON:    return Event::KeyboardKey::Semicolon;
-        case SDLK_COMMA:        return Event::KeyboardKey::Comma;
-        case SDLK_PERIOD:       return Event::KeyboardKey::Period;
+            case SDLK_0:
+                return Event::KeyboardKey::Num0;
+            case SDLK_1:
+                return Event::KeyboardKey::Num1;
+            case SDLK_2:
+                return Event::KeyboardKey::Num2;
+            case SDLK_3:
+                return Event::KeyboardKey::Num3;
+            case SDLK_4:
+                return Event::KeyboardKey::Num4;
+            case SDLK_5:
+                return Event::KeyboardKey::Num5;
+            case SDLK_6:
+                return Event::KeyboardKey::Num6;
+            case SDLK_7:
+                return Event::KeyboardKey::Num7;
+            case SDLK_8:
+                return Event::KeyboardKey::Num8;
+            case SDLK_9:
+                return Event::KeyboardKey::Num9;
+            case SDLK_ESCAPE:
+                return Event::KeyboardKey::Escape;
+            case SDLK_LCTRL:
+                return Event::KeyboardKey::LControl;
+            case SDLK_LSHIFT:
+                return Event::KeyboardKey::LShift;
+            case SDLK_LALT:
+                return Event::KeyboardKey::LAlt;
+            case SDLK_LGUI:
+                return Event::KeyboardKey::LSystem;
+            case SDLK_RCTRL:
+                return Event::KeyboardKey::RControl;
+            case SDLK_RSHIFT:
+                return Event::KeyboardKey::RShift;
+            case SDLK_RALT:
+                return Event::KeyboardKey::RAlt;
+            case SDLK_RGUI:
+                return Event::KeyboardKey::RSystem;
+            case SDLK_MENU:
+                return Event::KeyboardKey::Menu;
+            case SDLK_LEFTBRACKET:
+                return Event::KeyboardKey::LBracket;
+            case SDLK_RIGHTBRACKET:
+                return Event::KeyboardKey::RBracket;
+            case SDLK_SEMICOLON:
+                return Event::KeyboardKey::Semicolon;
+            case SDLK_COMMA:
+                return Event::KeyboardKey::Comma;
+            case SDLK_PERIOD:
+                return Event::KeyboardKey::Period;
 #if SDL_MAJOR_VERSION >= 3
-        case SDLK_APOSTROPHE:   return Event::KeyboardKey::Quote;
+            case SDLK_APOSTROPHE:
+                return Event::KeyboardKey::Quote;
 #else
-        case SDLK_QUOTE:        return Event::KeyboardKey::Quote;
+            case SDLK_QUOTE:
+                return Event::KeyboardKey::Quote;
 #endif
-        case SDLK_SLASH:        return Event::KeyboardKey::Slash;
-        case SDLK_BACKSLASH:    return Event::KeyboardKey::Backslash;
-        case SDLK_EQUALS:       return Event::KeyboardKey::Equal;
-        case SDLK_MINUS:        return Event::KeyboardKey::Minus;
-        case SDLK_SPACE:        return Event::KeyboardKey::Space;
-        case SDLK_RETURN:
-        case SDLK_KP_ENTER:     return Event::KeyboardKey::Enter;
-        case SDLK_BACKSPACE:    return Event::KeyboardKey::Backspace;
-        case SDLK_TAB:          return Event::KeyboardKey::Tab;
-        case SDLK_PAGEUP:       return Event::KeyboardKey::PageUp;
-        case SDLK_PAGEDOWN:     return Event::KeyboardKey::PageDown;
-        case SDLK_END:          return Event::KeyboardKey::End;
-        case SDLK_HOME:         return Event::KeyboardKey::Home;
-        case SDLK_INSERT:       return Event::KeyboardKey::Insert;
-        case SDLK_DELETE:       return Event::KeyboardKey::Delete;
-        case SDLK_KP_PLUS:      return Event::KeyboardKey::Add;
-        case SDLK_KP_MINUS:     return Event::KeyboardKey::Subtract;
-        case SDLK_KP_MULTIPLY:  return Event::KeyboardKey::Multiply;
-        case SDLK_KP_DIVIDE:    return Event::KeyboardKey::Divide;
-        case SDLK_LEFT:         return Event::KeyboardKey::Left;
-        case SDLK_RIGHT:        return Event::KeyboardKey::Right;
-        case SDLK_UP:           return Event::KeyboardKey::Up;
-        case SDLK_DOWN:         return Event::KeyboardKey::Down;
-        case SDLK_KP_0:         return Event::KeyboardKey::Numpad0;
-        case SDLK_KP_1:         return Event::KeyboardKey::Numpad1;
-        case SDLK_KP_2:         return Event::KeyboardKey::Numpad2;
-        case SDLK_KP_3:         return Event::KeyboardKey::Numpad3;
-        case SDLK_KP_4:         return Event::KeyboardKey::Numpad4;
-        case SDLK_KP_5:         return Event::KeyboardKey::Numpad5;
-        case SDLK_KP_6:         return Event::KeyboardKey::Numpad6;
-        case SDLK_KP_7:         return Event::KeyboardKey::Numpad7;
-        case SDLK_KP_8:         return Event::KeyboardKey::Numpad8;
-        case SDLK_KP_9:         return Event::KeyboardKey::Numpad9;
-        case SDLK_F1:           return Event::KeyboardKey::F1;
-        case SDLK_F2:           return Event::KeyboardKey::F2;
-        case SDLK_F3:           return Event::KeyboardKey::F3;
-        case SDLK_F4:           return Event::KeyboardKey::F4;
-        case SDLK_F5:           return Event::KeyboardKey::F5;
-        case SDLK_F6:           return Event::KeyboardKey::F6;
-        case SDLK_F7:           return Event::KeyboardKey::F7;
-        case SDLK_F8:           return Event::KeyboardKey::F8;
-        case SDLK_F9:           return Event::KeyboardKey::F9;
-        case SDLK_F10:          return Event::KeyboardKey::F10;
-        case SDLK_F11:          return Event::KeyboardKey::F11;
-        case SDLK_F12:          return Event::KeyboardKey::F12;
-        case SDLK_F13:          return Event::KeyboardKey::F13;
-        case SDLK_F14:          return Event::KeyboardKey::F14;
-        case SDLK_F15:          return Event::KeyboardKey::F15;
-        case SDLK_PAUSE:        return Event::KeyboardKey::Pause;
-        default: // We don't process the other keys
-            return Event::KeyboardKey::Unknown;
+            case SDLK_SLASH:
+                return Event::KeyboardKey::Slash;
+            case SDLK_BACKSLASH:
+                return Event::KeyboardKey::Backslash;
+            case SDLK_EQUALS:
+                return Event::KeyboardKey::Equal;
+            case SDLK_MINUS:
+                return Event::KeyboardKey::Minus;
+            case SDLK_SPACE:
+                return Event::KeyboardKey::Space;
+            case SDLK_RETURN:
+            case SDLK_KP_ENTER:
+                return Event::KeyboardKey::Enter;
+            case SDLK_BACKSPACE:
+                return Event::KeyboardKey::Backspace;
+            case SDLK_TAB:
+                return Event::KeyboardKey::Tab;
+            case SDLK_PAGEUP:
+                return Event::KeyboardKey::PageUp;
+            case SDLK_PAGEDOWN:
+                return Event::KeyboardKey::PageDown;
+            case SDLK_END:
+                return Event::KeyboardKey::End;
+            case SDLK_HOME:
+                return Event::KeyboardKey::Home;
+            case SDLK_INSERT:
+                return Event::KeyboardKey::Insert;
+            case SDLK_DELETE:
+                return Event::KeyboardKey::Delete;
+            case SDLK_KP_PLUS:
+                return Event::KeyboardKey::Add;
+            case SDLK_KP_MINUS:
+                return Event::KeyboardKey::Subtract;
+            case SDLK_KP_MULTIPLY:
+                return Event::KeyboardKey::Multiply;
+            case SDLK_KP_DIVIDE:
+                return Event::KeyboardKey::Divide;
+            case SDLK_LEFT:
+                return Event::KeyboardKey::Left;
+            case SDLK_RIGHT:
+                return Event::KeyboardKey::Right;
+            case SDLK_UP:
+                return Event::KeyboardKey::Up;
+            case SDLK_DOWN:
+                return Event::KeyboardKey::Down;
+            case SDLK_KP_0:
+                return Event::KeyboardKey::Numpad0;
+            case SDLK_KP_1:
+                return Event::KeyboardKey::Numpad1;
+            case SDLK_KP_2:
+                return Event::KeyboardKey::Numpad2;
+            case SDLK_KP_3:
+                return Event::KeyboardKey::Numpad3;
+            case SDLK_KP_4:
+                return Event::KeyboardKey::Numpad4;
+            case SDLK_KP_5:
+                return Event::KeyboardKey::Numpad5;
+            case SDLK_KP_6:
+                return Event::KeyboardKey::Numpad6;
+            case SDLK_KP_7:
+                return Event::KeyboardKey::Numpad7;
+            case SDLK_KP_8:
+                return Event::KeyboardKey::Numpad8;
+            case SDLK_KP_9:
+                return Event::KeyboardKey::Numpad9;
+            case SDLK_F1:
+                return Event::KeyboardKey::F1;
+            case SDLK_F2:
+                return Event::KeyboardKey::F2;
+            case SDLK_F3:
+                return Event::KeyboardKey::F3;
+            case SDLK_F4:
+                return Event::KeyboardKey::F4;
+            case SDLK_F5:
+                return Event::KeyboardKey::F5;
+            case SDLK_F6:
+                return Event::KeyboardKey::F6;
+            case SDLK_F7:
+                return Event::KeyboardKey::F7;
+            case SDLK_F8:
+                return Event::KeyboardKey::F8;
+            case SDLK_F9:
+                return Event::KeyboardKey::F9;
+            case SDLK_F10:
+                return Event::KeyboardKey::F10;
+            case SDLK_F11:
+                return Event::KeyboardKey::F11;
+            case SDLK_F12:
+                return Event::KeyboardKey::F12;
+            case SDLK_F13:
+                return Event::KeyboardKey::F13;
+            case SDLK_F14:
+                return Event::KeyboardKey::F14;
+            case SDLK_F15:
+                return Event::KeyboardKey::F15;
+            case SDLK_PAUSE:
+                return Event::KeyboardKey::Pause;
+            default: // We don't process the other keys
+                return Event::KeyboardKey::Unknown;
         }
     }
 
@@ -205,7 +332,8 @@ namespace tgui
             case SDL_EVENT_MOUSE_MOTION:
                 return eventSDL.motion.windowID;
 
-    #if ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
+    #if ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+        || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
             case SDL_EVENT_FINGER_DOWN:
             case SDL_EVENT_FINGER_UP:
             case SDL_EVENT_FINGER_MOTION:
@@ -324,15 +452,17 @@ namespace tgui
 
                 // If the NumLock is off then we will translate keypad key events to key events for text cursor navigation.
                 // We only do this for SDL 2.0.22 or newer, because the NumLock state was incorrect on Linux prior to this version.
-#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 22))
-                static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9), "Numpad0 to Numpad9 need continous ids in KeyboardKey");
+#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+    || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 22))
+                static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9),
+                              "Numpad0 to Numpad9 need continous ids in KeyboardKey");
                 if (((modifiers & SDL_KMOD_NUM) == 0)
-                 && (static_cast<int>(eventTGUI.key.code) >= static_cast<int>(Event::KeyboardKey::Numpad0))
-                 && (static_cast<int>(eventTGUI.key.code) <= static_cast<int>(Event::KeyboardKey::Numpad9)))
+                    && (static_cast<int>(eventTGUI.key.code) >= static_cast<int>(Event::KeyboardKey::Numpad0))
+                    && (static_cast<int>(eventTGUI.key.code) <= static_cast<int>(Event::KeyboardKey::Numpad9)))
                 {
                     eventTGUI.key.code = translateKeypadKey(eventTGUI.key.code);
                     if (eventTGUI.key.code == Event::KeyboardKey::Unknown) // Numpad5 was pressed which has no function
-                        return false; // We didn't handle this key press
+                        return false;                                      // We didn't handle this key press
                 }
 #endif
                 return true;
@@ -392,17 +522,17 @@ namespace tgui
 
                 switch (eventSDL.button.button)
                 {
-                case SDL_BUTTON_LEFT:
-                    eventTGUI.mouseButton.button = Event::MouseButton::Left;
-                    break;
-                case SDL_BUTTON_MIDDLE:
-                    eventTGUI.mouseButton.button = Event::MouseButton::Middle;
-                    break;
-                case SDL_BUTTON_RIGHT:
-                    eventTGUI.mouseButton.button = Event::MouseButton::Right;
-                    break;
-                default: // This mouse button isn't handled by TGUI
-                    return false;
+                    case SDL_BUTTON_LEFT:
+                        eventTGUI.mouseButton.button = Event::MouseButton::Left;
+                        break;
+                    case SDL_BUTTON_MIDDLE:
+                        eventTGUI.mouseButton.button = Event::MouseButton::Middle;
+                        break;
+                    case SDL_BUTTON_RIGHT:
+                        eventTGUI.mouseButton.button = Event::MouseButton::Right;
+                        break;
+                    default: // This mouse button isn't handled by TGUI
+                        return false;
                 }
 
                 if (eventSDL.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
@@ -492,7 +622,8 @@ namespace tgui
 
         // If a text event consists of multiple unicode characters (which can happen when an IME is used) then our
         // converted event only contains the last character. We will send all other unicode characters here.
-        if ((event.type == Event::Type::TextEntered) && (sdlEvent.type == SDL_EVENT_TEXT_INPUT) && (sdlEvent.text.text[0] != '\0') && (sdlEvent.text.text[1] != '\0'))
+        if ((event.type == Event::Type::TextEntered) && (sdlEvent.type == SDL_EVENT_TEXT_INPUT) && (sdlEvent.text.text[0] != '\0')
+            && (sdlEvent.text.text[1] != '\0'))
         {
             // Note that we also pass here if sdlEvent.text.text consists of multiple UTF-8 characters that still fit
             // within a single UTF-32 codepoint. So we still need to check that there are multiple UTF-32 codepoints below.
@@ -518,12 +649,15 @@ namespace tgui
 
     void BackendGuiSDL::mainLoop(Color clearColor)
     {
-        TGUI_ASSERT(m_window && m_backendRenderTarget, "BackendGuiSDL must be given an SDL_Window (either at construction or via setWindow function) before mainLoop() is called");
+        TGUI_ASSERT(m_window && m_backendRenderTarget,
+                    "BackendGuiSDL must be given an SDL_Window (either at construction or via setWindow function) before mainLoop() "
+                    "is called");
 
         m_backendRenderTarget->setClearColor(clearColor);
 
         // Helper function that calculates the amount of time to sleep, which is 10ms unless a timer will expire before this time
-        const auto getTimerWakeUpTime = []{
+        const auto getTimerWakeUpTime = []
+        {
             Optional<Duration> duration = Timer::getNextScheduledTime();
             if (duration && (*duration < std::chrono::milliseconds(10)))
                 return *duration;
@@ -561,13 +695,14 @@ namespace tgui
                     }
 #if SDL_MAJOR_VERSION >= 3
                     else if ((event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) || (event.type == SDL_EVENT_WINDOW_EXPOSED)
-                          || (event.type == SDL_EVENT_WINDOW_MOUSE_ENTER) || (event.type == SDL_EVENT_WINDOW_MOUSE_LEAVE)
-                          || (event.type == SDL_EVENT_WINDOW_FOCUS_GAINED) || (event.type == SDL_EVENT_WINDOW_FOCUS_LOST))
+                             || (event.type == SDL_EVENT_WINDOW_MOUSE_ENTER) || (event.type == SDL_EVENT_WINDOW_MOUSE_LEAVE)
+                             || (event.type == SDL_EVENT_WINDOW_FOCUS_GAINED) || (event.type == SDL_EVENT_WINDOW_FOCUS_LOST))
 #else
                     else if ((event.type == SDL_WINDOWEVENT)
-                          && ((event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) || (event.window.event == SDL_WINDOWEVENT_EXPOSED)
-                           || (event.window.event == SDL_WINDOWEVENT_ENTER) || (event.window.event == SDL_WINDOWEVENT_LEAVE)
-                           || (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) || (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)))
+                             && ((event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) || (event.window.event == SDL_WINDOWEVENT_EXPOSED)
+                                 || (event.window.event == SDL_WINDOWEVENT_ENTER) || (event.window.event == SDL_WINDOWEVENT_LEAVE)
+                                 || (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+                                 || (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)))
 #endif
                     {
                         eventProcessed = true;
@@ -699,14 +834,14 @@ namespace tgui
         const SDL_Keymod pressedModifiers = SDL_GetModState();
         switch (modifierKey)
         {
-        case Event::KeyModifier::System:
-            return (pressedModifiers & SDL_KMOD_GUI) != 0;
-        case Event::KeyModifier::Control:
-            return (pressedModifiers & SDL_KMOD_CTRL) != 0;
-        case Event::KeyModifier::Shift:
-            return (pressedModifiers & SDL_KMOD_SHIFT) != 0;
-        case Event::KeyModifier::Alt:
-            return (pressedModifiers & SDL_KMOD_ALT) != 0;
+            case Event::KeyModifier::System:
+                return (pressedModifiers & SDL_KMOD_GUI) != 0;
+            case Event::KeyModifier::Control:
+                return (pressedModifiers & SDL_KMOD_CTRL) != 0;
+            case Event::KeyModifier::Shift:
+                return (pressedModifiers & SDL_KMOD_SHIFT) != 0;
+            case Event::KeyModifier::Alt:
+                return (pressedModifiers & SDL_KMOD_ALT) != 0;
         }
 
         TGUI_ASSERT(false, "BackendGuiSDL::isKeyboardModifierPressed called with an invalid value");
@@ -761,6 +896,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -29,28 +29,28 @@
 
 #include <cassert>
 #include <functional>
+#include <map>
+#include <memory>
 #include <sstream>
 #include <vector>
-#include <memory>
-#include <map>
 
 #ifdef TGUI_SYSTEM_LINUX
-    #include <cstdio> // FILENAME_MAX
+    #include <cstdio>      // FILENAME_MAX
     #include <sys/types.h> // ssize_t
-    #include <unistd.h> // readlink
+    #include <unistd.h>    // readlink
 #endif
 
-#include <TGUI/TGUI.hpp>
-#include <TGUI/Filesystem.hpp>
-#include <TGUI/DefaultBackendWindow.hpp>
-
-#include "WidgetProperties/WidgetProperties.hpp"
 #include "Form.hpp"
+#include "WidgetProperties/WidgetProperties.hpp"
+
+#include <TGUI/TGUI.hpp>
+
+#include <TGUI/DefaultBackendWindow.hpp>
+#include <TGUI/Filesystem.hpp>
 
 class GuiBuilder
 {
 public:
-
     enum class UndoType
     {
         Delete,
@@ -76,7 +76,6 @@ public:
     bool isEnabledDragBeforeSelect() const;
 
 private:
-
     using PropertyValuePair = std::pair<tgui::String, std::pair<tgui::String, tgui::String>>;
     using OnValueChangeFunc = std::function<void(const tgui::String& value)>;
 
@@ -93,7 +92,12 @@ private:
     void loadStartScreen();
     void loadEditingScreen(const tgui::String& filename);
     void loadToolbox();
-    void showLoadFileWindow(const tgui::String& title, const tgui::String& loadButtonCaption, bool allowCreateFolder, bool fileMustExist, const tgui::String& defaultFilename, const std::function<void(const tgui::String&)>& onLoad);
+    void showLoadFileWindow(const tgui::String& title,
+                            const tgui::String& loadButtonCaption,
+                            bool allowCreateFolder,
+                            bool fileMustExist,
+                            const tgui::String& defaultFilename,
+                            const std::function<void(const tgui::String&)>& onLoad);
     void createNewWidget(const tgui::Widget::Ptr& widget, tgui::Container* parent = nullptr, bool selectNewWidget = true);
     bool updateWidgetProperty(const tgui::String& property, const tgui::String& value);
     void initProperties();
@@ -119,7 +123,11 @@ private:
     void fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& hierarchy, const std::shared_ptr<tgui::Widget>& parentWidget);
     TGUI_NODISCARD bool fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui::Widget* widget);
 
-    tgui::EditBox::Ptr addPropertyValueEditBox(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, float rightPadding);
+    tgui::EditBox::Ptr addPropertyValueEditBox(const tgui::String& property,
+                                               const tgui::String& value,
+                                               const OnValueChangeFunc& onChange,
+                                               float topPosition,
+                                               float rightPadding);
     tgui::Button::Ptr addPropertyValueButtonMore(const tgui::String& property, float topPosition);
     tgui::Button::Ptr addPropertyValueButtonLayoutRelAbs(const tgui::String& property, float topPosition, bool valueIsAbsolute);
     void addPropertyValueBool(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
@@ -130,10 +138,23 @@ private:
     void addPropertyValueStringList(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyValueTexture(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
     void addPropertyListViewColumns(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueMultilineString(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueEditBoxInputValidator(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueChildWindowTitleButtons(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition);
-    void addPropertyValueEnum(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition, const std::vector<tgui::String>& enumValues);
+    void addPropertyValueMultilineString(const tgui::String& property,
+                                         const tgui::String& value,
+                                         const OnValueChangeFunc& onChange,
+                                         float topPosition);
+    void addPropertyValueEditBoxInputValidator(const tgui::String& property,
+                                               const tgui::String& value,
+                                               const OnValueChangeFunc& onChange,
+                                               float topPosition);
+    void addPropertyValueChildWindowTitleButtons(const tgui::String& property,
+                                                 const tgui::String& value,
+                                                 const OnValueChangeFunc& onChange,
+                                                 float topPosition);
+    void addPropertyValueEnum(const tgui::String& property,
+                              const tgui::String& value,
+                              const OnValueChangeFunc& onChange,
+                              float topPosition,
+                              const std::vector<tgui::String>& enumValues);
 
     void menuBarCallbackNewForm();
     void menuBarCallbackLoadForm();
@@ -153,7 +174,6 @@ private:
     void menuBarCallbackAbout();
 
 private:
-
     std::vector<tgui::String> m_recentFiles;
 
     std::shared_ptr<tgui::DefaultBackendWindow> m_window;

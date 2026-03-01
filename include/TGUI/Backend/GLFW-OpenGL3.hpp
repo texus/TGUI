@@ -30,9 +30,9 @@
     #error "TGUI wasn't build with the GLFW_OPENGL3 backend"
 #endif
 
-#include <TGUI/Backend/Window/GLFW/BackendGLFW.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+#include <TGUI/Backend/Window/GLFW/BackendGLFW.hpp>
 
 using GLFWwindow = struct GLFWwindow;
 
@@ -46,7 +46,6 @@ namespace tgui
         class TGUI_API Gui : public BackendGuiGLFW
         {
         public:
-
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Default constructor
             ///
@@ -71,7 +70,7 @@ namespace tgui
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             void setWindow(GLFWwindow* window);
         };
-    }
-}
+    } // namespace GLFW_OPENGL3
+} // namespace tgui
 
 #endif // TGUI_BACKEND_GLFW_OPENGL3_INCLUDE_HPP

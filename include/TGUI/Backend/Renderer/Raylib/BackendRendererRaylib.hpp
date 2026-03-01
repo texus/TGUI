@@ -25,10 +25,10 @@
 #ifndef TGUI_BACKEND_RENDERER_RAYLIB_HPP
 #define TGUI_BACKEND_RENDERER_RAYLIB_HPP
 
-#include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
-#include <TGUI/Backend/Renderer/Raylib/BackendRenderTargetRaylib.hpp>
-#include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Backend/Renderer/Raylib/BackendRenderTargetRaylib.hpp>
+#include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
+#include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
 
 #include <memory>
 
@@ -43,7 +43,6 @@ namespace tgui
     class TGUI_API BackendRendererRaylib : public BackendRenderer
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Initializes the backend renderer
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +63,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

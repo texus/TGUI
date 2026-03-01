@@ -34,13 +34,13 @@ TEST_CASE("[ProgressBar]")
 
     SECTION("Signals")
     {
-        progressBar->onValueChange([](){});
-        progressBar->onValueChange([](unsigned int){});
+        progressBar->onValueChange([]() {});
+        progressBar->onValueChange([](unsigned int) {});
 
-        progressBar->onFull([](){});
+        progressBar->onFull([]() {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(progressBar)->getSignal("ValueChanged").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(progressBar)->getSignal("Full").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(progressBar)->getSignal("ValueChanged").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(progressBar)->getSignal("Full").connect([] {}));
     }
 
     SECTION("WidgetType")

@@ -26,6 +26,7 @@
 #define TGUI_BACKEND_SFML_HPP
 
 #include <TGUI/Config.hpp>
+
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/SFML/BackendGuiSFML.hpp>
 
@@ -35,12 +36,11 @@
 
 TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a function that we deprecated
 
-namespace tgui
+    namespace tgui
 {
     class TGUI_API BackendSFML : public Backend
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Informs the backend which window belongs to the gui
         ///
@@ -106,7 +106,8 @@ namespace tgui
         ///
         /// @return Whether queries modifier key is being pressed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead") TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
+        TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead")
+        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the contents of the clipboard
@@ -148,8 +149,8 @@ namespace tgui
         static void cleanupLeakedCursors();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function to create a system cursor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,8 +167,8 @@ namespace tgui
         void updateMouseCursor(sf::Window* window, Cursor::Type type);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         struct GuiResources
         {
             sf::Window* window = nullptr;

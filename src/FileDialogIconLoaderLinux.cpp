@@ -22,36 +22,36 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/FileDialogIconLoader.hpp>
 #include <TGUI/Exception.hpp>
+#include <TGUI/FileDialogIconLoader.hpp>
 
 #if defined(TGUI_SYSTEM_LINUX)
 
-#include <fstream>
-#include <atomic>
-#include <thread>
-#include <cstdlib> // getenv
-#include <dlfcn.h> // dlopen, dlsym, dlclose
+    #include <atomic>
+    #include <cstdlib> // getenv
+    #include <dlfcn.h> // dlopen, dlsym, dlclose
+    #include <fstream>
+    #include <thread>
 
-#if defined(__has_include)
-    #if __has_include (<magic.h>)
-        #define TGUI_MAGIC_HEADER_INCLUDED
-        #include <magic.h>
+    #if defined(__has_include)
+        #if __has_include(<magic.h>)
+            #define TGUI_MAGIC_HEADER_INCLUDED
+            #include <magic.h>
+        #endif
     #endif
-#endif
 
-#if !defined(TGUI_MAGIC_HEADER_INCLUDED)
-    // We load libmagic dynamically instead of requiring that the development files are installed
-    #define MAGIC_MIME_TYPE 0x000010
-    extern "C"
-    {
-        using magic_t = struct magic_set*;
-        magic_t magic_open(int);
-        void magic_close(magic_t);
-        int magic_load(magic_t, const char*);
-        const char* magic_file(magic_t, const char*);
-    }
-#endif
+    #if !defined(TGUI_MAGIC_HEADER_INCLUDED)
+        // We load libmagic dynamically instead of requiring that the development files are installed
+        #define MAGIC_MIME_TYPE 0x000010
+extern "C"
+{
+    using magic_t = struct magic_set*;
+    magic_t magic_open(int);
+    void magic_close(magic_t);
+    int magic_load(magic_t, const char*);
+    const char* magic_file(magic_t, const char*);
+}
+    #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -702,7 +702,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 #endif // TGUI_SYSTEM_LINUX
 

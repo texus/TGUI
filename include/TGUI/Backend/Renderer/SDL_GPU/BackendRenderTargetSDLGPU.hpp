@@ -25,8 +25,8 @@
 #ifndef TGUI_BACKEND_RENDER_TARGET_SDL_GPU_HPP
 #define TGUI_BACKEND_RENDER_TARGET_SDL_GPU_HPP
 
-#include <TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,7 +38,6 @@ namespace tgui
     class TGUI_API BackendRenderTargetSDLGPU : public BackendRenderTarget
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         ///
@@ -77,8 +76,11 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void drawGui(const std::shared_ptr<RootContainer>&) override
         {
-            TGUI_ASSERT(false, "The SDL_GPU backend requires that you pass SDL_GPUCommandBuffer and SDL_GPURenderPass pointers to the draw function");
-            throw Exception("The SDL_GPU backend requires that you pass SDL_GPUCommandBuffer and SDL_GPURenderPass pointers to the draw function");
+            TGUI_ASSERT(false,
+                        "The SDL_GPU backend requires that you pass SDL_GPUCommandBuffer and SDL_GPURenderPass pointers to the draw "
+                        "function");
+            throw Exception(
+                "The SDL_GPU backend requires that you pass SDL_GPUCommandBuffer and SDL_GPURenderPass pointers to the draw function");
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,12 +121,16 @@ namespace tgui
         /// @param indexCount   Amount of elements in the indices array
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                             const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) override;
+        void drawVertexArray(const RenderStates& states,
+                             const Vertex* vertices,
+                             std::size_t vertexCount,
+                             const unsigned int* indices,
+                             std::size_t indexCount,
+                             const std::shared_ptr<BackendTexture>& texture) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called from addClippingLayer and removeClippingLayer to apply the clipping
         ///
@@ -136,8 +142,8 @@ namespace tgui
         void updateClipping(FloatRect clipRect, FloatRect clipViewport) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         struct DrawCommand
         {
             std::size_t indexCount;
@@ -165,7 +171,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

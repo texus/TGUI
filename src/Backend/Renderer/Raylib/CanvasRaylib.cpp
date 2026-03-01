@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
 #include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
+#include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,8 @@ namespace tgui
     CanvasRaylib::CanvasRaylib(const char* typeName, bool initRenderer) :
         CanvasBase{typeName, initRenderer}
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererRaylib>(getBackend()->getRenderer()),
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                        && std::dynamic_pointer_cast<BackendRendererRaylib>(getBackend()->getRenderer()),
                     "CanvasRaylib can only be created when using the Raylib backend renderer");
 
         m_backendTexture = std::make_shared<BackendTextureRaylib>();
@@ -63,7 +64,8 @@ namespace tgui
     CanvasRaylib::CanvasRaylib(const CanvasRaylib& other) :
         CanvasBase{other}
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererRaylib>(getBackend()->getRenderer()),
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                        && std::dynamic_pointer_cast<BackendRendererRaylib>(getBackend()->getRenderer()),
                     "CanvasRaylib can only be used when using the Raylib backend renderer");
 
         m_backendTexture = std::make_shared<BackendTextureRaylib>();
@@ -72,7 +74,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasRaylib& CanvasRaylib::operator= (const CanvasRaylib& right)
+    CanvasRaylib& CanvasRaylib::operator=(const CanvasRaylib& right)
     {
         if (this != &right)
         {
@@ -114,8 +116,9 @@ namespace tgui
             const Vector2u newTextureSize{newSize};
             if ((m_textureSize.x < newTextureSize.x) || (m_textureSize.y < newTextureSize.y))
             {
-                TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererRaylib>(getBackend()->getRenderer()),
-                    "CanvasRaylib can only be used when using the Raylib backend renderer");
+                TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                                && std::dynamic_pointer_cast<BackendRendererRaylib>(getBackend()->getRenderer()),
+                            "CanvasRaylib can only be used when using the Raylib backend renderer");
 
                 m_textureTarget = LoadRenderTexture(static_cast<int>(newTextureSize.x), static_cast<int>(newTextureSize.y));
 
@@ -149,10 +152,7 @@ namespace tgui
             {{0, size.y}, vertexColor, {0, 0}},
             {{size.x, size.y}, vertexColor, {normalizedTextureSize.x, 0}},
         }};
-        const std::array<unsigned int, 6> indices = {{
-            0, 2, 1,
-            1, 2, 3
-        }};
+        const std::array<unsigned int, 6> indices = {{0, 2, 1, 1, 2, 3}};
         target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), m_backendTexture);
     }
 
@@ -164,6 +164,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

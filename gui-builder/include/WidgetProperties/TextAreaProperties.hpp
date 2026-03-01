@@ -61,8 +61,10 @@ struct TextAreaProperties : public WidgetProperties
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(textArea->getTextSize())};
         pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(textArea->getMaximumCharacters())};
         pair.first["ReadOnly"] = {"Bool", tgui::Serializer::serialize(textArea->isReadOnly())};
-        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textArea->getVerticalScrollbar()->getPolicy())};
-        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(textArea->getHorizontalScrollbar()->getPolicy())};
+        pair.first["VerticalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
+                                                 serializeScrollbarPolicy(textArea->getVerticalScrollbar()->getPolicy())};
+        pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
+                                                   serializeScrollbarPolicy(textArea->getHorizontalScrollbar()->getPolicy())};
 
         const auto renderer = textArea->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};

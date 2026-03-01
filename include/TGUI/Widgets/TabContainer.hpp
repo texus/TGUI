@@ -26,8 +26,8 @@
 #define TGUI_TAB_CONTAINER_HPP
 
 #include <TGUI/SubwidgetContainer.hpp>
-#include <TGUI/Widgets/Tabs.hpp>
 #include <TGUI/Widgets/Panel.hpp>
+#include <TGUI/Widgets/Tabs.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,8 +44,7 @@ namespace tgui
     class TGUI_API TabContainer : public Container
     {
     public:
-
-        using Ptr = std::shared_ptr<TabContainer>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<TabContainer>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const TabContainer>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "TabContainer"; //!< Type name of the widget
@@ -55,8 +54,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class TabAlign : std::uint8_t
         {
-            Top    = 0,      //!< Tabs are above panels
-            Bottom = 1 << 0  //!< Tabs are below panels
+            Top = 0,        //!< Tabs are above panels
+            Bottom = 1 << 0 //!< Tabs are below panels
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +92,7 @@ namespace tgui
         ///
         /// @return The new tab container
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static TabContainer::Ptr create(const Layout2d& size = { "100%", "100%" });
+        TGUI_NODISCARD static TabContainer::Ptr create(const Layout2d& size = {"100%", "100%"});
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another tab container
@@ -289,8 +288,8 @@ namespace tgui
         TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -318,8 +317,8 @@ namespace tgui
         void load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         void init(); // Helper function that initializes the widget when constructing a new widget or loading one from a file
 
         void layoutTabs(); // Helper function that sets position and size of the tabs according to the tab alignment
@@ -327,8 +326,8 @@ namespace tgui
         void layoutPanel(const Panel::Ptr& panel); // Helper function that sets position of a panel according to the tab alignment
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         /// Selection of the tab container changed. Optional parameter: index of panel with selection
         SignalInt onSelectionChange = {"SelectionChanged"};
 
@@ -337,11 +336,11 @@ namespace tgui
         SignalTyped2<int, bool*> onSelectionChanging = {"SelectionChanging"};
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         std::vector<Panel::Ptr> m_panels; // Stores the tab panels.
 
-        Panel::Ptr m_selectedPanel = nullptr;  // Stores the panel belonging to the selected tab
+        Panel::Ptr m_selectedPanel = nullptr; // Stores the panel belonging to the selected tab
 
         Tabs::Ptr m_tabs = Tabs::create(); // Stores the tabs.
 
@@ -351,7 +350,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

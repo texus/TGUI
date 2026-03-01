@@ -25,8 +25,8 @@
 #ifndef TGUI_SPLIT_CONTAINER_HPP
 #define TGUI_SPLIT_CONTAINER_HPP
 
-#include <TGUI/Widgets/Group.hpp>
 #include <TGUI/Renderers/SplitContainerRenderer.hpp>
+#include <TGUI/Widgets/Group.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,8 +43,7 @@ namespace tgui
     class TGUI_API SplitContainer : public Group
     {
     public:
-
-        using Ptr = std::shared_ptr<SplitContainer>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<SplitContainer>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const SplitContainer>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "SplitContainer"; //!< Type name of the widget
@@ -268,8 +267,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -318,8 +317,8 @@ namespace tgui
         TGUI_NODISCARD FloatRect getSplitterInteractRect() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         Orientation m_orientation = Orientation::Horizontal;
         AbsoluteOrRelativeValue m_splitterMinOffset;
         AbsoluteOrRelativeValue m_splitterMaxOffset = RelativeValue(1);
@@ -334,14 +333,14 @@ namespace tgui
         Cursor::Type m_currentSplitContainerMouseCursor = Cursor::Type::Arrow;
 
         // Cached renderer properties
-        Color   m_splitterColorCached;
-        Color   m_splitterColorHoverCached;
+        Color m_splitterColorCached;
+        Color m_splitterColorHoverCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

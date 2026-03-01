@@ -27,9 +27,9 @@
 
 #include <TGUI/Config.hpp>
 
+#include <array>
 #include <cstdint>
 #include <string>
-#include <array>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,9 +76,18 @@ namespace tgui
 
             // Extract the bytes to write
             std::array<CharT, 4> bytes;
-            if (bytestoWrite == 4) { bytes[3] = static_cast<CharT>((input | 0x80) & 0xBF); input >>= 6; }
-            if (bytestoWrite >= 3) { bytes[2] = static_cast<CharT>((input | 0x80) & 0xBF); input >>= 6; }
-            bytes[1] = static_cast<CharT>((input | 0x80) & 0xBF); input >>= 6;
+            if (bytestoWrite == 4)
+            {
+                bytes[3] = static_cast<CharT>((input | 0x80) & 0xBF);
+                input >>= 6;
+            }
+            if (bytestoWrite >= 3)
+            {
+                bytes[2] = static_cast<CharT>((input | 0x80) & 0xBF);
+                input >>= 6;
+            }
+            bytes[1] = static_cast<CharT>((input | 0x80) & 0xBF);
+            input >>= 6;
             bytes[0] = static_cast<CharT>(input | firstByteMask);
 
             // Add them to the output
@@ -102,14 +111,12 @@ namespace tgui
             }
 
             // Some useful precomputed data
-            static const std::uint32_t offsetsMap[6] = { 0x00000000, 0x00003080, 0x000E2080, 0x03C82080, 0xFA082080, 0x82082080 };
+            static const std::uint32_t offsetsMap[6] = {0x00000000, 0x00003080, 0x000E2080, 0x03C82080, 0xFA082080, 0x82082080};
             static const std::uint8_t trailingMap[128] =
-            {
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5
-            };
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
 
             // decode the character
             const std::uint8_t trailingBytes = trailingMap[static_cast<std::uint8_t>(*inputCharIt) - 128];
@@ -200,7 +207,8 @@ namespace tgui
 
                 const char16_t second = *it++;
                 if ((second >= 0xDC00) && (second <= 0xDFFF))
-                    outStrUtf32.push_back(((static_cast<char32_t>(first) - 0xD800) << 10) + (static_cast<char32_t>(second) - 0xDC00) + 0x0010000);
+                    outStrUtf32.push_back(
+                        ((static_cast<char32_t>(first) - 0xD800) << 10) + (static_cast<char32_t>(second) - 0xDC00) + 0x0010000);
             }
 
             return outStrUtf32;
@@ -249,7 +257,7 @@ namespace tgui
             std::wstring outStr;
             outStr.reserve(strUtf32.length() + 1);
 
-            TGUI_IF_CONSTEXPR (sizeof(wchar_t) == 4)
+            TGUI_IF_CONSTEXPR(sizeof(wchar_t) == 4)
             {
                 // On Unix, wide characters are UCS-4 and we can just copy the characters
                 for (const char32_t codepoint : strUtf32)
@@ -292,7 +300,7 @@ namespace tgui
                     continue; // Invalid character (greater than the maximum Unicode value)
 
                 // The input character needs be converted to two UTF-16 elements
-                outStrUtf16.push_back(static_cast<char16_t>(((codepoint - 0x0010000) >> 10)     + 0xD800));
+                outStrUtf16.push_back(static_cast<char16_t>(((codepoint - 0x0010000) >> 10) + 0xD800));
                 outStrUtf16.push_back(static_cast<char16_t>(((codepoint - 0x0010000) & 0x3FFUL) + 0xDC00));
             }
 
@@ -300,8 +308,8 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
-}
+    } // namespace utf
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -171,7 +171,8 @@ TEST_CASE("[Text]")
         {
             REQUIRE(text.getLineWidth("Foo", nullptr, 0, {}) == 0.0f);
             REQUIRE(text.getLineWidth("Bar", nullptr, 1, tgui::TextStyle::Underlined) == 0.0f);
-            REQUIRE(text.getLineWidth("Baz", nullptr, 42, {}) == 0.0f);;
+            REQUIRE(text.getLineWidth("Baz", nullptr, 42, {}) == 0.0f);
+            ;
             REQUIRE(text.getLineWidth("FooBar", nullptr, 666, tgui::TextStyle::StrikeThrough) == 0.0f);
         }
     }

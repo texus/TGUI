@@ -24,7 +24,7 @@
 
 #include <iostream>
 #if TGUI_BUILD_CXX20_MODULE
-    import tgui;
+import tgui;
 #else
     #include <TGUI/TGUI.hpp>
 #endif
@@ -48,7 +48,7 @@ void loadWidgets(tgui::BackendGui& gui)
     updateTextSize(gui);
 
     // We want the text size to be updated when the window is resized
-    gui.onViewChange([&gui]{ updateTextSize(gui); });
+    gui.onViewChange([&gui] { updateTextSize(gui); });
 
     // Create the background image
     // The picture is of type tgui::Picture::Ptr which is actually just a typedef for std::shared_widget<tgui::Picture>

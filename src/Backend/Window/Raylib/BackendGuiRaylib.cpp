@@ -41,106 +41,206 @@ namespace tgui
     {
         switch (key)
         {
-            case KEY_APOSTROPHE:     return Event::KeyboardKey::Quote;
-            case KEY_COMMA:          return Event::KeyboardKey::Comma;
-            case KEY_MINUS:          return Event::KeyboardKey::Minus;
-            case KEY_PERIOD:         return Event::KeyboardKey::Period;
-            case KEY_SLASH:          return Event::KeyboardKey::Slash;
-            case KEY_ZERO:           return Event::KeyboardKey::Num0;
-            case KEY_ONE:            return Event::KeyboardKey::Num1;
-            case KEY_TWO:            return Event::KeyboardKey::Num2;
-            case KEY_THREE:          return Event::KeyboardKey::Num3;
-            case KEY_FOUR:           return Event::KeyboardKey::Num4;
-            case KEY_FIVE:           return Event::KeyboardKey::Num5;
-            case KEY_SIX:            return Event::KeyboardKey::Num6;
-            case KEY_SEVEN:          return Event::KeyboardKey::Num7;
-            case KEY_EIGHT:          return Event::KeyboardKey::Num8;
-            case KEY_NINE:           return Event::KeyboardKey::Num9;
-            case KEY_SEMICOLON:      return Event::KeyboardKey::Semicolon;
-            case KEY_EQUAL:          return Event::KeyboardKey::Equal;
-            case KEY_A:              return Event::KeyboardKey::A;
-            case KEY_B:              return Event::KeyboardKey::B;
-            case KEY_C:              return Event::KeyboardKey::C;
-            case KEY_D:              return Event::KeyboardKey::D;
-            case KEY_E:              return Event::KeyboardKey::E;
-            case KEY_F:              return Event::KeyboardKey::F;
-            case KEY_G:              return Event::KeyboardKey::G;
-            case KEY_H:              return Event::KeyboardKey::H;
-            case KEY_I:              return Event::KeyboardKey::I;
-            case KEY_J:              return Event::KeyboardKey::J;
-            case KEY_K:              return Event::KeyboardKey::K;
-            case KEY_L:              return Event::KeyboardKey::L;
-            case KEY_M:              return Event::KeyboardKey::M;
-            case KEY_N:              return Event::KeyboardKey::N;
-            case KEY_O:              return Event::KeyboardKey::O;
-            case KEY_P:              return Event::KeyboardKey::P;
-            case KEY_Q:              return Event::KeyboardKey::Q;
-            case KEY_R:              return Event::KeyboardKey::R;
-            case KEY_S:              return Event::KeyboardKey::S;
-            case KEY_T:              return Event::KeyboardKey::T;
-            case KEY_U:              return Event::KeyboardKey::U;
-            case KEY_V:              return Event::KeyboardKey::V;
-            case KEY_W:              return Event::KeyboardKey::W;
-            case KEY_X:              return Event::KeyboardKey::X;
-            case KEY_Y:              return Event::KeyboardKey::Y;
-            case KEY_Z:              return Event::KeyboardKey::Z;
-            case KEY_LEFT_BRACKET:   return Event::KeyboardKey::LBracket;
-            case KEY_BACKSLASH:      return Event::KeyboardKey::Backslash;
-            case KEY_RIGHT_BRACKET:  return Event::KeyboardKey::RBracket;
-            case KEY_SPACE:          return Event::KeyboardKey::Space;
-            case KEY_ESCAPE:         return Event::KeyboardKey::Escape;
-            case KEY_ENTER:          return Event::KeyboardKey::Enter;
-            case KEY_TAB:            return Event::KeyboardKey::Tab;
-            case KEY_BACKSPACE:      return Event::KeyboardKey::Backspace;
-            case KEY_INSERT:         return Event::KeyboardKey::Insert;
-            case KEY_DELETE:         return Event::KeyboardKey::Delete;
-            case KEY_RIGHT:          return Event::KeyboardKey::Right;
-            case KEY_LEFT:           return Event::KeyboardKey::Left;
-            case KEY_DOWN:           return Event::KeyboardKey::Down;
-            case KEY_UP:             return Event::KeyboardKey::Up;
-            case KEY_PAGE_UP:        return Event::KeyboardKey::PageUp;
-            case KEY_PAGE_DOWN:      return Event::KeyboardKey::PageDown;
-            case KEY_HOME:           return Event::KeyboardKey::Home;
-            case KEY_END:            return Event::KeyboardKey::End;
-            case KEY_PAUSE:          return Event::KeyboardKey::Pause;
-            case KEY_F1:             return Event::KeyboardKey::F1;
-            case KEY_F2:             return Event::KeyboardKey::F2;
-            case KEY_F3:             return Event::KeyboardKey::F3;
-            case KEY_F4:             return Event::KeyboardKey::F4;
-            case KEY_F5:             return Event::KeyboardKey::F5;
-            case KEY_F6:             return Event::KeyboardKey::F6;
-            case KEY_F7:             return Event::KeyboardKey::F7;
-            case KEY_F8:             return Event::KeyboardKey::F8;
-            case KEY_F9:             return Event::KeyboardKey::F9;
-            case KEY_F10:            return Event::KeyboardKey::F10;
-            case KEY_F11:            return Event::KeyboardKey::F11;
-            case KEY_F12:            return Event::KeyboardKey::F12;
-            case KEY_LEFT_SHIFT:     return Event::KeyboardKey::LShift;
-            case KEY_LEFT_CONTROL:   return Event::KeyboardKey::LControl;
-            case KEY_LEFT_ALT:       return Event::KeyboardKey::LAlt;
-            case KEY_LEFT_SUPER:     return Event::KeyboardKey::LSystem;
-            case KEY_RIGHT_SHIFT:    return Event::KeyboardKey::RShift;
-            case KEY_RIGHT_CONTROL:  return Event::KeyboardKey::RControl;
-            case KEY_RIGHT_ALT:      return Event::KeyboardKey::RAlt;
-            case KEY_RIGHT_SUPER:    return Event::KeyboardKey::RSystem;
-            case KEY_KB_MENU:        return Event::KeyboardKey::Menu;
-            case KEY_KP_0:           return Event::KeyboardKey::Numpad0;
-            case KEY_KP_1:           return Event::KeyboardKey::Numpad1;
-            case KEY_KP_2:           return Event::KeyboardKey::Numpad2;
-            case KEY_KP_3:           return Event::KeyboardKey::Numpad3;
-            case KEY_KP_4:           return Event::KeyboardKey::Numpad4;
-            case KEY_KP_5:           return Event::KeyboardKey::Numpad5;
-            case KEY_KP_6:           return Event::KeyboardKey::Numpad6;
-            case KEY_KP_7:           return Event::KeyboardKey::Numpad7;
-            case KEY_KP_8:           return Event::KeyboardKey::Numpad8;
-            case KEY_KP_9:           return Event::KeyboardKey::Numpad9;
-            case KEY_KP_DECIMAL:     return Event::KeyboardKey::Period;
-            case KEY_KP_DIVIDE:      return Event::KeyboardKey::Divide;
-            case KEY_KP_MULTIPLY:    return Event::KeyboardKey::Multiply;
-            case KEY_KP_SUBTRACT:    return Event::KeyboardKey::Subtract;
-            case KEY_KP_ADD:         return Event::KeyboardKey::Add;
-            case KEY_KP_ENTER:       return Event::KeyboardKey::Enter;
-            case KEY_KP_EQUAL:       return Event::KeyboardKey::Equal;
+            case KEY_APOSTROPHE:
+                return Event::KeyboardKey::Quote;
+            case KEY_COMMA:
+                return Event::KeyboardKey::Comma;
+            case KEY_MINUS:
+                return Event::KeyboardKey::Minus;
+            case KEY_PERIOD:
+                return Event::KeyboardKey::Period;
+            case KEY_SLASH:
+                return Event::KeyboardKey::Slash;
+            case KEY_ZERO:
+                return Event::KeyboardKey::Num0;
+            case KEY_ONE:
+                return Event::KeyboardKey::Num1;
+            case KEY_TWO:
+                return Event::KeyboardKey::Num2;
+            case KEY_THREE:
+                return Event::KeyboardKey::Num3;
+            case KEY_FOUR:
+                return Event::KeyboardKey::Num4;
+            case KEY_FIVE:
+                return Event::KeyboardKey::Num5;
+            case KEY_SIX:
+                return Event::KeyboardKey::Num6;
+            case KEY_SEVEN:
+                return Event::KeyboardKey::Num7;
+            case KEY_EIGHT:
+                return Event::KeyboardKey::Num8;
+            case KEY_NINE:
+                return Event::KeyboardKey::Num9;
+            case KEY_SEMICOLON:
+                return Event::KeyboardKey::Semicolon;
+            case KEY_EQUAL:
+                return Event::KeyboardKey::Equal;
+            case KEY_A:
+                return Event::KeyboardKey::A;
+            case KEY_B:
+                return Event::KeyboardKey::B;
+            case KEY_C:
+                return Event::KeyboardKey::C;
+            case KEY_D:
+                return Event::KeyboardKey::D;
+            case KEY_E:
+                return Event::KeyboardKey::E;
+            case KEY_F:
+                return Event::KeyboardKey::F;
+            case KEY_G:
+                return Event::KeyboardKey::G;
+            case KEY_H:
+                return Event::KeyboardKey::H;
+            case KEY_I:
+                return Event::KeyboardKey::I;
+            case KEY_J:
+                return Event::KeyboardKey::J;
+            case KEY_K:
+                return Event::KeyboardKey::K;
+            case KEY_L:
+                return Event::KeyboardKey::L;
+            case KEY_M:
+                return Event::KeyboardKey::M;
+            case KEY_N:
+                return Event::KeyboardKey::N;
+            case KEY_O:
+                return Event::KeyboardKey::O;
+            case KEY_P:
+                return Event::KeyboardKey::P;
+            case KEY_Q:
+                return Event::KeyboardKey::Q;
+            case KEY_R:
+                return Event::KeyboardKey::R;
+            case KEY_S:
+                return Event::KeyboardKey::S;
+            case KEY_T:
+                return Event::KeyboardKey::T;
+            case KEY_U:
+                return Event::KeyboardKey::U;
+            case KEY_V:
+                return Event::KeyboardKey::V;
+            case KEY_W:
+                return Event::KeyboardKey::W;
+            case KEY_X:
+                return Event::KeyboardKey::X;
+            case KEY_Y:
+                return Event::KeyboardKey::Y;
+            case KEY_Z:
+                return Event::KeyboardKey::Z;
+            case KEY_LEFT_BRACKET:
+                return Event::KeyboardKey::LBracket;
+            case KEY_BACKSLASH:
+                return Event::KeyboardKey::Backslash;
+            case KEY_RIGHT_BRACKET:
+                return Event::KeyboardKey::RBracket;
+            case KEY_SPACE:
+                return Event::KeyboardKey::Space;
+            case KEY_ESCAPE:
+                return Event::KeyboardKey::Escape;
+            case KEY_ENTER:
+                return Event::KeyboardKey::Enter;
+            case KEY_TAB:
+                return Event::KeyboardKey::Tab;
+            case KEY_BACKSPACE:
+                return Event::KeyboardKey::Backspace;
+            case KEY_INSERT:
+                return Event::KeyboardKey::Insert;
+            case KEY_DELETE:
+                return Event::KeyboardKey::Delete;
+            case KEY_RIGHT:
+                return Event::KeyboardKey::Right;
+            case KEY_LEFT:
+                return Event::KeyboardKey::Left;
+            case KEY_DOWN:
+                return Event::KeyboardKey::Down;
+            case KEY_UP:
+                return Event::KeyboardKey::Up;
+            case KEY_PAGE_UP:
+                return Event::KeyboardKey::PageUp;
+            case KEY_PAGE_DOWN:
+                return Event::KeyboardKey::PageDown;
+            case KEY_HOME:
+                return Event::KeyboardKey::Home;
+            case KEY_END:
+                return Event::KeyboardKey::End;
+            case KEY_PAUSE:
+                return Event::KeyboardKey::Pause;
+            case KEY_F1:
+                return Event::KeyboardKey::F1;
+            case KEY_F2:
+                return Event::KeyboardKey::F2;
+            case KEY_F3:
+                return Event::KeyboardKey::F3;
+            case KEY_F4:
+                return Event::KeyboardKey::F4;
+            case KEY_F5:
+                return Event::KeyboardKey::F5;
+            case KEY_F6:
+                return Event::KeyboardKey::F6;
+            case KEY_F7:
+                return Event::KeyboardKey::F7;
+            case KEY_F8:
+                return Event::KeyboardKey::F8;
+            case KEY_F9:
+                return Event::KeyboardKey::F9;
+            case KEY_F10:
+                return Event::KeyboardKey::F10;
+            case KEY_F11:
+                return Event::KeyboardKey::F11;
+            case KEY_F12:
+                return Event::KeyboardKey::F12;
+            case KEY_LEFT_SHIFT:
+                return Event::KeyboardKey::LShift;
+            case KEY_LEFT_CONTROL:
+                return Event::KeyboardKey::LControl;
+            case KEY_LEFT_ALT:
+                return Event::KeyboardKey::LAlt;
+            case KEY_LEFT_SUPER:
+                return Event::KeyboardKey::LSystem;
+            case KEY_RIGHT_SHIFT:
+                return Event::KeyboardKey::RShift;
+            case KEY_RIGHT_CONTROL:
+                return Event::KeyboardKey::RControl;
+            case KEY_RIGHT_ALT:
+                return Event::KeyboardKey::RAlt;
+            case KEY_RIGHT_SUPER:
+                return Event::KeyboardKey::RSystem;
+            case KEY_KB_MENU:
+                return Event::KeyboardKey::Menu;
+            case KEY_KP_0:
+                return Event::KeyboardKey::Numpad0;
+            case KEY_KP_1:
+                return Event::KeyboardKey::Numpad1;
+            case KEY_KP_2:
+                return Event::KeyboardKey::Numpad2;
+            case KEY_KP_3:
+                return Event::KeyboardKey::Numpad3;
+            case KEY_KP_4:
+                return Event::KeyboardKey::Numpad4;
+            case KEY_KP_5:
+                return Event::KeyboardKey::Numpad5;
+            case KEY_KP_6:
+                return Event::KeyboardKey::Numpad6;
+            case KEY_KP_7:
+                return Event::KeyboardKey::Numpad7;
+            case KEY_KP_8:
+                return Event::KeyboardKey::Numpad8;
+            case KEY_KP_9:
+                return Event::KeyboardKey::Numpad9;
+            case KEY_KP_DECIMAL:
+                return Event::KeyboardKey::Period;
+            case KEY_KP_DIVIDE:
+                return Event::KeyboardKey::Divide;
+            case KEY_KP_MULTIPLY:
+                return Event::KeyboardKey::Multiply;
+            case KEY_KP_SUBTRACT:
+                return Event::KeyboardKey::Subtract;
+            case KEY_KP_ADD:
+                return Event::KeyboardKey::Add;
+            case KEY_KP_ENTER:
+                return Event::KeyboardKey::Enter;
+            case KEY_KP_EQUAL:
+                return Event::KeyboardKey::Equal;
             default: // We don't process the other keys
                 return Event::KeyboardKey::Unknown;
         };
@@ -196,10 +296,9 @@ namespace tgui
         if (pressedKey <= 0)
             return false;
 
-        if ((pressedKey == KEY_LEFT_ALT) || (pressedKey == KEY_RIGHT_ALT)
-         || (pressedKey == KEY_LEFT_CONTROL) || (pressedKey == KEY_RIGHT_CONTROL)
-         || (pressedKey == KEY_LEFT_SHIFT) || (pressedKey == KEY_RIGHT_SHIFT)
-         || (pressedKey == KEY_LEFT_SUPER) || (pressedKey == KEY_RIGHT_SUPER))
+        if ((pressedKey == KEY_LEFT_ALT) || (pressedKey == KEY_RIGHT_ALT) || (pressedKey == KEY_LEFT_CONTROL)
+            || (pressedKey == KEY_RIGHT_CONTROL) || (pressedKey == KEY_LEFT_SHIFT) || (pressedKey == KEY_RIGHT_SHIFT)
+            || (pressedKey == KEY_LEFT_SUPER) || (pressedKey == KEY_RIGHT_SUPER))
         {
             return false;
         }
@@ -265,14 +364,14 @@ namespace tgui
     {
         switch (modifierKey)
         {
-        case Event::KeyModifier::System:
-            return IsKeyDown(KEY_LEFT_SUPER) || IsKeyDown(KEY_RIGHT_SUPER);
-        case Event::KeyModifier::Control:
-            return IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
-        case Event::KeyModifier::Shift:
-            return IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
-        case Event::KeyModifier::Alt:
-            return IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
+            case Event::KeyModifier::System:
+                return IsKeyDown(KEY_LEFT_SUPER) || IsKeyDown(KEY_RIGHT_SUPER);
+            case Event::KeyModifier::Control:
+                return IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
+            case Event::KeyModifier::Shift:
+                return IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+            case Event::KeyModifier::Alt:
+                return IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
         }
 
         TGUI_ASSERT(false, "BackendGuiRaylib::isKeyboardModifierPressed called with an invalid value");
@@ -407,10 +506,9 @@ namespace tgui
             int pressedKey = GetKeyPressed();
             while (pressedKey > 0)
             {
-                if ((pressedKey == KEY_LEFT_ALT) || (pressedKey == KEY_RIGHT_ALT)
-                 || (pressedKey == KEY_LEFT_CONTROL) || (pressedKey == KEY_RIGHT_CONTROL)
-                 || (pressedKey == KEY_LEFT_SHIFT) || (pressedKey == KEY_RIGHT_SHIFT)
-                 || (pressedKey == KEY_LEFT_SUPER) || (pressedKey == KEY_RIGHT_SUPER))
+                if ((pressedKey == KEY_LEFT_ALT) || (pressedKey == KEY_RIGHT_ALT) || (pressedKey == KEY_LEFT_CONTROL)
+                    || (pressedKey == KEY_RIGHT_CONTROL) || (pressedKey == KEY_LEFT_SHIFT) || (pressedKey == KEY_RIGHT_SHIFT)
+                    || (pressedKey == KEY_LEFT_SUPER) || (pressedKey == KEY_RIGHT_SUPER))
                 {
                     continue;
                 }
@@ -489,6 +587,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

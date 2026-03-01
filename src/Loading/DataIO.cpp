@@ -22,65 +22,66 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Global.hpp>
+
+#include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/String.hpp>
 
-#include <cctype> // isspace
 #include <algorithm>
+#include <cctype> // isspace
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REMOVE_WHITESPACE_AND_COMMENTS(ReturnErrorOnEOF) \
-    for (;;) \
-    { \
-        stream >> std::ws; \
-        if (stream.peek() == EOF) \
-            break; \
-        \
-        if (stream.peek() == '/') \
-        { \
-            char c; \
-            stream.read(&c, 1); \
-            if (stream.peek() == '/') \
-            { \
-                while (stream.peek() != EOF) \
-                { \
-                    stream.read(&c, 1); \
-                    if (c == '\n') \
-                        break; \
-                } \
-            } \
-            else if (stream.peek() == '*') \
-            { \
-                while (stream.peek() != EOF) \
-                { \
-                    stream.read(&c, 1); \
-                    if (stream.peek() == '*') \
-                    { \
-                        stream.read(&c, 1); \
-                        if (stream.peek() == '/') \
-                        { \
-                            stream.read(&c, 1); \
-                            break; \
-                        } \
-                    } \
-                } \
-                continue; \
-            } \
-            else \
-                return "Unexpected '/' found."; \
-            \
-            continue; \
-        } \
-        break; \
-    } \
-    \
-    if (stream.peek() == EOF) \
-    { \
-        if (ReturnErrorOnEOF) \
-            return "Unexpected EOF while parsing."; \
-        return ""; \
+    for (;;)                                             \
+    {                                                    \
+        stream >> std::ws;                               \
+        if (stream.peek() == EOF)                        \
+            break;                                       \
+                                                         \
+        if (stream.peek() == '/')                        \
+        {                                                \
+            char c;                                      \
+            stream.read(&c, 1);                          \
+            if (stream.peek() == '/')                    \
+            {                                            \
+                while (stream.peek() != EOF)             \
+                {                                        \
+                    stream.read(&c, 1);                  \
+                    if (c == '\n')                       \
+                        break;                           \
+                }                                        \
+            }                                            \
+            else if (stream.peek() == '*')               \
+            {                                            \
+                while (stream.peek() != EOF)             \
+                {                                        \
+                    stream.read(&c, 1);                  \
+                    if (stream.peek() == '*')            \
+                    {                                    \
+                        stream.read(&c, 1);              \
+                        if (stream.peek() == '/')        \
+                        {                                \
+                            stream.read(&c, 1);          \
+                            break;                       \
+                        }                                \
+                    }                                    \
+                }                                        \
+                continue;                                \
+            }                                            \
+            else                                         \
+                return "Unexpected '/' found.";          \
+                                                         \
+            continue;                                    \
+        }                                                \
+        break;                                           \
+    }                                                    \
+                                                         \
+    if (stream.peek() == EOF)                            \
+    {                                                    \
+        if (ReturnErrorOnEOF)                            \
+            return "Unexpected EOF while parsing.";      \
+        return "";                                       \
     }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,8 +117,9 @@ namespace tgui
                             stream.read(&c, 1);
                             if (c == '\n')
                             {
-                                TGUI_ASSERT(!word.empty(), "There is no known case in which you can pass here with an empty word "
-                                                           "(comment would have been skipped earlier)");
+                                TGUI_ASSERT(!word.empty(),
+                                            "There is no known case in which you can pass here with an empty word "
+                                            "(comment would have been skipped earlier)");
                                 return word;
                             }
                         }
@@ -238,7 +240,7 @@ namespace tgui
                 if ((c == ';') || (c == '}'))
                 {
                     // Remove trailing whitespace before returning the line
-                    line.erase(line.find_last_not_of(" \n\r\t")+1);
+                    line.erase(line.find_last_not_of(" \n\r\t") + 1);
                     return line;
                 }
                 if (::isspace(c))
@@ -296,7 +298,7 @@ namespace tgui
                         valueNode->valueList.emplace_back("");
 
                         std::size_t i = 1;
-                        while (i < line.size()-1)
+                        while (i < line.size() - 1)
                         {
                             if (line[i] == ',')
                             {
@@ -310,7 +312,7 @@ namespace tgui
                                 i++;
 
                                 bool backslash = false;
-                                while (i < line.size()-1)
+                                while (i < line.size() - 1)
                                 {
                                     valueNode->valueList.back().insert(valueNode->valueList.back().size(), 1, line[i]);
 
@@ -404,8 +406,10 @@ namespace tgui
             // Copy children that aren't overwritten
             for (const auto& baseChildNode : baseSectionNode->children)
             {
-                const auto it = std::find_if(sectionNode->children.cbegin(), sectionNode->children.cend(),
-                    [&](const std::unique_ptr<DataIO::Node>& childNode){ return childNode->name == baseChildNode->name; });
+                const auto it = std::find_if(sectionNode->children.cbegin(),
+                                             sectionNode->children.cend(),
+                                             [&](const std::unique_ptr<DataIO::Node>& childNode)
+                                             { return childNode->name == baseChildNode->name; });
                 if (it == sectionNode->children.end())
                     sectionNode->children.push_back(std::make_unique<DataIO::Node>(*baseChildNode));
             }
@@ -450,7 +454,8 @@ namespace tgui
                         return "";
                     }
                     if (stream.peek() != '{')
-                        return "Expected property or nested section name, found '" + String(1, static_cast<char>(stream.peek())) + "' instead.";
+                        return "Expected property or nested section name, found '" + String(1, static_cast<char>(stream.peek()))
+                               + "' instead.";
                 }
 
                 REMOVE_WHITESPACE_AND_COMMENTS(true)
@@ -544,7 +549,7 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
+    } // namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -588,7 +593,7 @@ namespace tgui
             for (const auto& line : convertNodesToLines(rootNode->children[i]))
                 output.emplace_back(line);
 
-            if (i < rootNode->children.size()-1)
+            if (i < rootNode->children.size() - 1)
                 output.emplace_back("");
         }
 
@@ -597,6 +602,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

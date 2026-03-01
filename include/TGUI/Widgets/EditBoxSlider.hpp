@@ -40,8 +40,7 @@ namespace tgui
     class TGUI_API EditBoxSlider : public SubwidgetContainer
     {
     public:
-
-        using Ptr = std::shared_ptr<EditBoxSlider>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<EditBoxSlider>;             //!< Shared widget pointer
         using ConstrPtr = std::shared_ptr<const EditBoxSlider>; //!< Shared const widget pointer
 
         static constexpr char StaticWidgetType[] = "EditBoxSlider"; //!< Type name of the widget
@@ -86,7 +85,12 @@ namespace tgui
         ///
         /// @return The new edit box slider
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static EditBoxSlider::Ptr create(float min = 0.0f, float max = 10.0f, float value = 0.0f, unsigned int decimal = 0, float step = 1.0f);
+        TGUI_NODISCARD static EditBoxSlider::Ptr create(
+            float min = 0.0f,
+            float max = 10.0f,
+            float value = 0.0f,
+            unsigned int decimal = 0,
+            float step = 1.0f);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another edit box slider
@@ -261,6 +265,7 @@ namespace tgui
         TGUI_NODISCARD HorizontalAlignment getTextAlignment() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function that initializes the widget when constructing a new widget or loading one from a file
@@ -278,8 +283,8 @@ namespace tgui
         void setString(const String& str);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -307,19 +312,22 @@ namespace tgui
         void load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public:
         SignalFloat onValueChange = {"ValueChanged"}; //!< Value of the slider changed. Optional parameter: new value
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected:
         unsigned m_decimalPlaces = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private:
         EditBox::Ptr m_editBox = EditBox::create();
         Slider::Ptr m_slider = Slider::create();
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

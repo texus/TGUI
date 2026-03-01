@@ -22,13 +22,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Loading/Serializer.hpp>
-#include <TGUI/Loading/DataIO.hpp>
-#include <TGUI/Renderers/WidgetRenderer.hpp>
+#include <TGUI/extlibs/IncludeStbImageWrite.hpp>
+
 #include <TGUI/Base64.hpp>
 #include <TGUI/Exception.hpp>
-
-#include <TGUI/extlibs/IncludeStbImageWrite.hpp>
+#include <TGUI/Loading/DataIO.hpp>
+#include <TGUI/Loading/Serializer.hpp>
+#include <TGUI/Renderers/WidgetRenderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -106,7 +106,8 @@ namespace tgui
             }
 
             // Return the color by its rgb value
-            return "#" + decToHex(color.getRed()) + decToHex(color.getGreen()) + decToHex(color.getBlue()) + (color.getAlpha() < 255 ? decToHex(color.getAlpha()) : "");
+            return "#" + decToHex(color.getRed()) + decToHex(color.getGreen()) + decToHex(color.getBlue())
+                   + (color.getAlpha() < 255 ? decToHex(color.getAlpha()) : "");
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +124,8 @@ namespace tgui
                 for (const char32_t c : result)
                 {
                     // Slashes have to be serialized because the DataIO parser doesn't like values starting with a slash
-                    if ((c != U'%') && (c != U'_') && (c != U'@') && ((c < U'0') || (c > U'9')) && ((c < U'A') || (c > U'Z')) && ((c < U'a') || (c > U'z')))
+                    if ((c != U'%') && (c != U'_') && (c != U'@') && ((c < U'0') || (c > U'9')) && ((c < U'A') || (c > U'Z'))
+                        && ((c < U'a') || (c > U'z')))
                     {
                         encodingRequired = true;
                         break;
@@ -135,15 +137,15 @@ namespace tgui
                 return result;
 
             auto replace = [&](char32_t from, char32_t to)
+            {
+                std::size_t pos = 0;
+                while ((pos = result.find(from, pos)) != String::npos)
                 {
-                    std::size_t pos = 0;
-                    while ((pos = result.find(from, pos)) != String::npos)
-                    {
-                        result[pos] = to;
-                        result.insert(pos, 1, U'\\');
-                        pos += 2;
-                    }
-                };
+                    result[pos] = to;
+                    result.insert(pos, 1, U'\\');
+                    pos += 2;
+                }
+            };
 
             replace(U'\\', U'\\');
             replace(U'\"', U'\"');
@@ -191,7 +193,11 @@ namespace tgui
 
                 int dataLength = 0;
                 unsigned char* pngData = stbi_write_png_to_mem(static_cast<const unsigned char*>(pixels),
-                    static_cast<int>(imageSize.x * 4), static_cast<int>(imageSize.x), static_cast<int>(imageSize.y), 4, &dataLength);
+                                                               static_cast<int>(imageSize.x * 4),
+                                                               static_cast<int>(imageSize.x),
+                                                               static_cast<int>(imageSize.y),
+                                                               4,
+                                                               &dataLength);
                 if (!pngData)
                     return "None";
 
@@ -205,15 +211,15 @@ namespace tgui
                 const UIntRect& partRect = texture.getPartRect();
                 if ((partRect != UIntRect{}) && (partRect != UIntRect{{0, 0}, texture.getData()->backendTexture->getSize()}))
                 {
-                    result += " Part(" + String::fromNumber(partRect.left) + ", " + String::fromNumber(partRect.top)
-                                + ", " + String::fromNumber(partRect.width) + ", " + String::fromNumber(partRect.height) + ")";
+                    result += " Part(" + String::fromNumber(partRect.left) + ", " + String::fromNumber(partRect.top) + ", "
+                              + String::fromNumber(partRect.width) + ", " + String::fromNumber(partRect.height) + ")";
                 }
 
                 const UIntRect& middleRect = texture.getMiddleRect();
                 if (middleRect != UIntRect{{0, 0}, partRect.getSize()})
                 {
-                    result += " Middle(" + String::fromNumber(middleRect.left) + ", " + String::fromNumber(middleRect.top)
-                                  + ", " + String::fromNumber(middleRect.width) + ", " + String::fromNumber(middleRect.height) + ")";
+                    result += " Middle(" + String::fromNumber(middleRect.left) + ", " + String::fromNumber(middleRect.top) + ", "
+                              + String::fromNumber(middleRect.width) + ", " + String::fromNumber(middleRect.height) + ")";
                 }
             }
 
@@ -277,23 +283,21 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
+    } // namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::unordered_map<ObjectConverter::Type, Serializer::SerializeFunc> Serializer::m_serializers =
-        {
-            {ObjectConverter::Type::None, serializeEmptyObject},
-            {ObjectConverter::Type::Bool, serializeBool},
-            {ObjectConverter::Type::Font, serializeFont},
-            {ObjectConverter::Type::Color, serializeColor},
-            {ObjectConverter::Type::String, serializeString},
-            {ObjectConverter::Type::Number, serializeNumber},
-            {ObjectConverter::Type::Outline, serializeOutline},
-            {ObjectConverter::Type::Texture, serializeTexture},
-            {ObjectConverter::Type::TextStyle, serializeTextStyle},
-            {ObjectConverter::Type::RendererData, serializeRendererData}
-        };
+        {{ObjectConverter::Type::None, serializeEmptyObject},
+         {ObjectConverter::Type::Bool, serializeBool},
+         {ObjectConverter::Type::Font, serializeFont},
+         {ObjectConverter::Type::Color, serializeColor},
+         {ObjectConverter::Type::String, serializeString},
+         {ObjectConverter::Type::Number, serializeNumber},
+         {ObjectConverter::Type::Outline, serializeOutline},
+         {ObjectConverter::Type::Texture, serializeTexture},
+         {ObjectConverter::Type::TextStyle, serializeTextStyle},
+         {ObjectConverter::Type::RendererData, serializeRendererData}};
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -317,6 +321,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -25,14 +25,14 @@
 #ifndef TGUI_SPRITE_HPP
 #define TGUI_SPRITE_HPP
 
+#include <TGUI/Color.hpp>
+#include <TGUI/Rect.hpp>
+#include <TGUI/RenderStates.hpp>
 #include <TGUI/Texture.hpp>
 #include <TGUI/Vector2.hpp>
-#include <TGUI/Rect.hpp>
-#include <TGUI/Color.hpp>
-#include <TGUI/RenderStates.hpp>
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,7 +44,6 @@ namespace tgui
     class TGUI_API Sprite
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief The way the image should be scaled
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,12 +52,12 @@ namespace tgui
             Normal,     //!< The image is not split and scaled normally
             Horizontal, //!< Image is split in Left, Middle and Right parts. Left and Right keep ratio, Middle gets stretched
             Vertical,   //!< Image is split in Top, Middle and Bottom parts. Top and Bottom keep ratio, Middle gets stretched
-            NineSlice   //!< Image is split in 9 parts. Corners keep size, sides are stretched in one direction, middle is stretched in both directions
+            NineSlice //!< Image is split in 9 parts. Corners keep size, sides are stretched in one direction, middle is stretched in both directions
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,26 +242,26 @@ namespace tgui
         void updateVertices();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
-        Vector2f    m_size;
-        Texture     m_texture;
+    private:
+        Vector2f m_size;
+        Texture m_texture;
         std::shared_ptr<BackendTexture> m_svgTexture;
         std::vector<Vertex> m_vertices;
         std::vector<unsigned int> m_indices;
 
-        FloatRect   m_visibleRect;
+        FloatRect m_visibleRect;
 
-        Color       m_vertexColor = Color::White;
-        float       m_opacity = 1;
-        float       m_rotation = 0;
-        Vector2f    m_position;
+        Color m_vertexColor = Color::White;
+        float m_opacity = 1;
+        float m_rotation = 0;
+        Vector2f m_position;
 
         ScalingType m_scalingType = ScalingType::Normal;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

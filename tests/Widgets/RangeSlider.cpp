@@ -35,10 +35,10 @@ TEST_CASE("[RangeSlider]")
 
     SECTION("Signals")
     {
-        slider->onRangeChange([](){});
-        slider->onRangeChange([](float, float){});
+        slider->onRangeChange([]() {});
+        slider->onRangeChange([](float, float) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(slider)->getSignal("RangeChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(slider)->getSignal("RangeChanged").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -344,18 +344,19 @@ TEST_CASE("[RangeSlider]")
         renderer.setOpacity(0.7f);
         slider->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTrackColorHover(tgui::Color::Cyan);
-                                        renderer.setThumbColorHover(tgui::Color::Magenta);
-                                        renderer.setBorderColorHover(tgui::Color::Yellow);
-                                        renderer.setSelectedTrackColorHover(tgui::Color::Black);
-                                        if (textured)
-                                        {
-                                            renderer.setTextureTrackHover("resources/Texture3.png");
-                                            renderer.setTextureThumbHover("resources/Texture4.png");
-                                            renderer.setTextureSelectedTrackHover("resources/Texture6.png");
-                                        }
-                                     };
+        auto setHoverRenderer = [&](bool textured)
+        {
+            renderer.setTrackColorHover(tgui::Color::Cyan);
+            renderer.setThumbColorHover(tgui::Color::Magenta);
+            renderer.setBorderColorHover(tgui::Color::Yellow);
+            renderer.setSelectedTrackColorHover(tgui::Color::Black);
+            if (textured)
+            {
+                renderer.setTextureTrackHover("resources/Texture3.png");
+                renderer.setTextureThumbHover("resources/Texture4.png");
+                renderer.setTextureSelectedTrackHover("resources/Texture6.png");
+            }
+        };
 
         const auto mousePos = slider->getPosition() + (slider->getSize() / 2.f);
 

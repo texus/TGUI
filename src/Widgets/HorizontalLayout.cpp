@@ -69,8 +69,7 @@ namespace tgui
     void HorizontalLayout::updateWidgets()
     {
         const float totalSpaceBetweenWidgets = (m_spaceBetweenWidgetsCached * m_widgets.size()) - m_spaceBetweenWidgetsCached;
-        const Vector2f contentSize = {getSize().x - m_paddingCached.getLeftPlusRight(),
-                                      getSize().y - m_paddingCached.getTopPlusBottom()};
+        const Vector2f contentSize = {getSize().x - m_paddingCached.getLeftPlusRight(), getSize().y - m_paddingCached.getTopPlusBottom()};
 
         const float totalRatio = std::accumulate(m_ratios.cbegin(), m_ratios.cend(), 0.f);
 
@@ -106,6 +105,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

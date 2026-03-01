@@ -49,8 +49,7 @@ namespace tgui
             setRenderer(Theme::getDefault()->getRendererNoThrow(m_type));
 
             setTextSize(getGlobalTextSize());
-            setSize({m_textBack.getLineHeight() * 15,
-                     std::round(m_textBack.getLineHeight() * 1.25f) + m_bordersCached.getTopPlusBottom()});
+            setSize({m_textBack.getLineHeight() * 15, std::round(m_textBack.getLineHeight() * 1.25f) + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -237,7 +236,8 @@ namespace tgui
     {
         if (ClickableWidget::isMouseOnWidget(pos))
         {
-            if (!m_transparentTextureCached || !m_spriteBackground.isSet() || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+            if (!m_transparentTextureCached || !m_spriteBackground.isSet()
+                || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
                 return true;
         }
 
@@ -475,21 +475,19 @@ namespace tgui
             const Vector2f fillImageSize(m_spriteFill.getTexture().getImageSize());
             switch (m_spriteBackground.getScalingType())
             {
-            case Sprite::ScalingType::Normal:
-                return {fillImageSize.x * size.x / backgroundImageSize.x,
-                        fillImageSize.y * size.y / backgroundImageSize.y};
+                case Sprite::ScalingType::Normal:
+                    return {fillImageSize.x * size.x / backgroundImageSize.x, fillImageSize.y * size.y / backgroundImageSize.y};
 
-            case Sprite::ScalingType::Horizontal:
-                return {size.x - ((backgroundImageSize.x - fillImageSize.x) * (size.y / backgroundImageSize.y)),
-                        fillImageSize.y * size.y / backgroundImageSize.y};
+                case Sprite::ScalingType::Horizontal:
+                    return {size.x - ((backgroundImageSize.x - fillImageSize.x) * (size.y / backgroundImageSize.y)),
+                            fillImageSize.y * size.y / backgroundImageSize.y};
 
-            case Sprite::ScalingType::Vertical:
-                return {fillImageSize.x * size.x / backgroundImageSize.x,
-                        size.y - ((backgroundImageSize.y - fillImageSize.y) * (size.x / backgroundImageSize.x))};
+                case Sprite::ScalingType::Vertical:
+                    return {fillImageSize.x * size.x / backgroundImageSize.x,
+                            size.y - ((backgroundImageSize.y - fillImageSize.y) * (size.x / backgroundImageSize.x))};
 
-            case Sprite::ScalingType::NineSlice:
-                return {size.x - (backgroundImageSize.x - fillImageSize.x),
-                        size.y - (backgroundImageSize.y - fillImageSize.y)};
+                case Sprite::ScalingType::NineSlice:
+                    return {size.x - (backgroundImageSize.x - fillImageSize.x), size.y - (backgroundImageSize.y - fillImageSize.y)};
             }
         }
 
@@ -515,7 +513,9 @@ namespace tgui
             const Vector2f positionOffset = {m_backRect.left, m_backRect.top};
 
             states.transform.translate(positionOffset);
-            target.drawFilledRect(states, {m_backRect.width, m_backRect.height}, Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
+            target.drawFilledRect(states,
+                                  {m_backRect.width, m_backRect.height},
+                                  Color::applyOpacity(m_backgroundColorCached, m_opacityCached));
             states.transform.translate(-positionOffset);
         }
 
@@ -558,7 +558,8 @@ namespace tgui
             {
                 // Draw the text on top of the unfilled part
                 {
-                    target.addClippingLayer(states, {imageShift + Vector2f{m_backRect.left, m_backRect.top}, {m_backRect.width, m_backRect.height}});
+                    target.addClippingLayer(states,
+                                            {imageShift + Vector2f{m_backRect.left, m_backRect.top}, {m_backRect.width, m_backRect.height}});
 
                     states.transform.translate(textTranslation);
                     target.drawText(states, m_textBack);
@@ -569,7 +570,9 @@ namespace tgui
 
                 // Draw the text on top of the filled part
                 {
-                    target.addClippingLayer(states, {imageShift + Vector2f{m_frontRect.left, m_frontRect.top}, {m_frontRect.width, m_frontRect.height}});
+                    target.addClippingLayer(states,
+                                            {imageShift + Vector2f{m_frontRect.left, m_frontRect.top},
+                                             {m_frontRect.width, m_frontRect.height}});
 
                     states.transform.translate(textTranslation);
                     target.drawText(states, m_textFront);
@@ -589,6 +592,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

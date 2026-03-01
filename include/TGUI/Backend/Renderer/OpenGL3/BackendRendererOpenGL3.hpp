@@ -25,10 +25,10 @@
 #ifndef TGUI_BACKEND_RENDERER_OPENGL3_HPP
 #define TGUI_BACKEND_RENDERER_OPENGL3_HPP
 
-#include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendRenderTargetOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendTextureOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 
 #include <memory>
 
@@ -42,7 +42,6 @@ namespace tgui
     class TGUI_API BackendRendererOpenGL3 : public BackendRenderer
     {
     public:
-
         using ContextLoadFuncReturnType = void (*)();
         using ContextLoadFuncType = ContextLoadFuncReturnType (*)(const char* name);
 
@@ -86,11 +85,11 @@ namespace tgui
         TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         int m_maxTextureSize = 0;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

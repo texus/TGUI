@@ -34,10 +34,10 @@ TEST_CASE("[SpinButton]")
 
     SECTION("Signals")
     {
-        spinButton->onValueChange([](){});
-        spinButton->onValueChange([](float){});
+        spinButton->onValueChange([]() {});
+        spinButton->onValueChange([](float) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(spinButton)->getSignal("ValueChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(spinButton)->getSignal("ValueChanged").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -385,15 +385,16 @@ TEST_CASE("[SpinButton]")
         renderer.setOpacity(0.7f);
         spinButton->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
-                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
-                                        renderer.setArrowColorHover(tgui::Color::Magenta);
-                                        if (textured)
-                                        {
-                                            renderer.setTextureArrowUpHover("resources/Texture3.png");
-                                            renderer.setTextureArrowDownHover("resources/Texture4.png");
-                                        }
-                                     };
+        auto setHoverRenderer = [&](bool textured)
+        {
+            renderer.setBackgroundColorHover(tgui::Color::Cyan);
+            renderer.setArrowColorHover(tgui::Color::Magenta);
+            if (textured)
+            {
+                renderer.setTextureArrowUpHover("resources/Texture3.png");
+                renderer.setTextureArrowDownHover("resources/Texture4.png");
+            }
+        };
 
         const auto mousePosLeft = spinButton->getPosition() + (spinButton->getSize() * (1.f / 4.f));
         const auto mousePosRight = spinButton->getPosition() + (spinButton->getSize() * (3.f / 4.f));

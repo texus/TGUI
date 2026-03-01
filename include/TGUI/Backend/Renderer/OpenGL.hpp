@@ -30,33 +30,33 @@
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wold-style-cast"
-#elif defined (_MSC_VER)
-#   if defined(__clang__)
-#       pragma clang diagnostic push
-#       pragma clang diagnostic ignored "-Wold-style-cast"
-#       pragma clang diagnostic ignored "-Wlanguage-extension-token"
-#   endif
+#elif defined(_MSC_VER)
+    #if defined(__clang__)
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wold-style-cast"
+        #pragma clang diagnostic ignored "-Wlanguage-extension-token"
+    #endif
 #endif
 
 #if TGUI_USE_SYSTEM_GLAD
     #if TGUI_HAS_RENDERER_BACKEND_OPENGL3
         #include <glad/gl.h>
 
-        #define tgui_gladLoadGL             gladLoadGL
-        #define TGUI_GLAD_GL_VERSION_3_3    GLAD_GL_VERSION_3_3
-        #define TGUI_GLAD_GL_VERSION_4_0    GLAD_GL_VERSION_4_0
-        #define TGUI_GLAD_GL_VERSION_4_1    GLAD_GL_VERSION_4_1
-        #define TGUI_GLAD_GL_VERSION_4_2    GLAD_GL_VERSION_4_2
-        #define TGUI_GLAD_GL_VERSION_4_3    GLAD_GL_VERSION_4_3
-        #define TGUI_GLAD_GL_VERSION_4_4    GLAD_GL_VERSION_4_4
-        #define TGUI_GLAD_GL_VERSION_4_5    GLAD_GL_VERSION_4_5
-        #define TGUI_GLAD_GL_VERSION_4_6    GLAD_GL_VERSION_4_6
+        #define tgui_gladLoadGL gladLoadGL
+        #define TGUI_GLAD_GL_VERSION_3_3 GLAD_GL_VERSION_3_3
+        #define TGUI_GLAD_GL_VERSION_4_0 GLAD_GL_VERSION_4_0
+        #define TGUI_GLAD_GL_VERSION_4_1 GLAD_GL_VERSION_4_1
+        #define TGUI_GLAD_GL_VERSION_4_2 GLAD_GL_VERSION_4_2
+        #define TGUI_GLAD_GL_VERSION_4_3 GLAD_GL_VERSION_4_3
+        #define TGUI_GLAD_GL_VERSION_4_4 GLAD_GL_VERSION_4_4
+        #define TGUI_GLAD_GL_VERSION_4_5 GLAD_GL_VERSION_4_5
+        #define TGUI_GLAD_GL_VERSION_4_6 GLAD_GL_VERSION_4_6
     #endif
 
     #if TGUI_HAS_RENDERER_BACKEND_GLES2
         #include <glad/gles2.h>
 
-        #define tgui_gladLoadGLES2          gladLoadGLES2
+        #define tgui_gladLoadGLES2 gladLoadGLES2
         #define TGUI_GLAD_GL_ES_VERSION_2_0 GLAD_GL_ES_VERSION_2_0
         #define TGUI_GLAD_GL_ES_VERSION_3_0 GLAD_GL_ES_VERSION_3_0
         #define TGUI_GLAD_GL_ES_VERSION_3_1 GLAD_GL_ES_VERSION_3_1
@@ -68,11 +68,11 @@
 #endif
 
 #if defined(__GNUC__)
-#   pragma GCC diagnostic pop
-#elif defined (_MSC_VER)
-#   if defined(__clang__)
-#       pragma clang diagnostic pop
-#   endif
+    #pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+    #if defined(__clang__)
+        #pragma clang diagnostic pop
+    #endif
 #endif
 
 #include <string>
@@ -80,7 +80,12 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if !defined(NDEBUG)
-    #define TGUI_GL_CHECK(expr) do { expr; priv::checkAndLogErrorOpenGL(__FILE__, __LINE__, #expr); } while (false)
+    #define TGUI_GL_CHECK(expr)                                      \
+        do                                                           \
+        {                                                            \
+            expr;                                                    \
+            priv::checkAndLogErrorOpenGL(__FILE__, __LINE__, #expr); \
+        } while (false)
 #else
     #define TGUI_GL_CHECK(expr) expr
 #endif
@@ -99,28 +104,41 @@ namespace tgui
             const char* error;
             switch (errorCode)
             {
-            case GL_INVALID_ENUM:       error = "GL_INVALID_ENUM";      break;
-            case GL_INVALID_VALUE:      error = "GL_INVALID_VALUE";     break;
-            case GL_INVALID_OPERATION:  error = "GL_INVALID_OPERATION"; break;
-            case GL_STACK_OVERFLOW:     error = "GL_STACK_OVERFLOW";    break;
-            case GL_STACK_UNDERFLOW:    error = "GL_STACK_UNDERFLOW";   break;
-            case GL_OUT_OF_MEMORY:      error = "GL_OUT_OF_MEMORY";     break;
-            default:                    error = "Unknown error";        break;
+                case GL_INVALID_ENUM:
+                    error = "GL_INVALID_ENUM";
+                    break;
+                case GL_INVALID_VALUE:
+                    error = "GL_INVALID_VALUE";
+                    break;
+                case GL_INVALID_OPERATION:
+                    error = "GL_INVALID_OPERATION";
+                    break;
+                case GL_STACK_OVERFLOW:
+                    error = "GL_STACK_OVERFLOW";
+                    break;
+                case GL_STACK_UNDERFLOW:
+                    error = "GL_STACK_UNDERFLOW";
+                    break;
+                case GL_OUT_OF_MEMORY:
+                    error = "GL_OUT_OF_MEMORY";
+                    break;
+                default:
+                    error = "Unknown error";
+                    break;
             }
 
             const std::string fileStr = file;
-            TGUI_PRINT_WARNING("An internal OpenGL call failed in "
-                + fileStr.substr(fileStr.find_last_of("\\/") + 1)
-                + "(" + std::to_string(line) + ")."
-                + "\nExpression:\n   " + expression + "\nError description:\n   " + error + "\n");
+            TGUI_PRINT_WARNING(
+                "An internal OpenGL call failed in " + fileStr.substr(fileStr.find_last_of("\\/") + 1) + "(" + std::to_string(line)
+                + ")." + "\nExpression:\n   " + expression + "\nError description:\n   " + error + "\n");
         }
 #else
         inline void checkAndLogErrorOpenGL(const char*, unsigned int, const char*)
         {
         }
 #endif
-    }
-}
+    } // namespace priv
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

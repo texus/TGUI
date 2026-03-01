@@ -37,8 +37,7 @@ namespace tgui
     class TGUI_API ToggleButton : public ButtonBase
     {
     public:
-
-        using Ptr = std::shared_ptr<ToggleButton>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<ToggleButton>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ToggleButton>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ToggleButton"; //!< Type name of the widget
@@ -107,8 +106,8 @@ namespace tgui
         bool canHandleKeyPress(const Event::KeyEvent& event) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -136,15 +135,14 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalBool onToggle = {"Toggled"}; //!< Button state was toggled. Optional parameter: bool containing whether the button is down or not
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif // TGUI_TOGGLE_BUTTON_HPP
-

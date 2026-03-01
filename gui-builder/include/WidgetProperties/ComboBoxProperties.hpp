@@ -99,7 +99,6 @@ struct ComboBoxProperties : public WidgetProperties
     }
 
 private:
-
     TGUI_NODISCARD static tgui::ComboBox::ExpandDirection deserializeExpandDirection(tgui::String value)
     {
         value = value.trim().toLower();

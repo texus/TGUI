@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/SDL-Renderer.hpp>
-
 #include <TGUI/extlibs/IncludeSDL.hpp>
+
+#include <TGUI/Backend/SDL-Renderer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,8 +61,9 @@ namespace tgui
         void Gui::makeWindowCurrent()
         {
             TGUI_ASSERT(m_backendRenderTarget != nullptr, "Gui must be given a renderer before calling makeWindowCurrent()");
-            TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
-                "Renderer must belong to SDL_RENDERER backend renderer when calling makeWindowCurrent()");
+            TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                            && std::dynamic_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer()),
+                        "Renderer must belong to SDL_RENDERER backend renderer when calling makeWindowCurrent()");
             std::static_pointer_cast<BackendRendererSDL>(getBackend()->getRenderer())->setActiveRenderer(m_renderer);
         }
 
@@ -81,9 +82,9 @@ namespace tgui
             SDL_GetRendererOutputSize(m_renderer, &m_framebufferSize.x, &m_framebufferSize.y);
         }
 #endif
-    }
+    } // namespace SDL_RENDERER
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

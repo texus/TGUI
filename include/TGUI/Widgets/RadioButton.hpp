@@ -26,8 +26,8 @@
 #define TGUI_RADIO_BUTTON_HPP
 
 #include <TGUI/Renderers/RadioButtonRenderer.hpp>
-#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,8 +39,7 @@ namespace tgui
     class TGUI_API RadioButton : public ClickableWidget
     {
     public:
-
-        using Ptr = std::shared_ptr<RadioButton>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<RadioButton>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const RadioButton>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "RadioButton"; //!< Type name of the widget
@@ -224,8 +223,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -305,15 +304,15 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
-        SignalBool onCheck   = {"Checked"};   //!< Radio button was checked. Optional parameter: bool which is always true
+    public:
+        SignalBool onCheck = {"Checked"};     //!< Radio button was checked. Optional parameter: bool which is always true
         SignalBool onUncheck = {"Unchecked"}; //!< Radio button was unchecked. Optional parameter: bool which is always false
-        SignalBool onChange  = {"Changed"};   //!< Radio button was checked or unchecked. Optional parameter: bool indicating whether it is checked
+        SignalBool onChange = {"Changed"}; //!< Radio button was checked or unchecked. Optional parameter: bool indicating whether it is checked
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         // This is the checked flag. When the radio button is checked then this variable will be true.
         bool m_checked = false;
 
@@ -336,31 +335,31 @@ namespace tgui
         Sprite m_spriteCheckedFocused;
 
         // Cached renderer properties
-        Borders   m_bordersCached;
+        Borders m_bordersCached;
         TextStyles m_textStyleCached;
         TextStyles m_textStyleCheckedCached;
-        Color     m_checkColorCached;
-        Color     m_checkColorHoverCached;
-        Color     m_checkColorDisabledCached;
-        Color     m_borderColorCached;
-        Color     m_borderColorHoverCached;
-        Color     m_borderColorDisabledCached;
-        Color     m_borderColorFocusedCached;
-        Color     m_borderColorCheckedCached;
-        Color     m_borderColorCheckedHoverCached;
-        Color     m_borderColorCheckedDisabledCached;
-        Color     m_borderColorCheckedFocusedCached;
-        Color     m_backgroundColorCached;
-        Color     m_backgroundColorHoverCached;
-        Color     m_backgroundColorDisabledCached;
-        Color     m_backgroundColorCheckedCached;
-        Color     m_backgroundColorCheckedHoverCached;
-        Color     m_backgroundColorCheckedDisabledCached;
-        float     m_textDistanceRatioCached = 0.2f;
+        Color m_checkColorCached;
+        Color m_checkColorHoverCached;
+        Color m_checkColorDisabledCached;
+        Color m_borderColorCached;
+        Color m_borderColorHoverCached;
+        Color m_borderColorDisabledCached;
+        Color m_borderColorFocusedCached;
+        Color m_borderColorCheckedCached;
+        Color m_borderColorCheckedHoverCached;
+        Color m_borderColorCheckedDisabledCached;
+        Color m_borderColorCheckedFocusedCached;
+        Color m_backgroundColorCached;
+        Color m_backgroundColorHoverCached;
+        Color m_backgroundColorDisabledCached;
+        Color m_backgroundColorCheckedCached;
+        Color m_backgroundColorCheckedHoverCached;
+        Color m_backgroundColorCheckedDisabledCached;
+        float m_textDistanceRatioCached = 0.2f;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

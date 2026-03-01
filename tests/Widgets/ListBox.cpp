@@ -31,34 +31,34 @@ TEST_CASE("[ListBox]")
 
     SECTION("Signals")
     {
-        listBox->onItemSelect([](){});
-        listBox->onItemSelect([](int){});
-        listBox->onItemSelect([](const tgui::String&){});
-        listBox->onItemSelect([](const tgui::String&, const tgui::String&){});
+        listBox->onItemSelect([]() {});
+        listBox->onItemSelect([](int) {});
+        listBox->onItemSelect([](const tgui::String&) {});
+        listBox->onItemSelect([](const tgui::String&, const tgui::String&) {});
 
-        listBox->onMousePress([](){});
-        listBox->onMousePress([](int){});
-        listBox->onMousePress([](const tgui::String&){});
-        listBox->onMousePress([](const tgui::String&, const tgui::String&){});
+        listBox->onMousePress([]() {});
+        listBox->onMousePress([](int) {});
+        listBox->onMousePress([](const tgui::String&) {});
+        listBox->onMousePress([](const tgui::String&, const tgui::String&) {});
 
-        listBox->onMouseRelease([](){});
-        listBox->onMouseRelease([](int){});
-        listBox->onMouseRelease([](const tgui::String&){});
-        listBox->onMouseRelease([](const tgui::String&, const tgui::String&){});
+        listBox->onMouseRelease([]() {});
+        listBox->onMouseRelease([](int) {});
+        listBox->onMouseRelease([](const tgui::String&) {});
+        listBox->onMouseRelease([](const tgui::String&, const tgui::String&) {});
 
-        listBox->onDoubleClick([](){});
-        listBox->onDoubleClick([](int){});
-        listBox->onDoubleClick([](const tgui::String&){});
-        listBox->onDoubleClick([](const tgui::String&, const tgui::String&){});
+        listBox->onDoubleClick([]() {});
+        listBox->onDoubleClick([](int) {});
+        listBox->onDoubleClick([](const tgui::String&) {});
+        listBox->onDoubleClick([](const tgui::String&, const tgui::String&) {});
 
-        listBox->onScroll([](){});
-        listBox->onScroll([](unsigned int){});
+        listBox->onScroll([]() {});
+        listBox->onScroll([](unsigned int) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("ItemSelected").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("MousePressed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("MouseReleased").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("DoubleClicked").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("Scrolled").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("ItemSelected").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("MousePressed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("MouseReleased").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("DoubleClicked").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(listBox)->getSignal("Scrolled").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -387,22 +387,15 @@ TEST_CASE("[ListBox]")
         container->add(listBox);
         gui.add(container);
 
-        auto mouseMoved = [container](tgui::Vector2f pos){
-            container->processMouseMoveEvent(pos);
-        };
-        auto mousePressed = [container](tgui::Vector2f pos){
-            container->processMousePressEvent(tgui::Event::MouseButton::Left, pos);
-        };
-        auto mouseReleased = [container](tgui::Vector2f pos){
-            container->processMouseReleaseEvent(tgui::Event::MouseButton::Left, pos);
-        };
-        auto touchBegin = [&gui](std::uintptr_t fingerId, tgui::Vector2f pos){
-            gui.twoFingerScroll.reportFingerDown(fingerId, pos.x, pos.y);
-        };
-        auto touchEnd = [&gui](std::uintptr_t fingerId){
-            gui.twoFingerScroll.reportFingerUp(fingerId);
-        };
-        auto touchMove = [&gui](std::uintptr_t fingerId, tgui::Vector2f pos){
+        auto mouseMoved = [container](tgui::Vector2f pos) { container->processMouseMoveEvent(pos); };
+        auto mousePressed = [container](tgui::Vector2f pos) { container->processMousePressEvent(tgui::Event::MouseButton::Left, pos); };
+        auto mouseReleased = [container](tgui::Vector2f pos)
+        { container->processMouseReleaseEvent(tgui::Event::MouseButton::Left, pos); };
+        auto touchBegin = [&gui](std::uintptr_t fingerId, tgui::Vector2f pos)
+        { gui.twoFingerScroll.reportFingerDown(fingerId, pos.x, pos.y); };
+        auto touchEnd = [&gui](std::uintptr_t fingerId) { gui.twoFingerScroll.reportFingerUp(fingerId); };
+        auto touchMove = [&gui](std::uintptr_t fingerId, tgui::Vector2f pos)
+        {
             const bool wasScrolling = gui.twoFingerScroll.isScrolling();
             gui.twoFingerScroll.reportFingerMotion(fingerId, pos.x, pos.y);
             if (gui.twoFingerScroll.isScrolling())
@@ -719,12 +712,13 @@ TEST_CASE("[ListBox]")
         renderer.setOpacity(0.7f);
         listBox->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&]{
-                                    renderer.setBackgroundColorHover(tgui::Color::Yellow);
-                                    renderer.setTextColorHover(tgui::Color::Magenta);
-                                    renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
-                                    renderer.setSelectedTextColorHover("#808080");
-                                 };
+        auto setHoverRenderer = [&]
+        {
+            renderer.setBackgroundColorHover(tgui::Color::Yellow);
+            renderer.setTextColorHover(tgui::Color::Magenta);
+            renderer.setSelectedBackgroundColorHover(tgui::Color::Cyan);
+            renderer.setSelectedTextColorHover("#808080");
+        };
 
         listBox->addItem("1");
         listBox->addItem("2");
@@ -741,20 +735,14 @@ TEST_CASE("[ListBox]")
         {
             SECTION("No selected item")
             {
-                SECTION("No hover")
-                {
-                    TEST_DRAW("ListBox_NoSelectedNoHover.png")
-                }
+                SECTION("No hover"){TEST_DRAW("ListBox_NoSelectedNoHover.png")}
 
                 SECTION("Hover")
                 {
                     listBox->mouseMoved(mousePos2);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ListBox_NoSelectedHover_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ListBox_NoSelectedHover_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("ListBox_NoSelectedHover_HoverSet.png")
@@ -766,20 +754,14 @@ TEST_CASE("[ListBox]")
             {
                 listBox->setSelectedItem("4");
 
-                SECTION("No hover")
-                {
-                    TEST_DRAW("ListBox_SelectedNoHover.png")
-                }
+                SECTION("No hover"){TEST_DRAW("ListBox_SelectedNoHover.png")}
 
                 SECTION("Hover selected")
                 {
                     listBox->mouseMoved(mousePos1);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ListBox_SelectedHoverSelected_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ListBox_SelectedHoverSelected_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("ListBox_SelectedHoverSelected_HoverSet.png")
@@ -790,11 +772,8 @@ TEST_CASE("[ListBox]")
                 {
                     listBox->mouseMoved(mousePos3);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ListBox_SelectedHoverOther_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ListBox_SelectedHoverOther_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("ListBox_SelectedHoverOther_HoverSet.png")
@@ -809,20 +788,14 @@ TEST_CASE("[ListBox]")
 
             SECTION("No selected item")
             {
-                SECTION("No hover")
-                {
-                    TEST_DRAW("ListBox_NoSelectedNoHover_Texture.png")
-                }
+                SECTION("No hover"){TEST_DRAW("ListBox_NoSelectedNoHover_Texture.png")}
 
                 SECTION("Hover")
                 {
                     listBox->mouseMoved(mousePos2);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ListBox_NoSelectedHover_NoHoverSet_Texture.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ListBox_NoSelectedHover_NoHoverSet_Texture.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("ListBox_NoSelectedHover_HoverSet_Texture.png")
@@ -834,20 +807,14 @@ TEST_CASE("[ListBox]")
             {
                 listBox->setSelectedItem("4");
 
-                SECTION("No hover")
-                {
-                    TEST_DRAW("ListBox_SelectedNoHover_Texture.png")
-                }
+                SECTION("No hover"){TEST_DRAW("ListBox_SelectedNoHover_Texture.png")}
 
                 SECTION("Hover selected")
                 {
                     listBox->mouseMoved(mousePos1);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ListBox_SelectedHoverSelected_NoHoverSet_Texture.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ListBox_SelectedHoverSelected_NoHoverSet_Texture.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("ListBox_SelectedHoverSelected_HoverSet_Texture.png")
@@ -858,11 +825,8 @@ TEST_CASE("[ListBox]")
                 {
                     listBox->mouseMoved(mousePos3);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("ListBox_SelectedHoverOther_NoHoverSet_Texture.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("ListBox_SelectedHoverOther_NoHoverSet_Texture.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("ListBox_SelectedHoverOther_HoverSet_Texture.png")

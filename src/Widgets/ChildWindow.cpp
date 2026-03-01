@@ -22,9 +22,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Vector2.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+
+#include <TGUI/Vector2.hpp>
+#include <TGUI/Widgets/ChildWindow.hpp>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/Config.hpp>
@@ -46,7 +47,7 @@ namespace tgui
 
             return value;
         }
-    }
+    } // namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -81,39 +82,39 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow(const ChildWindow& other) :
-        Container                          {other},
-        m_titleText                        {other.m_titleText},
-        m_draggingPosition                 {other.m_draggingPosition},
-        m_maximumSize                      {other.m_maximumSize},
-        m_minimumSize                      {other.m_minimumSize},
-        m_titleAlignment                   {other.m_titleAlignment},
-        m_titleButtons                     {other.m_titleButtons},
-        m_titleTextSize                    {other.m_titleTextSize},
-        m_currentChildWindowMouseCursor    {other.m_currentChildWindowMouseCursor},
-        m_closeBehavior                    {other.m_closeBehavior},
-        m_closeButton                      {other.m_closeButton},
-        m_minimizeButton                   {other.m_minimizeButton},
-        m_maximizeButton                   {other.m_maximizeButton},
-        m_mouseDownOnTitleBar              {other.m_mouseDownOnTitleBar},
-        m_keepInParent                     {other.m_keepInParent},
-        m_positionLocked                   {other.m_positionLocked},
-        m_resizable                        {other.m_resizable},
-        m_resizeDirection                  {other.m_resizeDirection},
-        m_spriteTitleBar                   {other.m_spriteTitleBar},
-        m_spriteBackground                 {other.m_spriteBackground},
-        m_bordersCached                    {other.m_bordersCached},
-        m_clientPaddingCached              {other.m_clientPaddingCached},
-        m_borderColorCached                {other.m_borderColorCached},
-        m_borderColorFocusedCached         {other.m_borderColorFocusedCached},
-        m_titleColorCached                 {other.m_titleColorCached},
-        m_titleBarColorCached              {other.m_titleBarColorCached},
-        m_backgroundColorCached            {other.m_backgroundColorCached},
-        m_titleBarHeightCached             {other.m_titleBarHeightCached},
-        m_borderBelowTitleBarCached        {other.m_borderBelowTitleBarCached},
-        m_distanceToSideCached             {other.m_distanceToSideCached},
-        m_paddingBetweenButtonsCached      {other.m_paddingBetweenButtonsCached},
+        Container{other},
+        m_titleText{other.m_titleText},
+        m_draggingPosition{other.m_draggingPosition},
+        m_maximumSize{other.m_maximumSize},
+        m_minimumSize{other.m_minimumSize},
+        m_titleAlignment{other.m_titleAlignment},
+        m_titleButtons{other.m_titleButtons},
+        m_titleTextSize{other.m_titleTextSize},
+        m_currentChildWindowMouseCursor{other.m_currentChildWindowMouseCursor},
+        m_closeBehavior{other.m_closeBehavior},
+        m_closeButton{other.m_closeButton},
+        m_minimizeButton{other.m_minimizeButton},
+        m_maximizeButton{other.m_maximizeButton},
+        m_mouseDownOnTitleBar{other.m_mouseDownOnTitleBar},
+        m_keepInParent{other.m_keepInParent},
+        m_positionLocked{other.m_positionLocked},
+        m_resizable{other.m_resizable},
+        m_resizeDirection{other.m_resizeDirection},
+        m_spriteTitleBar{other.m_spriteTitleBar},
+        m_spriteBackground{other.m_spriteBackground},
+        m_bordersCached{other.m_bordersCached},
+        m_clientPaddingCached{other.m_clientPaddingCached},
+        m_borderColorCached{other.m_borderColorCached},
+        m_borderColorFocusedCached{other.m_borderColorFocusedCached},
+        m_titleColorCached{other.m_titleColorCached},
+        m_titleBarColorCached{other.m_titleBarColorCached},
+        m_backgroundColorCached{other.m_backgroundColorCached},
+        m_titleBarHeightCached{other.m_titleBarHeightCached},
+        m_borderBelowTitleBarCached{other.m_borderBelowTitleBarCached},
+        m_distanceToSideCached{other.m_distanceToSideCached},
+        m_paddingBetweenButtonsCached{other.m_paddingBetweenButtonsCached},
         m_minimumResizableBorderWidthCached{other.m_minimumResizableBorderWidthCached},
-        m_showTextOnTitleButtonsCached     {other.m_showTextOnTitleButtonsCached}
+        m_showTextOnTitleButtonsCached{other.m_showTextOnTitleButtonsCached}
     {
         // The inner size has changed since the container created the child widgets
         recalculateBoundSizeLayouts();
@@ -124,39 +125,39 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ChildWindow::ChildWindow(ChildWindow&& other) noexcept :
-        Container                          {std::move(other)},
-        m_titleText                        {std::move(other.m_titleText)},
-        m_draggingPosition                 {std::move(other.m_draggingPosition)},
-        m_maximumSize                      {std::move(other.m_maximumSize)},
-        m_minimumSize                      {std::move(other.m_minimumSize)},
-        m_titleAlignment                   {std::move(other.m_titleAlignment)},
-        m_titleButtons                     {std::move(other.m_titleButtons)},
-        m_titleTextSize                    {std::move(other.m_titleTextSize)},
-        m_currentChildWindowMouseCursor    {std::move(other.m_currentChildWindowMouseCursor)},
-        m_closeBehavior                    {std::move(other.m_closeBehavior)},
-        m_closeButton                      {std::move(other.m_closeButton)},
-        m_minimizeButton                   {std::move(other.m_minimizeButton)},
-        m_maximizeButton                   {std::move(other.m_maximizeButton)},
-        m_mouseDownOnTitleBar              {std::move(other.m_mouseDownOnTitleBar)},
-        m_keepInParent                     {std::move(other.m_keepInParent)},
-        m_positionLocked                   {std::move(other.m_positionLocked)},
-        m_resizable                        {std::move(other.m_resizable)},
-        m_resizeDirection                  {std::move(other.m_resizeDirection)},
-        m_spriteTitleBar                   {std::move(other.m_spriteTitleBar)},
-        m_spriteBackground                 {std::move(other.m_spriteBackground)},
-        m_bordersCached                    {std::move(other.m_bordersCached)},
-        m_clientPaddingCached              {std::move(other.m_clientPaddingCached)},
-        m_borderColorCached                {std::move(other.m_borderColorCached)},
-        m_borderColorFocusedCached         {std::move(other.m_borderColorFocusedCached)},
-        m_titleColorCached                 {std::move(other.m_titleColorCached)},
-        m_titleBarColorCached              {std::move(other.m_titleBarColorCached)},
-        m_backgroundColorCached            {std::move(other.m_backgroundColorCached)},
-        m_titleBarHeightCached             {std::move(other.m_titleBarHeightCached)},
-        m_borderBelowTitleBarCached        {std::move(other.m_borderBelowTitleBarCached)},
-        m_distanceToSideCached             {std::move(other.m_distanceToSideCached)},
-        m_paddingBetweenButtonsCached      {std::move(other.m_paddingBetweenButtonsCached)},
+        Container{std::move(other)},
+        m_titleText{std::move(other.m_titleText)},
+        m_draggingPosition{std::move(other.m_draggingPosition)},
+        m_maximumSize{std::move(other.m_maximumSize)},
+        m_minimumSize{std::move(other.m_minimumSize)},
+        m_titleAlignment{std::move(other.m_titleAlignment)},
+        m_titleButtons{std::move(other.m_titleButtons)},
+        m_titleTextSize{std::move(other.m_titleTextSize)},
+        m_currentChildWindowMouseCursor{std::move(other.m_currentChildWindowMouseCursor)},
+        m_closeBehavior{std::move(other.m_closeBehavior)},
+        m_closeButton{std::move(other.m_closeButton)},
+        m_minimizeButton{std::move(other.m_minimizeButton)},
+        m_maximizeButton{std::move(other.m_maximizeButton)},
+        m_mouseDownOnTitleBar{std::move(other.m_mouseDownOnTitleBar)},
+        m_keepInParent{std::move(other.m_keepInParent)},
+        m_positionLocked{std::move(other.m_positionLocked)},
+        m_resizable{std::move(other.m_resizable)},
+        m_resizeDirection{std::move(other.m_resizeDirection)},
+        m_spriteTitleBar{std::move(other.m_spriteTitleBar)},
+        m_spriteBackground{std::move(other.m_spriteBackground)},
+        m_bordersCached{std::move(other.m_bordersCached)},
+        m_clientPaddingCached{std::move(other.m_clientPaddingCached)},
+        m_borderColorCached{std::move(other.m_borderColorCached)},
+        m_borderColorFocusedCached{std::move(other.m_borderColorFocusedCached)},
+        m_titleColorCached{std::move(other.m_titleColorCached)},
+        m_titleBarColorCached{std::move(other.m_titleBarColorCached)},
+        m_backgroundColorCached{std::move(other.m_backgroundColorCached)},
+        m_titleBarHeightCached{std::move(other.m_titleBarHeightCached)},
+        m_borderBelowTitleBarCached{std::move(other.m_borderBelowTitleBarCached)},
+        m_distanceToSideCached{std::move(other.m_distanceToSideCached)},
+        m_paddingBetweenButtonsCached{std::move(other.m_paddingBetweenButtonsCached)},
         m_minimumResizableBorderWidthCached{std::move(other.m_minimumResizableBorderWidthCached)},
-        m_showTextOnTitleButtonsCached     {std::move(other.m_showTextOnTitleButtonsCached)}
+        m_showTextOnTitleButtonsCached{std::move(other.m_showTextOnTitleButtonsCached)}
     {
         // The inner size has changed since the container created the child widgets
         recalculateBoundSizeLayouts();
@@ -173,38 +174,38 @@ namespace tgui
         {
             Container::operator=(other);
 
-            m_titleText                         = other.m_titleText;
-            m_draggingPosition                  = other.m_draggingPosition;
-            m_maximumSize                       = other.m_maximumSize;
-            m_minimumSize                       = other.m_minimumSize;
-            m_titleAlignment                    = other.m_titleAlignment;
-            m_titleButtons                      = other.m_titleButtons;
-            m_titleTextSize                     = other.m_titleTextSize;
-            m_currentChildWindowMouseCursor     = other.m_currentChildWindowMouseCursor;
-            m_closeBehavior                     = other.m_closeBehavior;
-            m_closeButton                       = other.m_closeButton;
-            m_minimizeButton                    = other.m_minimizeButton;
-            m_maximizeButton                    = other.m_maximizeButton;
-            m_mouseDownOnTitleBar               = other.m_mouseDownOnTitleBar;
-            m_keepInParent                      = other.m_keepInParent;
-            m_positionLocked                    = other.m_positionLocked;
-            m_resizable                         = other.m_resizable;
-            m_resizeDirection                   = other.m_resizeDirection;
-            m_spriteTitleBar                    = other.m_spriteTitleBar;
-            m_spriteBackground                  = other.m_spriteBackground;
-            m_bordersCached                     = other.m_bordersCached;
-            m_clientPaddingCached               = other.m_clientPaddingCached;
-            m_borderColorCached                 = other.m_borderColorCached;
-            m_borderColorFocusedCached          = other.m_borderColorFocusedCached;
-            m_titleColorCached                  = other.m_titleColorCached;
-            m_titleBarColorCached               = other.m_titleBarColorCached;
-            m_backgroundColorCached             = other.m_backgroundColorCached;
-            m_titleBarHeightCached              = other.m_titleBarHeightCached;
-            m_borderBelowTitleBarCached         = other.m_borderBelowTitleBarCached;
-            m_distanceToSideCached              = other.m_distanceToSideCached;
-            m_paddingBetweenButtonsCached       = other.m_paddingBetweenButtonsCached;
+            m_titleText = other.m_titleText;
+            m_draggingPosition = other.m_draggingPosition;
+            m_maximumSize = other.m_maximumSize;
+            m_minimumSize = other.m_minimumSize;
+            m_titleAlignment = other.m_titleAlignment;
+            m_titleButtons = other.m_titleButtons;
+            m_titleTextSize = other.m_titleTextSize;
+            m_currentChildWindowMouseCursor = other.m_currentChildWindowMouseCursor;
+            m_closeBehavior = other.m_closeBehavior;
+            m_closeButton = other.m_closeButton;
+            m_minimizeButton = other.m_minimizeButton;
+            m_maximizeButton = other.m_maximizeButton;
+            m_mouseDownOnTitleBar = other.m_mouseDownOnTitleBar;
+            m_keepInParent = other.m_keepInParent;
+            m_positionLocked = other.m_positionLocked;
+            m_resizable = other.m_resizable;
+            m_resizeDirection = other.m_resizeDirection;
+            m_spriteTitleBar = other.m_spriteTitleBar;
+            m_spriteBackground = other.m_spriteBackground;
+            m_bordersCached = other.m_bordersCached;
+            m_clientPaddingCached = other.m_clientPaddingCached;
+            m_borderColorCached = other.m_borderColorCached;
+            m_borderColorFocusedCached = other.m_borderColorFocusedCached;
+            m_titleColorCached = other.m_titleColorCached;
+            m_titleBarColorCached = other.m_titleBarColorCached;
+            m_backgroundColorCached = other.m_backgroundColorCached;
+            m_titleBarHeightCached = other.m_titleBarHeightCached;
+            m_borderBelowTitleBarCached = other.m_borderBelowTitleBarCached;
+            m_distanceToSideCached = other.m_distanceToSideCached;
+            m_paddingBetweenButtonsCached = other.m_paddingBetweenButtonsCached;
             m_minimumResizableBorderWidthCached = other.m_minimumResizableBorderWidthCached;
-            m_showTextOnTitleButtonsCached      = other.m_showTextOnTitleButtonsCached;
+            m_showTextOnTitleButtonsCached = other.m_showTextOnTitleButtonsCached;
 
             // The inner size has changed since the container created the child widgets
             recalculateBoundSizeLayouts();
@@ -222,38 +223,38 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &other)
         {
-            m_titleText                         = std::move(other.m_titleText);
-            m_draggingPosition                  = std::move(other.m_draggingPosition);
-            m_maximumSize                       = std::move(other.m_maximumSize);
-            m_minimumSize                       = std::move(other.m_minimumSize);
-            m_titleAlignment                    = std::move(other.m_titleAlignment);
-            m_titleButtons                      = std::move(other.m_titleButtons);
-            m_titleTextSize                     = std::move(other.m_titleTextSize);
-            m_currentChildWindowMouseCursor     = std::move(other.m_currentChildWindowMouseCursor);
-            m_closeBehavior                     = std::move(other.m_closeBehavior);
-            m_closeButton                       = std::move(other.m_closeButton);
-            m_minimizeButton                    = std::move(other.m_minimizeButton);
-            m_maximizeButton                    = std::move(other.m_maximizeButton);
-            m_mouseDownOnTitleBar               = std::move(other.m_mouseDownOnTitleBar);
-            m_keepInParent                      = std::move(other.m_keepInParent);
-            m_positionLocked                    = std::move(other.m_positionLocked);
-            m_resizable                         = std::move(other.m_resizable);
-            m_resizeDirection                   = std::move(other.m_resizeDirection);
-            m_spriteTitleBar                    = std::move(other.m_spriteTitleBar);
-            m_spriteBackground                  = std::move(other.m_spriteBackground);
-            m_bordersCached                     = std::move(other.m_bordersCached);
-            m_clientPaddingCached               = std::move(other.m_clientPaddingCached);
-            m_borderColorCached                 = std::move(other.m_borderColorCached);
-            m_borderColorFocusedCached          = std::move(other.m_borderColorFocusedCached);
-            m_titleColorCached                  = std::move(other.m_titleColorCached);
-            m_titleBarColorCached               = std::move(other.m_titleBarColorCached);
-            m_backgroundColorCached             = std::move(other.m_backgroundColorCached);
-            m_titleBarHeightCached              = std::move(other.m_titleBarHeightCached);
-            m_borderBelowTitleBarCached         = std::move(other.m_borderBelowTitleBarCached);
-            m_distanceToSideCached              = std::move(other.m_distanceToSideCached);
-            m_paddingBetweenButtonsCached       = std::move(other.m_paddingBetweenButtonsCached);
+            m_titleText = std::move(other.m_titleText);
+            m_draggingPosition = std::move(other.m_draggingPosition);
+            m_maximumSize = std::move(other.m_maximumSize);
+            m_minimumSize = std::move(other.m_minimumSize);
+            m_titleAlignment = std::move(other.m_titleAlignment);
+            m_titleButtons = std::move(other.m_titleButtons);
+            m_titleTextSize = std::move(other.m_titleTextSize);
+            m_currentChildWindowMouseCursor = std::move(other.m_currentChildWindowMouseCursor);
+            m_closeBehavior = std::move(other.m_closeBehavior);
+            m_closeButton = std::move(other.m_closeButton);
+            m_minimizeButton = std::move(other.m_minimizeButton);
+            m_maximizeButton = std::move(other.m_maximizeButton);
+            m_mouseDownOnTitleBar = std::move(other.m_mouseDownOnTitleBar);
+            m_keepInParent = std::move(other.m_keepInParent);
+            m_positionLocked = std::move(other.m_positionLocked);
+            m_resizable = std::move(other.m_resizable);
+            m_resizeDirection = std::move(other.m_resizeDirection);
+            m_spriteTitleBar = std::move(other.m_spriteTitleBar);
+            m_spriteBackground = std::move(other.m_spriteBackground);
+            m_bordersCached = std::move(other.m_bordersCached);
+            m_clientPaddingCached = std::move(other.m_clientPaddingCached);
+            m_borderColorCached = std::move(other.m_borderColorCached);
+            m_borderColorFocusedCached = std::move(other.m_borderColorFocusedCached);
+            m_titleColorCached = std::move(other.m_titleColorCached);
+            m_titleBarColorCached = std::move(other.m_titleBarColorCached);
+            m_backgroundColorCached = std::move(other.m_backgroundColorCached);
+            m_titleBarHeightCached = std::move(other.m_titleBarHeightCached);
+            m_borderBelowTitleBarCached = std::move(other.m_borderBelowTitleBarCached);
+            m_distanceToSideCached = std::move(other.m_distanceToSideCached);
+            m_paddingBetweenButtonsCached = std::move(other.m_paddingBetweenButtonsCached);
             m_minimumResizableBorderWidthCached = std::move(other.m_minimumResizableBorderWidthCached);
-            m_showTextOnTitleButtonsCached      = std::move(other.m_showTextOnTitleButtonsCached);
+            m_showTextOnTitleButtonsCached = std::move(other.m_showTextOnTitleButtonsCached);
             Container::operator=(std::move(other));
 
             // The inner size has changed since the container created the child widgets
@@ -354,8 +355,10 @@ namespace tgui
         }
         else if (m_titleAlignment == HorizontalAlignment::Center)
         {
-            m_titleText.setPosition({m_distanceToSideCached + ((getInnerTitleBarSize().x - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
-                                     (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
+            m_titleText.setPosition(
+                {m_distanceToSideCached
+                     + ((getInnerTitleBarSize().x - (2 * m_distanceToSideCached) - buttonOffsetX - m_titleText.getSize().x) / 2.0f),
+                 (m_titleBarHeightCached - m_titleText.getSize().y) / 2.0f});
         }
         else // if (m_titleAlignment == HorizontalAlignment::Right)
         {
@@ -396,8 +399,7 @@ namespace tgui
 
     Vector2f ChildWindow::getInnerSize() const
     {
-        return {std::max(0.f, getSize().x - getDecorationSize().x),
-                std::max(0.f, getSize().y - getDecorationSize().y)};
+        return {std::max(0.f, getSize().x - getDecorationSize().x), std::max(0.f, getSize().y - getDecorationSize().y)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,8 +407,7 @@ namespace tgui
     Vector2f ChildWindow::getInnerTitleBarSize() const
     {
         return {std::max(0.f, getSize().x - m_bordersCached.getLeftPlusRight()),
-                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom()
-                              - m_titleBarHeightCached - m_borderBelowTitleBarCached)};
+                std::max(0.f, getSize().y - m_bordersCached.getTopPlusBottom() - m_titleBarHeightCached - m_borderBelowTitleBarCached)};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -414,8 +415,7 @@ namespace tgui
     Vector2f ChildWindow::getInnerSizeWithPadding() const
     {
         return {getSize().x - m_bordersCached.getLeftPlusRight(),
-                getSize().y - m_bordersCached.getTopPlusBottom()
-                - m_titleBarHeightCached - m_borderBelowTitleBarCached};
+                getSize().y - m_bordersCached.getTopPlusBottom() - m_titleBarHeightCached - m_borderBelowTitleBarCached};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -423,8 +423,8 @@ namespace tgui
     Vector2f ChildWindow::getDecorationSize() const
     {
         return {m_bordersCached.getLeftPlusRight() + m_clientPaddingCached.getLeftPlusRight(),
-                m_bordersCached.getTopPlusBottom() + m_clientPaddingCached.getTopPlusBottom()
-                + m_titleBarHeightCached + m_borderBelowTitleBarCached};
+                m_bordersCached.getTopPlusBottom() + m_clientPaddingCached.getTopPlusBottom() + m_titleBarHeightCached
+                    + m_borderBelowTitleBarCached};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -752,7 +752,11 @@ namespace tgui
             // Propagate the event to the child widgets
             isDragging = Container::leftMousePressed(pos + getPosition());
         }
-        else if (!FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerSizeWithPadding().x, getInnerSizeWithPadding().y + m_titleBarHeightCached + m_borderBelowTitleBarCached}.contains(pos))
+        else if (!FloatRect{m_bordersCached.getLeft(),
+                            m_bordersCached.getTop(),
+                            getInnerSizeWithPadding().x,
+                            getInnerSizeWithPadding().y + m_titleBarHeightCached + m_borderBelowTitleBarCached}
+                      .contains(pos))
         {
             if (!m_focused)
                 setFocused(true);
@@ -776,7 +780,8 @@ namespace tgui
 
             m_draggingPosition = pos;
         }
-        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(pos))
+        else if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(
+                     pos))
         {
             if (!m_focused)
                 setFocused(true);
@@ -824,7 +829,8 @@ namespace tgui
                 widget->leftMouseButtonNoLongerDown();
 
             // Check if the mouse is on top of the title bar
-            if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(pos))
+            if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(
+                    pos))
             {
                 // Send the mouse release event to the title buttons
                 for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
@@ -910,13 +916,17 @@ namespace tgui
 
             if ((m_resizeDirection & ResizeLeft) != 0)
             {
-                const float diff = clamp(m_draggingPosition.x - pos.x, std::max(minimumWidth, m_minimumSize.x) - getSize().x, m_maximumSize.x - getSize().x);
+                const float diff = clamp(m_draggingPosition.x - pos.x,
+                                         std::max(minimumWidth, m_minimumSize.x) - getSize().x,
+                                         m_maximumSize.x - getSize().x);
                 setPosition(getPosition().x - diff, getPosition().y);
                 setSize(getSize().x + diff, getSize().y);
             }
             else if ((m_resizeDirection & ResizeRight) != 0)
             {
-                const float diff = clamp(pos.x - m_draggingPosition.x, std::max(minimumWidth, m_minimumSize.x) - getSize().x, m_maximumSize.x - getSize().x);
+                const float diff = clamp(pos.x - m_draggingPosition.x,
+                                         std::max(minimumWidth, m_minimumSize.x) - getSize().x,
+                                         m_maximumSize.x - getSize().x);
                 setSize(getSize().x + diff, getSize().y);
                 m_draggingPosition.x += diff;
             }
@@ -950,7 +960,8 @@ namespace tgui
                     mouseEnteredWidget();
 
                 // Check if the mouse is on top of the title bar
-                if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(pos))
+                if (FloatRect{m_bordersCached.getLeft(), m_bordersCached.getTop(), getInnerTitleBarSize().x, m_titleBarHeightCached}.contains(
+                        pos))
                 {
                     // Send the hover event to the buttons inside the title bar
                     for (const auto& button : {m_closeButton.get(), m_maximizeButton.get(), m_minimizeButton.get()})
@@ -1037,14 +1048,18 @@ namespace tgui
             {
                 if (m_spriteTitleBar.isSet() && (button->getSharedRenderer()->getTexture().getData() != nullptr))
                 {
-                    button->setSize(button->getSharedRenderer()->getTexture().getImageSize().x * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y),
-                                    button->getSharedRenderer()->getTexture().getImageSize().y * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y));
+                    button->setSize(button->getSharedRenderer()->getTexture().getImageSize().x
+                                        * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y),
+                                    button->getSharedRenderer()->getTexture().getImageSize().y
+                                        * (m_titleBarHeightCached / m_spriteTitleBar.getTexture().getImageSize().y));
                 }
                 else
                     button->setSize({m_titleBarHeightCached * 0.8f, m_titleBarHeightCached * 0.8f});
 
                 const Borders& buttonBorders = button->getSharedRenderer()->getBorders();
-                button->setTextSize(Text::findBestTextSize(m_titleText.getFont(), (button->getSize().y - buttonBorders.getTop() - buttonBorders.getBottom()) * 0.8f));
+                button->setTextSize(
+                    Text::findBestTextSize(m_titleText.getFont(),
+                                           (button->getSize().y - buttonBorders.getTop() - buttonBorders.getBottom()) * 0.8f));
             }
         }
 
@@ -1304,9 +1319,11 @@ namespace tgui
             node->propertyValuePairs[U"PositionLocked"] = std::make_unique<DataIO::ValueNode>("true");
 
         if (m_minimumSize != Vector2f{})
-            node->propertyValuePairs[U"MinimumSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_minimumSize.x) + ", " + String::fromNumber(m_minimumSize.y) + ")");
+            node->propertyValuePairs[U"MinimumSize"] = std::make_unique<DataIO::ValueNode>(
+                "(" + String::fromNumber(m_minimumSize.x) + ", " + String::fromNumber(m_minimumSize.y) + ")");
         if (m_maximumSize != Vector2f{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()})
-            node->propertyValuePairs[U"MaximumSize"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_maximumSize.x) + ", " + String::fromNumber(m_maximumSize.y) + ")");
+            node->propertyValuePairs[U"MaximumSize"] = std::make_unique<DataIO::ValueNode>(
+                "(" + String::fromNumber(m_maximumSize.x) + ", " + String::fromNumber(m_maximumSize.y) + ")");
 
         String serializedTitleButtons;
         if (m_titleButtons & TitleButton::Minimize)
@@ -1373,15 +1390,18 @@ namespace tgui
             setTitle(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Title"]->value).getString());
 
         if (node->propertyValuePairs[U"TitleTextSize"])
-            setTitleTextSize(static_cast<unsigned int>(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"TitleTextSize"]->value).getNumber()));
+            setTitleTextSize(static_cast<unsigned int>(
+                Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"TitleTextSize"]->value).getNumber()));
 
         if (node->propertyValuePairs[U"KeepInParent"])
-            setKeepInParent(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"KeepInParent"]->value).getBool());
+            setKeepInParent(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"KeepInParent"]->value).getBool());
 
         if (node->propertyValuePairs[U"Resizable"])
             setResizable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Resizable"]->value).getBool());
         if (node->propertyValuePairs[U"PositionLocked"])
-            setPositionLocked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"PositionLocked"]->value).getBool());
+            setPositionLocked(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"PositionLocked"]->value).getBool());
 
         if (node->propertyValuePairs[U"MinimumSize"])
             setMinimumSize(Vector2f{node->propertyValuePairs[U"MinimumSize"]->value});
@@ -1462,7 +1482,9 @@ namespace tgui
         if (m_spriteTitleBar.isSet())
             target.drawSprite(states, m_spriteTitleBar);
         else
-            target.drawFilledRect(states, {getInnerTitleBarSize().x, m_titleBarHeightCached}, Color::applyOpacity(m_titleBarColorCached, m_opacityCached));
+            target.drawFilledRect(states,
+                                  {getInnerTitleBarSize().x, m_titleBarHeightCached},
+                                  Color::applyOpacity(m_titleBarColorCached, m_opacityCached));
 
         // Draw the text in the title bar (after setting the clipping area)
         {
@@ -1500,9 +1522,13 @@ namespace tgui
         if (m_borderBelowTitleBarCached > 0)
         {
             if (m_focused && m_borderColorFocusedCached.isSet())
-                target.drawFilledRect(states, {getInnerTitleBarSize().x, m_borderBelowTitleBarCached}, Color::applyOpacity(m_borderColorFocusedCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {getInnerTitleBarSize().x, m_borderBelowTitleBarCached},
+                                      Color::applyOpacity(m_borderColorFocusedCached, m_opacityCached));
             else
-                target.drawFilledRect(states, {getInnerTitleBarSize().x, m_borderBelowTitleBarCached}, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {getInnerTitleBarSize().x, m_borderBelowTitleBarCached},
+                                      Color::applyOpacity(m_borderColorCached, m_opacityCached));
 
             states.transform.translate({0, m_borderBelowTitleBarCached});
         }
@@ -1536,12 +1562,12 @@ namespace tgui
         m_minimizeButton->onPress.disconnectAll();
         m_closeButton->onPress.disconnectAll();
 
-        m_maximizeButton->onPress([this]{ onMaximize.emit(this); });
-        m_minimizeButton->onPress([this]{ onMinimize.emit(this); });
-        m_closeButton->onPress([this]{ close(); });
+        m_maximizeButton->onPress([this] { onMaximize.emit(this); });
+        m_minimizeButton->onPress([this] { onMinimize.emit(this); });
+        m_closeButton->onPress([this] { close(); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

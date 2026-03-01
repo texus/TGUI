@@ -31,10 +31,10 @@ TEST_CASE("[MessageBox]")
 
     SECTION("Signals")
     {
-        messageBox->onButtonPress([](){});
-        messageBox->onButtonPress([](const tgui::String&){});
+        messageBox->onButtonPress([]() {});
+        messageBox->onButtonPress([](const tgui::String&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(messageBox)->getSignal("ButtonPressed").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(messageBox)->getSignal("ButtonPressed").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -78,7 +78,7 @@ TEST_CASE("[MessageBox]")
         REQUIRE(messageBox->getButtons().empty());
 
         // Adding a single caption from empty.
-        messageBox->changeButtons({ "First" });
+        messageBox->changeButtons({"First"});
         REQUIRE(messageBox->getButtons().size() == 1);
         REQUIRE(messageBox->getButtons()[0] == "First");
 
@@ -87,7 +87,7 @@ TEST_CASE("[MessageBox]")
         REQUIRE(messageBox->getButtons().empty());
 
         // Adding a multiple captions from empty.
-        messageBox->changeButtons({ "First", "Second", "Third" });
+        messageBox->changeButtons({"First", "Second", "Third"});
         REQUIRE(messageBox->getButtons().size() == 3);
         REQUIRE(messageBox->getButtons()[0] == "First");
         REQUIRE(messageBox->getButtons()[1] == "Second");
@@ -99,13 +99,13 @@ TEST_CASE("[MessageBox]")
 
         // Changing with a single caption will rename existing button.
         messageBox->addButton("First");
-        messageBox->changeButtons({ "Renamed" });
+        messageBox->changeButtons({"Renamed"});
         REQUIRE(messageBox->getButtons().size() == 1);
         REQUIRE(messageBox->getButtons()[0] == "Renamed");
 
         // Changing with a excess captions will rename existing buttons and add new ones.
         messageBox->addButton("Second");
-        messageBox->changeButtons({ "First", "Renamed", "Third", "Fourth" });
+        messageBox->changeButtons({"First", "Renamed", "Third", "Fourth"});
         REQUIRE(messageBox->getButtons().size() == 4);
         REQUIRE(messageBox->getButtons()[0] == "First");
         REQUIRE(messageBox->getButtons()[1] == "Renamed");
@@ -113,7 +113,7 @@ TEST_CASE("[MessageBox]")
         REQUIRE(messageBox->getButtons()[3] == "Fourth");
 
         // Changing with lower number of captions will rename existing buttons and remove excess ones.
-        messageBox->changeButtons({ "1", "2" });
+        messageBox->changeButtons({"1", "2"});
         REQUIRE(messageBox->getButtons().size() == 2);
         REQUIRE(messageBox->getButtons()[0] == "1");
         REQUIRE(messageBox->getButtons()[1] == "2");

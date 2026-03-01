@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/TreeView.hpp>
 #include <TGUI/Keyboard.hpp>
+#include <TGUI/Widgets/TreeView.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -122,7 +122,10 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        bool removeItemImpl(const std::vector<String>& hierarchy, bool removeParentsWhenEmpty, unsigned int parentIndex, std::vector<std::shared_ptr<TreeView::Node>>& nodes)
+        bool removeItemImpl(const std::vector<String>& hierarchy,
+                            bool removeParentsWhenEmpty,
+                            unsigned int parentIndex,
+                            std::vector<std::shared_ptr<TreeView::Node>>& nodes)
         {
             for (auto it = nodes.cbegin(); it != nodes.cend(); ++it)
             {
@@ -172,7 +175,9 @@ namespace tgui
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TreeView::Node* findNode(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, const std::vector<String>& hierarchy, unsigned int parentIndex)
+        TreeView::Node* findNode(const std::vector<std::shared_ptr<TreeView::Node>>& nodes,
+                                 const std::vector<String>& hierarchy,
+                                 unsigned int parentIndex)
         {
             assert(parentIndex < hierarchy.size());
             for (const auto& node : nodes)
@@ -229,7 +234,7 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
+    } // namespace
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     constexpr char TreeView::StaticWidgetType[];
@@ -255,35 +260,35 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TreeView::TreeView(const TreeView& other) :
-        Widget                              {other},
-        DualScrollbarChildInterface         {other},
-        onItemSelect                        {other.onItemSelect},
-        onDoubleClick                       {other.onDoubleClick},
-        onExpand                            {other.onExpand},
-        onCollapse                          {other.onCollapse},
-        onRightClick                        {other.onRightClick},
-        m_selectedItem                      {other.m_selectedItem},
-        m_hoveredItem                       {other.m_hoveredItem},
-        m_itemHeight                        {other.m_itemHeight},
-        m_maxRight                          {other.m_maxRight},
-        m_iconBounds                        {other.m_iconBounds},
-        m_possibleDoubleClick               {other.m_possibleDoubleClick},
-        m_doubleClickNodeIndex              {other.m_doubleClickNodeIndex},
-        m_spriteBranchExpanded              {other.m_spriteBranchExpanded},
-        m_spriteBranchCollapsed             {other.m_spriteBranchCollapsed},
-        m_spriteLeaf                        {other.m_spriteLeaf},
-        m_bordersCached                     {other.m_bordersCached},
-        m_paddingCached                     {other.m_paddingCached},
-        m_borderColorCached                 {other.m_borderColorCached},
-        m_backgroundColorCached             {other.m_backgroundColorCached},
-        m_textColorCached                   {other.m_textColorCached},
-        m_textColorHoverCached              {other.m_textColorHoverCached},
-        m_selectedTextColorCached           {other.m_selectedTextColorCached},
-        m_selectedTextColorHoverCached      {other.m_selectedTextColorHoverCached},
-        m_selectedBackgroundColorCached     {other.m_selectedBackgroundColorCached},
+        Widget{other},
+        DualScrollbarChildInterface{other},
+        onItemSelect{other.onItemSelect},
+        onDoubleClick{other.onDoubleClick},
+        onExpand{other.onExpand},
+        onCollapse{other.onCollapse},
+        onRightClick{other.onRightClick},
+        m_selectedItem{other.m_selectedItem},
+        m_hoveredItem{other.m_hoveredItem},
+        m_itemHeight{other.m_itemHeight},
+        m_maxRight{other.m_maxRight},
+        m_iconBounds{other.m_iconBounds},
+        m_possibleDoubleClick{other.m_possibleDoubleClick},
+        m_doubleClickNodeIndex{other.m_doubleClickNodeIndex},
+        m_spriteBranchExpanded{other.m_spriteBranchExpanded},
+        m_spriteBranchCollapsed{other.m_spriteBranchCollapsed},
+        m_spriteLeaf{other.m_spriteLeaf},
+        m_bordersCached{other.m_bordersCached},
+        m_paddingCached{other.m_paddingCached},
+        m_borderColorCached{other.m_borderColorCached},
+        m_backgroundColorCached{other.m_backgroundColorCached},
+        m_textColorCached{other.m_textColorCached},
+        m_textColorHoverCached{other.m_textColorHoverCached},
+        m_selectedTextColorCached{other.m_selectedTextColorCached},
+        m_selectedTextColorHoverCached{other.m_selectedTextColorHoverCached},
+        m_selectedBackgroundColorCached{other.m_selectedBackgroundColorCached},
         m_selectedBackgroundColorHoverCached{other.m_selectedBackgroundColorHoverCached},
-        m_backgroundColorHoverCached        {other.m_backgroundColorHoverCached},
-        m_textStyleCached                   {other.m_textStyleCached}
+        m_backgroundColorHoverCached{other.m_backgroundColorHoverCached},
+        m_textStyleCached{other.m_textStyleCached}
     {
         for (const auto& node : other.m_nodes)
             m_nodes.push_back(cloneNode(node, nullptr));
@@ -304,35 +309,35 @@ namespace tgui
             Widget::operator=(temp);
             DualScrollbarChildInterface::operator=(temp);
 
-            std::swap(onItemSelect,                         temp.onItemSelect);
-            std::swap(onDoubleClick,                        temp.onDoubleClick);
-            std::swap(onExpand,                             temp.onExpand);
-            std::swap(onCollapse,                           temp.onCollapse);
-            std::swap(onRightClick,                         temp.onRightClick);
-            std::swap(m_nodes,                              temp.m_nodes);
-            std::swap(m_visibleNodes,                       temp.m_visibleNodes);
-            std::swap(m_selectedItem,                       temp.m_selectedItem);
-            std::swap(m_hoveredItem,                        temp.m_hoveredItem);
-            std::swap(m_itemHeight,                         temp.m_itemHeight);
-            std::swap(m_maxRight,                           temp.m_maxRight);
-            std::swap(m_iconBounds,                         temp.m_iconBounds);
-            std::swap(m_possibleDoubleClick,                temp.m_possibleDoubleClick);
-            std::swap(m_doubleClickNodeIndex,               temp.m_doubleClickNodeIndex);
-            std::swap(m_spriteBranchExpanded,               temp.m_spriteBranchExpanded);
-            std::swap(m_spriteBranchCollapsed,              temp.m_spriteBranchCollapsed);
-            std::swap(m_spriteLeaf,                         temp.m_spriteLeaf);
-            std::swap(m_bordersCached,                      temp.m_bordersCached);
-            std::swap(m_paddingCached,                      temp.m_paddingCached);
-            std::swap(m_borderColorCached,                  temp.m_borderColorCached);
-            std::swap(m_backgroundColorCached,              temp.m_backgroundColorCached);
-            std::swap(m_textColorCached,                    temp.m_textColorCached);
-            std::swap(m_textColorHoverCached,               temp.m_textColorHoverCached);
-            std::swap(m_selectedTextColorCached,            temp.m_selectedTextColorCached);
-            std::swap(m_selectedTextColorHoverCached,       temp.m_selectedTextColorHoverCached);
-            std::swap(m_selectedBackgroundColorCached,      temp.m_selectedBackgroundColorCached);
+            std::swap(onItemSelect, temp.onItemSelect);
+            std::swap(onDoubleClick, temp.onDoubleClick);
+            std::swap(onExpand, temp.onExpand);
+            std::swap(onCollapse, temp.onCollapse);
+            std::swap(onRightClick, temp.onRightClick);
+            std::swap(m_nodes, temp.m_nodes);
+            std::swap(m_visibleNodes, temp.m_visibleNodes);
+            std::swap(m_selectedItem, temp.m_selectedItem);
+            std::swap(m_hoveredItem, temp.m_hoveredItem);
+            std::swap(m_itemHeight, temp.m_itemHeight);
+            std::swap(m_maxRight, temp.m_maxRight);
+            std::swap(m_iconBounds, temp.m_iconBounds);
+            std::swap(m_possibleDoubleClick, temp.m_possibleDoubleClick);
+            std::swap(m_doubleClickNodeIndex, temp.m_doubleClickNodeIndex);
+            std::swap(m_spriteBranchExpanded, temp.m_spriteBranchExpanded);
+            std::swap(m_spriteBranchCollapsed, temp.m_spriteBranchCollapsed);
+            std::swap(m_spriteLeaf, temp.m_spriteLeaf);
+            std::swap(m_bordersCached, temp.m_bordersCached);
+            std::swap(m_paddingCached, temp.m_paddingCached);
+            std::swap(m_borderColorCached, temp.m_borderColorCached);
+            std::swap(m_backgroundColorCached, temp.m_backgroundColorCached);
+            std::swap(m_textColorCached, temp.m_textColorCached);
+            std::swap(m_textColorHoverCached, temp.m_textColorHoverCached);
+            std::swap(m_selectedTextColorCached, temp.m_selectedTextColorCached);
+            std::swap(m_selectedTextColorHoverCached, temp.m_selectedTextColorHoverCached);
+            std::swap(m_selectedBackgroundColorCached, temp.m_selectedBackgroundColorCached);
             std::swap(m_selectedBackgroundColorHoverCached, temp.m_selectedBackgroundColorHoverCached);
-            std::swap(m_backgroundColorHoverCached,         temp.m_backgroundColorHoverCached);
-            std::swap(m_textStyleCached,                    temp.m_textStyleCached);
+            std::swap(m_backgroundColorHoverCached, temp.m_backgroundColorHoverCached);
+            std::swap(m_textStyleCached, temp.m_textStyleCached);
         }
 
         return *this;
@@ -464,7 +469,7 @@ namespace tgui
         // Make sure the parent of the item we are selecting is expanded
         if (hierarchy.size() >= 2)
         {
-            if (!expandOrCollapse(std::vector<String>(hierarchy.cbegin(), hierarchy.cend()-1), true))
+            if (!expandOrCollapse(std::vector<String>(hierarchy.cbegin(), hierarchy.cend() - 1), true))
                 return false;
         }
 
@@ -652,7 +657,9 @@ namespace tgui
 
         // Remove the node from its old parent
         auto& oldParentNodes = node->parent ? node->parent->nodes : m_nodes;
-        auto it = std::find_if(oldParentNodes.cbegin(), oldParentNodes.cend(), [node](const std::shared_ptr<Node>& child){ return child.get() == node; });
+        auto it = std::find_if(oldParentNodes.cbegin(),
+                               oldParentNodes.cend(),
+                               [node](const std::shared_ptr<Node>& child) { return child.get() == node; });
         assert(it != oldParentNodes.end());
         auto nodeSharedPtr = *it;
         oldParentNodes.erase(it);
@@ -710,11 +717,8 @@ namespace tgui
     {
         if (m_spriteBranchCollapsed.isSet() || m_spriteBranchExpanded.isSet() || m_spriteLeaf.isSet())
         {
-            m_iconBounds =
-                {
-                    std::max({m_spriteBranchCollapsed.getSize().x, m_spriteBranchExpanded.getSize().x, m_spriteLeaf.getSize().x}),
-                    std::max({m_spriteBranchCollapsed.getSize().y, m_spriteBranchExpanded.getSize().y, m_spriteLeaf.getSize().y})
-                };
+            m_iconBounds = {std::max({m_spriteBranchCollapsed.getSize().x, m_spriteBranchExpanded.getSize().x, m_spriteLeaf.getSize().x}),
+                            std::max({m_spriteBranchCollapsed.getSize().y, m_spriteBranchExpanded.getSize().y, m_spriteLeaf.getSize().y})};
         }
         else
         {
@@ -837,7 +841,8 @@ namespace tgui
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {
-            if (!m_transparentTextureCached || !m_spriteBackground.isSet() || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+            if (!m_transparentTextureCached || !m_spriteBackground.isSet()
+                || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
                 return true;
         }
 
@@ -863,13 +868,18 @@ namespace tgui
             if (m_verticalScrollbar->isShown())
                 maxItemWidth -= m_verticalScrollbar->getSize().x;
 
-            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                          maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
+            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                          m_bordersCached.getTop() + m_paddingCached.getTop(),
+                          maxItemWidth,
+                          getInnerSize().y - m_paddingCached.getTopPlusBottom()}
+                    .contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
                 // NOLINTNEXTLINE(bugprone-integer-division)
-                int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
+                int selectedItem = static_cast<int>(
+                    ((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight)
+                    + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
                 if (selectedItem >= static_cast<int>(m_visibleNodes.size()))
                     selectedItem = -1;
 
@@ -896,23 +906,32 @@ namespace tgui
 
             bool iconPressed = false;
             int selectedIndex = -1;
-            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                          maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
+            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                          m_bordersCached.getTop() + m_paddingCached.getTop(),
+                          maxItemWidth,
+                          getInnerSize().y - m_paddingCached.getTopPlusBottom()}
+                    .contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
                 // NOLINTNEXTLINE(bugprone-integer-division)
-                selectedIndex = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
+                selectedIndex = static_cast<int>(
+                    ((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight)
+                    + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
                 if ((selectedIndex >= 0) && (selectedIndex == m_selectedItem))
                 {
                     // Expand or colapse the node when clicking the icon
                     const float iconPaddingX = (m_iconBounds.x / 4.f);
-                    const float iconOffsetX = iconPaddingX + ((m_iconBounds.x + iconPaddingX) * m_visibleNodes[static_cast<std::size_t>(selectedIndex)]->depth);
+                    const float iconOffsetX = iconPaddingX
+                                              + ((m_iconBounds.x + iconPaddingX)
+                                                 * m_visibleNodes[static_cast<std::size_t>(selectedIndex)]->depth);
                     const float iconOffsetY = (m_itemHeight - m_iconBounds.y) / 2.f;
                     if (FloatRect{iconOffsetX + m_bordersCached.getLeft() + m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(),
-                                  iconOffsetY + (static_cast<unsigned int>(selectedIndex) * m_itemHeight) + m_bordersCached.getTop() + m_paddingCached.getTop() - m_verticalScrollbar->getValue(),
+                                  iconOffsetY + (static_cast<unsigned int>(selectedIndex) * m_itemHeight) + m_bordersCached.getTop()
+                                      + m_paddingCached.getTop() - m_verticalScrollbar->getValue(),
                                   m_iconBounds.x,
-                                  m_iconBounds.y}.contains(pos))
+                                  m_iconBounds.y}
+                            .contains(pos))
                     {
                         toggleNodeInternal(static_cast<std::size_t>(selectedIndex));
                         m_possibleDoubleClick = false;
@@ -925,7 +944,8 @@ namespace tgui
             {
                 m_possibleDoubleClick = false;
 
-                if ((selectedIndex >= 0) && (selectedIndex == m_doubleClickNodeIndex) && (selectedIndex < static_cast<int>(m_visibleNodes.size())))
+                if ((selectedIndex >= 0) && (selectedIndex == m_doubleClickNodeIndex)
+                    && (selectedIndex < static_cast<int>(m_visibleNodes.size())))
                 {
                     toggleNodeInternal(static_cast<std::size_t>(selectedIndex));
 
@@ -967,13 +987,18 @@ namespace tgui
         if (m_verticalScrollbar->isShown())
             maxItemWidth -= m_verticalScrollbar->getSize().x;
 
-        if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                      maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
+        if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                      m_bordersCached.getTop() + m_paddingCached.getTop(),
+                      maxItemWidth,
+                      getInnerSize().y - m_paddingCached.getTopPlusBottom()}
+                .contains(pos))
         {
             pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
             // NOLINTNEXTLINE(bugprone-integer-division)
-            const int selectedItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
+            const int selectedItem = static_cast<int>(
+                ((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight)
+                + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
             if ((selectedItem >= 0) && (selectedItem < static_cast<int>(m_visibleNodes.size())))
             {
                 updateSelectedItem(selectedItem);
@@ -1014,13 +1039,18 @@ namespace tgui
             if (m_verticalScrollbar->isShown())
                 maxItemWidth -= m_verticalScrollbar->getSize().x;
 
-            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                          maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
+            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                          m_bordersCached.getTop() + m_paddingCached.getTop(),
+                          maxItemWidth,
+                          getInnerSize().y - m_paddingCached.getTopPlusBottom()}
+                    .contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
 
                 // NOLINTNEXTLINE(bugprone-integer-division)
-                int hoveredItem = static_cast<int>(((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
+                int hoveredItem = static_cast<int>(
+                    ((pos.y - (m_itemHeight - (m_verticalScrollbar->getValue() % m_itemHeight))) / m_itemHeight)
+                    + (m_verticalScrollbar->getValue() / m_itemHeight) + 1);
                 if (hoveredItem >= static_cast<int>(m_visibleNodes.size()))
                     hoveredItem = -1;
 
@@ -1039,9 +1069,9 @@ namespace tgui
         const bool verticalScrollbarCanMove = (m_verticalScrollbar->getViewportSize() < m_verticalScrollbar->getMaximum());
 
         bool scrollbarMoved = false;
-        if (horizontalScrollbarCanMove
-         && !touch
-         && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition()) || keyboard::isShiftPressed(m_parentGui)))
+        if (horizontalScrollbarCanMove && !touch
+            && (!verticalScrollbarCanMove || m_horizontalScrollbar->isMouseOnWidget(pos - getPosition())
+                || keyboard::isShiftPressed(m_parentGui)))
         {
             scrollbarMoved = m_horizontalScrollbar->scrolled(delta, pos - getPosition(), touch);
         }
@@ -1160,10 +1190,8 @@ namespace tgui
 
     bool TreeView::canHandleKeyPress(const Event::KeyEvent& event)
     {
-        if ((event.code == Event::KeyboardKey::Up)
-         || (event.code == Event::KeyboardKey::Down)
-         || (event.code == Event::KeyboardKey::Left)
-         || (event.code == Event::KeyboardKey::Right))
+        if ((event.code == Event::KeyboardKey::Up) || (event.code == Event::KeyboardKey::Down)
+            || (event.code == Event::KeyboardKey::Left) || (event.code == Event::KeyboardKey::Right))
         {
             return true;
         }
@@ -1283,7 +1311,8 @@ namespace tgui
         }
         else if (property == U"ScrollbarWidth")
         {
-            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_verticalScrollbar->getDefaultWidth();
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth()
+                                                                                : m_verticalScrollbar->getDefaultWidth();
             m_verticalScrollbar->setWidth(width);
             m_horizontalScrollbar->setHeight(width);
             markNodesDirty();
@@ -1335,8 +1364,10 @@ namespace tgui
         loadScrollbarPolicies(node);
 
         // Remove the 'Item' nodes as they have been processed
-        node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-            [](const std::unique_ptr<DataIO::Node>& child){ return child->name == U"Item"; }), node->children.end());
+        node->children.erase(std::remove_if(node->children.begin(),
+                                            node->children.end(),
+                                            [](const std::unique_ptr<DataIO::Node>& child) { return child->name == U"Item"; }),
+                             node->children.end());
 
         // Update the visible nodes
         markNodesDirty();
@@ -1369,7 +1400,8 @@ namespace tgui
             if (!childNode->propertyValuePairs[U"Text"])
                 throw Exception{U"Failed to parse 'Item' property, expected a nested 'Text' propery"};
 
-            const String itemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Text"]->value).getString();
+            const String itemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Text"]->value)
+                                        .getString();
             createNode(items, parent, itemText);
 
             // Recursively handle the menu nodes
@@ -1384,7 +1416,9 @@ namespace tgui
 
                 for (std::size_t i = 0; i < childNode->propertyValuePairs[U"Items"]->valueList.size(); ++i)
                 {
-                    const String subItemText = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Items"]->valueList[i]).getString();
+                    const String subItemText = Deserializer::deserialize(ObjectConverter::Type::String,
+                                                                         childNode->propertyValuePairs[U"Items"]->valueList[i])
+                                                   .getString();
                     createNode(items.back()->nodes, items.back().get(), subItemText);
                 }
             }
@@ -1446,12 +1480,15 @@ namespace tgui
         m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_maxRight));
 
         const bool horizontalScrollbarShown = (m_horizontalScrollbar->getPolicy() == Scrollbar::Policy::Always)
-            || (((m_maxRight + m_verticalScrollbar->getSize().x) > (getInnerSize().x - m_paddingCached.getLeftPlusRight()))
-             && (m_horizontalScrollbar->getPolicy() != Scrollbar::Policy::Never));
+                                              || (((m_maxRight + m_verticalScrollbar->getSize().x)
+                                                   > (getInnerSize().x - m_paddingCached.getLeftPlusRight()))
+                                                  && (m_horizontalScrollbar->getPolicy() != Scrollbar::Policy::Never));
         if (horizontalScrollbarShown)
         {
-            m_verticalScrollbar->setSize({m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y - m_horizontalScrollbar->getSize().y)});
-            m_verticalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTopPlusBottom()));
+            m_verticalScrollbar->setSize(
+                {m_verticalScrollbar->getSize().x, std::max(0.f, getInnerSize().y - m_horizontalScrollbar->getSize().y)});
+            m_verticalScrollbar->setViewportSize(
+                static_cast<unsigned int>(getInnerSize().y - m_horizontalScrollbar->getSize().y - m_paddingCached.getTopPlusBottom()));
         }
         else
         {
@@ -1461,8 +1498,10 @@ namespace tgui
 
         if (m_verticalScrollbar->isShown())
         {
-            m_horizontalScrollbar->setSize({std::max(0.f, getInnerSize().x - m_verticalScrollbar->getSize().x), m_horizontalScrollbar->getSize().y});
-            m_horizontalScrollbar->setViewportSize(static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeftPlusRight()));
+            m_horizontalScrollbar->setSize(
+                {std::max(0.f, getInnerSize().x - m_verticalScrollbar->getSize().x), m_horizontalScrollbar->getSize().y});
+            m_horizontalScrollbar->setViewportSize(
+                static_cast<unsigned int>(getInnerSize().x - m_verticalScrollbar->getSize().x - m_paddingCached.getLeftPlusRight()));
         }
         else
         {
@@ -1474,8 +1513,10 @@ namespace tgui
         if (m_horizontalScrollbar->isShown())
             m_horizontalScrollbar->setMaximum(static_cast<unsigned int>(m_horizontalScrollbar->getMaximum() + (m_iconBounds.x / 4.f)));
 
-        m_verticalScrollbar->setPosition(getSize().x - m_bordersCached.getRight() - m_verticalScrollbar->getSize().x, m_bordersCached.getTop());
-        m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(), getSize().y - m_bordersCached.getBottom() - m_horizontalScrollbar->getSize().y);
+        m_verticalScrollbar->setPosition(getSize().x - m_bordersCached.getRight() - m_verticalScrollbar->getSize().x,
+                                         m_bordersCached.getTop());
+        m_horizontalScrollbar->setPosition(m_bordersCached.getLeft(),
+                                           getSize().y - m_bordersCached.getBottom() - m_horizontalScrollbar->getSize().y);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1500,8 +1541,9 @@ namespace tgui
         if (m_verticalScrollbar->isShown())
             maxItemWidth -= m_verticalScrollbar->getSize().x;
 
-        target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
-            {maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
+        target.addClippingLayer(states,
+                                {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                                 {maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
         std::size_t firstNode = 0;
         std::size_t lastNode = m_visibleNodes.size();
@@ -1515,12 +1557,14 @@ namespace tgui
                 ++lastNode;
         }
 
-        states.transform.translate({m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(), m_paddingCached.getTop() - m_verticalScrollbar->getValue()});
+        states.transform.translate(
+            {m_paddingCached.getLeft() - m_horizontalScrollbar->getValue(), m_paddingCached.getTop() - m_verticalScrollbar->getValue()});
 
         // Draw the background of the selected item
         if ((m_selectedItem >= static_cast<int>(firstNode)) && (m_selectedItem < static_cast<int>(lastNode)))
         {
-            states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_selectedItem * static_cast<float>(m_itemHeight)});
+            states.transform.translate(
+                {static_cast<float>(m_horizontalScrollbar->getValue()), m_selectedItem * static_cast<float>(m_itemHeight)});
 
             const Vector2f size = {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)};
             if ((m_selectedItem == m_hoveredItem) && m_selectedBackgroundColorHoverCached.isSet())
@@ -1528,15 +1572,21 @@ namespace tgui
             else
                 target.drawFilledRect(states, size, Color::applyOpacity(m_selectedBackgroundColorCached, m_opacityCached));
 
-            states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_selectedItem * static_cast<float>(m_itemHeight)});
+            states.transform.translate(
+                {-static_cast<float>(m_horizontalScrollbar->getValue()), -m_selectedItem * static_cast<float>(m_itemHeight)});
         }
 
         // Draw the background of the item on which the mouse is standing
-        if ((m_hoveredItem >= static_cast<int>(firstNode)) && (m_hoveredItem < static_cast<int>(lastNode)) && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
+        if ((m_hoveredItem >= static_cast<int>(firstNode)) && (m_hoveredItem < static_cast<int>(lastNode))
+            && (m_hoveredItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
         {
-            states.transform.translate({static_cast<float>(m_horizontalScrollbar->getValue()), m_hoveredItem * static_cast<float>(m_itemHeight)});
-            target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
-            states.transform.translate({-static_cast<float>(m_horizontalScrollbar->getValue()), -m_hoveredItem * static_cast<float>(m_itemHeight)});
+            states.transform.translate(
+                {static_cast<float>(m_horizontalScrollbar->getValue()), m_hoveredItem * static_cast<float>(m_itemHeight)});
+            target.drawFilledRect(states,
+                                  {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)},
+                                  Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
+            states.transform.translate(
+                {-static_cast<float>(m_horizontalScrollbar->getValue()), -m_hoveredItem * static_cast<float>(m_itemHeight)});
         }
 
         // Draw the icons
@@ -1545,7 +1595,8 @@ namespace tgui
             auto statesForIcon = states;
             const float iconPadding = (m_iconBounds.x / 4.f);
             const float iconOffset = iconPadding + ((m_iconBounds.x + iconPadding) * m_visibleNodes[i]->depth);
-            statesForIcon.transform.translate({std::round(iconOffset), std::round((i * m_itemHeight) + ((m_itemHeight - m_iconBounds.y) / 2.f))});
+            statesForIcon.transform.translate(
+                {std::round(iconOffset), std::round((i * m_itemHeight) + ((m_itemHeight - m_iconBounds.y) / 2.f))});
 
             // Draw an icon for the leaf node if a texture is set
             if (m_visibleNodes[i]->nodes.empty())
@@ -1792,7 +1843,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TreeView::Node* TreeView::findParentNode(const std::vector<String>& hierarchy, unsigned int parentIndex, std::vector<std::shared_ptr<Node>>& nodes, Node* parent, bool createParents)
+    TreeView::Node* TreeView::findParentNode(const std::vector<String>& hierarchy,
+                                             unsigned int parentIndex,
+                                             std::vector<std::shared_ptr<Node>>& nodes,
+                                             Node* parent,
+                                             bool createParents)
     {
         for (auto& node : nodes)
         {
@@ -1821,6 +1876,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

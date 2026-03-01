@@ -115,25 +115,25 @@ TEST_CASE("[ScrollablePanel]")
     {
         panel->setSize("1000", "1000");
 
-        panel->setContentSize({ 2000.f, 2000.f });
+        panel->setContentSize({2000.f, 2000.f});
         REQUIRE(panel->isVerticalScrollbarShown());
         REQUIRE(panel->isHorizontalScrollbarShown());
 
-        panel->setContentSize({ 500.f, 2000.f });
+        panel->setContentSize({500.f, 2000.f});
         REQUIRE(panel->isVerticalScrollbarShown());
         REQUIRE(!panel->isHorizontalScrollbarShown());
 
-        panel->setContentSize({ 2000.f, 500.f });
+        panel->setContentSize({2000.f, 500.f});
         REQUIRE(!panel->isVerticalScrollbarShown());
         REQUIRE(panel->isHorizontalScrollbarShown());
 
-        panel->setContentSize({ 2000.f, 2000.f });
+        panel->setContentSize({2000.f, 2000.f});
         panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Never);
         REQUIRE(!panel->isVerticalScrollbarShown());
         REQUIRE(!panel->isHorizontalScrollbarShown());
 
-        panel->setContentSize({ 100.f, 100.f });
+        panel->setContentSize({100.f, 100.f});
         panel->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
         panel->setVerticalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
         REQUIRE(panel->isVerticalScrollbarShown());
@@ -491,8 +491,9 @@ TEST_CASE("[ScrollablePanel]")
         {
             const int btnPerRow = 2;
             auto btn = tgui::Button::create();
-            btn->setSize(("100%"-(btnPerRow+1)*tgui::Layout("5%"))/btnPerRow, tgui::bindWidth(btn));
-            btn->setPosition("5%"+(i%btnPerRow)*(tgui::bindWidth(btn)+"5%"), "5%"+(i/btnPerRow)*(tgui::bindWidth(btn)+"5%"));
+            btn->setSize(("100%" - (btnPerRow + 1) * tgui::Layout("5%")) / btnPerRow, tgui::bindWidth(btn));
+            btn->setPosition("5%" + (i % btnPerRow) * (tgui::bindWidth(btn) + "5%"),
+                             "5%" + (i / btnPerRow) * (tgui::bindWidth(btn) + "5%"));
             panel->add(btn);
         }
     }

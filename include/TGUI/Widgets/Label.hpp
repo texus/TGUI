@@ -25,10 +25,10 @@
 #ifndef TGUI_LABEL_HPP
 #define TGUI_LABEL_HPP
 
-#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Renderers/LabelRenderer.hpp>
-#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,8 +40,7 @@ namespace tgui
     class TGUI_API Label : public ClickableWidget, public ScrollbarChildInterface
     {
     public:
-
-        using Ptr = std::shared_ptr<Label>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Label>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Label>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "Label"; //!< Type name of the widget
@@ -305,8 +304,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -366,13 +365,13 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalString onDoubleClick = {"DoubleClicked"}; //!< The label was double clicked. Optional parameter: text of the label
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         String m_string;
         std::vector<std::vector<Text>> m_lines;
 
@@ -389,23 +388,23 @@ namespace tgui
         // Will be set to true after the first click, but gets reset to false when the second click does not occur soon after
         bool m_possibleDoubleClick = false;
 
-        Sprite    m_spriteBackground;
+        Sprite m_spriteBackground;
 
         // Cached renderer properties
-        Borders   m_bordersCached;
-        Padding   m_paddingCached;
+        Borders m_bordersCached;
+        Padding m_paddingCached;
         TextStyles m_textStyleCached;
-        Color     m_textColorCached;
-        Color     m_borderColorCached;
-        Color     m_backgroundColorCached;
-        Color     m_textOutlineColorCached = Color::Black;
-        float     m_textOutlineThicknessCached = 0;
+        Color m_textColorCached;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_textOutlineColorCached = Color::Black;
+        float m_textOutlineThicknessCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -27,8 +27,8 @@
 
 #include <TGUI/Widget.hpp>
 
-#include <unordered_map>
 #include <memory>
+#include <unordered_map>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,8 +39,7 @@ namespace tgui
     class TGUI_API SignalManager
     {
     public:
-
-        using Ptr = std::shared_ptr<SignalManager>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<SignalManager>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const SignalManager>; //!< Shared constant widget pointer
 
         using Delegate = std::function<void()>;
@@ -119,7 +118,9 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... Args, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const Args&...)>>::value>* = nullptr>
+        template <typename Func,
+                  typename... Args,
+                  typename std::enable_if_t<std::is_convertible<Func, std::function<void(const Args&...)>>::value>* = nullptr>
         unsigned int connect(String widgetName, String signalName, Func&& handler, const Args&... args);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,8 +134,11 @@ namespace tgui
         ///
         /// @return Unique id of the connection
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func, typename... BoundArgs, typename std::enable_if_t<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                                                                                && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>* = nullptr>
+        template <typename Func,
+                  typename... BoundArgs,
+                  typename std::enable_if_t<
+                      !std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
+                      && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>* = nullptr>
         unsigned int connect(String widgetName, String signalName, Func&& handler, BoundArgs&&... args);
 #endif
 
@@ -163,6 +167,7 @@ namespace tgui
         virtual void remove(Widget* widget);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -172,8 +177,8 @@ namespace tgui
         unsigned int m_lastId = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,19 +219,14 @@ namespace tgui
         constexpr bool takesCallerArgs = std::is_invocable<Func, BoundArgs..., const std::shared_ptr<Widget>&, const String&>::value;
         if constexpr (takesCallerArgs)
         {
-            m_signals[id] = {widgetName, signalName,
-                makeSignalEx([f=fwdHandler, args...](const std::shared_ptr<Widget>& w, const String& s) {
-                    std::invoke(f, args..., w, s);
-                })
-            };
+            m_signals[id] = {widgetName,
+                             signalName,
+                             makeSignalEx([f = fwdHandler, args...](const std::shared_ptr<Widget>& w, const String& s)
+                                          { std::invoke(f, args..., w, s); })};
         }
         else
         {
-            m_signals[id] = {widgetName, signalName,
-                makeSignal([f=fwdHandler, args...] {
-                    std::invoke(f, args...);
-                })
-            };
+            m_signals[id] = {widgetName, signalName, makeSignal([f = fwdHandler, args...] { std::invoke(f, args...); })};
         }
 
         connect(id);
@@ -237,22 +237,26 @@ namespace tgui
     unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, const Args&... args)
     {
         const unsigned int id = generateUniqueId();
-        m_signals[id] = {widgetName, signalName, makeSignal([f=std::function<void(const Args&...)>(handler),args...](){ f(args...); })};
+        m_signals[id] = {widgetName,
+                         signalName,
+                         makeSignal([f = std::function<void(const Args&...)>(handler), args...]() { f(args...); })};
 
         connect(id);
         return id;
     }
 
-    template <typename Func, typename... BoundArgs, typename std::enable_if_t<!std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                                                                            && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>*>
+    template <typename Func,
+              typename... BoundArgs,
+              typename std::enable_if_t<
+                  !std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
+                  && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>*>
     unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, BoundArgs&&... args)
     {
         const unsigned int id = generateUniqueId();
-        m_signals[id] = {widgetName, signalName, makeSignalEx(
-                [f=std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>(handler), args...]
-                        (const std::shared_ptr<Widget>& w, const String& s)
-                { f(args..., w, s); }
-        )};
+        m_signals[id] = {widgetName,
+                         signalName,
+                         makeSignalEx([f = std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>(handler),
+                                       args...](const std::shared_ptr<Widget>& w, const String& s) { f(args..., w, s); })};
 
         connect(id);
         return id;
@@ -260,7 +264,7 @@ namespace tgui
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

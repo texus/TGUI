@@ -462,16 +462,16 @@ TEST_CASE("[Sprite]")
             sprite.setSize({200, 100});
 
             // Bottom right point without stretching
-            REQUIRE(!sprite.isTransparentPixel({10+193, 20+93}));
-            REQUIRE(sprite.isTransparentPixel({10+194, 20+94}));
+            REQUIRE(!sprite.isTransparentPixel({10 + 193, 20 + 93}));
+            REQUIRE(sprite.isTransparentPixel({10 + 194, 20 + 94}));
 
             // Bottom right point with stretching
             texture.setScaledNineSlice(true);
             sprite.setTexture(texture);
-            REQUIRE(sprite.isTransparentPixel({10+193, 20+93}));
-            REQUIRE(sprite.isTransparentPixel({10+194, 20+94}));
-            REQUIRE(!sprite.isTransparentPixel({10+187, 20+87}));
-            REQUIRE(sprite.isTransparentPixel({10+188, 20+88}));
+            REQUIRE(sprite.isTransparentPixel({10 + 193, 20 + 93}));
+            REQUIRE(sprite.isTransparentPixel({10 + 194, 20 + 94}));
+            REQUIRE(!sprite.isTransparentPixel({10 + 187, 20 + 87}));
+            REQUIRE(sprite.isTransparentPixel({10 + 188, 20 + 88}));
         }
     }
 

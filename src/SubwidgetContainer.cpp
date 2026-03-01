@@ -248,9 +248,9 @@ namespace tgui
         if (rendererName.empty()) // We can't check renderers.at(this).first as Widget::save moved the value
         {
             // If the renderer has no name then it isn't shared and we should find the renderer among the child nodes
-            rendererNodeIt = std::find_if(node->children.cbegin(), node->children.cend(), [](const std::unique_ptr<DataIO::Node>& child){
-                return child->name == U"Renderer";
-            });
+            rendererNodeIt = std::find_if(node->children.cbegin(),
+                                          node->children.cend(),
+                                          [](const std::unique_ptr<DataIO::Node>& child) { return child->name == U"Renderer"; });
             TGUI_ASSERT(rendererNodeIt != node->children.end(), "SubwidgetContainer relies on Widget::save saving the renderer");
         }
         else // The renderer is shared with other widgets, we need to look for it in global scope
@@ -259,9 +259,10 @@ namespace tgui
             while (rootNode->parent)
                 rootNode = node->parent;
 
-            rendererNodeIt = std::find_if(rootNode->children.cbegin(), rootNode->children.cend(), [&](const std::unique_ptr<DataIO::Node>& child){
-                return child->name == U"Renderer" + rendererName;
-            });
+            rendererNodeIt = std::find_if(rootNode->children.cbegin(),
+                                          rootNode->children.cend(),
+                                          [&](const std::unique_ptr<DataIO::Node>& child)
+                                          { return child->name == U"Renderer" + rendererName; });
             TGUI_ASSERT(rendererNodeIt != rootNode->children.end(), "SubwidgetContainer relies on the renderer being saved already");
         }
 
@@ -278,8 +279,8 @@ namespace tgui
             {
                 // Search for properties that either match the widget name or start with the name followed by a dot
                 if ((!propertyIt->first.starts_with(widgetName))
-                 || ((propertyIt->first.length() > widgetName.length()) && (propertyIt->first[widgetName.length()] != U'.'))
-                 || (propertyIt->first != widgetName))
+                    || ((propertyIt->first.length() > widgetName.length()) && (propertyIt->first[widgetName.length()] != U'.'))
+                    || (propertyIt->first != widgetName))
                 {
                     ++propertyIt;
                     continue;
@@ -295,8 +296,8 @@ namespace tgui
                 // Search for children that either match the widget name or start with the name followed by a dot
                 const auto& childName = (*childIt)->name;
                 if ((!childName.starts_with(widgetName))
-                 || ((childName.length() > widgetName.length()) && (childName[widgetName.length()] != U'.'))
-                 || (childName != widgetName))
+                    || ((childName.length() > widgetName.length()) && (childName[widgetName.length()] != U'.'))
+                    || (childName != widgetName))
                 {
                     ++childIt;
                     continue;
@@ -362,12 +363,14 @@ namespace tgui
             widgetStates.transform.translate(widget->getPosition() - origin);
             if (widget->getRotation() != 0)
             {
-                const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
+                const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x,
+                                         widget->getRotationOrigin().y * widget->getSize().y};
                 widgetStates.transform.rotate(widget->getRotation(), rotOrigin);
             }
             if ((widget->getScale().x != 1) || (widget->getScale().y != 1))
             {
-                const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
+                const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x,
+                                           widget->getScaleOrigin().y * widget->getSize().y};
                 widgetStates.transform.scale(widget->getScale(), scaleOrigin);
             }
 
@@ -386,6 +389,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

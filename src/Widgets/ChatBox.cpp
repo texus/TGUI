@@ -44,10 +44,8 @@ namespace tgui
 
             setTextSize(getGlobalTextSize());
             setSize({Text::getLineHeight(m_fontCached, m_textSizeCached) * 18,
-                     (Text::getLineHeight(m_fontCached, m_textSizeCached) * 8)
-                     + Text::getExtraVerticalPadding(m_textSizeCached)
-                     + m_paddingCached.getTopPlusBottom()
-                     + m_bordersCached.getTopPlusBottom()});
+                     (Text::getLineHeight(m_fontCached, m_textSizeCached) * 8) + Text::getExtraVerticalPadding(m_textSizeCached)
+                         + m_paddingCached.getTopPlusBottom() + m_bordersCached.getTopPlusBottom()});
         }
     }
 
@@ -130,7 +128,7 @@ namespace tgui
             if (m_newLinesBelowOthers)
                 removeLine(0);
             else
-                removeLine(m_maxLines-1);
+                removeLine(m_maxLines - 1);
         }
 
         Line line;
@@ -337,7 +335,8 @@ namespace tgui
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {
-            if (!m_transparentTextureCached || !m_spriteBackground.isSet() || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+            if (!m_transparentTextureCached || !m_spriteBackground.isSet()
+                || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
                 return true;
         }
 
@@ -447,7 +446,7 @@ namespace tgui
         if (m_newLinesBelowOthers)
         {
             if (((oldMaximum >= m_scrollbar->getViewportSize()) && (m_scrollbar->getValue() == oldMaximum - m_scrollbar->getViewportSize()))
-             || ((oldMaximum <= m_scrollbar->getViewportSize()) && (m_scrollbar->getMaximum() > m_scrollbar->getViewportSize())))
+                || ((oldMaximum <= m_scrollbar->getViewportSize()) && (m_scrollbar->getMaximum() > m_scrollbar->getViewportSize())))
             {
                 m_scrollbar->setValue(m_scrollbar->getMaximum() - m_scrollbar->getViewportSize());
             }
@@ -485,7 +484,8 @@ namespace tgui
         }
         else if (property == U"ScrollbarWidth")
         {
-            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scrollbar->getDefaultWidth();
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth()
+                                                                                : m_scrollbar->getDefaultWidth();
             m_scrollbar->setWidth(width);
             setSize(m_size);
         }
@@ -576,7 +576,8 @@ namespace tgui
         if (node->propertyValuePairs[U"TextColor"])
             setTextColor(Deserializer::deserialize(ObjectConverter::Type::Color, node->propertyValuePairs[U"TextColor"]->value).getColor());
         if (node->propertyValuePairs[U"TextStyle"])
-            setTextStyle(Deserializer::deserialize(ObjectConverter::Type::TextStyle, node->propertyValuePairs[U"TextStyle"]->value).getTextStyle());
+            setTextStyle(
+                Deserializer::deserialize(ObjectConverter::Type::TextStyle, node->propertyValuePairs[U"TextStyle"]->value).getTextStyle());
         if (node->propertyValuePairs[U"LineLimit"])
             setLineLimit(node->propertyValuePairs[U"LineLimit"]->value.toUInt());
 
@@ -586,25 +587,33 @@ namespace tgui
             {
                 Color lineTextColor = getTextColor();
                 if (childNode->propertyValuePairs[U"Color"])
-                    lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs[U"Color"]->value).getColor();
+                    lineTextColor = Deserializer::deserialize(ObjectConverter::Type::Color, childNode->propertyValuePairs[U"Color"]->value)
+                                        .getColor();
 
                 TextStyles lineTextStyle = getTextStyle();
                 if (childNode->propertyValuePairs[U"Style"])
-                    lineTextStyle = Deserializer::deserialize(ObjectConverter::Type::TextStyle, childNode->propertyValuePairs[U"Style"]->value).getTextStyle();
+                    lineTextStyle = Deserializer::deserialize(ObjectConverter::Type::TextStyle, childNode->propertyValuePairs[U"Style"]->value)
+                                        .getTextStyle();
 
                 if (childNode->propertyValuePairs[U"Text"])
-                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Text"]->value).getString(), lineTextColor, lineTextStyle);
+                    addLine(Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Text"]->value).getString(),
+                            lineTextColor,
+                            lineTextStyle);
             }
         }
-        node->children.erase(std::remove_if(node->children.begin(), node->children.end(),
-                                        [](const std::unique_ptr<DataIO::Node>& child){ return child->name == U"Line"; }), node->children.end());
+        node->children.erase(std::remove_if(node->children.begin(),
+                                            node->children.end(),
+                                            [](const std::unique_ptr<DataIO::Node>& child) { return child->name == U"Line"; }),
+                             node->children.end());
 
         if (node->propertyValuePairs[U"LinesStartFromTop"])
-            setLinesStartFromTop(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"LinesStartFromTop"]->value).getBool());
+            setLinesStartFromTop(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"LinesStartFromTop"]->value).getBool());
 
         // This has to be parsed after the lines have been added
         if (node->propertyValuePairs[U"NewLinesBelowOthers"])
-            setNewLinesBelowOthers(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"NewLinesBelowOthers"]->value).getBool());
+            setNewLinesBelowOthers(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"NewLinesBelowOthers"]->value).getBool());
 
         loadScrollbarPolicy(node);
     }
@@ -641,14 +650,20 @@ namespace tgui
 
         const float scrollbarWidth = m_scrollbar->isShown() ? m_scrollbar->getSize().x : 0;
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
-        target.addClippingLayer(states, {{}, {getInnerSize().x - m_paddingCached.getLeftPlusRight() - scrollbarWidth,
-                                              getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
+        target.addClippingLayer(states,
+                                {{},
+                                 {getInnerSize().x - m_paddingCached.getLeftPlusRight() - scrollbarWidth,
+                                  getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
-        states.transform.translate({Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached), -static_cast<float>(m_scrollbar->getValue())});
+        states.transform.translate(
+            {Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached), -static_cast<float>(m_scrollbar->getValue())});
 
         // Put the lines at the bottom of the chat box if needed
-        if (!m_linesStartFromTop && (m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached) < getInnerSize().y - m_paddingCached.getTopPlusBottom()))
-            states.transform.translate({0, getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_fullTextHeight - Text::getExtraVerticalPadding(m_textSizeCached)});
+        if (!m_linesStartFromTop
+            && (m_fullTextHeight + Text::getExtraVerticalPadding(m_textSizeCached) < getInnerSize().y - m_paddingCached.getTopPlusBottom()))
+            states.transform.translate({0,
+                                        getInnerSize().y - m_paddingCached.getTopPlusBottom() - m_fullTextHeight
+                                            - Text::getExtraVerticalPadding(m_textSizeCached)});
 
         for (const auto& line : m_lines)
         {
@@ -667,6 +682,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

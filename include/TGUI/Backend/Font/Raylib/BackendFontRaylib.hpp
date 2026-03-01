@@ -42,7 +42,6 @@ namespace tgui
     class TGUI_API BackendFontRaylib : public BackendFont
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a font from memory
         ///
@@ -194,8 +193,8 @@ namespace tgui
         void setFontScale(float scale) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Converts and caches the loaded glyph
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,11 +213,16 @@ namespace tgui
         int estimateFontSize(unsigned int scaledTextSize);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         struct Row
         {
-            Row(unsigned int rowTop, unsigned int rowHeight) : width(0), top(rowTop), height(rowHeight) {}
+            Row(unsigned int rowTop, unsigned int rowHeight) :
+                width(0),
+                top(rowTop),
+                height(rowHeight)
+            {
+            }
 
             unsigned int width;  //!< Current width of the row
             unsigned int top;    //!< Y position of the row into the texture
@@ -226,7 +230,7 @@ namespace tgui
         };
 
         std::unordered_map<std::uint64_t, FontGlyph> m_glyphs;
-        unsigned int     m_nextRow = 3; //!< Y position of the next new row in the texture (first 2 rows contain pixels for underlining)
+        unsigned int m_nextRow = 3; //!< Y position of the next new row in the texture (first 2 rows contain pixels for underlining)
         std::vector<Row> m_rows;
 
         std::unique_ptr<std::uint8_t[]> m_fileContents;
@@ -242,7 +246,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -22,11 +22,11 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/DefaultBackendWindow.hpp>
-
-#include <TGUI/Loading/ImageLoader.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+
+#include <TGUI/DefaultBackendWindow.hpp>
 #include <TGUI/Event.hpp>
+#include <TGUI/Loading/ImageLoader.hpp>
 
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
     #include <TGUI/Backend/SFML-Graphics.hpp>
@@ -71,17 +71,17 @@ namespace tgui
         BackendWindowSFML(unsigned int width, unsigned int height, const String& title)
         {
             sf::ContextSettings settings;
-#if !TGUI_HAS_BACKEND_SFML_GRAPHICS
+    #if !TGUI_HAS_BACKEND_SFML_GRAPHICS
             settings.majorVersion = 3;
             settings.minorVersion = 3;
             settings.attributeFlags = sf::ContextSettings::Attribute::Core;
-#endif
+    #endif
 
-#if SFML_VERSION_MAJOR >= 3
-            m_window.create(sf::VideoMode{{width, height}}, title.toStdString(), sf::Style::Default, sf::State::Windowed, settings);
-#else
+    #if SFML_VERSION_MAJOR >= 3
+            m_window.create(sf::VideoMode{{ width, height }}, title.toStdString(), sf::Style::Default, sf::State::Windowed, settings);
+    #else
             m_window.create(sf::VideoMode{width, height}, title.toStdString(), sf::Style::Default, settings);
-#endif
+    #endif
 
             m_gui = std::make_unique<Gui>(m_window);
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
@@ -113,7 +113,7 @@ namespace tgui
 
         bool pollEvent(Event& event) override
         {
-#if SFML_VERSION_MAJOR >= 3
+    #if SFML_VERSION_MAJOR >= 3
             while (const auto eventSFML = m_window.pollEvent())
             {
                 if (m_gui->convertEvent(*eventSFML, event))
@@ -121,7 +121,7 @@ namespace tgui
             }
 
             return false; // No new events
-#else
+    #else
             sf::Event eventSFML;
             while (m_window.pollEvent(eventSFML))
             {
@@ -130,7 +130,7 @@ namespace tgui
             }
 
             return false; // No new events
-#endif
+    #endif
         }
 
         void draw() override
@@ -150,23 +150,24 @@ namespace tgui
             Vector2u iconSize;
             auto pixelPtr = ImageLoader::loadFromFile((getResourcePath() / filename).asString(), iconSize);
             if (pixelPtr)
-#if SFML_VERSION_MAJOR >= 3
+    #if SFML_VERSION_MAJOR >= 3
                 m_window.setIcon({iconSize.x, iconSize.y}, pixelPtr.get());
-#else
+    #else
                 m_window.setIcon(iconSize.x, iconSize.y, pixelPtr.get());
-#endif
+    #endif
         }
 
     private:
-#if TGUI_HAS_BACKEND_SFML_GRAPHICS
+    #if TGUI_HAS_BACKEND_SFML_GRAPHICS
         sf::RenderWindow m_window;
-#else
+    #else
         sf::Window m_window;
-#endif
+    #endif
         std::unique_ptr<Gui> m_gui;
     };
 
-#elif TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+#elif TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 \
+    || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
 
     class BackendWindowSDL : public DefaultBackendWindow
     {
@@ -175,49 +176,52 @@ namespace tgui
         {
             SDL_Init(SDL_INIT_VIDEO);
 
-#if TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+    #if TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
             TTF_Init();
-#endif
+    #endif
 
-#if TGUI_HAS_BACKEND_SDL_GPU
+    #if TGUI_HAS_BACKEND_SDL_GPU
             m_device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL, false, nullptr);
-#elif TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
+    #elif TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-#elif TGUI_HAS_BACKEND_SDL_GLES || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+    #elif TGUI_HAS_BACKEND_SDL_GLES || TGUI_HAS_BACKEND_SDL_TTF_GLES2
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-#endif
+    #endif
 
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
             m_window = SDL_CreateWindow(title.toStdString().c_str(),
-                                        static_cast<int>(width), static_cast<int>(height),
+                                        static_cast<int>(width),
+                                        static_cast<int>(height),
                                         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-#else
+    #else
             m_window = SDL_CreateWindow(title.toStdString().c_str(),
-                                        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                        static_cast<int>(width), static_cast<int>(height),
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        SDL_WINDOWPOS_UNDEFINED,
+                                        static_cast<int>(width),
+                                        static_cast<int>(height),
                                         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-#endif
+    #endif
 
-#if TGUI_HAS_BACKEND_SDL_GPU
+    #if TGUI_HAS_BACKEND_SDL_GPU
             SDL_ClaimWindowForGPUDevice(m_device, m_window);
             m_gui = std::make_unique<Gui>(m_window, m_device);
-#elif TGUI_HAS_BACKEND_SDL_RENDERER
-    #if SDL_MAJOR_VERSION >= 3
+    #elif TGUI_HAS_BACKEND_SDL_RENDERER
+        #if SDL_MAJOR_VERSION >= 3
             m_renderer = SDL_CreateRenderer(m_window, nullptr);
-    #else
+        #else
             m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
-    #endif
+        #endif
             m_gui = std::make_unique<Gui>(m_window, m_renderer);
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
-#else
+    #else
             m_glContext = SDL_GL_CreateContext(m_window);
             m_gui = std::make_unique<Gui>(m_window);
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
-#endif
+    #endif
             m_windowOpen = true;
         }
 
@@ -225,33 +229,33 @@ namespace tgui
         {
             m_gui = nullptr; // Gui must be destroyed before destroying SDL window
 
-#if TGUI_HAS_BACKEND_SDL_GPU
+    #if TGUI_HAS_BACKEND_SDL_GPU
             if (m_device && m_window)
                 SDL_ReleaseWindowFromGPUDevice(m_device, m_window);
             if (m_window)
                 SDL_DestroyWindow(m_window);
             if (m_device)
                 SDL_DestroyGPUDevice(m_device);
-#elif TGUI_HAS_BACKEND_SDL_RENDERER
+    #elif TGUI_HAS_BACKEND_SDL_RENDERER
             if (m_renderer)
                 SDL_DestroyRenderer(m_renderer);
             if (m_window)
                 SDL_DestroyWindow(m_window);
-#else
-    #if SDL_MAJOR_VERSION >= 3
+    #else
+        #if SDL_MAJOR_VERSION >= 3
             if (m_glContext)
                 SDL_GL_DestroyContext(m_glContext);
-    #else
+        #else
             if (m_glContext)
                 SDL_GL_DeleteContext(m_glContext);
-    #endif
+        #endif
             if (m_window)
                 SDL_DestroyWindow(m_window);
-#endif
+    #endif
 
-#if TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+    #if TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
             TTF_Quit();
-#endif
+    #endif
             SDL_Quit();
         }
 
@@ -290,7 +294,7 @@ namespace tgui
 
         void draw() override
         {
-#if TGUI_HAS_BACKEND_SDL_GPU
+    #if TGUI_HAS_BACKEND_SDL_GPU
             SDL_GPUCommandBuffer* cmdBuffer = SDL_AcquireGPUCommandBuffer(m_device);
             if (!cmdBuffer)
                 return;
@@ -312,15 +316,15 @@ namespace tgui
                 SDL_EndGPURenderPass(renderPass);
             }
             SDL_SubmitGPUCommandBuffer(cmdBuffer);
-#elif TGUI_HAS_BACKEND_SDL_RENDERER
+    #elif TGUI_HAS_BACKEND_SDL_RENDERER
             m_gui->getBackendRenderTarget()->clearScreen();
             m_gui->draw();
             SDL_RenderPresent(m_renderer);
-#else
+    #else
             m_gui->getBackendRenderTarget()->clearScreen();
             m_gui->draw();
             SDL_GL_SwapWindow(m_window);
-#endif
+    #endif
         }
 
         void mainLoop(Color clearColor) override
@@ -335,13 +339,20 @@ namespace tgui
             if (!pixelPtr)
                 return;
 
-#if SDL_MAJOR_VERSION >= 3
-            SDL_Surface* icon = SDL_CreateSurfaceFrom(static_cast<int>(iconSize.x), static_cast<int>(iconSize.y), SDL_PIXELFORMAT_RGBA32,
-                                                      pixelPtr.get(), 4 * static_cast<int>(iconSize.x));
-#else
-            SDL_Surface* icon = SDL_CreateRGBSurfaceWithFormatFrom(pixelPtr.get(), static_cast<int>(iconSize.x), static_cast<int>(iconSize.y),
-                                                                   32, 4 * static_cast<int>(iconSize.x), SDL_PIXELFORMAT_RGBA32);
-#endif
+    #if SDL_MAJOR_VERSION >= 3
+            SDL_Surface* icon = SDL_CreateSurfaceFrom(static_cast<int>(iconSize.x),
+                                                      static_cast<int>(iconSize.y),
+                                                      SDL_PIXELFORMAT_RGBA32,
+                                                      pixelPtr.get(),
+                                                      4 * static_cast<int>(iconSize.x));
+    #else
+            SDL_Surface* icon = SDL_CreateRGBSurfaceWithFormatFrom(pixelPtr.get(),
+                                                                   static_cast<int>(iconSize.x),
+                                                                   static_cast<int>(iconSize.y),
+                                                                   32,
+                                                                   4 * static_cast<int>(iconSize.x),
+                                                                   SDL_PIXELFORMAT_RGBA32);
+    #endif
             if (!icon)
                 return;
 
@@ -351,13 +362,13 @@ namespace tgui
 
     private:
         SDL_Window* m_window = nullptr;
-#if TGUI_HAS_BACKEND_SDL_GPU
+    #if TGUI_HAS_BACKEND_SDL_GPU
         SDL_GPUDevice* m_device = nullptr;
-#elif TGUI_HAS_BACKEND_SDL_RENDERER
+    #elif TGUI_HAS_BACKEND_SDL_RENDERER
         SDL_Renderer* m_renderer = nullptr;
-#else
+    #else
         SDL_GLContext m_glContext = nullptr;
-#endif
+    #endif
         std::unique_ptr<Gui> m_gui;
         bool m_windowOpen = false;
     };
@@ -371,16 +382,16 @@ namespace tgui
         {
             glfwInit();
 
-#if TGUI_HAS_BACKEND_GLFW_OPENGL3
+    #if TGUI_HAS_BACKEND_GLFW_OPENGL3
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); // Required for macOS
-#else
+    #else
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-#endif
+    #endif
 
             m_window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), title.toStdString().c_str(), nullptr, nullptr);
             glfwMakeContextCurrent(m_window);
@@ -392,48 +403,63 @@ namespace tgui
 
             // Set callback functions to push new events on a queue that is accessed by pollEvent
             glfwSetWindowUserPointer(m_window, this);
-            glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused){
-                auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                const auto event = static_cast<Gui*>(backendWindow->getGui())->convertWindowFocusEvent(focused);
-                if (event)
-                    backendWindow->pushEvent(*event);
-            });
-            glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int fbWidth, int fbHeight){
-                auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                const auto event = static_cast<Gui*>(backendWindow->getGui())->convertSizeEvent(fbWidth, fbHeight);
-                if (event)
-                    backendWindow->pushEvent(*event);
-            });
-            glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int codepoint){
-                auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                const auto event = static_cast<Gui*>(backendWindow->getGui())->convertCharEvent(codepoint);
-                if (event)
-                    backendWindow->pushEvent(*event);
-            });
-            glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods){
-                auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                const auto event = static_cast<Gui*>(backendWindow->getGui())->convertKeyEvent(key, scancode, action, mods);
-                if (event)
-                    backendWindow->pushEvent(*event);
-            });
-            glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset){
-                auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                const auto event = static_cast<Gui*>(backendWindow->getGui())->convertScrollEvent(xoffset, yoffset);
-                if (event)
-                    backendWindow->pushEvent(*event);
-            });
-            glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos){
-                auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                const auto event = static_cast<Gui*>(backendWindow->getGui())->convertCursorPosEvent(xpos, ypos);
-                if (event)
-                    backendWindow->pushEvent(*event);
-            });
-            glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods){
-                auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                const auto event = static_cast<Gui*>(backendWindow->getGui())->convertMouseButtonEvent(button, action, mods);
-                if (event)
-                    backendWindow->pushEvent(*event);
-            });
+            glfwSetWindowFocusCallback(m_window,
+                                       [](GLFWwindow* window, int focused)
+                                       {
+                                           auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
+                                           const auto event = static_cast<Gui*>(backendWindow->getGui())->convertWindowFocusEvent(focused);
+                                           if (event)
+                                               backendWindow->pushEvent(*event);
+                                       });
+            glfwSetFramebufferSizeCallback(m_window,
+                                           [](GLFWwindow* window, int fbWidth, int fbHeight)
+                                           {
+                                               auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
+                                               const auto event = static_cast<Gui*>(backendWindow->getGui())->convertSizeEvent(fbWidth, fbHeight);
+                                               if (event)
+                                                   backendWindow->pushEvent(*event);
+                                           });
+            glfwSetCharCallback(m_window,
+                                [](GLFWwindow* window, unsigned int codepoint)
+                                {
+                                    auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
+                                    const auto event = static_cast<Gui*>(backendWindow->getGui())->convertCharEvent(codepoint);
+                                    if (event)
+                                        backendWindow->pushEvent(*event);
+                                });
+            glfwSetKeyCallback(m_window,
+                               [](GLFWwindow* window, int key, int scancode, int action, int mods)
+                               {
+                                   auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
+                                   const auto event = static_cast<Gui*>(backendWindow->getGui())->convertKeyEvent(key, scancode, action, mods);
+                                   if (event)
+                                       backendWindow->pushEvent(*event);
+                               });
+            glfwSetScrollCallback(m_window,
+                                  [](GLFWwindow* window, double xoffset, double yoffset)
+                                  {
+                                      auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
+                                      const auto event = static_cast<Gui*>(backendWindow->getGui())->convertScrollEvent(xoffset, yoffset);
+                                      if (event)
+                                          backendWindow->pushEvent(*event);
+                                  });
+            glfwSetCursorPosCallback(m_window,
+                                     [](GLFWwindow* window, double xpos, double ypos)
+                                     {
+                                         auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
+                                         const auto event = static_cast<Gui*>(backendWindow->getGui())->convertCursorPosEvent(xpos, ypos);
+                                         if (event)
+                                             backendWindow->pushEvent(*event);
+                                     });
+            glfwSetMouseButtonCallback(m_window,
+                                       [](GLFWwindow* window, int button, int action, int mods)
+                                       {
+                                           auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
+                                           const auto event = static_cast<Gui*>(backendWindow->getGui())
+                                                                  ->convertMouseButtonEvent(button, action, mods);
+                                           if (event)
+                                               backendWindow->pushEvent(*event);
+                                       });
         }
 
         ~BackendWindowGLFW() override
@@ -595,14 +621,13 @@ namespace tgui
             if (!pixelPtr)
                 return;
 
-            static_assert(sizeof(Image) == sizeof(void*) + 4*sizeof(int), "Assuming layout of Image class (C++20 aggregate initialization would solve this)");
-            Image icon = {
-                const_cast<std::uint8_t*>(pixelPtr.get()),
-                static_cast<int>(iconSize.x),
-                static_cast<int>(iconSize.y),
-                1,
-                PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
-            };
+            static_assert(sizeof(Image) == sizeof(void*) + 4 * sizeof(int),
+                          "Assuming layout of Image class (C++20 aggregate initialization would solve this)");
+            Image icon = {const_cast<std::uint8_t*>(pixelPtr.get()),
+                          static_cast<int>(iconSize.x),
+                          static_cast<int>(iconSize.y),
+                          1,
+                          PIXELFORMAT_UNCOMPRESSED_R8G8B8A8};
             SetWindowIcon(icon);
         }
 
@@ -622,7 +647,8 @@ namespace tgui
     {
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
         return std::make_shared<BackendWindowSFML>(width, height, title);
-#elif TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+#elif TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 \
+    || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
         return std::make_shared<BackendWindowSDL>(width, height, title);
 #elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
         return std::make_shared<BackendWindowGLFW>(width, height, title);
@@ -638,6 +664,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

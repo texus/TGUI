@@ -25,8 +25,9 @@
 #ifndef TGUI_CANVAS_RAYLIB_HPP
 #define TGUI_CANVAS_RAYLIB_HPP
 
-#include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
+#include <TGUI/Backend/Renderer/Raylib/BackendTextureRaylib.hpp>
+
 #include <TGUI/Widgets/CanvasBase.hpp>
 
 #include <raylib.h>
@@ -64,8 +65,7 @@ namespace tgui
     class TGUI_API CanvasRaylib : public CanvasBase
     {
     public:
-
-        using Ptr = std::shared_ptr<CanvasRaylib>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<CanvasRaylib>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CanvasRaylib>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "CanvasRaylib"; //!< Type name of the widget
@@ -151,22 +151,22 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         RenderTexture2D m_textureTarget;
         Vector2u m_textureSize;
         Vector2u m_usedTextureSize;
         std::shared_ptr<BackendTextureRaylib> m_backendTexture;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

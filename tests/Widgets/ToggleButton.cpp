@@ -31,10 +31,10 @@ TEST_CASE("[ToggleButton]")
 
     SECTION("Signals")
     {
-        button->onToggle([](){});
-        button->onToggle([](bool){});
+        button->onToggle([]() {});
+        button->onToggle([](bool) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(button)->getSignal("Toggled").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(button)->getSignal("Toggled").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -219,14 +219,20 @@ TEST_CASE("[ToggleButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextOutlineColor", tgui::Color{10, 20, 30}));
                 REQUIRE_NOTHROW(renderer->setProperty("TextOutlineThickness", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDown", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextStyleDown", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleHover", tgui::TextStyle::Underlined));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDownHover", tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDownHover",
+                                                      tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", tgui::TextStyle::StrikeThrough));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDownDisabled", tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Bold)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleFocused", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDownFocused", tgui::TextStyles(tgui::TextStyle::Bold |
-                    tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined | tgui::TextStyle::StrikeThrough))));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextStyleDownDisabled", tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Bold)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextStyleFocused", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDownFocused",
+                                                      tgui::TextStyles(tgui::TextStyle::Bold
+                                                                       | tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined
+                                                                                          | tgui::TextStyle::StrikeThrough))));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
@@ -265,8 +271,9 @@ TEST_CASE("[ToggleButton]")
                 renderer->setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
                 renderer->setTextStyleDownDisabled(tgui::TextStyle::Italic | tgui::TextStyle::Bold);
                 renderer->setTextStyleFocused(tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough);
-                renderer->setTextStyleDownFocused(tgui::TextStyle::Bold |
-                    tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined | tgui::TextStyle::StrikeThrough));
+                renderer->setTextStyleDownFocused(
+                    tgui::TextStyle::Bold
+                    | tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined | tgui::TextStyle::StrikeThrough));
                 renderer->setBorders({1, 2, 3, 4});
             }
 
@@ -299,12 +306,14 @@ TEST_CASE("[ToggleButton]")
             REQUIRE(renderer->getProperty("TextStyle").getTextStyle() == tgui::TextStyle::Italic);
             REQUIRE(renderer->getProperty("TextStyleDown").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::Underlined));
             REQUIRE(renderer->getProperty("TextStyleHover").getTextStyle() == tgui::TextStyle::Underlined);
-            REQUIRE(renderer->getProperty("TextStyleDownHover").getTextStyle() == (tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough));
+            REQUIRE(renderer->getProperty("TextStyleDownHover").getTextStyle()
+                    == (tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough));
             REQUIRE(renderer->getProperty("TextStyleDisabled").getTextStyle() == tgui::TextStyle::StrikeThrough);
             REQUIRE(renderer->getProperty("TextStyleDownDisabled").getTextStyle() == (tgui::TextStyle::Italic | tgui::TextStyle::Bold));
             REQUIRE(renderer->getProperty("TextStyleFocused").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough));
-            REQUIRE(renderer->getProperty("TextStyleDownFocused").getTextStyle() == (tgui::TextStyle::Bold |
-                    tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined | tgui::TextStyle::StrikeThrough)));
+            REQUIRE(renderer->getProperty("TextStyleDownFocused").getTextStyle()
+                    == (tgui::TextStyle::Bold
+                        | tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined | tgui::TextStyle::StrikeThrough)));
             REQUIRE(renderer->getProperty("Borders").getOutline() == tgui::Borders(1, 2, 3, 4));
 
             REQUIRE(renderer->getTextColor() == tgui::Color(20, 30, 40));
@@ -340,8 +349,9 @@ TEST_CASE("[ToggleButton]")
             REQUIRE(renderer->getTextStyleDisabled() == tgui::TextStyle::StrikeThrough);
             REQUIRE(renderer->getTextStyleDownDisabled() == (tgui::TextStyle::Italic | tgui::TextStyle::Bold));
             REQUIRE(renderer->getTextStyleFocused() == (tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough));
-            REQUIRE(renderer->getTextStyleDownFocused() == (tgui::TextStyle::Bold |
-                    tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined | tgui::TextStyle::StrikeThrough)));
+            REQUIRE(renderer->getTextStyleDownFocused()
+                    == (tgui::TextStyle::Bold
+                        | tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined | tgui::TextStyle::StrikeThrough)));
             REQUIRE(renderer->getBorders() == tgui::Borders(1, 2, 3, 4));
         }
 
@@ -440,36 +450,39 @@ TEST_CASE("[ToggleButton]")
         renderer.setOpacity(0.7f);
         button->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTextColorHover(tgui::Color::Magenta);
-                                        renderer.setBackgroundColorHover(tgui::Color::Cyan);
-                                        renderer.setBorderColorHover(tgui::Color::Yellow);
-                                        renderer.setTextStyleHover(tgui::TextStyle::Bold);
-                                        if (textured)
-                                            renderer.setTextureHover("resources/Texture2.png");
-                                     };
+        auto setHoverRenderer = [&](bool textured)
+        {
+            renderer.setTextColorHover(tgui::Color::Magenta);
+            renderer.setBackgroundColorHover(tgui::Color::Cyan);
+            renderer.setBorderColorHover(tgui::Color::Yellow);
+            renderer.setTextStyleHover(tgui::TextStyle::Bold);
+            if (textured)
+                renderer.setTextureHover("resources/Texture2.png");
+        };
 
-        auto setDownRenderer = [&](bool textured){
-                                        renderer.setTextColorDown(tgui::Color::Black);
-                                        renderer.setBackgroundColorDown(tgui::Color::White);
-                                        renderer.setBorderColorDown({128, 128, 128});
-                                        renderer.setTextStyleDown(tgui::TextStyle::Underlined);
-                                        renderer.setTextColorDisabled({128, 128, 0});
-                                        renderer.setBackgroundColorDisabled({0, 128, 128});
-                                        renderer.setBorderColorDisabled({128, 0, 128});
-                                        renderer.setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
-                                        if (textured)
-                                            renderer.setTextureDown("resources/Texture3.png");
-                                    };
+        auto setDownRenderer = [&](bool textured)
+        {
+            renderer.setTextColorDown(tgui::Color::Black);
+            renderer.setBackgroundColorDown(tgui::Color::White);
+            renderer.setBorderColorDown({128, 128, 128});
+            renderer.setTextStyleDown(tgui::TextStyle::Underlined);
+            renderer.setTextColorDisabled({128, 128, 0});
+            renderer.setBackgroundColorDisabled({0, 128, 128});
+            renderer.setBorderColorDisabled({128, 0, 128});
+            renderer.setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
+            if (textured)
+                renderer.setTextureDown("resources/Texture3.png");
+        };
 
-        auto setDisabledRenderer = [&](bool textured){
-                                        renderer.setTextColorDisabled({128, 128, 0});
-                                        renderer.setBackgroundColorDisabled({0, 128, 128});
-                                        renderer.setBorderColorDisabled({128, 0, 128});
-                                        renderer.setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
-                                        if (textured)
-                                            renderer.setTextureDisabled("resources/Texture4.png");
-                                    };
+        auto setDisabledRenderer = [&](bool textured)
+        {
+            renderer.setTextColorDisabled({128, 128, 0});
+            renderer.setBackgroundColorDisabled({0, 128, 128});
+            renderer.setBorderColorDisabled({128, 0, 128});
+            renderer.setTextStyleDisabled(tgui::TextStyle::StrikeThrough);
+            if (textured)
+                renderer.setTextureDisabled("resources/Texture4.png");
+        };
 
         const auto mousePos = button->getPosition() + (button->getSize() / 2.f);
 

@@ -28,11 +28,13 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Config.hpp>
-#include <TGUI/Event.hpp>
-#include <TGUI/Container.hpp>
-#include <TGUI/Widgets/ScrollablePanel.hpp>
+
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+
+#include <TGUI/Container.hpp>
+#include <TGUI/Event.hpp>
+#include <TGUI/Widgets/ScrollablePanel.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,7 +44,8 @@ namespace tgui
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
-        TGUI_DEPRECATED("Use BackendGui::startTextInput instead") inline void openVirtualKeyboard(const Widget* requestingWidget, FloatRect inputRect)
+        TGUI_DEPRECATED("Use BackendGui::startTextInput instead")
+        inline void openVirtualKeyboard(const Widget* requestingWidget, FloatRect inputRect)
         {
             TGUI_ASSERT(requestingWidget != nullptr, "requestingWidget must not be nullptr");
             if (!requestingWidget)
@@ -62,8 +65,10 @@ namespace tgui
                         inputRect.setPosition(inputRect.getPosition() + widget->getPosition() - origin);
                     else
                     {
-                        const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
-                        const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
+                        const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x,
+                                                 widget->getRotationOrigin().y * widget->getSize().y};
+                        const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x,
+                                                   widget->getScaleOrigin().y * widget->getSize().y};
 
                         Transform transform;
                         transform.translate(widget->getPosition() - origin);
@@ -147,11 +152,11 @@ namespace tgui
         TGUI_DEPRECATED("Use isMultiselectModifierPressed(gui) instead") TGUI_NODISCARD inline bool isMultiselectModifierPressed()
         {
             TGUI_IGNORE_DEPRECATED_WARNINGS_START
-#ifdef TGUI_SYSTEM_MACOS
+    #ifdef TGUI_SYSTEM_MACOS
             return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::System);
-#else
+    #else
             return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::Control);
-#endif
+    #endif
             TGUI_IGNORE_DEPRECATED_WARNINGS_END
         }
 #endif
@@ -298,7 +303,7 @@ namespace tgui
         {
 #ifdef TGUI_SYSTEM_MACOS
             return ((event.code == Event::KeyboardKey::Up) && !event.control && !event.alt && event.system)
-                || ((event.code == Event::KeyboardKey::Home) && !event.control && !event.alt && event.system);
+                   || ((event.code == Event::KeyboardKey::Home) && !event.control && !event.alt && event.system);
 #else
             return (event.code == Event::KeyboardKey::Home) && event.control && !event.alt && !event.system;
 #endif
@@ -310,7 +315,7 @@ namespace tgui
         {
 #ifdef TGUI_SYSTEM_MACOS
             return ((event.code == Event::KeyboardKey::Down) && !event.control && !event.alt && event.system)
-                || ((event.code == Event::KeyboardKey::End) && !event.control && !event.alt && event.system);
+                   || ((event.code == Event::KeyboardKey::End) && !event.control && !event.alt && event.system);
 #else
             return (event.code == Event::KeyboardKey::End) && event.control && !event.alt && !event.system;
 #endif
@@ -339,10 +344,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
-}
+    } // namespace keyboard
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif // TGUI_KEYBOARD_HPP
-

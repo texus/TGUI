@@ -90,7 +90,6 @@ struct ListBoxProperties : public WidgetProperties
     }
 
 private:
-
     TGUI_NODISCARD static tgui::ListBox::TextAlignment deserializeAlignment(tgui::String value)
     {
         value = value.trim().toLower();

@@ -25,10 +25,10 @@
 #ifndef TGUI_CHILD_WINDOW_HPP
 #define TGUI_CHILD_WINDOW_HPP
 
-#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Container.hpp>
-#include <TGUI/Widgets/Button.hpp>
+#include <TGUI/CopiedSharedPtr.hpp>
 #include <TGUI/Renderers/ChildWindowRenderer.hpp>
+#include <TGUI/Widgets/Button.hpp>
 
 #include <limits>
 
@@ -42,8 +42,7 @@ namespace tgui
     class TGUI_API ChildWindow : public Container
     {
     public:
-
-        using Ptr = std::shared_ptr<ChildWindow>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<ChildWindow>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ChildWindow>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ChildWindow"; //!< Type name of the widget
@@ -54,8 +53,8 @@ namespace tgui
         /// Title buttons (use bitwise OR to combine)
         enum TitleButton : unsigned int
         {
-            None     = 0,      //!< No buttons
-            Close    = 1 << 0, //!< Include a close button
+            None = 0,          //!< No buttons
+            Close = 1 << 0,    //!< Include a close button
             Maximize = 1 << 1, //!< Include a maximize button
             Minimize = 1 << 2  //!< Include a minimize button
         };
@@ -64,9 +63,9 @@ namespace tgui
         /// @since TGUI 1.6
         enum class CloseBehavior
         {
-            None,   //!< Nothing should happen after the onClose callback is called. The window remains visible (unless the onClose callback did something).
-            Hide,   //!< childWindow->setVisible(false) is called after the onClose callback is called
-            Remove  //!< parent->remove(childWindow) is called after the onClose callback is called
+            None, //!< Nothing should happen after the onClose callback is called. The window remains visible (unless the onClose callback did something).
+            Hide, //!< childWindow->setVisible(false) is called after the onClose callback is called
+            Remove //!< parent->remove(childWindow) is called after the onClose callback is called
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -455,8 +454,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates the title bar texture, text and buttons after the title bar height has changed.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -527,21 +526,22 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Helper function to connect the title button callbacks from the various constuctors and assignment operators
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void connectTitleButtonCallbacks();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
-        Signal            onMousePress = {"MousePressed"};  //!< The mouse went down on the widget
-        SignalChildWindow onClose      = {"Closed"};        //!< The window was closed. Optional parameter: pointer to the window
-        SignalChildWindow onMinimize   = {"Minimized"};     //!< The window was minimized. Optional parameter: pointer to the window
-        SignalChildWindow onMaximize   = {"Maximized"};     //!< The window was maximized. Optional parameter: pointer to the window
-        SignalChildWindow onEscapeKeyPress = {"EscapeKeyPressed"}; //!< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
+    public:
+        Signal onMousePress = {"MousePressed"};       //!< The mouse went down on the widget
+        SignalChildWindow onClose = {"Closed"};       //!< The window was closed. Optional parameter: pointer to the window
+        SignalChildWindow onMinimize = {"Minimized"}; //!< The window was minimized. Optional parameter: pointer to the window
+        SignalChildWindow onMaximize = {"Maximized"}; //!< The window was maximized. Optional parameter: pointer to the window
+        SignalChildWindow onEscapeKeyPress = {
+            "EscapeKeyPressed"}; //!< The escape key was pressed while the child window was focused. Optional parameter: pointer to the window
 
         /// The window is about to be closed, unless the "abort" parameter is set to true.
         /// @code
@@ -550,31 +550,31 @@ namespace tgui
         SignalTyped<bool*> onClosing = {"Closing"};
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         enum ResizeDirection
         {
-            ResizeNone   = 0,
-            ResizeLeft   = 1,
-            ResizeTop    = 2,
-            ResizeRight  = 4,
+            ResizeNone = 0,
+            ResizeLeft = 1,
+            ResizeTop = 2,
+            ResizeRight = 4,
             ResizeBottom = 8
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
-        Text           m_titleText;
-        Vector2f       m_draggingPosition;
-        Vector2f       m_maximumSize    = {std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()};
-        Vector2f       m_minimumSize    = {0, 0};
-        Layout*        m_decorationLayoutX = nullptr;
-        Layout*        m_decorationLayoutY = nullptr;
+    protected:
+        Text m_titleText;
+        Vector2f m_draggingPosition;
+        Vector2f m_maximumSize = {std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()};
+        Vector2f m_minimumSize = {0, 0};
+        Layout* m_decorationLayoutX = nullptr;
+        Layout* m_decorationLayoutY = nullptr;
         HorizontalAlignment m_titleAlignment = HorizontalAlignment::Center;
-        unsigned int   m_titleButtons   = TitleButton::Close;
-        unsigned int   m_titleTextSize  = 0;
-        Cursor::Type   m_currentChildWindowMouseCursor = Cursor::Type::Arrow;
-        CloseBehavior  m_closeBehavior = CloseBehavior::Remove;
+        unsigned int m_titleButtons = TitleButton::Close;
+        unsigned int m_titleTextSize = 0;
+        Cursor::Type m_currentChildWindowMouseCursor = Cursor::Type::Arrow;
+        CloseBehavior m_closeBehavior = CloseBehavior::Remove;
 
         CopiedSharedPtr<Button> m_closeButton;
         CopiedSharedPtr<Button> m_minimizeButton;
@@ -593,23 +593,23 @@ namespace tgui
         // Cached renderer properties
         Borders m_bordersCached;
         Padding m_clientPaddingCached;
-        Color   m_borderColorCached;
-        Color   m_borderColorFocusedCached;
-        Color   m_titleColorCached;
-        Color   m_titleBarColorCached;
-        Color   m_backgroundColorCached;
-        float   m_titleBarHeightCached = 20;
-        float   m_borderBelowTitleBarCached = 0;
-        float   m_distanceToSideCached = 0;
-        float   m_paddingBetweenButtonsCached = 0;
-        float   m_minimumResizableBorderWidthCached = 10;
-        bool    m_showTextOnTitleButtonsCached = false;
+        Color m_borderColorCached;
+        Color m_borderColorFocusedCached;
+        Color m_titleColorCached;
+        Color m_titleBarColorCached;
+        Color m_backgroundColorCached;
+        float m_titleBarHeightCached = 20;
+        float m_borderBelowTitleBarCached = 0;
+        float m_distanceToSideCached = 0;
+        float m_paddingBetweenButtonsCached = 0;
+        float m_minimumResizableBorderWidthCached = 10;
+        bool m_showTextOnTitleButtonsCached = false;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

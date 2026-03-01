@@ -73,7 +73,8 @@ namespace tgui
         auto node = ClickableWidget::save(renderers);
 
         if (m_ignoringMouseEvents)
-            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
+            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(m_ignoringMouseEvents));
 
         return node;
     }
@@ -85,10 +86,12 @@ namespace tgui
         ClickableWidget::load(node, renderers);
 
         if (node->propertyValuePairs[U"IgnoreMouseEvents"])
-            m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool();
+            m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool,
+                                                              node->propertyValuePairs[U"IgnoreMouseEvents"]->value)
+                                        .getBool();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -64,165 +64,162 @@ TEST_CASE("[Backend events]")
     {
         SECTION("SFML")
         {
-#if SFML_VERSION_MAJOR >= 3 && (SFML_VERSION_MINOR >= 1 || SFML_VERSION_PATCH >= 1)
+    #if SFML_VERSION_MAJOR >= 3 && (SFML_VERSION_MINOR >= 1 || SFML_VERSION_PATCH >= 1)
             // Due to a bug in SFML 3.0.0 (#3454), we require SFML >= 3.0.1 for this test
             SECTION("handleWindowEvents")
             {
                 // We can't test whether the functions get called correctly (as that would require
                 // controlling the events that exist in the window), but we can at least verify
                 // that our example code actually compiles.
-                backendGuiSFML->handleWindowEvents(
-                    [](const sf::Event::Closed&) { },
-                    [](sf::Event::TextEntered&, bool) { },
-                    [](sf::Event::MouseMoved) { return false; },
-                    [](auto&&) {}
-                );
+                backendGuiSFML->handleWindowEvents([](const sf::Event::Closed&) {},
+                                                   [](sf::Event::TextEntered&, bool) {},
+                                                   [](sf::Event::MouseMoved) { return false; },
+                                                   [](auto&&) {});
             }
-#endif
+    #endif
 
             SECTION("KeyPressed")
             {
-#if SFML_VERSION_MAJOR >= 3
+    #if SFML_VERSION_MAJOR >= 3
                 sf::Event::KeyPressed eventKeyPressed;
                 eventKeyPressed.alt = false;
                 eventKeyPressed.control = false;
                 eventKeyPressed.shift = false;
                 eventKeyPressed.system = false;
-    #if 0
+        #if 0
                 eventKeyPressed.numLock = true;
-    #endif
+        #endif
 
-#else
+    #else
                 sf::Event eventSFML;
                 eventSFML.type = sf::Event::KeyPressed;
                 eventSFML.key.alt = false;
                 eventSFML.key.control = false;
                 eventSFML.key.shift = false;
                 eventSFML.key.system = false;
-#endif
+    #endif
                 SECTION("All key codes")
                 {
-                    const std::array<std::pair<sf::Keyboard::Key, tgui::Event::KeyboardKey>, 100> keys = {{
-                        {sf::Keyboard::Key::A,          tgui::Event::KeyboardKey::A},
-                        {sf::Keyboard::Key::B,          tgui::Event::KeyboardKey::B},
-                        {sf::Keyboard::Key::C,          tgui::Event::KeyboardKey::C},
-                        {sf::Keyboard::Key::D,          tgui::Event::KeyboardKey::D},
-                        {sf::Keyboard::Key::E,          tgui::Event::KeyboardKey::E},
-                        {sf::Keyboard::Key::F,          tgui::Event::KeyboardKey::F},
-                        {sf::Keyboard::Key::G,          tgui::Event::KeyboardKey::G},
-                        {sf::Keyboard::Key::H,          tgui::Event::KeyboardKey::H},
-                        {sf::Keyboard::Key::I,          tgui::Event::KeyboardKey::I},
-                        {sf::Keyboard::Key::J,          tgui::Event::KeyboardKey::J},
-                        {sf::Keyboard::Key::K,          tgui::Event::KeyboardKey::K},
-                        {sf::Keyboard::Key::L,          tgui::Event::KeyboardKey::L},
-                        {sf::Keyboard::Key::M,          tgui::Event::KeyboardKey::M},
-                        {sf::Keyboard::Key::N,          tgui::Event::KeyboardKey::N},
-                        {sf::Keyboard::Key::O,          tgui::Event::KeyboardKey::O},
-                        {sf::Keyboard::Key::P,          tgui::Event::KeyboardKey::P},
-                        {sf::Keyboard::Key::Q,          tgui::Event::KeyboardKey::Q},
-                        {sf::Keyboard::Key::R,          tgui::Event::KeyboardKey::R},
-                        {sf::Keyboard::Key::S,          tgui::Event::KeyboardKey::S},
-                        {sf::Keyboard::Key::T,          tgui::Event::KeyboardKey::T},
-                        {sf::Keyboard::Key::U,          tgui::Event::KeyboardKey::U},
-                        {sf::Keyboard::Key::V,          tgui::Event::KeyboardKey::V},
-                        {sf::Keyboard::Key::W,          tgui::Event::KeyboardKey::W},
-                        {sf::Keyboard::Key::X,          tgui::Event::KeyboardKey::X},
-                        {sf::Keyboard::Key::Y,          tgui::Event::KeyboardKey::Y},
-                        {sf::Keyboard::Key::Z,          tgui::Event::KeyboardKey::Z},
-                        {sf::Keyboard::Key::Num0,       tgui::Event::KeyboardKey::Num0},
-                        {sf::Keyboard::Key::Num1,       tgui::Event::KeyboardKey::Num1},
-                        {sf::Keyboard::Key::Num2,       tgui::Event::KeyboardKey::Num2},
-                        {sf::Keyboard::Key::Num3,       tgui::Event::KeyboardKey::Num3},
-                        {sf::Keyboard::Key::Num4,       tgui::Event::KeyboardKey::Num4},
-                        {sf::Keyboard::Key::Num5,       tgui::Event::KeyboardKey::Num5},
-                        {sf::Keyboard::Key::Num6,       tgui::Event::KeyboardKey::Num6},
-                        {sf::Keyboard::Key::Num7,       tgui::Event::KeyboardKey::Num7},
-                        {sf::Keyboard::Key::Num8,       tgui::Event::KeyboardKey::Num8},
-                        {sf::Keyboard::Key::Num9,       tgui::Event::KeyboardKey::Num9},
-                        {sf::Keyboard::Key::Escape,     tgui::Event::KeyboardKey::Escape},
-                        {sf::Keyboard::Key::LControl,   tgui::Event::KeyboardKey::LControl},
-                        {sf::Keyboard::Key::LShift,     tgui::Event::KeyboardKey::LShift},
-                        {sf::Keyboard::Key::LAlt,       tgui::Event::KeyboardKey::LAlt},
-                        {sf::Keyboard::Key::LSystem,    tgui::Event::KeyboardKey::LSystem},
-                        {sf::Keyboard::Key::RControl,   tgui::Event::KeyboardKey::RControl},
-                        {sf::Keyboard::Key::RShift,     tgui::Event::KeyboardKey::RShift},
-                        {sf::Keyboard::Key::RAlt,       tgui::Event::KeyboardKey::RAlt},
-                        {sf::Keyboard::Key::RSystem,    tgui::Event::KeyboardKey::RSystem},
-                        {sf::Keyboard::Key::Menu,       tgui::Event::KeyboardKey::Menu},
-                        {sf::Keyboard::Key::LBracket,   tgui::Event::KeyboardKey::LBracket},
-                        {sf::Keyboard::Key::RBracket,   tgui::Event::KeyboardKey::RBracket},
-                        {sf::Keyboard::Key::Semicolon,  tgui::Event::KeyboardKey::Semicolon},
-                        {sf::Keyboard::Key::Comma,      tgui::Event::KeyboardKey::Comma},
-                        {sf::Keyboard::Key::Period,     tgui::Event::KeyboardKey::Period},
-#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6
-                        {sf::Keyboard::Key::Quote,      tgui::Event::KeyboardKey::Quote},
-#else
-                        {sf::Keyboard::Key::Apostrophe, tgui::Event::KeyboardKey::Quote},
-#endif
-                        {sf::Keyboard::Key::Slash,      tgui::Event::KeyboardKey::Slash},
-                        {sf::Keyboard::Key::Backslash,  tgui::Event::KeyboardKey::Backslash},
-                        {sf::Keyboard::Key::Equal,      tgui::Event::KeyboardKey::Equal},
-                        {sf::Keyboard::Key::Hyphen,     tgui::Event::KeyboardKey::Minus},
-                        {sf::Keyboard::Key::Space,      tgui::Event::KeyboardKey::Space},
-                        {sf::Keyboard::Key::Enter,      tgui::Event::KeyboardKey::Enter},
-                        {sf::Keyboard::Key::Backspace,  tgui::Event::KeyboardKey::Backspace},
-                        {sf::Keyboard::Key::Tab,        tgui::Event::KeyboardKey::Tab},
-                        {sf::Keyboard::Key::PageUp,     tgui::Event::KeyboardKey::PageUp},
-                        {sf::Keyboard::Key::PageDown,   tgui::Event::KeyboardKey::PageDown},
-                        {sf::Keyboard::Key::End,        tgui::Event::KeyboardKey::End},
-                        {sf::Keyboard::Key::Home,       tgui::Event::KeyboardKey::Home},
-                        {sf::Keyboard::Key::Insert,     tgui::Event::KeyboardKey::Insert},
-                        {sf::Keyboard::Key::Delete,     tgui::Event::KeyboardKey::Delete},
-                        {sf::Keyboard::Key::Add,        tgui::Event::KeyboardKey::Add},
-                        {sf::Keyboard::Key::Subtract,   tgui::Event::KeyboardKey::Subtract},
-                        {sf::Keyboard::Key::Multiply,   tgui::Event::KeyboardKey::Multiply},
-                        {sf::Keyboard::Key::Divide,     tgui::Event::KeyboardKey::Divide},
-                        {sf::Keyboard::Key::Left,       tgui::Event::KeyboardKey::Left},
-                        {sf::Keyboard::Key::Right,      tgui::Event::KeyboardKey::Right},
-                        {sf::Keyboard::Key::Up,         tgui::Event::KeyboardKey::Up},
-                        {sf::Keyboard::Key::Down,       tgui::Event::KeyboardKey::Down},
-                        {sf::Keyboard::Key::Numpad0,    tgui::Event::KeyboardKey::Numpad0},
-                        {sf::Keyboard::Key::Numpad1,    tgui::Event::KeyboardKey::Numpad1},
-                        {sf::Keyboard::Key::Numpad2,    tgui::Event::KeyboardKey::Numpad2},
-                        {sf::Keyboard::Key::Numpad3,    tgui::Event::KeyboardKey::Numpad3},
-                        {sf::Keyboard::Key::Numpad4,    tgui::Event::KeyboardKey::Numpad4},
-                        {sf::Keyboard::Key::Numpad5,    tgui::Event::KeyboardKey::Numpad5},
-                        {sf::Keyboard::Key::Numpad6,    tgui::Event::KeyboardKey::Numpad6},
-                        {sf::Keyboard::Key::Numpad7,    tgui::Event::KeyboardKey::Numpad7},
-                        {sf::Keyboard::Key::Numpad8,    tgui::Event::KeyboardKey::Numpad8},
-                        {sf::Keyboard::Key::Numpad9,    tgui::Event::KeyboardKey::Numpad9},
-                        {sf::Keyboard::Key::F1,         tgui::Event::KeyboardKey::F1},
-                        {sf::Keyboard::Key::F2,         tgui::Event::KeyboardKey::F2},
-                        {sf::Keyboard::Key::F3,         tgui::Event::KeyboardKey::F3},
-                        {sf::Keyboard::Key::F4,         tgui::Event::KeyboardKey::F4},
-                        {sf::Keyboard::Key::F5,         tgui::Event::KeyboardKey::F5},
-                        {sf::Keyboard::Key::F6,         tgui::Event::KeyboardKey::F6},
-                        {sf::Keyboard::Key::F7,         tgui::Event::KeyboardKey::F7},
-                        {sf::Keyboard::Key::F8,         tgui::Event::KeyboardKey::F8},
-                        {sf::Keyboard::Key::F9,         tgui::Event::KeyboardKey::F9},
-                        {sf::Keyboard::Key::F10,        tgui::Event::KeyboardKey::F10},
-                        {sf::Keyboard::Key::F11,        tgui::Event::KeyboardKey::F11},
-                        {sf::Keyboard::Key::F12,        tgui::Event::KeyboardKey::F12},
-                        {sf::Keyboard::Key::F13,        tgui::Event::KeyboardKey::F13},
-                        {sf::Keyboard::Key::F14,        tgui::Event::KeyboardKey::F14},
-                        {sf::Keyboard::Key::F15,        tgui::Event::KeyboardKey::F15},
-                        {sf::Keyboard::Key::Pause,      tgui::Event::KeyboardKey::Pause}
-                    }};
+                    const std::array<std::pair<sf::Keyboard::Key, tgui::Event::KeyboardKey>, 100> keys = {
+                        {{sf::Keyboard::Key::A, tgui::Event::KeyboardKey::A},
+                         {sf::Keyboard::Key::B, tgui::Event::KeyboardKey::B},
+                         {sf::Keyboard::Key::C, tgui::Event::KeyboardKey::C},
+                         {sf::Keyboard::Key::D, tgui::Event::KeyboardKey::D},
+                         {sf::Keyboard::Key::E, tgui::Event::KeyboardKey::E},
+                         {sf::Keyboard::Key::F, tgui::Event::KeyboardKey::F},
+                         {sf::Keyboard::Key::G, tgui::Event::KeyboardKey::G},
+                         {sf::Keyboard::Key::H, tgui::Event::KeyboardKey::H},
+                         {sf::Keyboard::Key::I, tgui::Event::KeyboardKey::I},
+                         {sf::Keyboard::Key::J, tgui::Event::KeyboardKey::J},
+                         {sf::Keyboard::Key::K, tgui::Event::KeyboardKey::K},
+                         {sf::Keyboard::Key::L, tgui::Event::KeyboardKey::L},
+                         {sf::Keyboard::Key::M, tgui::Event::KeyboardKey::M},
+                         {sf::Keyboard::Key::N, tgui::Event::KeyboardKey::N},
+                         {sf::Keyboard::Key::O, tgui::Event::KeyboardKey::O},
+                         {sf::Keyboard::Key::P, tgui::Event::KeyboardKey::P},
+                         {sf::Keyboard::Key::Q, tgui::Event::KeyboardKey::Q},
+                         {sf::Keyboard::Key::R, tgui::Event::KeyboardKey::R},
+                         {sf::Keyboard::Key::S, tgui::Event::KeyboardKey::S},
+                         {sf::Keyboard::Key::T, tgui::Event::KeyboardKey::T},
+                         {sf::Keyboard::Key::U, tgui::Event::KeyboardKey::U},
+                         {sf::Keyboard::Key::V, tgui::Event::KeyboardKey::V},
+                         {sf::Keyboard::Key::W, tgui::Event::KeyboardKey::W},
+                         {sf::Keyboard::Key::X, tgui::Event::KeyboardKey::X},
+                         {sf::Keyboard::Key::Y, tgui::Event::KeyboardKey::Y},
+                         {sf::Keyboard::Key::Z, tgui::Event::KeyboardKey::Z},
+                         {sf::Keyboard::Key::Num0, tgui::Event::KeyboardKey::Num0},
+                         {sf::Keyboard::Key::Num1, tgui::Event::KeyboardKey::Num1},
+                         {sf::Keyboard::Key::Num2, tgui::Event::KeyboardKey::Num2},
+                         {sf::Keyboard::Key::Num3, tgui::Event::KeyboardKey::Num3},
+                         {sf::Keyboard::Key::Num4, tgui::Event::KeyboardKey::Num4},
+                         {sf::Keyboard::Key::Num5, tgui::Event::KeyboardKey::Num5},
+                         {sf::Keyboard::Key::Num6, tgui::Event::KeyboardKey::Num6},
+                         {sf::Keyboard::Key::Num7, tgui::Event::KeyboardKey::Num7},
+                         {sf::Keyboard::Key::Num8, tgui::Event::KeyboardKey::Num8},
+                         {sf::Keyboard::Key::Num9, tgui::Event::KeyboardKey::Num9},
+                         {sf::Keyboard::Key::Escape, tgui::Event::KeyboardKey::Escape},
+                         {sf::Keyboard::Key::LControl, tgui::Event::KeyboardKey::LControl},
+                         {sf::Keyboard::Key::LShift, tgui::Event::KeyboardKey::LShift},
+                         {sf::Keyboard::Key::LAlt, tgui::Event::KeyboardKey::LAlt},
+                         {sf::Keyboard::Key::LSystem, tgui::Event::KeyboardKey::LSystem},
+                         {sf::Keyboard::Key::RControl, tgui::Event::KeyboardKey::RControl},
+                         {sf::Keyboard::Key::RShift, tgui::Event::KeyboardKey::RShift},
+                         {sf::Keyboard::Key::RAlt, tgui::Event::KeyboardKey::RAlt},
+                         {sf::Keyboard::Key::RSystem, tgui::Event::KeyboardKey::RSystem},
+                         {sf::Keyboard::Key::Menu, tgui::Event::KeyboardKey::Menu},
+                         {sf::Keyboard::Key::LBracket, tgui::Event::KeyboardKey::LBracket},
+                         {sf::Keyboard::Key::RBracket, tgui::Event::KeyboardKey::RBracket},
+                         {sf::Keyboard::Key::Semicolon, tgui::Event::KeyboardKey::Semicolon},
+                         {sf::Keyboard::Key::Comma, tgui::Event::KeyboardKey::Comma},
+                         {sf::Keyboard::Key::Period, tgui::Event::KeyboardKey::Period},
+    #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6
+                         {sf::Keyboard::Key::Quote, tgui::Event::KeyboardKey::Quote},
+    #else
+                         {sf::Keyboard::Key::Apostrophe, tgui::Event::KeyboardKey::Quote},
+    #endif
+                         {sf::Keyboard::Key::Slash, tgui::Event::KeyboardKey::Slash},
+                         {sf::Keyboard::Key::Backslash, tgui::Event::KeyboardKey::Backslash},
+                         {sf::Keyboard::Key::Equal, tgui::Event::KeyboardKey::Equal},
+                         {sf::Keyboard::Key::Hyphen, tgui::Event::KeyboardKey::Minus},
+                         {sf::Keyboard::Key::Space, tgui::Event::KeyboardKey::Space},
+                         {sf::Keyboard::Key::Enter, tgui::Event::KeyboardKey::Enter},
+                         {sf::Keyboard::Key::Backspace, tgui::Event::KeyboardKey::Backspace},
+                         {sf::Keyboard::Key::Tab, tgui::Event::KeyboardKey::Tab},
+                         {sf::Keyboard::Key::PageUp, tgui::Event::KeyboardKey::PageUp},
+                         {sf::Keyboard::Key::PageDown, tgui::Event::KeyboardKey::PageDown},
+                         {sf::Keyboard::Key::End, tgui::Event::KeyboardKey::End},
+                         {sf::Keyboard::Key::Home, tgui::Event::KeyboardKey::Home},
+                         {sf::Keyboard::Key::Insert, tgui::Event::KeyboardKey::Insert},
+                         {sf::Keyboard::Key::Delete, tgui::Event::KeyboardKey::Delete},
+                         {sf::Keyboard::Key::Add, tgui::Event::KeyboardKey::Add},
+                         {sf::Keyboard::Key::Subtract, tgui::Event::KeyboardKey::Subtract},
+                         {sf::Keyboard::Key::Multiply, tgui::Event::KeyboardKey::Multiply},
+                         {sf::Keyboard::Key::Divide, tgui::Event::KeyboardKey::Divide},
+                         {sf::Keyboard::Key::Left, tgui::Event::KeyboardKey::Left},
+                         {sf::Keyboard::Key::Right, tgui::Event::KeyboardKey::Right},
+                         {sf::Keyboard::Key::Up, tgui::Event::KeyboardKey::Up},
+                         {sf::Keyboard::Key::Down, tgui::Event::KeyboardKey::Down},
+                         {sf::Keyboard::Key::Numpad0, tgui::Event::KeyboardKey::Numpad0},
+                         {sf::Keyboard::Key::Numpad1, tgui::Event::KeyboardKey::Numpad1},
+                         {sf::Keyboard::Key::Numpad2, tgui::Event::KeyboardKey::Numpad2},
+                         {sf::Keyboard::Key::Numpad3, tgui::Event::KeyboardKey::Numpad3},
+                         {sf::Keyboard::Key::Numpad4, tgui::Event::KeyboardKey::Numpad4},
+                         {sf::Keyboard::Key::Numpad5, tgui::Event::KeyboardKey::Numpad5},
+                         {sf::Keyboard::Key::Numpad6, tgui::Event::KeyboardKey::Numpad6},
+                         {sf::Keyboard::Key::Numpad7, tgui::Event::KeyboardKey::Numpad7},
+                         {sf::Keyboard::Key::Numpad8, tgui::Event::KeyboardKey::Numpad8},
+                         {sf::Keyboard::Key::Numpad9, tgui::Event::KeyboardKey::Numpad9},
+                         {sf::Keyboard::Key::F1, tgui::Event::KeyboardKey::F1},
+                         {sf::Keyboard::Key::F2, tgui::Event::KeyboardKey::F2},
+                         {sf::Keyboard::Key::F3, tgui::Event::KeyboardKey::F3},
+                         {sf::Keyboard::Key::F4, tgui::Event::KeyboardKey::F4},
+                         {sf::Keyboard::Key::F5, tgui::Event::KeyboardKey::F5},
+                         {sf::Keyboard::Key::F6, tgui::Event::KeyboardKey::F6},
+                         {sf::Keyboard::Key::F7, tgui::Event::KeyboardKey::F7},
+                         {sf::Keyboard::Key::F8, tgui::Event::KeyboardKey::F8},
+                         {sf::Keyboard::Key::F9, tgui::Event::KeyboardKey::F9},
+                         {sf::Keyboard::Key::F10, tgui::Event::KeyboardKey::F10},
+                         {sf::Keyboard::Key::F11, tgui::Event::KeyboardKey::F11},
+                         {sf::Keyboard::Key::F12, tgui::Event::KeyboardKey::F12},
+                         {sf::Keyboard::Key::F13, tgui::Event::KeyboardKey::F13},
+                         {sf::Keyboard::Key::F14, tgui::Event::KeyboardKey::F14},
+                         {sf::Keyboard::Key::F15, tgui::Event::KeyboardKey::F15},
+                         {sf::Keyboard::Key::Pause, tgui::Event::KeyboardKey::Pause}}};
                     for (auto pair : keys)
                     {
-#if SFML_VERSION_MAJOR >= 3
+    #if SFML_VERSION_MAJOR >= 3
                         eventKeyPressed.code = pair.first;
                         const sf::Event eventSFML(eventKeyPressed);
-#else
+    #else
                         eventSFML.key.code = pair.first;
-#endif
+    #endif
                         tgui::Event eventTGUI;
                         REQUIRE(backendGuiSFML->convertEvent(eventSFML, eventTGUI));
                         REQUIRE(eventTGUI.key.code == pair.second);
                     }
                 }
 
-#if SFML_VERSION_MAJOR >= 3
+    #if SFML_VERSION_MAJOR >= 3
                 SECTION("Invalid key code")
                 {
                     eventKeyPressed.code = sf::Keyboard::Key::Unknown;
@@ -261,7 +258,7 @@ TEST_CASE("[Backend events]")
                     REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
                 }
 
-    #if 0 // When enabling this, don't forget the eventKeyPressed.numLock line earlier in this file
+        #if 0 // When enabling this, don't forget the eventKeyPressed.numLock line earlier in this file
                 SECTION("Numpad keys with NumLock off")
                 {
                     tgui::Event eventTGUI;
@@ -291,8 +288,8 @@ TEST_CASE("[Backend events]")
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad9;
                     REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageUp));
                 }
-    #endif
-#else
+        #endif
+    #else
                 SECTION("Invalid key code")
                 {
                     eventSFML.key.code = sf::Keyboard::Key::Unknown;
@@ -327,10 +324,10 @@ TEST_CASE("[Backend events]")
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
                 }
-#endif
+    #endif
             }
 
-#if SFML_VERSION_MAJOR >= 3
+    #if SFML_VERSION_MAJOR >= 3
             SECTION("GainedFocus")
             {
                 const sf::Event::FocusGained eventFocusGained;
@@ -594,7 +591,7 @@ TEST_CASE("[Backend events]")
                 eventMouseMoved.position.x = 260;
                 eventMouseMoved.position.y = 80;
                 backendGuiSFML->handleEvent({eventMouseMoved});
-                slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
+                slider->onMouseLeave([&] { genericCallback(mouseLeftCount); });
                 const sf::Event::MouseLeft eventMouseLeft;
                 backendGuiSFML->handleEvent({eventMouseLeft});
                 REQUIRE(mouseLeftCount == 1);
@@ -637,7 +634,7 @@ TEST_CASE("[Backend events]")
 
                 globalGui->removeAllWidgets();
             }
-#else
+    #else
             SECTION("GainedFocus")
             {
                 sf::Event eventSFML;
@@ -905,7 +902,7 @@ TEST_CASE("[Backend events]")
                 eventSFML.mouseMove.x = 260;
                 eventSFML.mouseMove.y = 80;
                 backendGuiSFML->handleEvent(eventSFML);
-                slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
+                slider->onMouseLeave([&] { genericCallback(mouseLeftCount); });
                 eventSFML.type = sf::Event::MouseLeft;
                 backendGuiSFML->handleEvent(eventSFML);
                 REQUIRE(mouseLeftCount == 1);
@@ -948,7 +945,7 @@ TEST_CASE("[Backend events]")
 
                 globalGui->removeAllWidgets();
             }
-#endif // SFML_VERSION_MAJOR
+    #endif // SFML_VERSION_MAJOR
         }
     }
 #endif // TGUI_HAS_WINDOW_BACKEND_SFML
@@ -965,159 +962,158 @@ TEST_CASE("[Backend events]")
                 eventSDL.type = SDL_EVENT_KEY_DOWN;
                 eventSDL.key.windowID = 0;
                 eventSDL.key.repeat = 0;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.key.down = true;
                 eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
                 auto& eventSdlKey = eventSDL.key.key;
                 auto& eventSdlMod = eventSDL.key.mod;
-#else
+    #else
                 eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
                 auto& eventSdlKey = eventSDL.key.keysym.sym;
                 auto& eventSdlMod = eventSDL.key.keysym.mod;
-#endif
+    #endif
                 eventSdlKey = SDLK_UNKNOWN;
                 eventSdlMod = SDL_KMOD_NUM;
 
                 SECTION("All key codes")
                 {
-#if SDL_MAJOR_VERSION >= 3
-                    std::array<std::pair<uint32_t, tgui::Event::KeyboardKey>, 101> keys = {{
-                        {SDLK_A,            tgui::Event::KeyboardKey::A},
-                        {SDLK_B,            tgui::Event::KeyboardKey::B},
-                        {SDLK_C,            tgui::Event::KeyboardKey::C},
-                        {SDLK_D,            tgui::Event::KeyboardKey::D},
-                        {SDLK_E,            tgui::Event::KeyboardKey::E},
-                        {SDLK_F,            tgui::Event::KeyboardKey::F},
-                        {SDLK_G,            tgui::Event::KeyboardKey::G},
-                        {SDLK_H,            tgui::Event::KeyboardKey::H},
-                        {SDLK_I,            tgui::Event::KeyboardKey::I},
-                        {SDLK_J,            tgui::Event::KeyboardKey::J},
-                        {SDLK_K,            tgui::Event::KeyboardKey::K},
-                        {SDLK_L,            tgui::Event::KeyboardKey::L},
-                        {SDLK_M,            tgui::Event::KeyboardKey::M},
-                        {SDLK_N,            tgui::Event::KeyboardKey::N},
-                        {SDLK_O,            tgui::Event::KeyboardKey::O},
-                        {SDLK_P,            tgui::Event::KeyboardKey::P},
-                        {SDLK_Q,            tgui::Event::KeyboardKey::Q},
-                        {SDLK_R,            tgui::Event::KeyboardKey::R},
-                        {SDLK_S,            tgui::Event::KeyboardKey::S},
-                        {SDLK_T,            tgui::Event::KeyboardKey::T},
-                        {SDLK_U,            tgui::Event::KeyboardKey::U},
-                        {SDLK_V,            tgui::Event::KeyboardKey::V},
-                        {SDLK_W,            tgui::Event::KeyboardKey::W},
-                        {SDLK_X,            tgui::Event::KeyboardKey::X},
-                        {SDLK_Y,            tgui::Event::KeyboardKey::Y},
-                        {SDLK_Z,            tgui::Event::KeyboardKey::Z},
-#else
-                    std::array<std::pair<int32_t, tgui::Event::KeyboardKey>, 101> keys = {{
-                        {SDLK_a,            tgui::Event::KeyboardKey::A},
-                        {SDLK_b,            tgui::Event::KeyboardKey::B},
-                        {SDLK_c,            tgui::Event::KeyboardKey::C},
-                        {SDLK_d,            tgui::Event::KeyboardKey::D},
-                        {SDLK_e,            tgui::Event::KeyboardKey::E},
-                        {SDLK_f,            tgui::Event::KeyboardKey::F},
-                        {SDLK_g,            tgui::Event::KeyboardKey::G},
-                        {SDLK_h,            tgui::Event::KeyboardKey::H},
-                        {SDLK_i,            tgui::Event::KeyboardKey::I},
-                        {SDLK_j,            tgui::Event::KeyboardKey::J},
-                        {SDLK_k,            tgui::Event::KeyboardKey::K},
-                        {SDLK_l,            tgui::Event::KeyboardKey::L},
-                        {SDLK_m,            tgui::Event::KeyboardKey::M},
-                        {SDLK_n,            tgui::Event::KeyboardKey::N},
-                        {SDLK_o,            tgui::Event::KeyboardKey::O},
-                        {SDLK_p,            tgui::Event::KeyboardKey::P},
-                        {SDLK_q,            tgui::Event::KeyboardKey::Q},
-                        {SDLK_r,            tgui::Event::KeyboardKey::R},
-                        {SDLK_s,            tgui::Event::KeyboardKey::S},
-                        {SDLK_t,            tgui::Event::KeyboardKey::T},
-                        {SDLK_u,            tgui::Event::KeyboardKey::U},
-                        {SDLK_v,            tgui::Event::KeyboardKey::V},
-                        {SDLK_w,            tgui::Event::KeyboardKey::W},
-                        {SDLK_x,            tgui::Event::KeyboardKey::X},
-                        {SDLK_y,            tgui::Event::KeyboardKey::Y},
-                        {SDLK_z,            tgui::Event::KeyboardKey::Z},
-#endif
-                        {SDLK_0,            tgui::Event::KeyboardKey::Num0},
-                        {SDLK_1,            tgui::Event::KeyboardKey::Num1},
-                        {SDLK_2,            tgui::Event::KeyboardKey::Num2},
-                        {SDLK_3,            tgui::Event::KeyboardKey::Num3},
-                        {SDLK_4,            tgui::Event::KeyboardKey::Num4},
-                        {SDLK_5,            tgui::Event::KeyboardKey::Num5},
-                        {SDLK_6,            tgui::Event::KeyboardKey::Num6},
-                        {SDLK_7,            tgui::Event::KeyboardKey::Num7},
-                        {SDLK_8,            tgui::Event::KeyboardKey::Num8},
-                        {SDLK_9,            tgui::Event::KeyboardKey::Num9},
-                        {SDLK_ESCAPE,       tgui::Event::KeyboardKey::Escape},
-                        {SDLK_LCTRL,        tgui::Event::KeyboardKey::LControl},
-                        {SDLK_LSHIFT,       tgui::Event::KeyboardKey::LShift},
-                        {SDLK_LALT,         tgui::Event::KeyboardKey::LAlt},
-                        {SDLK_LGUI,         tgui::Event::KeyboardKey::LSystem},
-                        {SDLK_RCTRL,        tgui::Event::KeyboardKey::RControl},
-                        {SDLK_RSHIFT,       tgui::Event::KeyboardKey::RShift},
-                        {SDLK_RALT,         tgui::Event::KeyboardKey::RAlt},
-                        {SDLK_RGUI,         tgui::Event::KeyboardKey::RSystem},
-                        {SDLK_MENU,         tgui::Event::KeyboardKey::Menu},
-                        {SDLK_LEFTBRACKET,  tgui::Event::KeyboardKey::LBracket},
-                        {SDLK_RIGHTBRACKET, tgui::Event::KeyboardKey::RBracket},
-                        {SDLK_SEMICOLON,    tgui::Event::KeyboardKey::Semicolon},
-                        {SDLK_COMMA,        tgui::Event::KeyboardKey::Comma},
-                        {SDLK_PERIOD,       tgui::Event::KeyboardKey::Period},
-#if SDL_MAJOR_VERSION >= 3
-                        {SDLK_APOSTROPHE,   tgui::Event::KeyboardKey::Quote},
-#else
-                        {SDLK_QUOTE,        tgui::Event::KeyboardKey::Quote},
-#endif
-                        {SDLK_SLASH,        tgui::Event::KeyboardKey::Slash},
-                        {SDLK_BACKSLASH,    tgui::Event::KeyboardKey::Backslash},
-                        {SDLK_EQUALS,       tgui::Event::KeyboardKey::Equal},
-                        {SDLK_MINUS,        tgui::Event::KeyboardKey::Minus},
-                        {SDLK_SPACE,        tgui::Event::KeyboardKey::Space},
-                        {SDLK_RETURN,       tgui::Event::KeyboardKey::Enter},
-                        {SDLK_KP_ENTER,     tgui::Event::KeyboardKey::Enter},
-                        {SDLK_BACKSPACE,    tgui::Event::KeyboardKey::Backspace},
-                        {SDLK_TAB,          tgui::Event::KeyboardKey::Tab},
-                        {SDLK_PAGEUP,       tgui::Event::KeyboardKey::PageUp},
-                        {SDLK_PAGEDOWN,     tgui::Event::KeyboardKey::PageDown},
-                        {SDLK_END,          tgui::Event::KeyboardKey::End},
-                        {SDLK_HOME,         tgui::Event::KeyboardKey::Home},
-                        {SDLK_INSERT,       tgui::Event::KeyboardKey::Insert},
-                        {SDLK_DELETE,       tgui::Event::KeyboardKey::Delete},
-                        {SDLK_KP_PLUS,      tgui::Event::KeyboardKey::Add},
-                        {SDLK_KP_MINUS,     tgui::Event::KeyboardKey::Subtract},
-                        {SDLK_KP_MULTIPLY,  tgui::Event::KeyboardKey::Multiply},
-                        {SDLK_KP_DIVIDE,    tgui::Event::KeyboardKey::Divide},
-                        {SDLK_LEFT,         tgui::Event::KeyboardKey::Left},
-                        {SDLK_RIGHT,        tgui::Event::KeyboardKey::Right},
-                        {SDLK_UP,           tgui::Event::KeyboardKey::Up},
-                        {SDLK_DOWN,         tgui::Event::KeyboardKey::Down},
-                        {SDLK_KP_0,         tgui::Event::KeyboardKey::Numpad0},
-                        {SDLK_KP_1,         tgui::Event::KeyboardKey::Numpad1},
-                        {SDLK_KP_2,         tgui::Event::KeyboardKey::Numpad2},
-                        {SDLK_KP_3,         tgui::Event::KeyboardKey::Numpad3},
-                        {SDLK_KP_4,         tgui::Event::KeyboardKey::Numpad4},
-                        {SDLK_KP_5,         tgui::Event::KeyboardKey::Numpad5},
-                        {SDLK_KP_6,         tgui::Event::KeyboardKey::Numpad6},
-                        {SDLK_KP_7,         tgui::Event::KeyboardKey::Numpad7},
-                        {SDLK_KP_8,         tgui::Event::KeyboardKey::Numpad8},
-                        {SDLK_KP_9,         tgui::Event::KeyboardKey::Numpad9},
-                        {SDLK_F1,           tgui::Event::KeyboardKey::F1},
-                        {SDLK_F2,           tgui::Event::KeyboardKey::F2},
-                        {SDLK_F3,           tgui::Event::KeyboardKey::F3},
-                        {SDLK_F4,           tgui::Event::KeyboardKey::F4},
-                        {SDLK_F5,           tgui::Event::KeyboardKey::F5},
-                        {SDLK_F6,           tgui::Event::KeyboardKey::F6},
-                        {SDLK_F7,           tgui::Event::KeyboardKey::F7},
-                        {SDLK_F8,           tgui::Event::KeyboardKey::F8},
-                        {SDLK_F9,           tgui::Event::KeyboardKey::F9},
-                        {SDLK_F10,          tgui::Event::KeyboardKey::F10},
-                        {SDLK_F11,          tgui::Event::KeyboardKey::F11},
-                        {SDLK_F12,          tgui::Event::KeyboardKey::F12},
-                        {SDLK_F13,          tgui::Event::KeyboardKey::F13},
-                        {SDLK_F14,          tgui::Event::KeyboardKey::F14},
-                        {SDLK_F15,          tgui::Event::KeyboardKey::F15},
-                        {SDLK_PAUSE,        tgui::Event::KeyboardKey::Pause}
-                    }};
+    #if SDL_MAJOR_VERSION >= 3
+                    std::array<std::pair<uint32_t, tgui::Event::KeyboardKey>, 101> keys =
+                    { {{SDLK_A, tgui::Event::KeyboardKey::A},
+                       {SDLK_B, tgui::Event::KeyboardKey::B},
+                       {SDLK_C, tgui::Event::KeyboardKey::C},
+                       {SDLK_D, tgui::Event::KeyboardKey::D},
+                       {SDLK_E, tgui::Event::KeyboardKey::E},
+                       {SDLK_F, tgui::Event::KeyboardKey::F},
+                       {SDLK_G, tgui::Event::KeyboardKey::G},
+                       {SDLK_H, tgui::Event::KeyboardKey::H},
+                       {SDLK_I, tgui::Event::KeyboardKey::I},
+                       {SDLK_J, tgui::Event::KeyboardKey::J},
+                       {SDLK_K, tgui::Event::KeyboardKey::K},
+                       {SDLK_L, tgui::Event::KeyboardKey::L},
+                       {SDLK_M, tgui::Event::KeyboardKey::M},
+                       {SDLK_N, tgui::Event::KeyboardKey::N},
+                       {SDLK_O, tgui::Event::KeyboardKey::O},
+                       {SDLK_P, tgui::Event::KeyboardKey::P},
+                       {SDLK_Q, tgui::Event::KeyboardKey::Q},
+                       {SDLK_R, tgui::Event::KeyboardKey::R},
+                       {SDLK_S, tgui::Event::KeyboardKey::S},
+                       {SDLK_T, tgui::Event::KeyboardKey::T},
+                       {SDLK_U, tgui::Event::KeyboardKey::U},
+                       {SDLK_V, tgui::Event::KeyboardKey::V},
+                       {SDLK_W, tgui::Event::KeyboardKey::W},
+                       {SDLK_X, tgui::Event::KeyboardKey::X},
+                       {SDLK_Y, tgui::Event::KeyboardKey::Y},
+                       {SDLK_Z, tgui::Event::KeyboardKey::Z},
+    #else
+                    std::array<std::pair<int32_t, tgui::Event::KeyboardKey>, 101> keys = {
+                        {{SDLK_a, tgui::Event::KeyboardKey::A},
+                         {SDLK_b, tgui::Event::KeyboardKey::B},
+                         {SDLK_c, tgui::Event::KeyboardKey::C},
+                         {SDLK_d, tgui::Event::KeyboardKey::D},
+                         {SDLK_e, tgui::Event::KeyboardKey::E},
+                         {SDLK_f, tgui::Event::KeyboardKey::F},
+                         {SDLK_g, tgui::Event::KeyboardKey::G},
+                         {SDLK_h, tgui::Event::KeyboardKey::H},
+                         {SDLK_i, tgui::Event::KeyboardKey::I},
+                         {SDLK_j, tgui::Event::KeyboardKey::J},
+                         {SDLK_k, tgui::Event::KeyboardKey::K},
+                         {SDLK_l, tgui::Event::KeyboardKey::L},
+                         {SDLK_m, tgui::Event::KeyboardKey::M},
+                         {SDLK_n, tgui::Event::KeyboardKey::N},
+                         {SDLK_o, tgui::Event::KeyboardKey::O},
+                         {SDLK_p, tgui::Event::KeyboardKey::P},
+                         {SDLK_q, tgui::Event::KeyboardKey::Q},
+                         {SDLK_r, tgui::Event::KeyboardKey::R},
+                         {SDLK_s, tgui::Event::KeyboardKey::S},
+                         {SDLK_t, tgui::Event::KeyboardKey::T},
+                         {SDLK_u, tgui::Event::KeyboardKey::U},
+                         {SDLK_v, tgui::Event::KeyboardKey::V},
+                         {SDLK_w, tgui::Event::KeyboardKey::W},
+                         {SDLK_x, tgui::Event::KeyboardKey::X},
+                         {SDLK_y, tgui::Event::KeyboardKey::Y},
+                         {SDLK_z, tgui::Event::KeyboardKey::Z},
+    #endif
+                       {SDLK_0, tgui::Event::KeyboardKey::Num0},
+                       {SDLK_1, tgui::Event::KeyboardKey::Num1},
+                       {SDLK_2, tgui::Event::KeyboardKey::Num2},
+                       {SDLK_3, tgui::Event::KeyboardKey::Num3},
+                       {SDLK_4, tgui::Event::KeyboardKey::Num4},
+                       {SDLK_5, tgui::Event::KeyboardKey::Num5},
+                       {SDLK_6, tgui::Event::KeyboardKey::Num6},
+                       {SDLK_7, tgui::Event::KeyboardKey::Num7},
+                       {SDLK_8, tgui::Event::KeyboardKey::Num8},
+                       {SDLK_9, tgui::Event::KeyboardKey::Num9},
+                       {SDLK_ESCAPE, tgui::Event::KeyboardKey::Escape},
+                       {SDLK_LCTRL, tgui::Event::KeyboardKey::LControl},
+                       {SDLK_LSHIFT, tgui::Event::KeyboardKey::LShift},
+                       {SDLK_LALT, tgui::Event::KeyboardKey::LAlt},
+                       {SDLK_LGUI, tgui::Event::KeyboardKey::LSystem},
+                       {SDLK_RCTRL, tgui::Event::KeyboardKey::RControl},
+                       {SDLK_RSHIFT, tgui::Event::KeyboardKey::RShift},
+                       {SDLK_RALT, tgui::Event::KeyboardKey::RAlt},
+                       {SDLK_RGUI, tgui::Event::KeyboardKey::RSystem},
+                       {SDLK_MENU, tgui::Event::KeyboardKey::Menu},
+                       {SDLK_LEFTBRACKET, tgui::Event::KeyboardKey::LBracket},
+                       {SDLK_RIGHTBRACKET, tgui::Event::KeyboardKey::RBracket},
+                       {SDLK_SEMICOLON, tgui::Event::KeyboardKey::Semicolon},
+                       {SDLK_COMMA, tgui::Event::KeyboardKey::Comma},
+                       {SDLK_PERIOD, tgui::Event::KeyboardKey::Period},
+    #if SDL_MAJOR_VERSION >= 3
+                       {SDLK_APOSTROPHE, tgui::Event::KeyboardKey::Quote},
+    #else
+                         {SDLK_QUOTE, tgui::Event::KeyboardKey::Quote},
+    #endif
+                       {SDLK_SLASH, tgui::Event::KeyboardKey::Slash},
+                       {SDLK_BACKSLASH, tgui::Event::KeyboardKey::Backslash},
+                       {SDLK_EQUALS, tgui::Event::KeyboardKey::Equal},
+                       {SDLK_MINUS, tgui::Event::KeyboardKey::Minus},
+                       {SDLK_SPACE, tgui::Event::KeyboardKey::Space},
+                       {SDLK_RETURN, tgui::Event::KeyboardKey::Enter},
+                       {SDLK_KP_ENTER, tgui::Event::KeyboardKey::Enter},
+                       {SDLK_BACKSPACE, tgui::Event::KeyboardKey::Backspace},
+                       {SDLK_TAB, tgui::Event::KeyboardKey::Tab},
+                       {SDLK_PAGEUP, tgui::Event::KeyboardKey::PageUp},
+                       {SDLK_PAGEDOWN, tgui::Event::KeyboardKey::PageDown},
+                       {SDLK_END, tgui::Event::KeyboardKey::End},
+                       {SDLK_HOME, tgui::Event::KeyboardKey::Home},
+                       {SDLK_INSERT, tgui::Event::KeyboardKey::Insert},
+                       {SDLK_DELETE, tgui::Event::KeyboardKey::Delete},
+                       {SDLK_KP_PLUS, tgui::Event::KeyboardKey::Add},
+                       {SDLK_KP_MINUS, tgui::Event::KeyboardKey::Subtract},
+                       {SDLK_KP_MULTIPLY, tgui::Event::KeyboardKey::Multiply},
+                       {SDLK_KP_DIVIDE, tgui::Event::KeyboardKey::Divide},
+                       {SDLK_LEFT, tgui::Event::KeyboardKey::Left},
+                       {SDLK_RIGHT, tgui::Event::KeyboardKey::Right},
+                       {SDLK_UP, tgui::Event::KeyboardKey::Up},
+                       {SDLK_DOWN, tgui::Event::KeyboardKey::Down},
+                       {SDLK_KP_0, tgui::Event::KeyboardKey::Numpad0},
+                       {SDLK_KP_1, tgui::Event::KeyboardKey::Numpad1},
+                       {SDLK_KP_2, tgui::Event::KeyboardKey::Numpad2},
+                       {SDLK_KP_3, tgui::Event::KeyboardKey::Numpad3},
+                       {SDLK_KP_4, tgui::Event::KeyboardKey::Numpad4},
+                       {SDLK_KP_5, tgui::Event::KeyboardKey::Numpad5},
+                       {SDLK_KP_6, tgui::Event::KeyboardKey::Numpad6},
+                       {SDLK_KP_7, tgui::Event::KeyboardKey::Numpad7},
+                       {SDLK_KP_8, tgui::Event::KeyboardKey::Numpad8},
+                       {SDLK_KP_9, tgui::Event::KeyboardKey::Numpad9},
+                       {SDLK_F1, tgui::Event::KeyboardKey::F1},
+                       {SDLK_F2, tgui::Event::KeyboardKey::F2},
+                       {SDLK_F3, tgui::Event::KeyboardKey::F3},
+                       {SDLK_F4, tgui::Event::KeyboardKey::F4},
+                       {SDLK_F5, tgui::Event::KeyboardKey::F5},
+                       {SDLK_F6, tgui::Event::KeyboardKey::F6},
+                       {SDLK_F7, tgui::Event::KeyboardKey::F7},
+                       {SDLK_F8, tgui::Event::KeyboardKey::F8},
+                       {SDLK_F9, tgui::Event::KeyboardKey::F9},
+                       {SDLK_F10, tgui::Event::KeyboardKey::F10},
+                       {SDLK_F11, tgui::Event::KeyboardKey::F11},
+                       {SDLK_F12, tgui::Event::KeyboardKey::F12},
+                       {SDLK_F13, tgui::Event::KeyboardKey::F13},
+                       {SDLK_F14, tgui::Event::KeyboardKey::F14},
+                       {SDLK_F15, tgui::Event::KeyboardKey::F15},
+                       {SDLK_PAUSE, tgui::Event::KeyboardKey::Pause}} };
                     for (auto pair : keys)
                     {
                         eventSdlKey = pair.first;
@@ -1155,16 +1151,17 @@ TEST_CASE("[Backend events]")
                 {
                     eventSDL.type = SDL_EVENT_KEY_UP;
                     eventSdlKey = SDLK_SPACE;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                     eventSDL.key.down = false;
-#else
+    #else
                     eventSDL.key.state = SDL_RELEASED;
-#endif
+    #endif
                     tgui::Event eventTGUI;
                     REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                 }
 
-#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 22))
+    #if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+        || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 22))
                 SECTION("Numpad keys with NumLock off")
                 {
                     tgui::Event eventTGUI;
@@ -1194,18 +1191,18 @@ TEST_CASE("[Backend events]")
                     eventSdlKey = SDLK_KP_9;
                     REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageUp));
                 }
-#endif
+    #endif
             }
 
             SECTION("GainedFocus")
             {
                 SDL_Event eventSDL;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
-#else
+    #else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
-#endif
+    #endif
                 eventSDL.window.windowID = 0;
 
                 tgui::Event eventTGUI;
@@ -1216,12 +1213,12 @@ TEST_CASE("[Backend events]")
             SECTION("LostFocus")
             {
                 SDL_Event eventSDL;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.type = SDL_EVENT_WINDOW_FOCUS_LOST;
-#else
+    #else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
-#endif
+    #endif
                 eventSDL.window.windowID = 0;
 
                 tgui::Event eventTGUI;
@@ -1242,12 +1239,12 @@ TEST_CASE("[Backend events]")
             SECTION("Resized")
             {
                 SDL_Event eventSDL;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
-#else
+    #else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
-#endif
+    #endif
                 eventSDL.window.data1 = 400;
                 eventSDL.window.data2 = 300;
                 eventSDL.window.windowID = 0;
@@ -1264,20 +1261,18 @@ TEST_CASE("[Backend events]")
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_EVENT_TEXT_INPUT;
                 eventSDL.text.windowID = 0;
-#if SDL_MAJOR_VERSION >= 3
-                char textInput[4] = {
-                    static_cast<char>(static_cast<unsigned char>(0xE2)),
-                    static_cast<char>(static_cast<unsigned char>(0x9C)),
-                    static_cast<char>(static_cast<unsigned char>(0x85)),
-                    '\0'
-                };
+    #if SDL_MAJOR_VERSION >= 3
+                char textInput[4] = {static_cast<char>(static_cast<unsigned char>(0xE2)),
+                                     static_cast<char>(static_cast<unsigned char>(0x9C)),
+                                     static_cast<char>(static_cast<unsigned char>(0x85)),
+                                     '\0'};
                 eventSDL.text.text = textInput;
-#else
+    #else
                 eventSDL.text.text[0] = static_cast<char>(static_cast<unsigned char>(0xE2));
                 eventSDL.text.text[1] = static_cast<char>(static_cast<unsigned char>(0x9C));
                 eventSDL.text.text[2] = static_cast<char>(static_cast<unsigned char>(0x85));
                 eventSDL.text.text[3] = '\0';
-#endif
+    #endif
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                 REQUIRE(eventTGUI.type == tgui::Event::Type::TextEntered);
@@ -1288,31 +1283,31 @@ TEST_CASE("[Backend events]")
             {
                 SDL_Event eventSDL;
 
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.wheel.mouse_x = 200;
                 eventSDL.wheel.mouse_y = 150;
-#elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+    #elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
                 eventSDL.wheel.mouseX = 200;
                 eventSDL.wheel.mouseY = 150;
-#else
-                // SDL < 2.26 had no mouse position in its mouse scroll event, so first simulate a mouse move
-                eventSDL.type = SDL_MOUSEMOTION;
-                eventSDL.motion.which = 1;
-                eventSDL.motion.x = 200;
-                eventSDL.motion.y = 150;
-                eventSDL.motion.windowID = 0;
-                backendGuiSDL->handleEvent(eventSDL);
-#endif
+    #else
+        // SDL < 2.26 had no mouse position in its mouse scroll event, so first simulate a mouse move
+        eventSDL.type = SDL_MOUSEMOTION;
+        eventSDL.motion.which = 1;
+        eventSDL.motion.x = 200;
+        eventSDL.motion.y = 150;
+        eventSDL.motion.windowID = 0;
+        backendGuiSDL->handleEvent(eventSDL);
+    #endif
 
                 eventSDL.type = SDL_EVENT_MOUSE_WHEEL;
                 eventSDL.wheel.windowID = 0;
                 eventSDL.wheel.x = 0;
                 eventSDL.wheel.y = 2;
                 eventSDL.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
-#if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
+    #if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
                 eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
                 eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
-#endif
+    #endif
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -1329,10 +1324,10 @@ TEST_CASE("[Backend events]")
                 // We only handle vertical scrolling
                 eventSDL.wheel.x = 2;
                 eventSDL.wheel.y = 0;
-#if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
+    #if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
                 eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
                 eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
-#endif
+    #endif
                 REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
             }
 
@@ -1421,18 +1416,19 @@ TEST_CASE("[Backend events]")
 
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_EVENT_FINGER_DOWN;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.tfinger.touchID = 1;
                 eventSDL.tfinger.fingerID = 1;
-#else
+    #else
                 eventSDL.tfinger.touchId = 1;
                 eventSDL.tfinger.fingerId = 1;
-#endif
+    #endif
                 eventSDL.tfinger.x = 200.f / windowSize.x;
                 eventSDL.tfinger.y = 150.f / windowSize.y;
-#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
+    #if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+        || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
                 eventSDL.tfinger.windowID = 0;
-#endif
+    #endif
 
                 tgui::Event eventTGUI;
                 REQUIRE(backendGuiSDL->convertEvent(eventSDL, eventTGUI));
@@ -1460,12 +1456,12 @@ TEST_CASE("[Backend events]")
             SECTION("MouseEntered")
             {
                 SDL_Event eventSDL;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.type = SDL_EVENT_WINDOW_MOUSE_ENTER;
-#else
+    #else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_ENTER;
-#endif
+    #endif
                 eventSDL.window.windowID = 0;
 
                 tgui::Event eventTGUI;
@@ -1476,12 +1472,12 @@ TEST_CASE("[Backend events]")
             SECTION("MouseLeft")
             {
                 SDL_Event eventSDL;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.type = SDL_EVENT_WINDOW_MOUSE_LEAVE;
-#else
+    #else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_LEAVE;
-#endif
+    #endif
                 eventSDL.window.windowID = 0;
 
                 tgui::Event eventTGUI;
@@ -1518,7 +1514,7 @@ TEST_CASE("[Backend events]")
                 SDL_Event eventSDL;
                 eventSDL.type = SDL_EVENT_TEXT_INPUT;
                 eventSDL.text.windowID = 0;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 char textInput[2] = "A";
                 eventSDL.text.text = textInput;
                 backendGuiSDL->handleEvent(eventSDL);
@@ -1526,7 +1522,7 @@ TEST_CASE("[Backend events]")
                 backendGuiSDL->handleEvent(eventSDL);
                 textInput[0] = 'C';
                 backendGuiSDL->handleEvent(eventSDL);
-#else
+    #else
                 eventSDL.text.text[0] = 'A';
                 eventSDL.text.text[1] = 0;
                 backendGuiSDL->handleEvent(eventSDL);
@@ -1534,12 +1530,12 @@ TEST_CASE("[Backend events]")
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.text.text[0] = 'C';
                 backendGuiSDL->handleEvent(eventSDL);
-#endif
+    #endif
                 // Erase the second character from the edit box
                 eventSDL.type = SDL_EVENT_KEY_DOWN;
                 eventSDL.key.windowID = 0;
                 eventSDL.key.repeat = 0;
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.key.down = true;
                 eventSDL.key.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.mod = SDL_KMOD_NONE;
@@ -1547,7 +1543,7 @@ TEST_CASE("[Backend events]")
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.key.key = SDLK_BACKSPACE;
                 backendGuiSDL->handleEvent(eventSDL);
-#else
+    #else
                 eventSDL.key.state = SDL_PRESSED;
                 eventSDL.key.keysym.scancode = SDL_SCANCODE_UNKNOWN;
                 eventSDL.key.keysym.mod = SDL_KMOD_NONE;
@@ -1555,40 +1551,40 @@ TEST_CASE("[Backend events]")
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.key.keysym.sym = SDLK_BACKSPACE;
                 backendGuiSDL->handleEvent(eventSDL);
-#endif
+    #endif
 
                 // Verify that the events were correctly processed by the edit box
                 REQUIRE(editBox->getText() == "AC");
 
                 // Scroll the mouse wheel on top of the slider and verify that its value changes
-#if SDL_MAJOR_VERSION >= 3
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.wheel.mouse_x = 260;
                 eventSDL.wheel.mouse_y = 80;
-#elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
+    #elif ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION >= 26))
                 eventSDL.wheel.mouseX = 260;
                 eventSDL.wheel.mouseY = 80;
-#else
-                eventSDL.type = SDL_MOUSEMOTION;
-                eventSDL.motion.which = 1;
-                eventSDL.motion.x = 260;
-                eventSDL.motion.y = 80;
-                eventSDL.motion.windowID = 0;
-                backendGuiSDL->handleEvent(eventSDL);
-#endif
+    #else
+        eventSDL.type = SDL_MOUSEMOTION;
+        eventSDL.motion.which = 1;
+        eventSDL.motion.x = 260;
+        eventSDL.motion.y = 80;
+        eventSDL.motion.windowID = 0;
+        backendGuiSDL->handleEvent(eventSDL);
+    #endif
                 eventSDL.type = SDL_EVENT_MOUSE_WHEEL;
                 eventSDL.wheel.direction = SDL_MOUSEWHEEL_NORMAL;
                 eventSDL.wheel.windowID = 0;
                 eventSDL.wheel.x = 0;
                 eventSDL.wheel.y = 4;
-#if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
+    #if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
                 eventSDL.wheel.preciseX = static_cast<float>(eventSDL.wheel.x);
                 eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
-#endif
+    #endif
                 backendGuiSDL->handleEvent(eventSDL);
                 eventSDL.wheel.y = -1;
-#if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
+    #if (SDL_MAJOR_VERSION == 2) && ((SDL_MINOR_VERSION > 0) || (SDL_PATCHLEVEL >= 18))
                 eventSDL.wheel.preciseY = static_cast<float>(eventSDL.wheel.y);
-#endif
+    #endif
                 backendGuiSDL->handleEvent(eventSDL);
                 backendGuiSDL->handleEvent(eventSDL);
 
@@ -1602,13 +1598,13 @@ TEST_CASE("[Backend events]")
                 eventSDL.motion.y = 80;
                 eventSDL.motion.windowID = 0;
                 backendGuiSDL->handleEvent(eventSDL);
-                slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
-#if SDL_MAJOR_VERSION >= 3
+                slider->onMouseLeave([&] { genericCallback(mouseLeftCount); });
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.type = SDL_EVENT_WINDOW_MOUSE_LEAVE;
-#else
+    #else
                 eventSDL.type = SDL_WINDOWEVENT;
                 eventSDL.window.event = SDL_WINDOWEVENT_LEAVE;
-#endif
+    #endif
                 backendGuiSDL->handleEvent(eventSDL);
                 REQUIRE(mouseLeftCount == 1);
 
@@ -1639,14 +1635,15 @@ TEST_CASE("[Backend events]")
                 // Note that the resizing ignores the position of the touch ended event
                 const tgui::Vector2f windowSize = backendGuiSDL->getViewport().getSize();
                 eventSDL.type = SDL_EVENT_FINGER_DOWN;
-#if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
+    #if (SDL_MAJOR_VERSION > 2) || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION > 0)) \
+        || ((SDL_MAJOR_VERSION == 2) && (SDL_MINOR_VERSION == 0) && (SDL_PATCHLEVEL >= 12))
                 eventSDL.tfinger.windowID = 0;
-#endif
-#if SDL_MAJOR_VERSION >= 3
+    #endif
+    #if SDL_MAJOR_VERSION >= 3
                 eventSDL.tfinger.touchID = 1;
-#else
+    #else
                 eventSDL.tfinger.touchId = 1;
-#endif
+    #endif
                 eventSDL.tfinger.x = 100.f / windowSize.x;
                 eventSDL.tfinger.y = 260.f / windowSize.y;
                 backendGuiSDL->handleEvent(eventSDL);
@@ -1677,110 +1674,109 @@ TEST_CASE("[Backend events]")
             {
                 SECTION("All key codes")
                 {
-                    std::array<std::pair<int32_t, tgui::Event::KeyboardKey>, 102> keys = {{
-                        {GLFW_KEY_A,             tgui::Event::KeyboardKey::A},
-                        {GLFW_KEY_B,             tgui::Event::KeyboardKey::B},
-                        {GLFW_KEY_C,             tgui::Event::KeyboardKey::C},
-                        {GLFW_KEY_D,             tgui::Event::KeyboardKey::D},
-                        {GLFW_KEY_E,             tgui::Event::KeyboardKey::E},
-                        {GLFW_KEY_F,             tgui::Event::KeyboardKey::F},
-                        {GLFW_KEY_G,             tgui::Event::KeyboardKey::G},
-                        {GLFW_KEY_H,             tgui::Event::KeyboardKey::H},
-                        {GLFW_KEY_I,             tgui::Event::KeyboardKey::I},
-                        {GLFW_KEY_J,             tgui::Event::KeyboardKey::J},
-                        {GLFW_KEY_K,             tgui::Event::KeyboardKey::K},
-                        {GLFW_KEY_L,             tgui::Event::KeyboardKey::L},
-                        {GLFW_KEY_M,             tgui::Event::KeyboardKey::M},
-                        {GLFW_KEY_N,             tgui::Event::KeyboardKey::N},
-                        {GLFW_KEY_O,             tgui::Event::KeyboardKey::O},
-                        {GLFW_KEY_P,             tgui::Event::KeyboardKey::P},
-                        {GLFW_KEY_Q,             tgui::Event::KeyboardKey::Q},
-                        {GLFW_KEY_R,             tgui::Event::KeyboardKey::R},
-                        {GLFW_KEY_S,             tgui::Event::KeyboardKey::S},
-                        {GLFW_KEY_T,             tgui::Event::KeyboardKey::T},
-                        {GLFW_KEY_U,             tgui::Event::KeyboardKey::U},
-                        {GLFW_KEY_V,             tgui::Event::KeyboardKey::V},
-                        {GLFW_KEY_W,             tgui::Event::KeyboardKey::W},
-                        {GLFW_KEY_X,             tgui::Event::KeyboardKey::X},
-                        {GLFW_KEY_Y,             tgui::Event::KeyboardKey::Y},
-                        {GLFW_KEY_Z,             tgui::Event::KeyboardKey::Z},
-                        {GLFW_KEY_0,             tgui::Event::KeyboardKey::Num0},
-                        {GLFW_KEY_1,             tgui::Event::KeyboardKey::Num1},
-                        {GLFW_KEY_2,             tgui::Event::KeyboardKey::Num2},
-                        {GLFW_KEY_3,             tgui::Event::KeyboardKey::Num3},
-                        {GLFW_KEY_4,             tgui::Event::KeyboardKey::Num4},
-                        {GLFW_KEY_5,             tgui::Event::KeyboardKey::Num5},
-                        {GLFW_KEY_6,             tgui::Event::KeyboardKey::Num6},
-                        {GLFW_KEY_7,             tgui::Event::KeyboardKey::Num7},
-                        {GLFW_KEY_8,             tgui::Event::KeyboardKey::Num8},
-                        {GLFW_KEY_9,             tgui::Event::KeyboardKey::Num9},
-                        {GLFW_KEY_ESCAPE,        tgui::Event::KeyboardKey::Escape},
-                        {GLFW_KEY_LEFT_CONTROL,  tgui::Event::KeyboardKey::LControl},
-                        {GLFW_KEY_LEFT_SHIFT,    tgui::Event::KeyboardKey::LShift},
-                        {GLFW_KEY_LEFT_ALT,      tgui::Event::KeyboardKey::LAlt},
-                        {GLFW_KEY_LEFT_SUPER,    tgui::Event::KeyboardKey::LSystem},
-                        {GLFW_KEY_RIGHT_CONTROL, tgui::Event::KeyboardKey::RControl},
-                        {GLFW_KEY_RIGHT_SHIFT,   tgui::Event::KeyboardKey::RShift},
-                        {GLFW_KEY_RIGHT_ALT,     tgui::Event::KeyboardKey::RAlt},
-                        {GLFW_KEY_RIGHT_SUPER,   tgui::Event::KeyboardKey::RSystem},
-                        {GLFW_KEY_MENU,          tgui::Event::KeyboardKey::Menu},
-                        {GLFW_KEY_LEFT_BRACKET,  tgui::Event::KeyboardKey::LBracket},
-                        {GLFW_KEY_RIGHT_BRACKET, tgui::Event::KeyboardKey::RBracket},
-                        {GLFW_KEY_SEMICOLON,     tgui::Event::KeyboardKey::Semicolon},
-                        {GLFW_KEY_COMMA,         tgui::Event::KeyboardKey::Comma},
-                        {GLFW_KEY_PERIOD,        tgui::Event::KeyboardKey::Period},
-                        {GLFW_KEY_APOSTROPHE,    tgui::Event::KeyboardKey::Quote},
-                        {GLFW_KEY_SLASH,         tgui::Event::KeyboardKey::Slash},
-                        {GLFW_KEY_BACKSLASH,     tgui::Event::KeyboardKey::Backslash},
-                        {GLFW_KEY_EQUAL,         tgui::Event::KeyboardKey::Equal},
-                        {GLFW_KEY_MINUS,         tgui::Event::KeyboardKey::Minus},
-                        {GLFW_KEY_SPACE,         tgui::Event::KeyboardKey::Space},
-                        {GLFW_KEY_ENTER,         tgui::Event::KeyboardKey::Enter},
-                        {GLFW_KEY_BACKSPACE,     tgui::Event::KeyboardKey::Backspace},
-                        {GLFW_KEY_TAB,           tgui::Event::KeyboardKey::Tab},
-                        {GLFW_KEY_PAGE_UP,       tgui::Event::KeyboardKey::PageUp},
-                        {GLFW_KEY_PAGE_DOWN,     tgui::Event::KeyboardKey::PageDown},
-                        {GLFW_KEY_END,           tgui::Event::KeyboardKey::End},
-                        {GLFW_KEY_HOME,          tgui::Event::KeyboardKey::Home},
-                        {GLFW_KEY_INSERT,        tgui::Event::KeyboardKey::Insert},
-                        {GLFW_KEY_DELETE,        tgui::Event::KeyboardKey::Delete},
-                        {GLFW_KEY_KP_ADD,        tgui::Event::KeyboardKey::Add},
-                        {GLFW_KEY_KP_SUBTRACT,   tgui::Event::KeyboardKey::Subtract},
-                        {GLFW_KEY_KP_MULTIPLY,   tgui::Event::KeyboardKey::Multiply},
-                        {GLFW_KEY_KP_DIVIDE,     tgui::Event::KeyboardKey::Divide},
-                        {GLFW_KEY_KP_DECIMAL,    tgui::Event::KeyboardKey::Period},
-                        {GLFW_KEY_KP_EQUAL,      tgui::Event::KeyboardKey::Equal},
-                        {GLFW_KEY_LEFT,          tgui::Event::KeyboardKey::Left},
-                        {GLFW_KEY_RIGHT,         tgui::Event::KeyboardKey::Right},
-                        {GLFW_KEY_UP,            tgui::Event::KeyboardKey::Up},
-                        {GLFW_KEY_DOWN,          tgui::Event::KeyboardKey::Down},
-                        {GLFW_KEY_KP_0,          tgui::Event::KeyboardKey::Numpad0},
-                        {GLFW_KEY_KP_1,          tgui::Event::KeyboardKey::Numpad1},
-                        {GLFW_KEY_KP_2,          tgui::Event::KeyboardKey::Numpad2},
-                        {GLFW_KEY_KP_3,          tgui::Event::KeyboardKey::Numpad3},
-                        {GLFW_KEY_KP_4,          tgui::Event::KeyboardKey::Numpad4},
-                        {GLFW_KEY_KP_5,          tgui::Event::KeyboardKey::Numpad5},
-                        {GLFW_KEY_KP_6,          tgui::Event::KeyboardKey::Numpad6},
-                        {GLFW_KEY_KP_7,          tgui::Event::KeyboardKey::Numpad7},
-                        {GLFW_KEY_KP_8,          tgui::Event::KeyboardKey::Numpad8},
-                        {GLFW_KEY_KP_9,          tgui::Event::KeyboardKey::Numpad9},
-                        {GLFW_KEY_F1,            tgui::Event::KeyboardKey::F1},
-                        {GLFW_KEY_F2,            tgui::Event::KeyboardKey::F2},
-                        {GLFW_KEY_F3,            tgui::Event::KeyboardKey::F3},
-                        {GLFW_KEY_F4,            tgui::Event::KeyboardKey::F4},
-                        {GLFW_KEY_F5,            tgui::Event::KeyboardKey::F5},
-                        {GLFW_KEY_F6,            tgui::Event::KeyboardKey::F6},
-                        {GLFW_KEY_F7,            tgui::Event::KeyboardKey::F7},
-                        {GLFW_KEY_F8,            tgui::Event::KeyboardKey::F8},
-                        {GLFW_KEY_F9,            tgui::Event::KeyboardKey::F9},
-                        {GLFW_KEY_F10,           tgui::Event::KeyboardKey::F10},
-                        {GLFW_KEY_F11,           tgui::Event::KeyboardKey::F11},
-                        {GLFW_KEY_F12,           tgui::Event::KeyboardKey::F12},
-                        {GLFW_KEY_F13,           tgui::Event::KeyboardKey::F13},
-                        {GLFW_KEY_F14,           tgui::Event::KeyboardKey::F14},
-                        {GLFW_KEY_F15,           tgui::Event::KeyboardKey::F15},
-                        {GLFW_KEY_PAUSE,         tgui::Event::KeyboardKey::Pause}
-                    }};
+                    std::array<std::pair<int32_t, tgui::Event::KeyboardKey>, 102> keys = {
+                        {{GLFW_KEY_A, tgui::Event::KeyboardKey::A},
+                         {GLFW_KEY_B, tgui::Event::KeyboardKey::B},
+                         {GLFW_KEY_C, tgui::Event::KeyboardKey::C},
+                         {GLFW_KEY_D, tgui::Event::KeyboardKey::D},
+                         {GLFW_KEY_E, tgui::Event::KeyboardKey::E},
+                         {GLFW_KEY_F, tgui::Event::KeyboardKey::F},
+                         {GLFW_KEY_G, tgui::Event::KeyboardKey::G},
+                         {GLFW_KEY_H, tgui::Event::KeyboardKey::H},
+                         {GLFW_KEY_I, tgui::Event::KeyboardKey::I},
+                         {GLFW_KEY_J, tgui::Event::KeyboardKey::J},
+                         {GLFW_KEY_K, tgui::Event::KeyboardKey::K},
+                         {GLFW_KEY_L, tgui::Event::KeyboardKey::L},
+                         {GLFW_KEY_M, tgui::Event::KeyboardKey::M},
+                         {GLFW_KEY_N, tgui::Event::KeyboardKey::N},
+                         {GLFW_KEY_O, tgui::Event::KeyboardKey::O},
+                         {GLFW_KEY_P, tgui::Event::KeyboardKey::P},
+                         {GLFW_KEY_Q, tgui::Event::KeyboardKey::Q},
+                         {GLFW_KEY_R, tgui::Event::KeyboardKey::R},
+                         {GLFW_KEY_S, tgui::Event::KeyboardKey::S},
+                         {GLFW_KEY_T, tgui::Event::KeyboardKey::T},
+                         {GLFW_KEY_U, tgui::Event::KeyboardKey::U},
+                         {GLFW_KEY_V, tgui::Event::KeyboardKey::V},
+                         {GLFW_KEY_W, tgui::Event::KeyboardKey::W},
+                         {GLFW_KEY_X, tgui::Event::KeyboardKey::X},
+                         {GLFW_KEY_Y, tgui::Event::KeyboardKey::Y},
+                         {GLFW_KEY_Z, tgui::Event::KeyboardKey::Z},
+                         {GLFW_KEY_0, tgui::Event::KeyboardKey::Num0},
+                         {GLFW_KEY_1, tgui::Event::KeyboardKey::Num1},
+                         {GLFW_KEY_2, tgui::Event::KeyboardKey::Num2},
+                         {GLFW_KEY_3, tgui::Event::KeyboardKey::Num3},
+                         {GLFW_KEY_4, tgui::Event::KeyboardKey::Num4},
+                         {GLFW_KEY_5, tgui::Event::KeyboardKey::Num5},
+                         {GLFW_KEY_6, tgui::Event::KeyboardKey::Num6},
+                         {GLFW_KEY_7, tgui::Event::KeyboardKey::Num7},
+                         {GLFW_KEY_8, tgui::Event::KeyboardKey::Num8},
+                         {GLFW_KEY_9, tgui::Event::KeyboardKey::Num9},
+                         {GLFW_KEY_ESCAPE, tgui::Event::KeyboardKey::Escape},
+                         {GLFW_KEY_LEFT_CONTROL, tgui::Event::KeyboardKey::LControl},
+                         {GLFW_KEY_LEFT_SHIFT, tgui::Event::KeyboardKey::LShift},
+                         {GLFW_KEY_LEFT_ALT, tgui::Event::KeyboardKey::LAlt},
+                         {GLFW_KEY_LEFT_SUPER, tgui::Event::KeyboardKey::LSystem},
+                         {GLFW_KEY_RIGHT_CONTROL, tgui::Event::KeyboardKey::RControl},
+                         {GLFW_KEY_RIGHT_SHIFT, tgui::Event::KeyboardKey::RShift},
+                         {GLFW_KEY_RIGHT_ALT, tgui::Event::KeyboardKey::RAlt},
+                         {GLFW_KEY_RIGHT_SUPER, tgui::Event::KeyboardKey::RSystem},
+                         {GLFW_KEY_MENU, tgui::Event::KeyboardKey::Menu},
+                         {GLFW_KEY_LEFT_BRACKET, tgui::Event::KeyboardKey::LBracket},
+                         {GLFW_KEY_RIGHT_BRACKET, tgui::Event::KeyboardKey::RBracket},
+                         {GLFW_KEY_SEMICOLON, tgui::Event::KeyboardKey::Semicolon},
+                         {GLFW_KEY_COMMA, tgui::Event::KeyboardKey::Comma},
+                         {GLFW_KEY_PERIOD, tgui::Event::KeyboardKey::Period},
+                         {GLFW_KEY_APOSTROPHE, tgui::Event::KeyboardKey::Quote},
+                         {GLFW_KEY_SLASH, tgui::Event::KeyboardKey::Slash},
+                         {GLFW_KEY_BACKSLASH, tgui::Event::KeyboardKey::Backslash},
+                         {GLFW_KEY_EQUAL, tgui::Event::KeyboardKey::Equal},
+                         {GLFW_KEY_MINUS, tgui::Event::KeyboardKey::Minus},
+                         {GLFW_KEY_SPACE, tgui::Event::KeyboardKey::Space},
+                         {GLFW_KEY_ENTER, tgui::Event::KeyboardKey::Enter},
+                         {GLFW_KEY_BACKSPACE, tgui::Event::KeyboardKey::Backspace},
+                         {GLFW_KEY_TAB, tgui::Event::KeyboardKey::Tab},
+                         {GLFW_KEY_PAGE_UP, tgui::Event::KeyboardKey::PageUp},
+                         {GLFW_KEY_PAGE_DOWN, tgui::Event::KeyboardKey::PageDown},
+                         {GLFW_KEY_END, tgui::Event::KeyboardKey::End},
+                         {GLFW_KEY_HOME, tgui::Event::KeyboardKey::Home},
+                         {GLFW_KEY_INSERT, tgui::Event::KeyboardKey::Insert},
+                         {GLFW_KEY_DELETE, tgui::Event::KeyboardKey::Delete},
+                         {GLFW_KEY_KP_ADD, tgui::Event::KeyboardKey::Add},
+                         {GLFW_KEY_KP_SUBTRACT, tgui::Event::KeyboardKey::Subtract},
+                         {GLFW_KEY_KP_MULTIPLY, tgui::Event::KeyboardKey::Multiply},
+                         {GLFW_KEY_KP_DIVIDE, tgui::Event::KeyboardKey::Divide},
+                         {GLFW_KEY_KP_DECIMAL, tgui::Event::KeyboardKey::Period},
+                         {GLFW_KEY_KP_EQUAL, tgui::Event::KeyboardKey::Equal},
+                         {GLFW_KEY_LEFT, tgui::Event::KeyboardKey::Left},
+                         {GLFW_KEY_RIGHT, tgui::Event::KeyboardKey::Right},
+                         {GLFW_KEY_UP, tgui::Event::KeyboardKey::Up},
+                         {GLFW_KEY_DOWN, tgui::Event::KeyboardKey::Down},
+                         {GLFW_KEY_KP_0, tgui::Event::KeyboardKey::Numpad0},
+                         {GLFW_KEY_KP_1, tgui::Event::KeyboardKey::Numpad1},
+                         {GLFW_KEY_KP_2, tgui::Event::KeyboardKey::Numpad2},
+                         {GLFW_KEY_KP_3, tgui::Event::KeyboardKey::Numpad3},
+                         {GLFW_KEY_KP_4, tgui::Event::KeyboardKey::Numpad4},
+                         {GLFW_KEY_KP_5, tgui::Event::KeyboardKey::Numpad5},
+                         {GLFW_KEY_KP_6, tgui::Event::KeyboardKey::Numpad6},
+                         {GLFW_KEY_KP_7, tgui::Event::KeyboardKey::Numpad7},
+                         {GLFW_KEY_KP_8, tgui::Event::KeyboardKey::Numpad8},
+                         {GLFW_KEY_KP_9, tgui::Event::KeyboardKey::Numpad9},
+                         {GLFW_KEY_F1, tgui::Event::KeyboardKey::F1},
+                         {GLFW_KEY_F2, tgui::Event::KeyboardKey::F2},
+                         {GLFW_KEY_F3, tgui::Event::KeyboardKey::F3},
+                         {GLFW_KEY_F4, tgui::Event::KeyboardKey::F4},
+                         {GLFW_KEY_F5, tgui::Event::KeyboardKey::F5},
+                         {GLFW_KEY_F6, tgui::Event::KeyboardKey::F6},
+                         {GLFW_KEY_F7, tgui::Event::KeyboardKey::F7},
+                         {GLFW_KEY_F8, tgui::Event::KeyboardKey::F8},
+                         {GLFW_KEY_F9, tgui::Event::KeyboardKey::F9},
+                         {GLFW_KEY_F10, tgui::Event::KeyboardKey::F10},
+                         {GLFW_KEY_F11, tgui::Event::KeyboardKey::F11},
+                         {GLFW_KEY_F12, tgui::Event::KeyboardKey::F12},
+                         {GLFW_KEY_F13, tgui::Event::KeyboardKey::F13},
+                         {GLFW_KEY_F14, tgui::Event::KeyboardKey::F14},
+                         {GLFW_KEY_F15, tgui::Event::KeyboardKey::F15},
+                         {GLFW_KEY_PAUSE, tgui::Event::KeyboardKey::Pause}}};
                     for (auto pair : keys)
                     {
                         auto eventTGUI = backendGuiGLFW->convertKeyEvent(pair.first, 0, GLFW_PRESS, GLFW_MOD_NUM_LOCK);
@@ -1811,15 +1807,17 @@ TEST_CASE("[Backend events]")
                     REQUIRE(!backendGuiGLFW->convertKeyEvent(GLFW_KEY_SPACE, 0, GLFW_RELEASE, 0));
                 }
 
-#if GLFW_VERSION_MAJOR > 3 || (GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR >= 3)
+    #if GLFW_VERSION_MAJOR > 3 || (GLFW_VERSION_MAJOR == 3 && GLFW_VERSION_MINOR >= 3)
                 SECTION("Numpad keys with NumLock off")
                 {
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_0, 0, GLFW_PRESS, GLFW_MOD_NUM_LOCK)->key.code == tgui::Event::KeyboardKey::Numpad0);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_0, 0, GLFW_PRESS, GLFW_MOD_NUM_LOCK)->key.code
+                            == tgui::Event::KeyboardKey::Numpad0);
 
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_0, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Insert);
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_1, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::End);
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_2, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Down);
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_3, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::PageDown);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_3, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::PageDown);
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_4, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Left);
                     REQUIRE(!backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_5, 0, GLFW_PRESS, 0));
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_6, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Right);
@@ -1827,7 +1825,7 @@ TEST_CASE("[Backend events]")
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_8, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Up);
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_9, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::PageUp);
                 }
-#endif
+    #endif
             }
 
             SECTION("GainedFocus")
@@ -1994,7 +1992,7 @@ TEST_CASE("[Backend events]")
                 // The mouse leaving the window will remove the hover state of widgets
                 unsigned int mouseLeftCount = 0;
                 backendGuiGLFW->cursorPosCallback(260, 80);
-                slider->onMouseLeave([&]{ genericCallback(mouseLeftCount); });
+                slider->onMouseLeave([&] { genericCallback(mouseLeftCount); });
                 backendGuiGLFW->cursorEnterCallback(false);
                 REQUIRE(mouseLeftCount == 1);
 
@@ -2054,115 +2052,113 @@ TEST_CASE("[Backend events]")
             {
                 SECTION("All key codes")
                 {
-                    std::array<std::pair<int32_t, tgui::Event::KeyboardKey>, 98> keys = {{
-                        {KEY_A,             tgui::Event::KeyboardKey::A},
-                        {KEY_B,             tgui::Event::KeyboardKey::B},
-                        {KEY_C,             tgui::Event::KeyboardKey::C},
-                        {KEY_D,             tgui::Event::KeyboardKey::D},
-                        {KEY_E,             tgui::Event::KeyboardKey::E},
-                        {KEY_F,             tgui::Event::KeyboardKey::F},
-                        {KEY_G,             tgui::Event::KeyboardKey::G},
-                        {KEY_H,             tgui::Event::KeyboardKey::H},
-                        {KEY_I,             tgui::Event::KeyboardKey::I},
-                        {KEY_J,             tgui::Event::KeyboardKey::J},
-                        {KEY_K,             tgui::Event::KeyboardKey::K},
-                        {KEY_L,             tgui::Event::KeyboardKey::L},
-                        {KEY_M,             tgui::Event::KeyboardKey::M},
-                        {KEY_N,             tgui::Event::KeyboardKey::N},
-                        {KEY_O,             tgui::Event::KeyboardKey::O},
-                        {KEY_P,             tgui::Event::KeyboardKey::P},
-                        {KEY_Q,             tgui::Event::KeyboardKey::Q},
-                        {KEY_R,             tgui::Event::KeyboardKey::R},
-                        {KEY_S,             tgui::Event::KeyboardKey::S},
-                        {KEY_T,             tgui::Event::KeyboardKey::T},
-                        {KEY_U,             tgui::Event::KeyboardKey::U},
-                        {KEY_V,             tgui::Event::KeyboardKey::V},
-                        {KEY_W,             tgui::Event::KeyboardKey::W},
-                        {KEY_X,             tgui::Event::KeyboardKey::X},
-                        {KEY_Y,             tgui::Event::KeyboardKey::Y},
-                        {KEY_Z,             tgui::Event::KeyboardKey::Z},
-                        {KEY_ZERO,          tgui::Event::KeyboardKey::Num0},
-                        {KEY_ONE,           tgui::Event::KeyboardKey::Num1},
-                        {KEY_TWO,           tgui::Event::KeyboardKey::Num2},
-                        {KEY_THREE,         tgui::Event::KeyboardKey::Num3},
-                        {KEY_FOUR,          tgui::Event::KeyboardKey::Num4},
-                        {KEY_FIVE,          tgui::Event::KeyboardKey::Num5},
-                        {KEY_SIX,           tgui::Event::KeyboardKey::Num6},
-                        {KEY_SEVEN,         tgui::Event::KeyboardKey::Num7},
-                        {KEY_EIGHT,         tgui::Event::KeyboardKey::Num8},
-                        {KEY_NINE,          tgui::Event::KeyboardKey::Num9},
-                        {KEY_ESCAPE,        tgui::Event::KeyboardKey::Escape},
-                        {KEY_LEFT_CONTROL,  tgui::Event::KeyboardKey::LControl},
-                        {KEY_LEFT_SHIFT,    tgui::Event::KeyboardKey::LShift},
-                        {KEY_LEFT_ALT,      tgui::Event::KeyboardKey::LAlt},
-                        {KEY_LEFT_SUPER,    tgui::Event::KeyboardKey::LSystem},
-                        {KEY_RIGHT_CONTROL, tgui::Event::KeyboardKey::RControl},
-                        {KEY_RIGHT_SHIFT,   tgui::Event::KeyboardKey::RShift},
-                        {KEY_RIGHT_ALT,     tgui::Event::KeyboardKey::RAlt},
-                        {KEY_RIGHT_SUPER,   tgui::Event::KeyboardKey::RSystem},
-                        {KEY_LEFT_BRACKET,  tgui::Event::KeyboardKey::LBracket},
-                        {KEY_RIGHT_BRACKET, tgui::Event::KeyboardKey::RBracket},
-                        {KEY_SEMICOLON,     tgui::Event::KeyboardKey::Semicolon},
-                        {KEY_COMMA,         tgui::Event::KeyboardKey::Comma},
-                        {KEY_PERIOD,        tgui::Event::KeyboardKey::Period},
-                        {KEY_APOSTROPHE,    tgui::Event::KeyboardKey::Quote},
-                        {KEY_SLASH,         tgui::Event::KeyboardKey::Slash},
-                        {KEY_BACKSLASH,     tgui::Event::KeyboardKey::Backslash},
-                        {KEY_EQUAL,         tgui::Event::KeyboardKey::Equal},
-                        {KEY_MINUS,         tgui::Event::KeyboardKey::Minus},
-                        {KEY_SPACE,         tgui::Event::KeyboardKey::Space},
-                        {KEY_ENTER,         tgui::Event::KeyboardKey::Enter},
-                        {KEY_BACKSPACE,     tgui::Event::KeyboardKey::Backspace},
-                        {KEY_TAB,           tgui::Event::KeyboardKey::Tab},
-                        {KEY_PAGE_UP,       tgui::Event::KeyboardKey::PageUp},
-                        {KEY_PAGE_DOWN,     tgui::Event::KeyboardKey::PageDown},
-                        {KEY_END,           tgui::Event::KeyboardKey::End},
-                        {KEY_HOME,          tgui::Event::KeyboardKey::Home},
-                        {KEY_INSERT,        tgui::Event::KeyboardKey::Insert},
-                        {KEY_DELETE,        tgui::Event::KeyboardKey::Delete},
-                        {KEY_KP_ADD,        tgui::Event::KeyboardKey::Add},
-                        {KEY_KP_SUBTRACT,   tgui::Event::KeyboardKey::Subtract},
-                        {KEY_KP_MULTIPLY,   tgui::Event::KeyboardKey::Multiply},
-                        {KEY_KP_DIVIDE,     tgui::Event::KeyboardKey::Divide},
-                        {KEY_KP_DECIMAL,    tgui::Event::KeyboardKey::Period},
-                        {KEY_KP_EQUAL,      tgui::Event::KeyboardKey::Equal},
-                        {KEY_LEFT,          tgui::Event::KeyboardKey::Left},
-                        {KEY_RIGHT,         tgui::Event::KeyboardKey::Right},
-                        {KEY_UP,            tgui::Event::KeyboardKey::Up},
-                        {KEY_DOWN,          tgui::Event::KeyboardKey::Down},
-                        {KEY_KP_0,          tgui::Event::KeyboardKey::Numpad0},
-                        {KEY_KP_1,          tgui::Event::KeyboardKey::Numpad1},
-                        {KEY_KP_2,          tgui::Event::KeyboardKey::Numpad2},
-                        {KEY_KP_3,          tgui::Event::KeyboardKey::Numpad3},
-                        {KEY_KP_4,          tgui::Event::KeyboardKey::Numpad4},
-                        {KEY_KP_5,          tgui::Event::KeyboardKey::Numpad5},
-                        {KEY_KP_6,          tgui::Event::KeyboardKey::Numpad6},
-                        {KEY_KP_7,          tgui::Event::KeyboardKey::Numpad7},
-                        {KEY_KP_8,          tgui::Event::KeyboardKey::Numpad8},
-                        {KEY_KP_9,          tgui::Event::KeyboardKey::Numpad9},
-                        {KEY_F1,            tgui::Event::KeyboardKey::F1},
-                        {KEY_F2,            tgui::Event::KeyboardKey::F2},
-                        {KEY_F3,            tgui::Event::KeyboardKey::F3},
-                        {KEY_F4,            tgui::Event::KeyboardKey::F4},
-                        {KEY_F5,            tgui::Event::KeyboardKey::F5},
-                        {KEY_F6,            tgui::Event::KeyboardKey::F6},
-                        {KEY_F7,            tgui::Event::KeyboardKey::F7},
-                        {KEY_F8,            tgui::Event::KeyboardKey::F8},
-                        {KEY_F9,            tgui::Event::KeyboardKey::F9},
-                        {KEY_F10,           tgui::Event::KeyboardKey::F10},
-                        {KEY_F11,           tgui::Event::KeyboardKey::F11},
-                        {KEY_F12,           tgui::Event::KeyboardKey::F12},
-                        {KEY_PAUSE,         tgui::Event::KeyboardKey::Pause}
-                    }};
+                    std::array<std::pair<int32_t, tgui::Event::KeyboardKey>, 98> keys = {
+                        {{KEY_A, tgui::Event::KeyboardKey::A},
+                         {KEY_B, tgui::Event::KeyboardKey::B},
+                         {KEY_C, tgui::Event::KeyboardKey::C},
+                         {KEY_D, tgui::Event::KeyboardKey::D},
+                         {KEY_E, tgui::Event::KeyboardKey::E},
+                         {KEY_F, tgui::Event::KeyboardKey::F},
+                         {KEY_G, tgui::Event::KeyboardKey::G},
+                         {KEY_H, tgui::Event::KeyboardKey::H},
+                         {KEY_I, tgui::Event::KeyboardKey::I},
+                         {KEY_J, tgui::Event::KeyboardKey::J},
+                         {KEY_K, tgui::Event::KeyboardKey::K},
+                         {KEY_L, tgui::Event::KeyboardKey::L},
+                         {KEY_M, tgui::Event::KeyboardKey::M},
+                         {KEY_N, tgui::Event::KeyboardKey::N},
+                         {KEY_O, tgui::Event::KeyboardKey::O},
+                         {KEY_P, tgui::Event::KeyboardKey::P},
+                         {KEY_Q, tgui::Event::KeyboardKey::Q},
+                         {KEY_R, tgui::Event::KeyboardKey::R},
+                         {KEY_S, tgui::Event::KeyboardKey::S},
+                         {KEY_T, tgui::Event::KeyboardKey::T},
+                         {KEY_U, tgui::Event::KeyboardKey::U},
+                         {KEY_V, tgui::Event::KeyboardKey::V},
+                         {KEY_W, tgui::Event::KeyboardKey::W},
+                         {KEY_X, tgui::Event::KeyboardKey::X},
+                         {KEY_Y, tgui::Event::KeyboardKey::Y},
+                         {KEY_Z, tgui::Event::KeyboardKey::Z},
+                         {KEY_ZERO, tgui::Event::KeyboardKey::Num0},
+                         {KEY_ONE, tgui::Event::KeyboardKey::Num1},
+                         {KEY_TWO, tgui::Event::KeyboardKey::Num2},
+                         {KEY_THREE, tgui::Event::KeyboardKey::Num3},
+                         {KEY_FOUR, tgui::Event::KeyboardKey::Num4},
+                         {KEY_FIVE, tgui::Event::KeyboardKey::Num5},
+                         {KEY_SIX, tgui::Event::KeyboardKey::Num6},
+                         {KEY_SEVEN, tgui::Event::KeyboardKey::Num7},
+                         {KEY_EIGHT, tgui::Event::KeyboardKey::Num8},
+                         {KEY_NINE, tgui::Event::KeyboardKey::Num9},
+                         {KEY_ESCAPE, tgui::Event::KeyboardKey::Escape},
+                         {KEY_LEFT_CONTROL, tgui::Event::KeyboardKey::LControl},
+                         {KEY_LEFT_SHIFT, tgui::Event::KeyboardKey::LShift},
+                         {KEY_LEFT_ALT, tgui::Event::KeyboardKey::LAlt},
+                         {KEY_LEFT_SUPER, tgui::Event::KeyboardKey::LSystem},
+                         {KEY_RIGHT_CONTROL, tgui::Event::KeyboardKey::RControl},
+                         {KEY_RIGHT_SHIFT, tgui::Event::KeyboardKey::RShift},
+                         {KEY_RIGHT_ALT, tgui::Event::KeyboardKey::RAlt},
+                         {KEY_RIGHT_SUPER, tgui::Event::KeyboardKey::RSystem},
+                         {KEY_LEFT_BRACKET, tgui::Event::KeyboardKey::LBracket},
+                         {KEY_RIGHT_BRACKET, tgui::Event::KeyboardKey::RBracket},
+                         {KEY_SEMICOLON, tgui::Event::KeyboardKey::Semicolon},
+                         {KEY_COMMA, tgui::Event::KeyboardKey::Comma},
+                         {KEY_PERIOD, tgui::Event::KeyboardKey::Period},
+                         {KEY_APOSTROPHE, tgui::Event::KeyboardKey::Quote},
+                         {KEY_SLASH, tgui::Event::KeyboardKey::Slash},
+                         {KEY_BACKSLASH, tgui::Event::KeyboardKey::Backslash},
+                         {KEY_EQUAL, tgui::Event::KeyboardKey::Equal},
+                         {KEY_MINUS, tgui::Event::KeyboardKey::Minus},
+                         {KEY_SPACE, tgui::Event::KeyboardKey::Space},
+                         {KEY_ENTER, tgui::Event::KeyboardKey::Enter},
+                         {KEY_BACKSPACE, tgui::Event::KeyboardKey::Backspace},
+                         {KEY_TAB, tgui::Event::KeyboardKey::Tab},
+                         {KEY_PAGE_UP, tgui::Event::KeyboardKey::PageUp},
+                         {KEY_PAGE_DOWN, tgui::Event::KeyboardKey::PageDown},
+                         {KEY_END, tgui::Event::KeyboardKey::End},
+                         {KEY_HOME, tgui::Event::KeyboardKey::Home},
+                         {KEY_INSERT, tgui::Event::KeyboardKey::Insert},
+                         {KEY_DELETE, tgui::Event::KeyboardKey::Delete},
+                         {KEY_KP_ADD, tgui::Event::KeyboardKey::Add},
+                         {KEY_KP_SUBTRACT, tgui::Event::KeyboardKey::Subtract},
+                         {KEY_KP_MULTIPLY, tgui::Event::KeyboardKey::Multiply},
+                         {KEY_KP_DIVIDE, tgui::Event::KeyboardKey::Divide},
+                         {KEY_KP_DECIMAL, tgui::Event::KeyboardKey::Period},
+                         {KEY_KP_EQUAL, tgui::Event::KeyboardKey::Equal},
+                         {KEY_LEFT, tgui::Event::KeyboardKey::Left},
+                         {KEY_RIGHT, tgui::Event::KeyboardKey::Right},
+                         {KEY_UP, tgui::Event::KeyboardKey::Up},
+                         {KEY_DOWN, tgui::Event::KeyboardKey::Down},
+                         {KEY_KP_0, tgui::Event::KeyboardKey::Numpad0},
+                         {KEY_KP_1, tgui::Event::KeyboardKey::Numpad1},
+                         {KEY_KP_2, tgui::Event::KeyboardKey::Numpad2},
+                         {KEY_KP_3, tgui::Event::KeyboardKey::Numpad3},
+                         {KEY_KP_4, tgui::Event::KeyboardKey::Numpad4},
+                         {KEY_KP_5, tgui::Event::KeyboardKey::Numpad5},
+                         {KEY_KP_6, tgui::Event::KeyboardKey::Numpad6},
+                         {KEY_KP_7, tgui::Event::KeyboardKey::Numpad7},
+                         {KEY_KP_8, tgui::Event::KeyboardKey::Numpad8},
+                         {KEY_KP_9, tgui::Event::KeyboardKey::Numpad9},
+                         {KEY_F1, tgui::Event::KeyboardKey::F1},
+                         {KEY_F2, tgui::Event::KeyboardKey::F2},
+                         {KEY_F3, tgui::Event::KeyboardKey::F3},
+                         {KEY_F4, tgui::Event::KeyboardKey::F4},
+                         {KEY_F5, tgui::Event::KeyboardKey::F5},
+                         {KEY_F6, tgui::Event::KeyboardKey::F6},
+                         {KEY_F7, tgui::Event::KeyboardKey::F7},
+                         {KEY_F8, tgui::Event::KeyboardKey::F8},
+                         {KEY_F9, tgui::Event::KeyboardKey::F9},
+                         {KEY_F10, tgui::Event::KeyboardKey::F10},
+                         {KEY_F11, tgui::Event::KeyboardKey::F11},
+                         {KEY_F12, tgui::Event::KeyboardKey::F12},
+                         {KEY_PAUSE, tgui::Event::KeyboardKey::Pause}}};
 
                     unsigned int nrKeysRequiredHandling = 0;
                     for (auto pair : keys)
                     {
                         bool requiresHandling = true;
-                        if ((pair.first == KEY_LEFT_ALT) || (pair.first == KEY_RIGHT_ALT)
-                         || (pair.first == KEY_LEFT_CONTROL) || (pair.first == KEY_RIGHT_CONTROL)
-                         || (pair.first == KEY_LEFT_SHIFT) || (pair.first == KEY_RIGHT_SHIFT)
-                         || (pair.first == KEY_LEFT_SUPER) || (pair.first == KEY_RIGHT_SUPER))
+                        if ((pair.first == KEY_LEFT_ALT) || (pair.first == KEY_RIGHT_ALT) || (pair.first == KEY_LEFT_CONTROL)
+                            || (pair.first == KEY_RIGHT_CONTROL) || (pair.first == KEY_LEFT_SHIFT) || (pair.first == KEY_RIGHT_SHIFT)
+                            || (pair.first == KEY_LEFT_SUPER) || (pair.first == KEY_RIGHT_SUPER))
                         {
                             requiresHandling = false;
                         }

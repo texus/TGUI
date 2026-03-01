@@ -27,18 +27,19 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/TextureData.hpp>
-#include <TGUI/Vector2.hpp>
-#include <TGUI/String.hpp>
 #include <TGUI/Global.hpp>
+
 #include <TGUI/Color.hpp>
 #include <TGUI/Rect.hpp>
+#include <TGUI/String.hpp>
+#include <TGUI/TextureData.hpp>
+#include <TGUI/Vector2.hpp>
 
 #include <functional>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-    #include <SFML/Graphics/Texture.hpp>
     #include <SFML/Graphics/Shader.hpp>
+    #include <SFML/Graphics/Texture.hpp>
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +52,6 @@ namespace tgui
     class TGUI_API Texture
     {
     public:
-
         using CallbackFunc = std::function<void(std::shared_ptr<TextureData>)>;
         using BackendTextureLoaderFunc = std::function<bool(BackendTexture&, const String&, bool smooth)>;
         using TextureLoaderFunc = std::function<std::shared_ptr<TextureData>(Texture&, const String&, bool smooth)>;
@@ -74,8 +74,8 @@ namespace tgui
         Texture(const char* id,
                 const UIntRect& partRect = UIntRect(0, 0, 0, 0),
                 const UIntRect& middlePart = UIntRect(0, 0, 0, 0),
-                bool smooth = m_defaultSmooth)
-            : Texture(String{id}, partRect, middlePart, smooth)
+                bool smooth = m_defaultSmooth) :
+            Texture(String{id}, partRect, middlePart, smooth)
         {
         }
 
@@ -151,10 +151,7 @@ namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void load(const String& id,
-                  const UIntRect& partRect = {},
-                  const UIntRect& middleRect = {},
-                  bool smooth = m_defaultSmooth);
+        void load(const String& id, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = m_defaultSmooth);
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !defined(TGUI_REMOVE_DEPRECATED_CODE)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,9 +169,7 @@ namespace tgui
         ///             make it more clear that this is a memory-intensive function that should be avoided.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use loadFromPixelData(texture.getSize(), texture.copyToImage().getPixelsPtr()) instead")
-        void load(const sf::Texture& texture,
-                  const UIntRect& partRect = {},
-                  const UIntRect& middleRect = {});
+        void load(const sf::Texture& texture, const UIntRect& partRect = {}, const UIntRect& middleRect = {});
 #endif
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the texture from memory (data in memory should contain the entire file, not just the pixels)
@@ -187,7 +182,11 @@ namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadFromMemory(const std::uint8_t* data, std::size_t dataSize, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = m_defaultSmooth);
+        void loadFromMemory(const std::uint8_t* data,
+                            std::size_t dataSize,
+                            const UIntRect& partRect = {},
+                            const UIntRect& middleRect = {},
+                            bool smooth = m_defaultSmooth);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the texture from an array of 32-bits RGBA pixels
@@ -202,7 +201,11 @@ namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadFromPixelData(Vector2u size, const std::uint8_t* pixels, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = m_defaultSmooth);
+        void loadFromPixelData(Vector2u size,
+                               const std::uint8_t* pixels,
+                               const UIntRect& partRect = {},
+                               const UIntRect& middleRect = {},
+                               bool smooth = m_defaultSmooth);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the texture from a base64 string
@@ -216,7 +219,10 @@ namespace tgui
         ///
         /// @throw Exception when loading failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadFromBase64(CharStringView imageAsBase64, const UIntRect& partRect = {}, const UIntRect& middleRect = {}, bool smooth = m_defaultSmooth);
+        void loadFromBase64(CharStringView imageAsBase64,
+                            const UIntRect& partRect = {},
+                            const UIntRect& middleRect = {},
+                            bool smooth = m_defaultSmooth);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the id that was used to load the texture (for the default loader, the id is the filename)
@@ -433,8 +439,8 @@ namespace tgui
         TGUI_NODISCARD static const TextureLoaderFunc& getTextureLoader();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the texture data
         ///
@@ -445,8 +451,8 @@ namespace tgui
         void setTextureData(std::shared_ptr<TextureData> data, const UIntRect& partRect, const UIntRect& middleRect);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
         sf::Shader* m_shader = nullptr;
 #endif
@@ -456,8 +462,8 @@ namespace tgui
 
         UIntRect m_partRect;
         UIntRect m_middleRect;
-        String   m_id;
-        bool     m_scaledNineSlice = false;
+        String m_id;
+        bool m_scaledNineSlice = false;
 
         CallbackFunc m_copyCallback;
         CallbackFunc m_destructCallback;
@@ -469,7 +475,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

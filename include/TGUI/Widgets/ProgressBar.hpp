@@ -26,8 +26,8 @@
 #define TGUI_PROGRESS_BAR_HPP
 
 #include <TGUI/Renderers/ProgressBarRenderer.hpp>
-#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -39,8 +39,7 @@ namespace tgui
     class TGUI_API ProgressBar : public ClickableWidget
     {
     public:
-
-        using Ptr = std::shared_ptr<ProgressBar>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<ProgressBar>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ProgressBar>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ProgressBar"; //!< Type name of the widget
@@ -52,10 +51,10 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         enum class FillDirection : std::uint8_t
         {
-            LeftToRight,  //!< Start filling at the left side and go to the right
-            RightToLeft,  //!< Start filling at the right side and go to the left
-            TopToBottom,  //!< Start filling at the top an go downward
-            BottomToTop   //!< Start filling at the bottom and go upward
+            LeftToRight, //!< Start filling at the left side and go to the right
+            RightToLeft, //!< Start filling at the right side and go to the left
+            TopToBottom, //!< Start filling at the top an go downward
+            BottomToTop  //!< Start filling at the bottom and go upward
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,8 +210,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -268,14 +267,14 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalUInt onValueChange = {"ValueChanged"}; //!< Value of the progress bar changed. Optional parameter: new value
-        Signal     onFull        = {"Full"};         //!< Value of the progress bar changed and the progress bar became full
+        Signal onFull = {"Full"};                    //!< Value of the progress bar changed and the progress bar became full
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         unsigned int m_minimum = 0;
         unsigned int m_maximum = 100;
         unsigned int m_value = 0;
@@ -293,13 +292,13 @@ namespace tgui
 
         // Cached renderer properties
         Borders m_bordersCached;
-        Color   m_borderColorCached;
-        Color   m_backgroundColorCached;
-        Color   m_fillColorCached;
+        Color m_borderColorCached;
+        Color m_backgroundColorCached;
+        Color m_fillColorCached;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

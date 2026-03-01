@@ -25,10 +25,10 @@
 #ifndef TGUI_BACKEND_RENDERER_GLES2_HPP
 #define TGUI_BACKEND_RENDERER_GLES2_HPP
 
-#include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
-#include <TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp>
-#include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Backend/Renderer/GLES2/BackendRenderTargetGLES2.hpp>
+#include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
+#include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
 
 #include <memory>
 
@@ -42,7 +42,6 @@ namespace tgui
     class TGUI_API BackendRendererGLES2 : public BackendRenderer
     {
     public:
-
         using ContextLoadFuncReturnType = void (*)();
         using ContextLoadFuncType = ContextLoadFuncReturnType (*)(const char* name);
 
@@ -86,11 +85,11 @@ namespace tgui
         TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         int m_maxTextureSize = 0;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -45,10 +45,12 @@ TEST_CASE("[Clipping]")
         gui.add(background);
         background->moveToBack();
 
-        const std::shared_ptr<void> scopeExit(nullptr, [&](void*){
-            gui.setRelativeViewport({0, 0, 1, 1});
-            gui.setRelativeView({0, 0, 1, 1});
-        });
+        const std::shared_ptr<void> scopeExit(nullptr,
+                                              [&](void*)
+                                              {
+                                                  gui.setRelativeViewport({0, 0, 1, 1});
+                                                  gui.setRelativeView({0, 0, 1, 1});
+                                              });
         gui.setRelativeViewport({0.1f, 0.2f, 0.8f, 0.6f});
         gui.setAbsoluteView({375, 300, 80, 40});
 
@@ -72,10 +74,12 @@ TEST_CASE("[Clipping]")
         gui.add(editBox);
         editBox->setCaretPosition(0);
 
-        const std::shared_ptr<void> scopeExit(nullptr, [&](void*){
-            gui.setRelativeViewport({0, 0, 1, 1});
-            gui.setRelativeView({0, 0, 1, 1});
-        });
+        const std::shared_ptr<void> scopeExit(nullptr,
+                                              [&](void*)
+                                              {
+                                                  gui.setRelativeViewport({0, 0, 1, 1});
+                                                  gui.setRelativeView({0, 0, 1, 1});
+                                              });
         gui.setRelativeViewport({0.1f, 0.2f, 0.7f, 0.76f});
         gui.setAbsoluteView({250, 160, 140, 57});
 

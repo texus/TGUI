@@ -77,7 +77,6 @@ private:
     static tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget);
 
 private:
-
     GuiBuilder* m_guiBuilder;
     tgui::ChildWindow::Ptr m_formWindow;
     tgui::ScrollablePanel::Ptr m_scrollablePanel;

@@ -25,10 +25,10 @@
 #ifndef TGUI_EDIT_BOX_HPP
 #define TGUI_EDIT_BOX_HPP
 
-#include <TGUI/Widgets/ClickableWidget.hpp>
-#include <TGUI/Renderers/EditBoxRenderer.hpp>
 #include <TGUI/Rect.hpp>
+#include <TGUI/Renderers/EditBoxRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 
 #include <regex>
 
@@ -45,8 +45,7 @@ namespace tgui
     class TGUI_API EditBox : public ClickableWidget
     {
     public:
-
-        using Ptr = std::shared_ptr<EditBox>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<EditBox>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const EditBox>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "EditBox"; //!< Type name of the widget
@@ -395,8 +394,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -495,8 +494,8 @@ namespace tgui
         void emitReturnOrUnfocus(const String& text);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Handles "Ctrl+Backspace" key press (or equivalent on macOS)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -553,25 +552,27 @@ namespace tgui
         void moveCaretWordEnd();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
-        SignalString             onTextChange          = {"TextChanged"};          //!< The text was changed. Optional parameter: new text
-        SignalString             onReturnKeyPress      = {"ReturnKeyPressed"};     //!< The return key was pressed. Optional parameter: text in the edit box
-        SignalString             onReturnOrUnfocus     = {"ReturnOrUnfocused"};    //!< The return key was pressed or the edit box was unfocused. Optional parameter: text in the edit box
-        SignalTyped<std::size_t> onCaretPositionChange = {"CaretPositionChanged"}; //!< The caret's position was changed. Optional parameter: new caret position
+    public:
+        SignalString onTextChange = {"TextChanged"};          //!< The text was changed. Optional parameter: new text
+        SignalString onReturnKeyPress = {"ReturnKeyPressed"}; //!< The return key was pressed. Optional parameter: text in the edit box
+        SignalString onReturnOrUnfocus = {
+            "ReturnOrUnfocused"}; //!< The return key was pressed or the edit box was unfocused. Optional parameter: text in the edit box
+        SignalTyped<std::size_t> onCaretPositionChange = {
+            "CaretPositionChanged"}; //!< The caret's position was changed. Optional parameter: new caret position
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         // Is the caret visible or not?
-        bool          m_caretVisible = true;
+        bool m_caretVisible = true;
 
         // When this boolean is true then you can no longer add text when the EditBox is full.
         // Changing it to false will allow you to scroll the text (default).
         // You can change the boolean with the setTextWidthLimited(bool) function.
-        bool          m_limitTextWidth = false;
+        bool m_limitTextWidth = false;
 
-        bool          m_readOnly = false;
+        bool m_readOnly = false;
 
         // The text inside the edit box
         String m_text;
@@ -584,25 +585,25 @@ namespace tgui
         HorizontalAlignment m_textAlignment = HorizontalAlignment::Left;
 
         // The selection
-        std::size_t   m_selChars = 0;
-        std::size_t   m_selStart = 0;
-        std::size_t   m_selEnd = 0;
+        std::size_t m_selChars = 0;
+        std::size_t m_selStart = 0;
+        std::size_t m_selEnd = 0;
 
         // The password character
-        char32_t      m_passwordChar = '\0';
+        char32_t m_passwordChar = '\0';
 
         // The maximum allowed characters.
         // Zero by default, meaning no limit.
-        unsigned int  m_maxChars = 0;
+        unsigned int m_maxChars = 0;
 
         // When the text width is not limited, you can scroll the edit box and only a part will be visible.
-        unsigned int  m_textCropPosition = 0;
+        unsigned int m_textCropPosition = 0;
 
         // The rectangle behind the selected text
-        FloatRect     m_selectedTextBackground;
+        FloatRect m_selectedTextBackground;
 
         // The blinking caret
-        FloatRect     m_caret = {0, 0, 1, 0};
+        FloatRect m_caret = {0, 0, 1, 0};
 
         // Is there a possibility that the user is going to double click?
         bool m_possibleDoubleClick = false;
@@ -623,23 +624,23 @@ namespace tgui
         // Cached renderer properties
         Borders m_bordersCached;
         Padding m_paddingCached;
-        Color   m_borderColorCached;
-        Color   m_borderColorHoverCached;
-        Color   m_borderColorDisabledCached;
-        Color   m_borderColorFocusedCached;
-        Color   m_backgroundColorCached;
-        Color   m_backgroundColorHoverCached;
-        Color   m_backgroundColorDisabledCached;
-        Color   m_backgroundColorFocusedCached;
-        Color   m_caretColorCached;
-        Color   m_caretColorHoverCached;
-        Color   m_caretColorFocusedCached;
-        Color   m_selectedTextBackgroundColorCached;
-        float   m_roundedBorderRadiusCached = 0;
+        Color m_borderColorCached;
+        Color m_borderColorHoverCached;
+        Color m_borderColorDisabledCached;
+        Color m_borderColorFocusedCached;
+        Color m_backgroundColorCached;
+        Color m_backgroundColorHoverCached;
+        Color m_backgroundColorDisabledCached;
+        Color m_backgroundColorFocusedCached;
+        Color m_caretColorCached;
+        Color m_caretColorHoverCached;
+        Color m_caretColorFocusedCached;
+        Color m_selectedTextBackgroundColorCached;
+        float m_roundedBorderRadiusCached = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         // Used to prevent emitting onReturnOrUnfocus twice when unfocusing the edit box inside the callback function.
         bool m_onReturnOrUnfocusEmitted = false;
 
@@ -647,7 +648,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

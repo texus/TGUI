@@ -93,9 +93,7 @@ namespace
         const float pi = 3.14159265359f;
 #endif
 
-        auto length = [](tgui::Vector2f x) {
-            return std::sqrt((x.x * x.x) + (x.y * x.y));
-        };
+        auto length = [](tgui::Vector2f x) { return std::sqrt((x.x * x.x) + (x.y * x.y)); };
 
         const float s = length(position);
 
@@ -164,11 +162,11 @@ namespace
 
     TGUI_NODISCARD Vector2f colorToPosition(tgui::Color color)
     {
-#if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
+    #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
         const float pi = std::numbers::pi_v<float>;
-#else
+    #else
         const float pi = 3.14159265359f;
-#endif
+    #endif
 
         const ColorHSV hsv = rgb2hsv(color);
 
@@ -221,17 +219,17 @@ namespace tgui
                     const Color pixelColor = calculateColor(position, 1, 1);
                     const unsigned int pixelIndex = ((y * colorWheelSize) + x) * 4;
                     pixels[pixelIndex] = pixelColor.getRed();
-                    pixels[pixelIndex+1] = pixelColor.getGreen();
-                    pixels[pixelIndex+2] = pixelColor.getBlue();
-                    pixels[pixelIndex+3] = pixelColor.getAlpha();
+                    pixels[pixelIndex + 1] = pixelColor.getGreen();
+                    pixels[pixelIndex + 2] = pixelColor.getBlue();
+                    pixels[pixelIndex + 3] = pixelColor.getAlpha();
                 }
                 else // Pixel lies outside the circle, draw a transparent pixel
                 {
                     const unsigned int pixelIndex = ((y * colorWheelSize) + x) * 4;
                     pixels[pixelIndex] = 0;
-                    pixels[pixelIndex+1] = 0;
-                    pixels[pixelIndex+2] = 0;
-                    pixels[pixelIndex+3] = 0;
+                    pixels[pixelIndex + 1] = 0;
+                    pixels[pixelIndex + 2] = 0;
+                    pixels[pixelIndex + 3] = 0;
                 }
             }
         }
@@ -400,23 +398,23 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPickerRenderer *ColorPicker::getSharedRenderer()
+    ColorPickerRenderer* ColorPicker::getSharedRenderer()
     {
-        return downcast<ColorPickerRenderer *>(Widget::getSharedRenderer());
+        return downcast<ColorPickerRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    const ColorPickerRenderer *ColorPicker::getSharedRenderer() const
+    const ColorPickerRenderer* ColorPicker::getSharedRenderer() const
     {
-        return downcast<const ColorPickerRenderer *>(Widget::getSharedRenderer());
+        return downcast<const ColorPickerRenderer*>(Widget::getSharedRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ColorPickerRenderer *ColorPicker::getRenderer()
+    ColorPickerRenderer* ColorPicker::getRenderer()
     {
-        return downcast<ColorPickerRenderer *>(Widget::getRenderer());
+        return downcast<ColorPickerRenderer*>(Widget::getRenderer());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -458,9 +456,7 @@ namespace tgui
         {
             m_colorRead = true;
 
-            auto length = [](Vector2f vec) {
-                return std::sqrt((vec.x * vec.x) + (vec.y * vec.y));
-            };
+            auto length = [](Vector2f vec) { return std::sqrt((vec.x * vec.x) + (vec.y * vec.y)); };
 
             Vector2f position = {(pos.x - m_colorWheelSprite.getPosition().x) / m_colorWheelSprite.getSize().x,
                                  (pos.y - m_colorWheelSprite.getPosition().y) / m_colorWheelSprite.getSize().y};
@@ -527,58 +523,51 @@ namespace tgui
         m_value->setPosition((2 * m_colorWheelSprite.getPosition().x) + colorWheelSize, 10);
 
         get<Label>("#TGUI_INTERNAL$ColorPickerLR#")->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10", 10);
-        get<Label>("#TGUI_INTERNAL$ColorPickerLG#")->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10",
-                                                                 "#TGUI_INTERNAL$ColorPickerLR#.bottom + 10");
-        get<Label>("#TGUI_INTERNAL$ColorPickerLB#")->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10",
-                                                                 "#TGUI_INTERNAL$ColorPickerLG#.bottom + 10");
-        get<Label>("#TGUI_INTERNAL$ColorPickerLA#")->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10",
-                                                                 "#TGUI_INTERNAL$ColorPickerLB#.bottom + 10");
+        get<Label>("#TGUI_INTERNAL$ColorPickerLG#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10", "#TGUI_INTERNAL$ColorPickerLR#.bottom + 10");
+        get<Label>("#TGUI_INTERNAL$ColorPickerLB#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10", "#TGUI_INTERNAL$ColorPickerLG#.bottom + 10");
+        get<Label>("#TGUI_INTERNAL$ColorPickerLA#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerValue#.right + 10", "#TGUI_INTERNAL$ColorPickerLB#.bottom + 10");
 
         m_red->setPosition("#TGUI_INTERNAL$ColorPickerLR#.right + 10", "#TGUI_INTERNAL$ColorPickerLR#.top");
         m_green->setPosition("#TGUI_INTERNAL$ColorPickerLR#.right + 10", "#TGUI_INTERNAL$ColorPickerLG#.top");
         m_blue->setPosition("#TGUI_INTERNAL$ColorPickerLR#.right + 10", "#TGUI_INTERNAL$ColorPickerLB#.top");
         m_alpha->setPosition("#TGUI_INTERNAL$ColorPickerLR#.right + 10", "#TGUI_INTERNAL$ColorPickerLA#.top");
 
-        get<EditBox>("#TGUI_INTERNAL$ColorPickerRedBox#")->setPosition("#TGUI_INTERNAL$ColorPickerRed#.right + 10",
-                                                                       "#TGUI_INTERNAL$ColorPickerRed#.top");
-        get<EditBox>("#TGUI_INTERNAL$ColorPickerGreenBox#")->setPosition("#TGUI_INTERNAL$ColorPickerGreen#.right + 10",
-                                                                         "#TGUI_INTERNAL$ColorPickerGreen#.top");
-        get<EditBox>("#TGUI_INTERNAL$ColorPickerBlueBox#")->setPosition("#TGUI_INTERNAL$ColorPickerBlue#.right + 10",
-                                                                        "#TGUI_INTERNAL$ColorPickerBlue#.top");
-        get<EditBox>("#TGUI_INTERNAL$ColorPickerAlphaBox#")->setPosition("#TGUI_INTERNAL$ColorPickerAlpha#.right + 10",
-                                                                         "#TGUI_INTERNAL$ColorPickerAlpha#.top");
+        get<EditBox>("#TGUI_INTERNAL$ColorPickerRedBox#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerRed#.right + 10", "#TGUI_INTERNAL$ColorPickerRed#.top");
+        get<EditBox>("#TGUI_INTERNAL$ColorPickerGreenBox#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerGreen#.right + 10", "#TGUI_INTERNAL$ColorPickerGreen#.top");
+        get<EditBox>("#TGUI_INTERNAL$ColorPickerBlueBox#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerBlue#.right + 10", "#TGUI_INTERNAL$ColorPickerBlue#.top");
+        get<EditBox>("#TGUI_INTERNAL$ColorPickerAlphaBox#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerAlpha#.right + 10", "#TGUI_INTERNAL$ColorPickerAlpha#.top");
 
         auto labelLast = get<Label>("#TGUI_INTERNAL$ColorPickerLabelLast#");
         labelLast->setSize(70, 20);
-        labelLast->setPosition("#TGUI_INTERNAL$ColorPickerLA#.left",
-                               "#TGUI_INTERNAL$ColorPickerLast#.top");
+        labelLast->setPosition("#TGUI_INTERNAL$ColorPickerLA#.left", "#TGUI_INTERNAL$ColorPickerLast#.top");
 
         auto labelCurrent = get<Label>("#TGUI_INTERNAL$ColorPickerLabelCurrent#");
         labelCurrent->setSize(70, 20);
-        labelCurrent->setPosition("#TGUI_INTERNAL$ColorPickerLA#.left",
-                                  "#TGUI_INTERNAL$ColorPickerCurrent#.top");
+        labelCurrent->setPosition("#TGUI_INTERNAL$ColorPickerLA#.left", "#TGUI_INTERNAL$ColorPickerCurrent#.top");
 
-        m_last->setPosition("#TGUI_INTERNAL$ColorPickerLabelLast#.right + 10",
-                            "#TGUI_INTERNAL$ColorPickerLA#.bottom + 10");
-        m_current->setPosition("#TGUI_INTERNAL$ColorPickerLabelCurrent#.right + 10",
-                               "#TGUI_INTERNAL$ColorPickerLast#.bottom");
+        m_last->setPosition("#TGUI_INTERNAL$ColorPickerLabelLast#.right + 10", "#TGUI_INTERNAL$ColorPickerLA#.bottom + 10");
+        m_current->setPosition("#TGUI_INTERNAL$ColorPickerLabelCurrent#.right + 10", "#TGUI_INTERNAL$ColorPickerLast#.bottom");
 
 #ifdef TGUI_SYSTEM_WINDOWS
-        get<Button>("#TGUI_INTERNAL$ColorPickerReset#")->setPosition("#TGUI_INTERNAL$ColorPickerOK#.left - width - 10",
-                                                                     "#TGUI_INTERNAL$ColorPickerCancel#.top");
-        get<Button>("#TGUI_INTERNAL$ColorPickerOK#")->setPosition("#TGUI_INTERNAL$ColorPickerCancel#.left - width - 10",
-                                                                  "#TGUI_INTERNAL$ColorPickerCancel#.top");
-        get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setPosition("&.iw - w - 10",
-                                                                      "&.ih - h - 10");
+        get<Button>("#TGUI_INTERNAL$ColorPickerReset#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerOK#.left - width - 10", "#TGUI_INTERNAL$ColorPickerCancel#.top");
+        get<Button>("#TGUI_INTERNAL$ColorPickerOK#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerCancel#.left - width - 10", "#TGUI_INTERNAL$ColorPickerCancel#.top");
+        get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setPosition("&.iw - w - 10", "&.ih - h - 10");
 #else
-        get<Button>("#TGUI_INTERNAL$ColorPickerReset#")->setPosition("#TGUI_INTERNAL$ColorPickerCancel#.left - width - 10",
-                                                                     "#TGUI_INTERNAL$ColorPickerOK#.top");
-        get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")->setPosition("#TGUI_INTERNAL$ColorPickerOK#.left - width - 10",
-                                                                      "#TGUI_INTERNAL$ColorPickerOK#.top");
-        get<Button>("#TGUI_INTERNAL$ColorPickerOK#")->setPosition("&.iw - w - 10",
-                                                                  "&.ih - h - 10");
+        get<Button>("#TGUI_INTERNAL$ColorPickerReset#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerCancel#.left - width - 10", "#TGUI_INTERNAL$ColorPickerOK#.top");
+        get<Button>("#TGUI_INTERNAL$ColorPickerCancel#")
+            ->setPosition("#TGUI_INTERNAL$ColorPickerOK#.left - width - 10", "#TGUI_INTERNAL$ColorPickerOK#.top");
+        get<Button>("#TGUI_INTERNAL$ColorPickerOK#")->setPosition("&.iw - w - 10", "&.ih - h - 10");
 #endif
-
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -666,13 +655,16 @@ namespace tgui
 
         ChildWindow::load(node, renderers);
 
-        if (!get<Slider>("#TGUI_INTERNAL$ColorPickerRed#") || !get<Slider>("#TGUI_INTERNAL$ColorPickerGreen#") || !get<Slider>("#TGUI_INTERNAL$ColorPickerBlue#")
-         || !get<Slider>("#TGUI_INTERNAL$ColorPickerAlpha#") || !get<Slider>("#TGUI_INTERNAL$ColorPickerValue#") || !get<Panel>("#TGUI_INTERNAL$ColorPickerLast#")
-         || !get<Panel>("#TGUI_INTERNAL$ColorPickerCurrent#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLR#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLG#")
-         || !get<Label>("#TGUI_INTERNAL$ColorPickerLB#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLA#") || !get<EditBox>("#TGUI_INTERNAL$ColorPickerRedBox#")
-         || !get<EditBox>("#TGUI_INTERNAL$ColorPickerGreenBox#") || !get<EditBox>("#TGUI_INTERNAL$ColorPickerBlueBox#") || !get<EditBox>("#TGUI_INTERNAL$ColorPickerAlphaBox#")
-         || !get<Label>("#TGUI_INTERNAL$ColorPickerLabelLast#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLabelCurrent#") || !get<Button>("#TGUI_INTERNAL$ColorPickerReset#")
-         || !get<Button>("#TGUI_INTERNAL$ColorPickerOK#") || !get<Button>("#TGUI_INTERNAL$ColorPickerCancel#"))
+        if (!get<Slider>("#TGUI_INTERNAL$ColorPickerRed#") || !get<Slider>("#TGUI_INTERNAL$ColorPickerGreen#")
+            || !get<Slider>("#TGUI_INTERNAL$ColorPickerBlue#") || !get<Slider>("#TGUI_INTERNAL$ColorPickerAlpha#")
+            || !get<Slider>("#TGUI_INTERNAL$ColorPickerValue#") || !get<Panel>("#TGUI_INTERNAL$ColorPickerLast#")
+            || !get<Panel>("#TGUI_INTERNAL$ColorPickerCurrent#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLR#")
+            || !get<Label>("#TGUI_INTERNAL$ColorPickerLG#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLB#")
+            || !get<Label>("#TGUI_INTERNAL$ColorPickerLA#") || !get<EditBox>("#TGUI_INTERNAL$ColorPickerRedBox#")
+            || !get<EditBox>("#TGUI_INTERNAL$ColorPickerGreenBox#") || !get<EditBox>("#TGUI_INTERNAL$ColorPickerBlueBox#")
+            || !get<EditBox>("#TGUI_INTERNAL$ColorPickerAlphaBox#") || !get<Label>("#TGUI_INTERNAL$ColorPickerLabelLast#")
+            || !get<Label>("#TGUI_INTERNAL$ColorPickerLabelCurrent#") || !get<Button>("#TGUI_INTERNAL$ColorPickerReset#")
+            || !get<Button>("#TGUI_INTERNAL$ColorPickerOK#") || !get<Button>("#TGUI_INTERNAL$ColorPickerCancel#"))
             throw Exception{U"Failed to find all internal child widgets while loading ColorPicker"};
 
         identifyButtonsAndConnect();
@@ -705,10 +697,13 @@ namespace tgui
         m_last = get<Panel>("#TGUI_INTERNAL$ColorPickerLast#");
         m_current = get<Panel>("#TGUI_INTERNAL$ColorPickerCurrent#");
 
-        auto recalculateColor = [this]() {
+        auto recalculateColor = [this]()
+        {
             m_current->getRenderer()->setBackgroundColor(
-                    {static_cast<std::uint8_t>(m_red->getValue()), static_cast<std::uint8_t>(m_green->getValue()),
-                     static_cast<std::uint8_t>(m_blue->getValue()), static_cast<std::uint8_t>(m_alpha->getValue())});
+                {static_cast<std::uint8_t>(m_red->getValue()),
+                 static_cast<std::uint8_t>(m_green->getValue()),
+                 static_cast<std::uint8_t>(m_blue->getValue()),
+                 static_cast<std::uint8_t>(m_alpha->getValue())});
             onColorChange.emit(this, getColor());
         };
 
@@ -730,61 +725,72 @@ namespace tgui
 
         m_red->onValueChange.disconnectAll();
         m_red->onValueChange(
-                       [=](float v) {
-                           redBox->setText(String(v));
-                           recalculateColor();
-                       });
+            [=](float v)
+            {
+                redBox->setText(String(v));
+                recalculateColor();
+            });
 
         m_green->onValueChange.disconnectAll();
         m_green->onValueChange(
-                         [=](float v) {
-                             greenBox->setText(String(v));
-                             recalculateColor();
-                         });
+            [=](float v)
+            {
+                greenBox->setText(String(v));
+                recalculateColor();
+            });
 
         m_blue->onValueChange.disconnectAll();
         m_blue->onValueChange(
-                        [=](float v) {
-                            blueBox->setText(String(v));
-                            recalculateColor();
-                        });
+            [=](float v)
+            {
+                blueBox->setText(String(v));
+                recalculateColor();
+            });
 
         m_alpha->onValueChange.disconnectAll();
         m_alpha->onValueChange(
-                         [=](float v) {
-                             alphaBox->setText(String(v));
-                             recalculateColor();
-                         });
+            [=](float v)
+            {
+                alphaBox->setText(String(v));
+                recalculateColor();
+            });
 
         auto reset = get<Button>("#TGUI_INTERNAL$ColorPickerReset#");
         reset->onPress.disconnectAll();
-        reset->onPress([this]() {
-            const auto color = m_last->getRenderer()->getBackgroundColor();
-            m_red->setValue(color.getRed());
-            m_green->setValue(color.getGreen());
-            m_blue->setValue(color.getBlue());
-            m_alpha->setValue(color.getAlpha());
-        });
+        reset->onPress(
+            [this]()
+            {
+                const auto color = m_last->getRenderer()->getBackgroundColor();
+                m_red->setValue(color.getRed());
+                m_green->setValue(color.getGreen());
+                m_blue->setValue(color.getBlue());
+                m_alpha->setValue(color.getAlpha());
+            });
         auto ok = get<Button>("#TGUI_INTERNAL$ColorPickerOK#");
         ok->onPress.disconnectAll();
-        ok->onPress([this]() {
-            const auto color = m_current->getRenderer()->getBackgroundColor();
-            m_last->getRenderer()->setBackgroundColor(color);
-            onOkPress.emit(this, color);
+        ok->onPress(
+            [this]()
+            {
+                const auto color = m_current->getRenderer()->getBackgroundColor();
+                m_last->getRenderer()->setBackgroundColor(color);
+                onOkPress.emit(this, color);
 
-            close();
-        });
+                close();
+            });
 
         auto closeButton = get<Button>("#TGUI_INTERNAL$ColorPickerCancel#");
         closeButton->onPress.disconnectAll();
-        closeButton->onPress([this]{
-            const auto color = m_last->getRenderer()->getBackgroundColor();
-            setColor(color);
+        closeButton->onPress(
+            [this]
+            {
+                const auto color = m_last->getRenderer()->getBackgroundColor();
+                setColor(color);
 
-            close();
-        });
+                close();
+            });
 
-        auto valueChangeFunc = [this](float value){
+        auto valueChangeFunc = [this](float value)
+        {
             const auto factor = static_cast<std::uint8_t>(255 * logInvCurve(value / m_value->getMaximum()));
             m_colorWheelTexture.setColor({factor, factor, factor});
             m_colorWheelSprite.setTexture(m_colorWheelTexture);
@@ -803,6 +809,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

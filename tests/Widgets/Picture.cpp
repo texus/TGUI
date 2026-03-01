@@ -41,10 +41,10 @@ TEST_CASE("[Picture]")
 
     SECTION("Signals")
     {
-        picture->onDoubleClick([](){});
-        picture->onDoubleClick([](tgui::Vector2f){});
+        picture->onDoubleClick([]() {});
+        picture->onDoubleClick([](tgui::Vector2f) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(picture)->getSignal("DoubleClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(picture)->getSignal("DoubleClicked").connect([] {}));
     }
 
     SECTION("WidgetType")

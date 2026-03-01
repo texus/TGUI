@@ -34,10 +34,10 @@ TEST_CASE("[Scrollbar]")
 
     SECTION("Signals")
     {
-        scrollbar->onValueChange([](){});
-        scrollbar->onValueChange([](unsigned int){});
+        scrollbar->onValueChange([]() {});
+        scrollbar->onValueChange([](unsigned int) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(scrollbar)->getSignal("ValueChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(scrollbar)->getSignal("ValueChanged").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -391,19 +391,20 @@ TEST_CASE("[Scrollbar]")
         renderer.setOpacity(0.7f);
         scrollbar->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
-                                        renderer.setTrackColorHover(tgui::Color::Cyan);
-                                        renderer.setThumbColorHover(tgui::Color::Magenta);
-                                        renderer.setArrowBackgroundColorHover(tgui::Color::Yellow);
-                                        renderer.setArrowColorHover(tgui::Color::Black);
-                                        if (textured)
-                                        {
-                                            renderer.setTextureTrackHover("resources/Texture5.png");
-                                            renderer.setTextureThumbHover("resources/Texture6.png");
-                                            renderer.setTextureArrowUpHover("resources/Texture7.png");
-                                            renderer.setTextureArrowDownHover("resources/Texture8.png");
-                                        }
-                                     };
+        auto setHoverRenderer = [&](bool textured)
+        {
+            renderer.setTrackColorHover(tgui::Color::Cyan);
+            renderer.setThumbColorHover(tgui::Color::Magenta);
+            renderer.setArrowBackgroundColorHover(tgui::Color::Yellow);
+            renderer.setArrowColorHover(tgui::Color::Black);
+            if (textured)
+            {
+                renderer.setTextureTrackHover("resources/Texture5.png");
+                renderer.setTextureThumbHover("resources/Texture6.png");
+                renderer.setTextureArrowUpHover("resources/Texture7.png");
+                renderer.setTextureArrowDownHover("resources/Texture8.png");
+            }
+        };
 
         auto mousePos = scrollbar->getPosition();
 

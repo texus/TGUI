@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include "Tests.hpp"
+
+#include <iostream>
 
 TEST_CASE("[Widget]")
 {
@@ -77,7 +77,7 @@ TEST_CASE("[Widget]")
         panel1->add(widget);
 
         // When the same widget is added to a different parent, a warning is generated but the widget gets moved
-        std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
+        std::streambuf* oldbuf = std::cerr.rdbuf(nullptr);
         panel2->add(widget);
         std::cerr.rdbuf(oldbuf);
         REQUIRE(widget->getParent() == panel2.get());
@@ -171,28 +171,28 @@ TEST_CASE("[Widget]")
 
         // Position can be relative to the size of the parent
         widget->setPosition("20%", "10%");
-        REQUIRE(widget->getPosition() == tgui::Vector2f(400*0.2f, 300*0.1f));
+        REQUIRE(widget->getPosition() == tgui::Vector2f(400 * 0.2f, 300 * 0.1f));
 
         // Relative positions are updated when the parent changes size
         container->setSize(800, 150);
-        REQUIRE(widget->getPosition() == tgui::Vector2f(800*0.2f, 150*0.1f));
+        REQUIRE(widget->getPosition() == tgui::Vector2f(800 * 0.2f, 150 * 0.1f));
 
         auto widget2 = widget->clone();
         auto widget3 = widget->clone();
 
         // Widget clones are unaffected by changes to the original widget
         widget->setPosition("60%", "15%");
-        REQUIRE(widget2->getPosition() == tgui::Vector2f(800*0.2f, 150*0.1f));
+        REQUIRE(widget2->getPosition() == tgui::Vector2f(800 * 0.2f, 150 * 0.1f));
 
         // Relative positions of cloned widgets are still updated when the size of the parent changes
         container->add(widget2);
         container->setSize(400, 300);
-        REQUIRE(widget2->getPosition() == tgui::Vector2f(400*0.2f, 300*0.1f));
+        REQUIRE(widget2->getPosition() == tgui::Vector2f(400 * 0.2f, 300 * 0.1f));
 
         // There is however no relation with the old parent anymore unless the widget is added again
-        REQUIRE(widget3->getPosition() == tgui::Vector2f(800*0.2f, 150*0.1f));
+        REQUIRE(widget3->getPosition() == tgui::Vector2f(800 * 0.2f, 150 * 0.1f));
         container->add(widget3);
-        REQUIRE(widget3->getPosition() == tgui::Vector2f(400*0.2f, 300*0.1f));
+        REQUIRE(widget3->getPosition() == tgui::Vector2f(400 * 0.2f, 300 * 0.1f));
 
         // The position can be changed from a relative to an absolute value at any time
         widget2->setPosition(60, 70);
@@ -203,7 +203,7 @@ TEST_CASE("[Widget]")
         widget4->setPosition("20%", "10%");
         REQUIRE(widget4->getPosition() == tgui::Vector2f(0, 0));
         container->add(widget4);
-        REQUIRE(widget4->getPosition() == tgui::Vector2f(400*0.2f, 300*0.1f));
+        REQUIRE(widget4->getPosition() == tgui::Vector2f(400 * 0.2f, 300 * 0.1f));
     }
 
     SECTION("Size")
@@ -220,28 +220,28 @@ TEST_CASE("[Widget]")
 
         // Size can be relative to the size of the parent
         widget->setSize("30%", "5%");
-        REQUIRE(widget->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
+        REQUIRE(widget->getSize() == tgui::Vector2f(400 * 0.3f, 300 * 0.05f));
 
         // Relative sizes are updated when the parent changes size
         container->setSize(800, 150);
-        REQUIRE(widget->getSize() == tgui::Vector2f(800*0.3f, 150*0.05f));
+        REQUIRE(widget->getSize() == tgui::Vector2f(800 * 0.3f, 150 * 0.05f));
 
         auto widget2 = widget->clone();
         auto widget3 = widget->clone();
 
         // Widget clones are unaffected by changes to the original widget
         widget->setSize("60%", "15%");
-        REQUIRE(widget2->getSize() == tgui::Vector2f(800*0.3f, 150*0.05f));
+        REQUIRE(widget2->getSize() == tgui::Vector2f(800 * 0.3f, 150 * 0.05f));
 
         // Relative sizes of cloned widgets are still updated when the size of the parent changes
         container->add(widget2);
         container->setSize(400, 300);
-        REQUIRE(widget2->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
+        REQUIRE(widget2->getSize() == tgui::Vector2f(400 * 0.3f, 300 * 0.05f));
 
         // There is however no relation with the old parent anymore unless the widget is added again
-        REQUIRE(widget3->getSize() == tgui::Vector2f(800*0.3f, 150*0.05f));
+        REQUIRE(widget3->getSize() == tgui::Vector2f(800 * 0.3f, 150 * 0.05f));
         container->add(widget3);
-        REQUIRE(widget3->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
+        REQUIRE(widget3->getSize() == tgui::Vector2f(400 * 0.3f, 300 * 0.05f));
 
         // The size can be changed from a relative to an absolute value at any time
         widget2->setSize(70, 20);
@@ -252,15 +252,15 @@ TEST_CASE("[Widget]")
         widget4->setSize("30%", "5%");
         REQUIRE(widget4->getSize() == tgui::Vector2f(0, 0));
         container->add(widget4);
-        REQUIRE(widget4->getSize() == tgui::Vector2f(400*0.3f, 300*0.05f));
+        REQUIRE(widget4->getSize() == tgui::Vector2f(400 * 0.3f, 300 * 0.05f));
 
         auto widget5 = tgui::ClickableWidget::copy(widget4);
         widget5->setWidth(120);
-        REQUIRE(widget5->getSize() == tgui::Vector2f(120, 300*0.05f));
+        REQUIRE(widget5->getSize() == tgui::Vector2f(120, 300 * 0.05f));
 
         auto widget6 = tgui::ClickableWidget::copy(widget4);
         widget6->setHeight(80);
-        REQUIRE(widget6->getSize() == tgui::Vector2f(400*0.3f, 80));
+        REQUIRE(widget6->getSize() == tgui::Vector2f(400 * 0.3f, 80));
     }
 
     SECTION("Origin")
@@ -576,7 +576,7 @@ TEST_CASE("[Widget]")
         REQUIRE(parent->getWidgets().size() == 1);
         parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt");
         REQUIRE(parent->getWidgets().size() == 1);
-        std::streambuf *oldbuf = std::cerr.rdbuf(nullptr); // Ignore warning about duplicate name being used
+        std::streambuf* oldbuf = std::cerr.rdbuf(nullptr); // Ignore warning about duplicate name being used
         parent->loadWidgetsFromFile("WidgetFileClickableWidget1.txt", false);
         std::cerr.rdbuf(oldbuf);
         REQUIRE(parent->getWidgets().size() == 2);
@@ -651,10 +651,12 @@ TEST_CASE("[Widget]")
 
             TEST_DRAW_INIT(400, 175, button)
 
-            const std::shared_ptr<void> scopeExit(nullptr, [&](void*){
-                gui.setRelativeView({0, 0, 1, 1});
-                tgui::getBackend()->setFontScale(1);
-            });
+            const std::shared_ptr<void> scopeExit(nullptr,
+                                                  [&](void*)
+                                                  {
+                                                      gui.setRelativeView({0, 0, 1, 1});
+                                                      tgui::getBackend()->setFontScale(1);
+                                                  });
             gui.setAbsoluteView({0, 0, 160, 70});
 
             TEST_DRAW("FontScale_Unscaled.png")

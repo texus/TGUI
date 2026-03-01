@@ -22,14 +22,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Window/Backend.hpp>
-#include <TGUI/Loading/Theme.hpp>
-#include <TGUI/Timer.hpp>
-#include <TGUI/Font.hpp>
-#include <TGUI/DefaultFont.hpp>
 #include <TGUI/Backend/Font/BackendFontFactory.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+
+#include <TGUI/DefaultFont.hpp>
+#include <TGUI/Font.hpp>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Timer.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -217,7 +218,9 @@ namespace tgui
 
     std::shared_ptr<BackendRenderer> Backend::getRenderer() const
     {
-        TGUI_ASSERT(m_renderer != nullptr, "getRenderer() called on backend while no BackendRenderer was created yet. Has a window been attached to a gui object yet?");
+        TGUI_ASSERT(m_renderer != nullptr,
+                    "getRenderer() called on backend while no BackendRenderer was created yet. Has a window been attached to a gui "
+                    "object yet?");
         return m_renderer;
     }
 
@@ -239,7 +242,9 @@ namespace tgui
 
     std::shared_ptr<BackendFontFactory> Backend::getFontBackend() const
     {
-        TGUI_ASSERT(m_fontBackend != nullptr, "getFontBackend() called on backend while no BackendFont was created yet. Has a window been attached to a gui object yet?");
+        TGUI_ASSERT(m_fontBackend != nullptr,
+                    "getFontBackend() called on backend while no BackendFont was created yet. Has a window been attached to a gui "
+                    "object yet?");
         return m_fontBackend;
     }
 
@@ -279,6 +284,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

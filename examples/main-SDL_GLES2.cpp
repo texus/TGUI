@@ -30,10 +30,11 @@
     #else
         #include <SDL_opengles2.h>
     #endif
-    import tgui;
-    import tgui.backend.sdl_gles2;
+import tgui;
+import tgui.backend.sdl_gles2;
 #else
     #include <TGUI/TGUI.hpp>
+
     #include <TGUI/Backend/SDL-GLES2.hpp>
     #if TGUI_USE_SDL3
         #include <SDL3/SDL_main.h>
@@ -56,7 +57,7 @@ void run_application(SDL_Window* window)
 }
 
 // Note that no error checking is performed on SDL initialization in this example code
-int main(int, char **)
+int main(int, char**)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -70,8 +71,10 @@ int main(int, char **)
     SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-GLES2)", 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 #else
     SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-GLES2)",
-                                          SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                          800, 600,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          800,
+                                          600,
                                           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 #endif
     SDL_GLContext glContext = SDL_GL_CreateContext(window);

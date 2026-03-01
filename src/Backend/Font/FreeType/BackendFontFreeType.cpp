@@ -215,7 +215,8 @@ namespace tgui
 
         float fontHeight;
         if (FT_IS_SCALABLE(m_face))
-            fontHeight = std::ceil(static_cast<float>(FT_MulFix(m_face->ascender - m_face->descender, m_face->size->metrics.y_scale)) / unitsPerPixel);
+            fontHeight = std::ceil(
+                static_cast<float>(FT_MulFix(m_face->ascender - m_face->descender, m_face->size->metrics.y_scale)) / unitsPerPixel);
         else // Use the line spacing when we don't have a scalable font
             fontHeight = m_face->size->metrics.height / unitsPerPixel;
 
@@ -381,7 +382,11 @@ namespace tgui
 
             if (m_stroker)
             {
-                FT_Stroker_Set(m_stroker, static_cast<FT_Fixed>(outlineThickness * m_fontScale * unitsPerPixel), FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+                FT_Stroker_Set(m_stroker,
+                               static_cast<FT_Fixed>(outlineThickness * m_fontScale * unitsPerPixel),
+                               FT_STROKER_LINECAP_ROUND,
+                               FT_STROKER_LINEJOIN_ROUND,
+                               0);
                 FT_Glyph_Stroke(&glyphDesc, m_stroker, true);
             }
         }
@@ -451,7 +456,10 @@ namespace tgui
                 {
                     // The color channels remain white, just fill the alpha channel
                     const std::size_t index = (glyph.textureRect.left + x) + (glyph.textureRect.top + y) * m_textureSize;
-                    m_pixels[index * 4 + 3] = ((glyphBitmapPixels[(static_cast<int>(y) * bitmap.pitch) + static_cast<int>(x / 8)]) & (1 << (7 - (x % 8)))) ? 255 : 0;
+                    m_pixels[index * 4 + 3] = ((glyphBitmapPixels[(static_cast<int>(y) * bitmap.pitch) + static_cast<int>(x / 8)])
+                                               & (1 << (7 - (x % 8))))
+                                                  ? 255
+                                                  : 0;
                 }
             }
         }
@@ -480,8 +488,10 @@ namespace tgui
 
     BackendFontFreeType::Glyph BackendFontFreeType::getInternalGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness)
     {
-        const std::uint64_t glyphKey = constructGlyphKey(codePoint, static_cast<unsigned int>(characterSize * m_fontScale),
-                                                         bold, outlineThickness * m_fontScale);
+        const std::uint64_t glyphKey = constructGlyphKey(codePoint,
+                                                         static_cast<unsigned int>(characterSize * m_fontScale),
+                                                         bold,
+                                                         outlineThickness * m_fontScale);
 
         const auto it = m_glyphs.find(glyphKey);
         if (it != m_glyphs.end())
@@ -601,11 +611,11 @@ namespace tgui
             FT_Done_FreeType(m_library);
 
         m_library = nullptr;
-        m_face    = nullptr;
+        m_face = nullptr;
         m_stroker = nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

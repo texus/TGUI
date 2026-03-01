@@ -22,13 +22,16 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Global.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
 #include "TGUI/Exception.hpp"
 
-#include <sstream>
-#include <limits>
+#include <TGUI/Global.hpp>
 
+#include <TGUI/Backend/Window/Backend.hpp>
+
+#include <functional>
+#include <limits>
+#include <locale>
+#include <sstream>
 #include <stdio.h> // C header for compatibility with _wfopen_s, NOLINT(modernize-deprecated-headers)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +63,7 @@ namespace
             return stream.view();
         }
     };
-}
+} // namespace
 #endif
 
 namespace tgui
@@ -71,7 +74,7 @@ namespace tgui
         Duration globalDoubleClickTime = std::chrono::milliseconds(500);
         Duration globalEditBlinkRate = std::chrono::milliseconds(500);
         Filesystem::Path globalResourcePath;
-    }
+    } // namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -172,9 +175,11 @@ namespace tgui
             if (!rawFilePtr)
                 return nullptr;
 
-            const auto closeFileFunc = [](FILE* fp){
+            const auto closeFileFunc = [](FILE* fp)
+            {
                 if (fclose(fp))
-                    throw tgui::Exception{U"Failed to fclose file, error: " + tgui::String(std::system_error(errno, std::generic_category()).what())};
+                    throw tgui::Exception{
+                        U"Failed to fclose file, error: " + tgui::String(std::system_error(errno, std::generic_category()).what())};
             };
             const std::unique_ptr<FILE, decltype(closeFileFunc)> file(rawFilePtr, closeFileFunc);
 
@@ -235,12 +240,13 @@ namespace tgui
         const bool success = (fwrite(stringView.data(), 1, stringView.size(), file) == stringView.size());
 
         if (fclose(file))
-            throw tgui::Exception{U"writeFile failed to fclose file, error: " + tgui::String(std::system_error(errno, std::generic_category()).what())};
+            throw tgui::Exception{
+                U"writeFile failed to fclose file, error: " + tgui::String(std::system_error(errno, std::generic_category()).what())};
 
         return success;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

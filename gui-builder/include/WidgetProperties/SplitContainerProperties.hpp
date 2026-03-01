@@ -35,9 +35,11 @@ struct SplitContainerProperties : public WidgetProperties
         if (property == "Orientation")
             splitContainer->setOrientation(deserializeOrientation(value));
         else if (property == "MinValidSplitterOffset")
-            splitContainer->setMinValidSplitterOffset(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
+            splitContainer->setMinValidSplitterOffset(
+                tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
         else if (property == "MaxValidSplitterOffset")
-            splitContainer->setMaxValidSplitterOffset(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
+            splitContainer->setMaxValidSplitterOffset(
+                tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
         else if (property == "SplitterOffset")
             splitContainer->setSplitterOffset(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
         else if (property == "SplitterWidth")

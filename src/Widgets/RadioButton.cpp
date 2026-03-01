@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/RadioButton.hpp>
 #include <TGUI/Container.hpp>
+#include <TGUI/Widgets/RadioButton.hpp>
 
 namespace tgui
 {
@@ -247,8 +247,9 @@ namespace tgui
                 return true;
 
             // Check if the mouse is on top of the text
-            if (FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains({pos.x - (getSize().x + (getSize().x * m_textDistanceRatioCached)),
-                                                                                  pos.y - ((getSize().y - m_text.getSize().y) / 2.0f)}))
+            if (FloatRect{0, 0, m_text.getSize().x, m_text.getSize().y}.contains(
+                    {pos.x - (getSize().x + (getSize().x * m_textDistanceRatioCached)),
+                     pos.y - ((getSize().y - m_text.getSize().y) / 2.0f)}))
                 return true;
         }
         else // You are not allowed to click on the text
@@ -257,7 +258,7 @@ namespace tgui
             if (FloatRect{0, 0, getSize().x, getSize().y}.contains(pos))
             {
                 if (!m_transparentTextureCached || !m_spriteUnchecked.isSet()
-                 || !m_spriteUnchecked.isTransparentPixel(pos - m_bordersCached.getOffset()))
+                    || !m_spriteUnchecked.isTransparentPixel(pos - m_bordersCached.getOffset()))
                     return true;
             }
         }
@@ -335,7 +336,8 @@ namespace tgui
             updateTextureSizes();
         }
         else if ((property == U"TextColor") || (property == U"TextColorHover") || (property == U"TextColorDisabled")
-              || (property == U"TextColorChecked") || (property == U"TextColorCheckedHover") || (property == U"TextColorCheckedDisabled"))
+                 || (property == U"TextColorChecked") || (property == U"TextColorCheckedHover")
+                 || (property == U"TextColorCheckedDisabled"))
         {
             updateTextColor();
         }
@@ -516,7 +518,8 @@ namespace tgui
         if (node->propertyValuePairs[U"Text"])
             setText(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Text"]->value).getString());
         if (node->propertyValuePairs[U"TextClickable"])
-            setTextClickable(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"TextClickable"]->value).getBool());
+            setTextClickable(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"TextClickable"]->value).getBool());
         if (node->propertyValuePairs[U"Checked"])
             setChecked(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Checked"]->value).getBool());
         if (node->propertyValuePairs[U"MaxWidth"])
@@ -702,8 +705,11 @@ namespace tgui
             if (borderThickness != 0)
             {
                 states.transform.translate({borderThickness, borderThickness});
-                target.drawCircle(states, innerSize, Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached),
-                    borderThickness, Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
+                target.drawCircle(states,
+                                  innerSize,
+                                  Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached),
+                                  borderThickness,
+                                  Color::applyOpacity(getCurrentBorderColor(), m_opacityCached));
             }
             else
                 target.drawCircle(states, innerSize, Color::applyOpacity(getCurrentBackgroundColor(), m_opacityCached));
@@ -745,6 +751,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

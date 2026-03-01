@@ -30,9 +30,9 @@
     #error "TGUI wasn't build with the SDL_OPENGL3 backend"
 #endif
 
-#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 #include <TGUI/Backend/Font/FreeType/BackendFontFreeType.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+#include <TGUI/Backend/Window/SDL/BackendSDL.hpp>
 
 namespace tgui
 {
@@ -44,7 +44,6 @@ namespace tgui
         class TGUI_API Gui : public BackendGuiSDL
         {
         public:
-
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Default constructor
             ///
@@ -70,8 +69,8 @@ namespace tgui
             void setWindow(SDL_Window* window);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        protected:
 
+        protected:
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Shows the drawn content with SDL_GL_SwapWindow
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,7 +83,7 @@ namespace tgui
             void updateFramebufferSize() override;
 #endif
         };
-    }
-}
+    } // namespace SDL_OPENGL3
+} // namespace tgui
 
 #endif // TGUI_BACKEND_SDL_OPENGL3_INCLUDE_HPP

@@ -31,14 +31,14 @@ TEST_CASE("[ContextMenu]")
 
     SECTION("Signals")
     {
-        contextMenu->onMenuItemClick([](){});
-        contextMenu->onMenuItemClick([](const tgui::String&){});
-        contextMenu->onMenuItemClick([](const std::vector<tgui::String>&){});
+        contextMenu->onMenuItemClick([]() {});
+        contextMenu->onMenuItemClick([](const tgui::String&) {});
+        contextMenu->onMenuItemClick([](const std::vector<tgui::String>&) {});
 
-        contextMenu->connectMenuItem("Save", [](){});
-        contextMenu->connectMenuItem({"Help", "About", "Version"}, [](){});
+        contextMenu->connectMenuItem("Save", []() {});
+        contextMenu->connectMenuItem({"Help", "About", "Version"}, []() {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(contextMenu)->getSignal("MenuItemClicked").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(contextMenu)->getSignal("MenuItemClicked").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -177,22 +177,26 @@ TEST_CASE("[ContextMenu]")
 
         unsigned int callbackCount = 0;
         std::vector<tgui::String> expectedHierarchy;
-        contextMenu->onMenuItemClick([&](const std::vector<tgui::String>& hierarchy) {
-            ++callbackCount;
-            REQUIRE(expectedHierarchy == hierarchy);
-        });
+        contextMenu->onMenuItemClick(
+            [&](const std::vector<tgui::String>& hierarchy)
+            {
+                ++callbackCount;
+                REQUIRE(expectedHierarchy == hierarchy);
+            });
 
         // The context menu needs to be attached to a Gui object as it will create a new widget when the menu opens.
         // All events also need to be send to the gui to determine to which widget the event goes.
         globalGui->add(contextMenu);
-        auto simulateMouseMove = [](int x, int y){
+        auto simulateMouseMove = [](int x, int y)
+        {
             tgui::Event event;
             event.type = tgui::Event::Type::MouseMoved;
             event.mouseMove.x = x;
             event.mouseMove.y = y;
             globalGui->handleEvent(event);
         };
-        auto simulateLeftMouseClick = [](int x, int y){
+        auto simulateLeftMouseClick = [](int x, int y)
+        {
             tgui::Event event;
             event.type = tgui::Event::Type::MouseMoved;
             event.mouseMove.x = x;
@@ -333,7 +337,8 @@ TEST_CASE("[ContextMenu]")
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureItemBackground", tgui::Serializer::serialize(textureItemBackground)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedItemBackground", tgui::Serializer::serialize(textureSelectedItemBackground)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextureSelectedItemBackground", tgui::Serializer::serialize(textureSelectedItemBackground)));
             }
 
             SECTION("set object property")
@@ -401,10 +406,7 @@ TEST_CASE("[ContextMenu]")
 
         auto container = gui.getContainer();
 
-        SECTION("Closed")
-        {
-            TEST_DRAW("ContextMenu_Closed.png")
-        }
+        SECTION("Closed"){TEST_DRAW("ContextMenu_Closed.png")}
 
         contextMenu->openMenu();
 

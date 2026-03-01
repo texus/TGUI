@@ -25,8 +25,8 @@
 #ifndef TGUI_PICTURE_HPP
 #define TGUI_PICTURE_HPP
 
-#include <TGUI/Widgets/ClickableWidget.hpp>
 #include <TGUI/Renderers/PictureRenderer.hpp>
+#include <TGUI/Widgets/ClickableWidget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,8 +38,7 @@ namespace tgui
     class TGUI_API Picture : public ClickableWidget
     {
     public:
-
-        using Ptr = std::shared_ptr<Picture>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Picture>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Picture>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "Picture"; //!< Type name of the widget
@@ -159,8 +158,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -173,13 +172,13 @@ namespace tgui
         TGUI_NODISCARD Signal& getSignal(String signalName) override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
-        SignalVector2f onDoubleClick = {"DoubleClicked"};  //!< The picture was double clicked. Optional parameter: mouse position relative to picture
+    public:
+        SignalVector2f onDoubleClick = {"DoubleClicked"}; //!< The picture was double clicked. Optional parameter: mouse position relative to picture
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -208,9 +207,9 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
-        Sprite  m_sprite;
+    protected:
+        Sprite m_sprite;
 
         bool m_ignoringMouseEvents = false; // TGUI_NEXT: Remove this property
 
@@ -219,7 +218,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

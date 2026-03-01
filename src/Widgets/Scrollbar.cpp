@@ -22,8 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Timer.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
+
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -479,8 +480,10 @@ namespace tgui
                     if ((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height) > 0)
                     {
                         // Calculate the new value
-                        const auto value = static_cast<unsigned int>(std::lround(((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
-                                                                                  / (getSize().y - m_arrowUp.height - m_arrowDown.height - m_thumb.height)) * (m_maximum - m_viewportSize)));
+                        const auto value = static_cast<unsigned int>(std::lround(
+                            ((pos.y - m_mouseDownOnThumbPos.y - m_arrowUp.height)
+                             / (getSize().y - m_arrowUp.height - m_arrowDown.height - m_thumb.height))
+                            * (m_maximum - m_viewportSize)));
 
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_viewportSize))
@@ -512,7 +515,8 @@ namespace tgui
                         if (pos.y < getSize().y - m_arrowUp.height)
                         {
                             // Calculate the exact position (a number between 0 and maximum), as if the top of the thumb will be where you clicked
-                            const float scaleFactor = (m_maximum - m_viewportSize) / (getSize().y - m_arrowUp.height - m_arrowDown.height - m_thumb.height);
+                            const float scaleFactor = (m_maximum - m_viewportSize)
+                                                      / (getSize().y - m_arrowUp.height - m_arrowDown.height - m_thumb.height);
                             const float value = (pos.y - m_arrowUp.height) * scaleFactor;
 
                             // Check if you clicked above the thumb
@@ -551,8 +555,10 @@ namespace tgui
                     if (pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width > 0)
                     {
                         // Calculate the new value
-                        const auto value = static_cast<unsigned int>(std::lround(((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
-                                                                                  / (getSize().x - m_arrowUp.width - m_arrowDown.width - m_thumb.width)) * (m_maximum - m_viewportSize)));
+                        const auto value = static_cast<unsigned int>(std::lround(
+                            ((pos.x - m_mouseDownOnThumbPos.x - m_arrowUp.width)
+                             / (getSize().x - m_arrowUp.width - m_arrowDown.width - m_thumb.width))
+                            * (m_maximum - m_viewportSize)));
 
                         // If the value isn't too high then change it
                         if (value <= (m_maximum - m_viewportSize))
@@ -584,7 +590,8 @@ namespace tgui
                         if (pos.x < getSize().x - m_arrowUp.width)
                         {
                             // Calculate the exact position (a number between 0 and maximum), as if the left of the thumb will be where you clicked
-                            const float scaleFactor = (m_maximum - m_viewportSize) / (getSize().x - m_arrowUp.width - m_arrowDown.width - m_thumb.width);
+                            const float scaleFactor = (m_maximum - m_viewportSize)
+                                                      / (getSize().x - m_arrowUp.width - m_arrowDown.width - m_thumb.width);
                             const float value = (pos.x - m_arrowUp.width) * scaleFactor;
 
                             // Check if you clicked to the left of the thumb
@@ -696,12 +703,14 @@ namespace tgui
             m_arrowDown.width = getSize().x;
 
             if (m_spriteArrowUp.isSet())
-                m_arrowUp.height = getSize().x * m_spriteArrowUp.getTexture().getImageSize().x / m_spriteArrowUp.getTexture().getImageSize().y;
+                m_arrowUp.height = getSize().x * m_spriteArrowUp.getTexture().getImageSize().x
+                                   / m_spriteArrowUp.getTexture().getImageSize().y;
             else
                 m_arrowUp.height = m_arrowUp.width;
 
             if (m_spriteArrowDown.isSet())
-                m_arrowDown.height = getSize().x * m_spriteArrowDown.getTexture().getImageSize().x / m_spriteArrowDown.getTexture().getImageSize().y;
+                m_arrowDown.height = getSize().x * m_spriteArrowDown.getTexture().getImageSize().x
+                                     / m_spriteArrowDown.getTexture().getImageSize().y;
             else
                 m_arrowDown.height = m_arrowUp.width;
 
@@ -731,12 +740,14 @@ namespace tgui
             m_arrowDown.height = getSize().y;
 
             if (m_spriteArrowUp.isSet())
-                m_arrowUp.width = getSize().y * m_spriteArrowUp.getTexture().getImageSize().x / m_spriteArrowUp.getTexture().getImageSize().y;
+                m_arrowUp.width = getSize().y * m_spriteArrowUp.getTexture().getImageSize().x
+                                  / m_spriteArrowUp.getTexture().getImageSize().y;
             else
                 m_arrowUp.width = m_arrowUp.height;
 
             if (m_spriteArrowDown.isSet())
-                m_arrowDown.width = getSize().y * m_spriteArrowDown.getTexture().getImageSize().x / m_spriteArrowDown.getTexture().getImageSize().y;
+                m_arrowDown.width = getSize().y * m_spriteArrowDown.getTexture().getImageSize().x
+                                    / m_spriteArrowDown.getTexture().getImageSize().y;
             else
                 m_arrowDown.width = m_arrowUp.height;
 
@@ -1025,43 +1036,46 @@ namespace tgui
     void Scrollbar::callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall)
     {
         const std::weak_ptr<Scrollbar> widgetPtr = std::static_pointer_cast<Scrollbar>(shared_from_this());
-        Timer::scheduleCallback([widgetPtr, clickedTime]()
-        {
-            const Scrollbar::Ptr scrollbar = widgetPtr.lock();
-            if (!scrollbar)
-                return;
-
-            if (!scrollbar->m_mouseDown || scrollbar->m_lastMousePressTime != clickedTime)
-                return;
-
-            if (scrollbar->m_mouseHover && scrollbar->m_mouseDownOnDecreaseArrow && (scrollbar->m_mouseHoverOverPart == Part::ArrowUp))
+        Timer::scheduleCallback(
+            [widgetPtr, clickedTime]()
             {
-                if (scrollbar->m_value > scrollbar->m_scrollAmount)
-                {
-                    if (scrollbar->m_value % scrollbar->m_scrollAmount)
-                        scrollbar->setValue(scrollbar->m_value - (scrollbar->m_value % scrollbar->m_scrollAmount));
-                    else
-                        scrollbar->setValue(scrollbar->m_value - scrollbar->m_scrollAmount);
-                }
-                else
-                    scrollbar->setValue(0);
-            }
-            else if (scrollbar->m_mouseHover && scrollbar->m_mouseDownOnIncreaseArrow && (scrollbar->m_mouseHoverOverPart == Part::ArrowDown))
-            {
-                if (scrollbar->m_value + scrollbar->m_scrollAmount < scrollbar->m_maximum - scrollbar->m_viewportSize + 1)
-                {
-                    if (scrollbar->m_value % scrollbar->m_scrollAmount)
-                        scrollbar->setValue(scrollbar->m_value + (scrollbar->m_scrollAmount - (scrollbar->m_value % scrollbar->m_scrollAmount)));
-                    else
-                        scrollbar->setValue(scrollbar->m_value + scrollbar->m_scrollAmount);
-                }
-                else
-                    scrollbar->setValue(scrollbar->m_maximum - scrollbar->m_viewportSize);
-            }
+                const Scrollbar::Ptr scrollbar = widgetPtr.lock();
+                if (!scrollbar)
+                    return;
 
-            scrollbar->callMousePressPeriodically(clickedTime, true);
+                if (!scrollbar->m_mouseDown || scrollbar->m_lastMousePressTime != clickedTime)
+                    return;
 
-        }, std::chrono::milliseconds(repeatedCall ? 50 : 300));
+                if (scrollbar->m_mouseHover && scrollbar->m_mouseDownOnDecreaseArrow && (scrollbar->m_mouseHoverOverPart == Part::ArrowUp))
+                {
+                    if (scrollbar->m_value > scrollbar->m_scrollAmount)
+                    {
+                        if (scrollbar->m_value % scrollbar->m_scrollAmount)
+                            scrollbar->setValue(scrollbar->m_value - (scrollbar->m_value % scrollbar->m_scrollAmount));
+                        else
+                            scrollbar->setValue(scrollbar->m_value - scrollbar->m_scrollAmount);
+                    }
+                    else
+                        scrollbar->setValue(0);
+                }
+                else if (scrollbar->m_mouseHover && scrollbar->m_mouseDownOnIncreaseArrow
+                         && (scrollbar->m_mouseHoverOverPart == Part::ArrowDown))
+                {
+                    if (scrollbar->m_value + scrollbar->m_scrollAmount < scrollbar->m_maximum - scrollbar->m_viewportSize + 1)
+                    {
+                        if (scrollbar->m_value % scrollbar->m_scrollAmount)
+                            scrollbar->setValue(
+                                scrollbar->m_value + (scrollbar->m_scrollAmount - (scrollbar->m_value % scrollbar->m_scrollAmount)));
+                        else
+                            scrollbar->setValue(scrollbar->m_value + scrollbar->m_scrollAmount);
+                    }
+                    else
+                        scrollbar->setValue(scrollbar->m_maximum - scrollbar->m_viewportSize);
+                }
+
+                scrollbar->callMousePressPeriodically(clickedTime, true);
+            },
+            std::chrono::milliseconds(repeatedCall ? 50 : 300));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1082,9 +1096,13 @@ namespace tgui
         else
         {
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && m_arrowBackgroundColorHoverCached.isSet())
-                target.drawFilledRect(states, {m_arrowUp.width, m_arrowUp.height}, Color::applyOpacity(m_arrowBackgroundColorHoverCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {m_arrowUp.width, m_arrowUp.height},
+                                      Color::applyOpacity(m_arrowBackgroundColorHoverCached, m_opacityCached));
             else
-                target.drawFilledRect(states, {m_arrowUp.width, m_arrowUp.height}, Color::applyOpacity(m_arrowBackgroundColorCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {m_arrowUp.width, m_arrowUp.height},
+                                      Color::applyOpacity(m_arrowBackgroundColorCached, m_opacityCached));
 
             Vertex::Color arrowVertexColor;
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowUp) && m_arrowBackgroundColorHoverCached.isSet())
@@ -1095,18 +1113,16 @@ namespace tgui
             if (m_orientation == Orientation::Vertical)
             {
                 target.drawTriangle(states,
-                    {{m_arrowUp.width / 5, m_arrowUp.height * 4/5}, arrowVertexColor},
-                    {{m_arrowUp.width / 2, m_arrowUp.height / 5}, arrowVertexColor},
-                    {{m_arrowUp.width * 4/5, m_arrowUp.height * 4/5}, arrowVertexColor}
-                );
+                                    {{m_arrowUp.width / 5, m_arrowUp.height * 4 / 5}, arrowVertexColor},
+                                    {{m_arrowUp.width / 2, m_arrowUp.height / 5}, arrowVertexColor},
+                                    {{m_arrowUp.width * 4 / 5, m_arrowUp.height * 4 / 5}, arrowVertexColor});
             }
             else // Spin button lies horizontal
             {
                 target.drawTriangle(states,
-                    {{m_arrowUp.width * 4/5, m_arrowUp.height / 5}, arrowVertexColor},
-                    {{m_arrowUp.width / 5, m_arrowUp.height / 2}, arrowVertexColor},
-                    {{m_arrowUp.width * 4/5, m_arrowUp.height * 4/5}, arrowVertexColor}
-                );
+                                    {{m_arrowUp.width * 4 / 5, m_arrowUp.height / 5}, arrowVertexColor},
+                                    {{m_arrowUp.width / 5, m_arrowUp.height / 2}, arrowVertexColor},
+                                    {{m_arrowUp.width * 4 / 5, m_arrowUp.height * 4 / 5}, arrowVertexColor});
             }
         }
 
@@ -1158,9 +1174,13 @@ namespace tgui
         else
         {
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && m_arrowBackgroundColorHoverCached.isSet())
-                target.drawFilledRect(states, {m_arrowDown.width, m_arrowDown.height}, Color::applyOpacity(m_arrowBackgroundColorHoverCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {m_arrowDown.width, m_arrowDown.height},
+                                      Color::applyOpacity(m_arrowBackgroundColorHoverCached, m_opacityCached));
             else
-                target.drawFilledRect(states, {m_arrowDown.width, m_arrowDown.height}, Color::applyOpacity(m_arrowBackgroundColorCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {m_arrowDown.width, m_arrowDown.height},
+                                      Color::applyOpacity(m_arrowBackgroundColorCached, m_opacityCached));
 
             Vertex::Color arrowVertexColor;
             if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::ArrowDown) && m_arrowBackgroundColorHoverCached.isSet())
@@ -1171,18 +1191,16 @@ namespace tgui
             if (m_orientation == Orientation::Vertical)
             {
                 target.drawTriangle(states,
-                    {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},
-                    {{m_arrowDown.width / 2, m_arrowDown.height * 4/5}, arrowVertexColor},
-                    {{m_arrowDown.width * 4/5, m_arrowDown.height / 5}, arrowVertexColor}
-                );
+                                    {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},
+                                    {{m_arrowDown.width / 2, m_arrowDown.height * 4 / 5}, arrowVertexColor},
+                                    {{m_arrowDown.width * 4 / 5, m_arrowDown.height / 5}, arrowVertexColor});
             }
             else // Spin button lies horizontal
             {
                 target.drawTriangle(states,
-                    {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},
-                    {{m_arrowDown.width * 4/5, m_arrowDown.height / 2}, arrowVertexColor},
-                    {{m_arrowDown.width / 5, m_arrowDown.height * 4/5}, arrowVertexColor}
-                );
+                                    {{m_arrowDown.width / 5, m_arrowDown.height / 5}, arrowVertexColor},
+                                    {{m_arrowDown.width * 4 / 5, m_arrowDown.height / 2}, arrowVertexColor},
+                                    {{m_arrowDown.width / 5, m_arrowDown.height * 4 / 5}, arrowVertexColor});
             }
         }
     }
@@ -1222,7 +1240,10 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    ScrollbarAccessor::ScrollbarAccessor(ScrollbarChildWidget& scrollbar, std::function<void()> valueChangedCallback, std::function<void()> policyChangedCallback, std::function<void()> scrollAmountChangedCallback) :
+    ScrollbarAccessor::ScrollbarAccessor(ScrollbarChildWidget& scrollbar,
+                                         std::function<void()> valueChangedCallback,
+                                         std::function<void()> policyChangedCallback,
+                                         std::function<void()> scrollAmountChangedCallback) :
         m_scrollbar(&scrollbar),
         m_valueChangedCallback(std::move(valueChangedCallback)),
         m_policyChangedCallback(std::move(policyChangedCallback)),
@@ -1320,7 +1341,10 @@ namespace tgui
 
     ScrollbarChildInterface::ScrollbarChildInterface() :
         m_scrollbar(Orientation::Vertical),
-        m_scrollbarAccessor{*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }}
+        m_scrollbarAccessor{*m_scrollbar,
+                            [this] { scrollbarValueChanged(); },
+                            [this] { scrollbarPolicyChanged(); },
+                            [this] { scrollbarScrollAmountChanged(); }}
     {
     }
 
@@ -1328,7 +1352,10 @@ namespace tgui
 
     ScrollbarChildInterface::ScrollbarChildInterface(const ScrollbarChildInterface& other) :
         m_scrollbar(other.m_scrollbar),
-        m_scrollbarAccessor{*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }}
+        m_scrollbarAccessor{*m_scrollbar,
+                            [this] { scrollbarValueChanged(); },
+                            [this] { scrollbarPolicyChanged(); },
+                            [this] { scrollbarScrollAmountChanged(); }}
     {
     }
 
@@ -1336,7 +1363,10 @@ namespace tgui
 
     ScrollbarChildInterface::ScrollbarChildInterface(ScrollbarChildInterface&& other) noexcept :
         m_scrollbar(std::move(other.m_scrollbar)),
-        m_scrollbarAccessor{*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }}
+        m_scrollbarAccessor{*m_scrollbar,
+                            [this] { scrollbarValueChanged(); },
+                            [this] { scrollbarPolicyChanged(); },
+                            [this] { scrollbarScrollAmountChanged(); }}
     {
     }
 
@@ -1347,7 +1377,10 @@ namespace tgui
         if (this != &other)
         {
             m_scrollbar = other.m_scrollbar;
-            m_scrollbarAccessor = {*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }};
+            m_scrollbarAccessor = {*m_scrollbar,
+                                   [this] { scrollbarValueChanged(); },
+                                   [this] { scrollbarPolicyChanged(); },
+                                   [this] { scrollbarScrollAmountChanged(); }};
         }
 
         return *this;
@@ -1360,7 +1393,10 @@ namespace tgui
         if (this != &other)
         {
             m_scrollbar = std::move(other.m_scrollbar);
-            m_scrollbarAccessor = {*m_scrollbar, [this]{ scrollbarValueChanged(); }, [this]{ scrollbarPolicyChanged(); }, [this]{ scrollbarScrollAmountChanged(); }};
+            m_scrollbarAccessor = {*m_scrollbar,
+                                   [this] { scrollbarValueChanged(); },
+                                   [this] { scrollbarPolicyChanged(); },
+                                   [this] { scrollbarScrollAmountChanged(); }};
         }
 
         return *this;
@@ -1435,8 +1471,14 @@ namespace tgui
     DualScrollbarChildInterface::DualScrollbarChildInterface() :
         m_verticalScrollbar(Orientation::Vertical),
         m_horizontalScrollbar(Orientation::Horizontal),
-        m_verticalScrollbarAccessor{*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }},
-        m_horizontalScrollbarAccessor{*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }}
+        m_verticalScrollbarAccessor{*m_verticalScrollbar,
+                                    [this] { scrollbarValueChanged(Orientation::Vertical); },
+                                    [this] { scrollbarPolicyChanged(Orientation::Vertical); },
+                                    [this] { scrollbarScrollAmountChanged(Orientation::Vertical); }},
+        m_horizontalScrollbarAccessor{*m_horizontalScrollbar,
+                                      [this] { scrollbarValueChanged(Orientation::Horizontal); },
+                                      [this] { scrollbarPolicyChanged(Orientation::Horizontal); },
+                                      [this] { scrollbarScrollAmountChanged(Orientation::Horizontal); }}
     {
     }
 
@@ -1445,8 +1487,14 @@ namespace tgui
     DualScrollbarChildInterface::DualScrollbarChildInterface(const DualScrollbarChildInterface& other) :
         m_verticalScrollbar(other.m_verticalScrollbar),
         m_horizontalScrollbar(other.m_horizontalScrollbar),
-        m_verticalScrollbarAccessor{*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }},
-        m_horizontalScrollbarAccessor{*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }}
+        m_verticalScrollbarAccessor{*m_verticalScrollbar,
+                                    [this] { scrollbarValueChanged(Orientation::Vertical); },
+                                    [this] { scrollbarPolicyChanged(Orientation::Vertical); },
+                                    [this] { scrollbarScrollAmountChanged(Orientation::Vertical); }},
+        m_horizontalScrollbarAccessor{*m_horizontalScrollbar,
+                                      [this] { scrollbarValueChanged(Orientation::Horizontal); },
+                                      [this] { scrollbarPolicyChanged(Orientation::Horizontal); },
+                                      [this] { scrollbarScrollAmountChanged(Orientation::Horizontal); }}
     {
     }
 
@@ -1455,8 +1503,14 @@ namespace tgui
     DualScrollbarChildInterface::DualScrollbarChildInterface(DualScrollbarChildInterface&& other) noexcept :
         m_verticalScrollbar(std::move(other.m_verticalScrollbar)),
         m_horizontalScrollbar(std::move(other.m_horizontalScrollbar)),
-        m_verticalScrollbarAccessor{*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }},
-        m_horizontalScrollbarAccessor{*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }}
+        m_verticalScrollbarAccessor{*m_verticalScrollbar,
+                                    [this] { scrollbarValueChanged(Orientation::Vertical); },
+                                    [this] { scrollbarPolicyChanged(Orientation::Vertical); },
+                                    [this] { scrollbarScrollAmountChanged(Orientation::Vertical); }},
+        m_horizontalScrollbarAccessor{*m_horizontalScrollbar,
+                                      [this] { scrollbarValueChanged(Orientation::Horizontal); },
+                                      [this] { scrollbarPolicyChanged(Orientation::Horizontal); },
+                                      [this] { scrollbarScrollAmountChanged(Orientation::Horizontal); }}
     {
     }
 
@@ -1468,8 +1522,14 @@ namespace tgui
         {
             m_verticalScrollbar = other.m_verticalScrollbar;
             m_horizontalScrollbar = other.m_horizontalScrollbar;
-            m_verticalScrollbarAccessor = {*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }};
-            m_horizontalScrollbarAccessor = {*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }};
+            m_verticalScrollbarAccessor = {*m_verticalScrollbar,
+                                           [this] { scrollbarValueChanged(Orientation::Vertical); },
+                                           [this] { scrollbarPolicyChanged(Orientation::Vertical); },
+                                           [this] { scrollbarScrollAmountChanged(Orientation::Vertical); }};
+            m_horizontalScrollbarAccessor = {*m_horizontalScrollbar,
+                                             [this] { scrollbarValueChanged(Orientation::Horizontal); },
+                                             [this] { scrollbarPolicyChanged(Orientation::Horizontal); },
+                                             [this] { scrollbarScrollAmountChanged(Orientation::Horizontal); }};
         }
 
         return *this;
@@ -1483,8 +1543,14 @@ namespace tgui
         {
             m_verticalScrollbar = std::move(other.m_verticalScrollbar);
             m_horizontalScrollbar = std::move(other.m_horizontalScrollbar);
-            m_verticalScrollbarAccessor = {*m_verticalScrollbar, [this]{ scrollbarValueChanged(Orientation::Vertical); }, [this]{ scrollbarPolicyChanged(Orientation::Vertical); }, [this]{ scrollbarScrollAmountChanged(Orientation::Vertical); }};
-            m_horizontalScrollbarAccessor = {*m_horizontalScrollbar, [this]{ scrollbarValueChanged(Orientation::Horizontal); }, [this]{ scrollbarPolicyChanged(Orientation::Horizontal); }, [this]{ scrollbarScrollAmountChanged(Orientation::Horizontal); }};
+            m_verticalScrollbarAccessor = {*m_verticalScrollbar,
+                                           [this] { scrollbarValueChanged(Orientation::Vertical); },
+                                           [this] { scrollbarPolicyChanged(Orientation::Vertical); },
+                                           [this] { scrollbarScrollAmountChanged(Orientation::Vertical); }};
+            m_horizontalScrollbarAccessor = {*m_horizontalScrollbar,
+                                             [this] { scrollbarValueChanged(Orientation::Horizontal); },
+                                             [this] { scrollbarPolicyChanged(Orientation::Horizontal); },
+                                             [this] { scrollbarScrollAmountChanged(Orientation::Horizontal); }};
         }
 
         return *this;
@@ -1589,6 +1655,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

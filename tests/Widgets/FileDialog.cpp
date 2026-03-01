@@ -33,12 +33,12 @@ TEST_CASE("[FileDialog]")
 
     SECTION("Signals")
     {
-        dialog->onFileSelect([](){});
-        dialog->onFileSelect([](const tgui::String&){});
-        dialog->onFileSelect([](const tgui::Filesystem::Path&){});
-        dialog->onFileSelect([](const std::vector<tgui::Filesystem::Path>&){});
+        dialog->onFileSelect([]() {});
+        dialog->onFileSelect([](const tgui::String&) {});
+        dialog->onFileSelect([](const tgui::Filesystem::Path&) {});
+        dialog->onFileSelect([](const std::vector<tgui::Filesystem::Path>&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(dialog)->getSignal("FileSelected").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(dialog)->getSignal("FileSelected").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -75,11 +75,7 @@ TEST_CASE("[FileDialog]")
         REQUIRE(dialog->getFileTypeFilters()[0].first == "All files (*)");
         REQUIRE(dialog->getFileTypeFilters()[0].second.empty());
 
-        dialog->setFileTypeFilters({
-            {"Single", {"*.txt"}},
-            {"Multiple", {"*.png", "*.jpg"}},
-            {"Everything", {}}
-        }, 1);
+        dialog->setFileTypeFilters({{"Single", {"*.txt"}}, {"Multiple", {"*.png", "*.jpg"}}, {"Everything", {}}}, 1);
 
         REQUIRE(dialog->getFileTypeFiltersIndex() == 1);
         REQUIRE(dialog->getFileTypeFilters().size() == 3);
@@ -138,7 +134,9 @@ TEST_CASE("[FileDialog]")
 
     SECTION("Icon loader")
     {
-        class CustomIconLoader : public tgui::FileDialogIconLoader {};
+        class CustomIconLoader : public tgui::FileDialogIconLoader
+        {
+        };
         auto iconLoader = std::make_shared<CustomIconLoader>();
 
         REQUIRE(dialog->getIconLoader() != nullptr);
@@ -236,11 +234,7 @@ TEST_CASE("[FileDialog]")
     {
         dialog->setPath("/bin");
         dialog->setFilename("config.txt");
-        dialog->setFileTypeFilters({
-            {"Single", {"*.txt"}},
-            {"Multiple", {"*.png", "*.jpg"}},
-            {"Everything", {}}
-        }, 1);
+        dialog->setFileTypeFilters({{"Single", {"*.txt"}}, {"Multiple", {"*.png", "*.jpg"}}, {"Everything", {}}}, 1);
         dialog->setConfirmButtonText("Use that file");
         dialog->setCancelButtonText("Don't do it!");
         dialog->setFilenameLabelText("What file?");

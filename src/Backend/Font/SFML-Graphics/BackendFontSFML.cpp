@@ -27,6 +27,7 @@
 
 #include <SFML/Config.hpp>
 #include <SFML/Graphics/Image.hpp>
+
 #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +57,7 @@ namespace tgui
         if (!m_font)
             return false;
 
-#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // hasGlyph was added in SFML 2.6
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6) // hasGlyph was added in SFML 2.6
         return m_font->hasGlyph(codePoint);
 #else
         const sf::Glyph& glyph = m_font->getGlyph(codePoint, getGlobalTextSize(), false, 0);
@@ -90,11 +91,20 @@ namespace tgui
 
         glyph.advance = glyphSFML.advance / m_fontScale;
 #if SFML_VERSION_MAJOR >= 3
-        glyph.bounds = {glyphSFML.bounds.position.x / m_fontScale, glyphSFML.bounds.position.y / m_fontScale, glyphSFML.bounds.size.x / m_fontScale, glyphSFML.bounds.size.y / m_fontScale};
-#elif (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // outline is not corrected in bounds in SFML < 2.6
-        glyph.bounds = {glyphSFML.bounds.left / m_fontScale, glyphSFML.bounds.top / m_fontScale, glyphSFML.bounds.width / m_fontScale, glyphSFML.bounds.height / m_fontScale};
+        glyph.bounds = {glyphSFML.bounds.position.x / m_fontScale,
+                        glyphSFML.bounds.position.y / m_fontScale,
+                        glyphSFML.bounds.size.x / m_fontScale,
+                        glyphSFML.bounds.size.y / m_fontScale};
+#elif (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6) // outline is not corrected in bounds in SFML < 2.6
+        glyph.bounds = {glyphSFML.bounds.left / m_fontScale,
+                        glyphSFML.bounds.top / m_fontScale,
+                        glyphSFML.bounds.width / m_fontScale,
+                        glyphSFML.bounds.height / m_fontScale};
 #else
-        glyph.bounds = {glyphSFML.bounds.left / m_fontScale - scaledOutlineThickness, glyphSFML.bounds.top / m_fontScale - scaledOutlineThickness, glyphSFML.bounds.width / m_fontScale, glyphSFML.bounds.height / m_fontScale};
+        glyph.bounds = {glyphSFML.bounds.left / m_fontScale - scaledOutlineThickness,
+                        glyphSFML.bounds.top / m_fontScale - scaledOutlineThickness,
+                        glyphSFML.bounds.width / m_fontScale,
+                        glyphSFML.bounds.height / m_fontScale};
 #endif
 
         // SFML uses an IntRect, but all values are unsigned
@@ -103,21 +113,19 @@ namespace tgui
         assert(glyphSFML.textureRect.position.y >= 0);
         assert(glyphSFML.textureRect.size.x >= 0);
         assert(glyphSFML.textureRect.size.y >= 0);
-        glyph.textureRect = {
-            static_cast<unsigned int>(glyphSFML.textureRect.position.x),
-            static_cast<unsigned int>(glyphSFML.textureRect.position.y),
-            static_cast<unsigned int>(glyphSFML.textureRect.size.x),
-            static_cast<unsigned int>(glyphSFML.textureRect.size.y)};
+        glyph.textureRect = {static_cast<unsigned int>(glyphSFML.textureRect.position.x),
+                             static_cast<unsigned int>(glyphSFML.textureRect.position.y),
+                             static_cast<unsigned int>(glyphSFML.textureRect.size.x),
+                             static_cast<unsigned int>(glyphSFML.textureRect.size.y)};
 #else
         assert(glyphSFML.textureRect.left >= 0);
         assert(glyphSFML.textureRect.top >= 0);
         assert(glyphSFML.textureRect.width >= 0);
         assert(glyphSFML.textureRect.height >= 0);
-        glyph.textureRect = {
-            static_cast<unsigned int>(glyphSFML.textureRect.left),
-            static_cast<unsigned int>(glyphSFML.textureRect.top),
-            static_cast<unsigned int>(glyphSFML.textureRect.width),
-            static_cast<unsigned int>(glyphSFML.textureRect.height)};
+        glyph.textureRect = {static_cast<unsigned int>(glyphSFML.textureRect.left),
+                             static_cast<unsigned int>(glyphSFML.textureRect.top),
+                             static_cast<unsigned int>(glyphSFML.textureRect.width),
+                             static_cast<unsigned int>(glyphSFML.textureRect.height)};
 #endif
         return glyph;
     }
@@ -129,7 +137,7 @@ namespace tgui
         if (!m_font)
             return 0;
 
-#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6)  // bold parameter was added in SFML 2.6
+#if (SFML_VERSION_MAJOR > 2) || (SFML_VERSION_MINOR >= 6) // bold parameter was added in SFML 2.6
         return m_font->getKerning(first, second, static_cast<unsigned int>(characterSize * m_fontScale), bold) / m_fontScale;
 #else
         (void)bold;
@@ -188,7 +196,6 @@ namespace tgui
 
         return glyph.bounds.height;
 #endif
-
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -302,6 +309,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

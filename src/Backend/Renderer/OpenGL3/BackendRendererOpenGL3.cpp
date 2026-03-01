@@ -22,9 +22,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <TGUI/Backend/Renderer/OpenGL.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
-#include <TGUI/Backend/Renderer/OpenGL.hpp>
+
 #include <TGUI/Exception.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 
@@ -40,11 +41,13 @@ namespace tgui
         if ((GLAD_VERSION_MAJOR(version) < 3) || ((GLAD_VERSION_MAJOR(version) == 3) && GLAD_VERSION_MINOR(version) < 3))
         {
             if (version == 0)
-                throw Exception{U"BackendRendererOpenGL failed to query OpenGL version, or requested OpenGL version wasn't supported. Has an OpenGL context been created yet?"};
+                throw Exception{
+                    U"BackendRendererOpenGL failed to query OpenGL version, or requested OpenGL version wasn't supported. Has an "
+                    U"OpenGL context been created yet?"};
             else
             {
                 throw Exception{U"BackendRendererOpenGL expects at least OpenGL 3.3, found version "
-                    + String(GLAD_VERSION_MAJOR(version)) + '.' + String(GLAD_VERSION_MINOR(version))};
+                                + String(GLAD_VERSION_MAJOR(version)) + '.' + String(GLAD_VERSION_MINOR(version))};
             }
         }
 
@@ -77,6 +80,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

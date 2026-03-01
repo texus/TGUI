@@ -26,6 +26,7 @@
 #define TGUI_ABSOLUTE_OR_RELATIVE_VALUE_HPP
 
 #include <TGUI/Global.hpp>
+
 #include <TGUI/String.hpp>
 
 #include <type_traits>
@@ -42,7 +43,6 @@ namespace tgui
     class TGUI_API AbsoluteOrRelativeValue
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,8 +55,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
         constexpr AbsoluteOrRelativeValue(T constant) :
-            m_constant    {true},
-            m_value       {static_cast<float>(constant)}
+            m_constant{true},
+            m_value{static_cast<float>(constant)}
         {
         }
 
@@ -80,12 +80,12 @@ namespace tgui
             if (!expression.empty() && (expression.back() == '%'))
             {
                 m_constant = false;
-                m_ratio    = expression.substr(0, expression.length()-1).toFloat() / 100.f;
+                m_ratio = expression.substr(0, expression.length() - 1).toFloat() / 100.f;
             }
             else
             {
                 m_constant = true;
-                m_value    = expression.substr(0, expression.length()).toFloat();
+                m_value = expression.substr(0, expression.length()).toFloat();
             }
         }
 
@@ -149,12 +149,12 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
-        bool  m_constant     = true;
-        float m_value        = 0;
-        float m_ratio        = 0;
-        float m_parentValue  = 0;
+    protected:
+        bool m_constant = true;
+        float m_value = 0;
+        float m_ratio = 0;
+        float m_parentValue = 0;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ namespace tgui
         explicit constexpr RelativeValue(float ratio)
         {
             m_constant = false;
-            m_ratio    = ratio;
+            m_ratio = ratio;
         }
     };
 
@@ -190,11 +190,11 @@ namespace tgui
             {
                 return RelativeValue{static_cast<float>(n) / 100.f};
             }
-        }
-    }
+        } // namespace percent
+    } // namespace literals
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

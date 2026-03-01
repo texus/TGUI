@@ -25,10 +25,10 @@
 #ifndef TGUI_BACKEND_RENDERER_SDL_GPU_HPP
 #define TGUI_BACKEND_RENDERER_SDL_GPU_HPP
 
-#include <TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp>
-#include <TGUI/Backend/Renderer/SDL_GPU/BackendRenderTargetSDLGPU.hpp>
-#include <TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp>
 #include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+#include <TGUI/Backend/Renderer/SDL_GPU/BackendRenderTargetSDLGPU.hpp>
+#include <TGUI/Backend/Renderer/SDL_GPU/BackendTextureSDLGPU.hpp>
+#include <TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp>
 
 #include <memory>
 
@@ -44,7 +44,6 @@ namespace tgui
     class TGUI_API BackendRendererSDLGPU : public BackendRenderer
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Initializes the backend renderer
         ///
@@ -83,12 +82,12 @@ namespace tgui
         TGUI_NODISCARD SDL_GPUDevice* getInternalDevice() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         SDL_GPUDevice* m_device;
         SDL_GPUTextureFormat m_swapchainTextureFormat;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -22,8 +22,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/SplitContainer.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+
+#include <TGUI/Widgets/SplitContainer.hpp>
+
 #include <cmath> // floor
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +234,6 @@ namespace tgui
         // The mouse is not on top of the thumb
         m_mouseDownOnSplitter = false;
         return Group::leftMousePressed(pos);
-
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,9 +392,11 @@ namespace tgui
             setSplitterOffset({node->propertyValuePairs[U"SplitterOffset"]->value});
 
         if (node->propertyValuePairs[U"SplitterWidth"])
-            setSplitterWidth(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"SplitterWidth"]->value).getNumber());
+            setSplitterWidth(
+                Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"SplitterWidth"]->value).getNumber());
         if (node->propertyValuePairs[U"MinimumGrabWidth"])
-            setMinimumGrabWidth(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"MinimumGrabWidth"]->value).getNumber());
+            setMinimumGrabWidth(
+                Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"MinimumGrabWidth"]->value).getNumber());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -522,6 +525,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

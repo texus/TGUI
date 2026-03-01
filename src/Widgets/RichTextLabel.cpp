@@ -30,12 +30,7 @@
 
 namespace tgui
 {
-    static constexpr std::array<std::pair<StringView, char32_t>, 4> symbolNamesMap
-    {
-        {{U"lt"sv, U'<'},
-         {U"gt"sv, U'>'},
-         {U"amp"sv, U'&'}}
-    };
+    static constexpr std::array<std::pair<StringView, char32_t>, 4> symbolNamesMap{{{U"lt"sv, U'<'}, {U"gt"sv, U'>'}, {U"amp"sv, U'&'}}};
 
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     constexpr char RichTextLabel::StaticWidgetType[];
@@ -149,10 +144,10 @@ namespace tgui
         const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
         float maxWidth;
         if (m_autoSize)
-            maxWidth = std::max(0.f, m_maximumTextWidth - (2*textOffset));
+            maxWidth = std::max(0.f, m_maximumTextWidth - (2 * textOffset));
         else
         {
-            maxWidth = getSize().x - outline.getLeft() - outline.getRight() - (2*textOffset);
+            maxWidth = getSize().x - outline.getLeft() - outline.getRight() - (2 * textOffset);
 
             // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar.
             // If the policy is Automatic then we will take it into account later if we find that the text needs a scrollbar.
@@ -177,8 +172,8 @@ namespace tgui
 
         // Fit the text in the available space
         Optional<std::vector<std::vector<Text::Blueprint>>> wordWrappedLines = (maxWidth > 0)
-            ? Text::wordWrap(maxWidth, textPiecesLines, m_fontCached)
-            : Optional<std::vector<std::vector<Text::Blueprint>>>();
+                                                                                   ? Text::wordWrap(maxWidth, textPiecesLines, m_fontCached)
+                                                                                   : Optional<std::vector<std::vector<Text::Blueprint>>>();
         auto* textPiecesLinesPtr = wordWrappedLines.has_value() ? &wordWrappedLines.value() : &textPiecesLines;
 
         const float defaultLineSpacing = m_fontCached.getLineSpacing(m_textSizeCached);
@@ -187,7 +182,8 @@ namespace tgui
         if (!m_autoSize)
         {
             // If the text doesn't fit in the label then we need to run the word-wrap again, but this time taking the scrollbar into account
-            if ((m_scrollbar->getPolicy() == Scrollbar::Policy::Automatic) && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
+            if ((m_scrollbar->getPolicy() == Scrollbar::Policy::Automatic)
+                && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
             {
                 maxWidth -= m_scrollbar->getSize().x;
                 if (maxWidth <= 0)
@@ -229,7 +225,7 @@ namespace tgui
                     ++imageIndex;
 
                     if (!textPiecesLine[j].link.empty())
-                        m_imageLinks[m_images.size()-1] = textPiecesLine[j].link;
+                        m_imageLinks[m_images.size() - 1] = textPiecesLine[j].link;
 
                     maxLineHeight = std::max(maxLineHeight, static_cast<float>(textPiecesLine[j].gapSize.y));
                     lineWidth += textPiecesLine[j].gapSize.x;
@@ -247,17 +243,21 @@ namespace tgui
                     textPiece.setString(textPiecesLine[j].text);
                     textPiece.setPosition({pos.x + lineWidth, pos.y});
                     if (!textPiecesLine[j].link.empty())
-                        m_links[{m_lines.size()-1, m_lines.back().size()-1}] = textPiecesLine[j].link;
+                        m_links[{m_lines.size() - 1, m_lines.back().size() - 1}] = textPiecesLine[j].link;
 
                     maxLineHeight = std::max(maxLineHeight, textPiece.getSize().y);
                     lineWidth += textPiece.getSize().x - (2 * m_textOutlineThicknessCached);
 
                     // Take kerning into account
-                    if (j > 0 && !textPiecesLine[j-1].text.empty() && !textPiecesLine[j].text.empty())
+                    if (j > 0 && !textPiecesLine[j - 1].text.empty() && !textPiecesLine[j].text.empty())
                     {
-                        const bool bold = ((textPiecesLine[j-1].style & TextStyle::Bold) != 0) && ((textPiecesLine[j].style & TextStyle::Bold) != 0);
-                        const unsigned int characterSize = std::min(textPiecesLine[j-1].characterSize, textPiecesLine[j].characterSize);
-                        lineWidth += m_fontCached.getKerning(textPiecesLine[j-1].text.back(), textPiecesLine[j].text.front(), characterSize, bold);
+                        const bool bold = ((textPiecesLine[j - 1].style & TextStyle::Bold) != 0)
+                                          && ((textPiecesLine[j].style & TextStyle::Bold) != 0);
+                        const unsigned int characterSize = std::min(textPiecesLine[j - 1].characterSize, textPiecesLine[j].characterSize);
+                        lineWidth += m_fontCached.getKerning(textPiecesLine[j - 1].text.back(),
+                                                             textPiecesLine[j].text.front(),
+                                                             characterSize,
+                                                             bold);
                     }
                 }
             }
@@ -307,7 +307,7 @@ namespace tgui
                     assert(!m_lines[i].empty());
 
                     std::size_t charsToUse = lastTextPiece.text.length();
-                    while (charsToUse > 0 && isWhitespace(lastTextPiece.text[charsToUse-1]))
+                    while (charsToUse > 0 && isWhitespace(lastTextPiece.text[charsToUse - 1]))
                         charsToUse--;
 
                     if (charsToUse != lastTextPiece.text.length())
@@ -342,12 +342,13 @@ namespace tgui
         {
             m_autoLayout = AutoLayout::Manual;
             // NOLINTNEXTLINE(bugprone-parent-virtual-call)
-            Widget::setSize({maxWidth + outline.getLeft() + outline.getRight() + (2*textOffset), requiredTextHeight + outline.getTop() + outline.getBottom()});
+            Widget::setSize({maxWidth + outline.getLeft() + outline.getRight() + (2 * textOffset),
+                             requiredTextHeight + outline.getTop() + outline.getBottom()});
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
 
-            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
-                                        getSize().y - m_bordersCached.getTopPlusBottom()});
+            m_spriteBackground.setSize(
+                {getSize().x - m_bordersCached.getLeftPlusRight(), getSize().y - m_bordersCached.getTopPlusBottom()});
         }
 
         // Vertically align the lines if the text is smaller than the box
@@ -426,9 +427,11 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void RichTextLabel::constructRichLineBlueprints(std::vector<std::vector<Text::Blueprint>>& textPiecesLines, std::vector<Texture>& images) const
+    void RichTextLabel::constructRichLineBlueprints(std::vector<std::vector<Text::Blueprint>>& textPiecesLines,
+                                                    std::vector<Texture>& images) const
     {
-        TGUI_ASSERT(textPiecesLines.empty() && images.empty(), "RichTextLabel::constructRichLineBlueprints must be called with empty vectors")
+        TGUI_ASSERT(textPiecesLines.empty() && images.empty(),
+                    "RichTextLabel::constructRichLineBlueprints must be called with empty vectors")
 
         // Make sure there is always at least one line
         textPiecesLines.emplace_back();
@@ -442,7 +445,8 @@ namespace tgui
         std::vector<Color> colorStack;
         std::vector<unsigned int> textSizeStack;
 
-        const auto addTextPiece = [&]{
+        const auto addTextPiece = [&]
+        {
             // Don't add empty pieces, unless the line would otherwise be empty.
             // We need those empty strings to know the line spacing to use for that empty line.
             auto& line = textPiecesLines.back();
@@ -688,7 +692,7 @@ namespace tgui
                             String url;
                             auto endPos = m_string.find(U"</url>", i + 5);
                             if (endPos != String::npos)
-                                url = m_string.substr(i+5, endPos - (i+5));
+                                url = m_string.substr(i + 5, endPos - (i + 5));
 
                             addTextPiece();
                             currentUrl = url;
@@ -733,7 +737,7 @@ namespace tgui
         else
         {
             const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight(),
-                                  getSize().y - m_bordersCached.getTopPlusBottom() - m_paddingCached.getTopPlusBottom()};
+                                        getSize().y - m_bordersCached.getTopPlusBottom() - m_paddingCached.getTopPlusBottom()};
 
             target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, innerSize});
 
@@ -755,6 +759,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

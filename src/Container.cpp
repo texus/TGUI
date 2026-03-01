@@ -22,13 +22,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Container.hpp>
-#include <TGUI/ToolTip.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
-#include <TGUI/Widgets/RadioButton.hpp>
-#include <TGUI/SubwidgetContainer.hpp>
-#include <TGUI/Loading/WidgetFactory.hpp>
+
+#include <TGUI/Container.hpp>
 #include <TGUI/Filesystem.hpp>
+#include <TGUI/Loading/WidgetFactory.hpp>
+#include <TGUI/SubwidgetContainer.hpp>
+#include <TGUI/ToolTip.hpp>
+#include <TGUI/Widgets/RadioButton.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,9 +41,12 @@ namespace tgui
     {
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void getAllRenderers(std::vector<RendererData*>& orderedRenderers, std::map<RendererData*, std::vector<const Widget*>>& rendererToWidgetsMap, const Container* container)
+        void getAllRenderers(std::vector<RendererData*>& orderedRenderers,
+                             std::map<RendererData*, std::vector<const Widget*>>& rendererToWidgetsMap,
+                             const Container* container)
         {
-            const auto addRenderer = [&](RendererData* rendererData, const Widget* widget){
+            const auto addRenderer = [&](RendererData* rendererData, const Widget* widget)
+            {
                 const auto it = rendererToWidgetsMap.find(rendererData);
                 if (it != rendererToWidgetsMap.end())
                     it->second.push_back(widget);
@@ -70,7 +74,8 @@ namespace tgui
                     const auto* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get());
                     if (subWidgetContainer)
                     {
-                        addRenderer(subWidgetContainer->getContainer()->getSharedRenderer()->getData().get(), subWidgetContainer->getContainer());
+                        addRenderer(subWidgetContainer->getContainer()->getSharedRenderer()->getData().get(),
+                                    subWidgetContainer->getContainer());
                         getAllRenderers(orderedRenderers, rendererToWidgetsMap, subWidgetContainer->getContainer());
                     }
                 }
@@ -125,7 +130,8 @@ namespace tgui
                 if (!pair.first.starts_with(U"Texture") && (pair.first != U"Font") && (pair.first != U"Image") && (pair.first != U"Icon"))
                     continue;
 
-                if (pair.second->value.empty() || viewEqualIgnoreCase(pair.second->value, U"none") || viewEqualIgnoreCase(pair.second->value, U"null") || viewEqualIgnoreCase(pair.second->value, U"nullptr"))
+                if (pair.second->value.empty() || viewEqualIgnoreCase(pair.second->value, U"none")
+                    || viewEqualIgnoreCase(pair.second->value, U"null") || viewEqualIgnoreCase(pair.second->value, U"nullptr"))
                     continue;
 
                 String filename;
@@ -152,7 +158,7 @@ namespace tgui
             for (const auto& childNode : node->children)
                 makePathsRelativeToForm(childNode, formPath);
         }
-    }
+    } // namespace
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -183,13 +189,13 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Container::Container(Container&& other) noexcept :
-        Widget                    {std::move(other)},
-        m_widgets                 {std::move(other.m_widgets)},
-        m_widgetBelowMouse        {std::move(other.m_widgetBelowMouse)},
-        m_widgetWithLeftMouseDown {std::move(other.m_widgetWithLeftMouseDown)},
+        Widget{std::move(other)},
+        m_widgets{std::move(other.m_widgets)},
+        m_widgetBelowMouse{std::move(other.m_widgetBelowMouse)},
+        m_widgetWithLeftMouseDown{std::move(other.m_widgetWithLeftMouseDown)},
         m_widgetWithRightMouseDown{std::move(other.m_widgetWithRightMouseDown)},
-        m_focusedWidget           {std::move(other.m_focusedWidget)},
-        m_draggingWidget          {std::move(other.m_draggingWidget)}
+        m_focusedWidget{std::move(other.m_focusedWidget)},
+        m_draggingWidget{std::move(other.m_draggingWidget)}
     {
         // Parent of all widgets should be set to nullptr first, in case widgets have layouts depending on each other.
         // Otherwise calling setParent on one widget could cause another widget's position to be recalculated which could
@@ -253,12 +259,12 @@ namespace tgui
         // Make sure it is not the same widget
         if (this != &right)
         {
-            m_widgets                  = std::move(right.m_widgets);
-            m_widgetBelowMouse         = std::move(right.m_widgetBelowMouse);
-            m_widgetWithLeftMouseDown  = std::move(right.m_widgetWithLeftMouseDown);
+            m_widgets = std::move(right.m_widgets);
+            m_widgetBelowMouse = std::move(right.m_widgetBelowMouse);
+            m_widgetWithLeftMouseDown = std::move(right.m_widgetWithLeftMouseDown);
             m_widgetWithRightMouseDown = std::move(right.m_widgetWithRightMouseDown);
-            m_focusedWidget            = std::move(right.m_focusedWidget);
-            m_draggingWidget           = std::move(right.m_draggingWidget);
+            m_focusedWidget = std::move(right.m_focusedWidget);
+            m_draggingWidget = std::move(right.m_draggingWidget);
             Widget::operator=(std::move(right));
 
             // Parent of all widgets should be set to nullptr first, in case widgets have layouts depending on each other.
@@ -678,15 +684,15 @@ namespace tgui
     {
         for (std::size_t i = m_widgets.size(); i > 0; --i)
         {
-            if (m_widgets[i-1] != widget)
+            if (m_widgets[i - 1] != widget)
                 continue;
 
             // If the widget is already at the back then we can't move it further backward
-            if (i-1 == 0)
+            if (i - 1 == 0)
                 return 0;
 
             setWidgetIndex(widget, i - 2);
-            return i-2;
+            return i - 2;
         }
 
         // The widget wasn't found in this container
@@ -871,7 +877,7 @@ namespace tgui
         {
             for (std::size_t i = focusedWidgetIndex - 1; i > 0; --i)
             {
-                if (tryFocusWidget(m_widgets[i-1], true, recursive))
+                if (tryFocusWidget(m_widgets[i - 1], true, recursive))
                     return true;
             }
 
@@ -883,14 +889,14 @@ namespace tgui
         // None of the widgets before the focused one could be focused, so loop the ones after it.
         for (std::size_t i = m_widgets.size(); i > focusedWidgetIndex; --i)
         {
-            if (tryFocusWidget(m_widgets[i-1], true, recursive))
+            if (tryFocusWidget(m_widgets[i - 1], true, recursive))
                 return true;
         }
 
         // Also include the focused widget since it may be a container that didn't have its last widget focused.
         if (focusedWidgetIndex > 0)
         {
-            if (tryFocusWidget(m_widgets[focusedWidgetIndex-1], true, recursive))
+            if (tryFocusWidget(m_widgets[focusedWidgetIndex - 1], true, recursive))
                 return true;
         }
 
@@ -979,10 +985,10 @@ namespace tgui
         if (m_focusedWidget && m_focusedWidget->isFocused())
         {
             if (m_focusedWidget->canHandleKeyPress(event)
-             || ((event.code == Event::KeyboardKey::Up) && m_focusedWidget->getNavigationUp())
-             || ((event.code == Event::KeyboardKey::Down) && m_focusedWidget->getNavigationDown())
-             || ((event.code == Event::KeyboardKey::Left) && m_focusedWidget->getNavigationLeft())
-             || ((event.code == Event::KeyboardKey::Right) && m_focusedWidget->getNavigationRight()))
+                || ((event.code == Event::KeyboardKey::Up) && m_focusedWidget->getNavigationUp())
+                || ((event.code == Event::KeyboardKey::Down) && m_focusedWidget->getNavigationDown())
+                || ((event.code == Event::KeyboardKey::Left) && m_focusedWidget->getNavigationLeft())
+                || ((event.code == Event::KeyboardKey::Right) && m_focusedWidget->getNavigationRight()))
             {
                 return true;
             }
@@ -1516,12 +1522,14 @@ namespace tgui
             widgetStates.transform.translate(widget->getPosition() - origin);
             if (widget->getRotation() != 0)
             {
-                const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x, widget->getRotationOrigin().y * widget->getSize().y};
+                const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x,
+                                         widget->getRotationOrigin().y * widget->getSize().y};
                 widgetStates.transform.rotate(widget->getRotation(), rotOrigin);
             }
             if ((widget->getScale().x != 1) || (widget->getScale().y != 1))
             {
-                const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x, widget->getScaleOrigin().y * widget->getSize().y};
+                const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x,
+                                           widget->getScaleOrigin().y * widget->getSize().y};
                 widgetStates.transform.scale(widget->getScale(), scaleOrigin);
             }
 
@@ -1536,7 +1544,7 @@ namespace tgui
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
             if (m_focusedWidget == m_widgets[i])
-                return i+1;
+                return i + 1;
         }
 
         return 0;
@@ -1544,7 +1552,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool Container::tryFocusWidget(const Widget::Ptr &widget, bool reverseWidgetOrder, bool recursive)
+    bool Container::tryFocusWidget(const Widget::Ptr& widget, bool reverseWidgetOrder, bool recursive)
     {
         // If you are not allowed to focus the widget, then skip it
         if (!widget->canGainFocus() || !widget->isVisible() || !widget->isEnabled())
@@ -1633,9 +1641,11 @@ namespace tgui
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font") || (pair.first == U"Image") || (pair.first == U"Icon"))
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font")
+                || (pair.first == U"Image") || (pair.first == U"Icon"))
             {
-                if (pair.second->value.empty() || viewEqualIgnoreCase(pair.second->value, U"none") || viewEqualIgnoreCase(pair.second->value, U"null") || viewEqualIgnoreCase(pair.second->value, U"nullptr"))
+                if (pair.second->value.empty() || viewEqualIgnoreCase(pair.second->value, U"none")
+                    || viewEqualIgnoreCase(pair.second->value, U"null") || viewEqualIgnoreCase(pair.second->value, U"nullptr"))
                     continue;
 
                 String filename;
@@ -1645,7 +1655,8 @@ namespace tgui
                 {
                     // The filename is surrounded by quotes, with optional options behind it
                     const auto endQuotePos = pair.second->value.find('"', 1);
-                    TGUI_ASSERT(endQuotePos != String::npos, "End quote must exist in Container::injectFormFilePath, DataIO could not accept the value otherwise");
+                    TGUI_ASSERT(endQuotePos != String::npos,
+                                "End quote must exist in Container::injectFormFilePath, DataIO could not accept the value otherwise");
                     filename = pair.second->value.substr(1, endQuotePos - 1);
                 }
 
@@ -1671,13 +1682,14 @@ namespace tgui
                 {
                     bool canInjectPath = true;
                     if (!Filesystem::fileExists(getResourcePath() / path / filename)
-                     && Filesystem::fileExists(getResourcePath() / filename))
+                        && Filesystem::fileExists(getResourcePath() / filename))
                     {
                         canInjectPath = false;
-                        TGUI_PRINT_WARNING(U"Form file contained '" + filename
-                            + U"', which TGUI now interprets as '" + (getResourcePath() / path / filename).asString()
-                            + U"'. File was however found at '" + (getResourcePath() / filename).asString()
-                            + U"', which is the deprecated search location. Loading will fail in future TGUI versions.");
+                        TGUI_PRINT_WARNING(U"Form file contained '" + filename + U"', which TGUI now interprets as '"
+                                           + (getResourcePath() / path / filename).asString() + U"'. File was however found at '"
+                                           + (getResourcePath() / filename).asString()
+                                           + U"', which is the deprecated search location. Loading will fail in future TGUI "
+                                             U"versions.");
                     }
 
                     checkedFilenames[filename] = canInjectPath;
@@ -1749,6 +1761,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

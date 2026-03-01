@@ -30,10 +30,10 @@ TEST_CASE("[editBoxSlider]")
 
     SECTION("Signals")
     {
-        editBoxSlider->onValueChange([](){});
-        editBoxSlider->onValueChange([](float){});
+        editBoxSlider->onValueChange([]() {});
+        editBoxSlider->onValueChange([](float) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBoxSlider)->getSignal("ValueChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBoxSlider)->getSignal("ValueChanged").connect([] {}));
     }
 
     SECTION("WidgetType")

@@ -38,8 +38,7 @@ namespace tgui
     class TGUI_API CheckBox : public RadioButton
     {
     public:
-
-        using Ptr = std::shared_ptr<CheckBox>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<CheckBox>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const CheckBox>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "CheckBox"; //!< Type name of the widget
@@ -143,8 +142,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
         ///
@@ -163,8 +162,8 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         Texture m_textureUncheckedCached;
         Texture m_textureCheckedCached;
 
@@ -172,7 +171,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

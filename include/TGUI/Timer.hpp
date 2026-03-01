@@ -26,6 +26,7 @@
 #define TGUI_TIMER_HPP
 
 #include <TGUI/Config.hpp>
+
 #include <TGUI/Duration.hpp>
 #include <TGUI/Optional.hpp>
 
@@ -49,7 +50,6 @@ namespace tgui
     class TGUI_API Timer : public std::enable_shared_from_this<Timer>
     {
     public:
-
         using Ptr = std::shared_ptr<Timer>; // Only provided for potential consistence in user code
 
         Timer(const Timer&) = delete;
@@ -75,7 +75,9 @@ namespace tgui
         ///
         /// @return The created timer that can be used to start/stop it later or change the interval.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::shared_ptr<Timer> create(const std::function<void(std::shared_ptr<Timer>)>& callback, Duration interval, bool enable = true);
+        TGUI_NODISCARD static std::shared_ptr<Timer> create(const std::function<void(std::shared_ptr<Timer>)>& callback,
+                                                            Duration interval,
+                                                            bool enable = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Starts a timer
@@ -155,16 +157,16 @@ namespace tgui
         static void clearTimers();
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Default constructor, used by static create and scheduleCallback functions
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Timer() = default;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         static std::vector<std::shared_ptr<Timer>> m_activeTimers;
 
         bool m_repeats = false;
@@ -178,8 +180,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

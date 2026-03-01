@@ -22,13 +22,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widgets/FileDialog.hpp>
 #include <TGUI/FileDialogIconLoader.hpp>
+#include <TGUI/Widgets/FileDialog.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 
-#include <vector>
-#include <map>
 #include <ctime>
+#include <map>
+#include <vector>
 
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp>
@@ -91,10 +91,13 @@ namespace tgui
         m_comboBoxFileTypes->setWidth("33%");
         m_comboBoxFileTypes->setPosition("100% - 10", "#TGUI_INTERNAL$ButtonConfirm#.top - 15");
 
-        m_labelFilename->setPosition({10, "#TGUI_INTERNAL$ComboBoxFileTypes#.top + (#TGUI_INTERNAL$ComboBoxFileTypes#.height - #TGUI_INTERNAL$LabelFilename#.height) / 2"});
+        m_labelFilename->setPosition({10,
+                                      "#TGUI_INTERNAL$ComboBoxFileTypes#.top + (#TGUI_INTERNAL$ComboBoxFileTypes#.height - "
+                                      "#TGUI_INTERNAL$LabelFilename#.height) / 2"});
 
         m_editBoxFilename->setPosition("#TGUI_INTERNAL$ComboBoxFileTypes#.left - 10", "#TGUI_INTERNAL$ComboBoxFileTypes#.y");
-        m_editBoxFilename->setWidth("#TGUI_INTERNAL$EditBoxFilename#.x - #TGUI_INTERNAL$LabelFilename#.width - #TGUI_INTERNAL$LabelFilename#.x - 5");
+        m_editBoxFilename->setWidth(
+            "#TGUI_INTERNAL$EditBoxFilename#.x - #TGUI_INTERNAL$LabelFilename#.width - #TGUI_INTERNAL$LabelFilename#.x - 5");
 
         m_buttonBack->setPosition({10, 10});
         m_buttonBack->setSize({"height", "#TGUI_INTERNAL$EditBoxPath#.height"});
@@ -140,23 +143,23 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     FileDialog::FileDialog(const FileDialog& other) :
-        ChildWindow             {other},
-        onFileSelect            {other.onFileSelect},
-        onCancel                {other.onCancel},
-        m_currentDirectory      {other.m_currentDirectory},
-        m_filesInDirectory      {other.m_filesInDirectory},
-        m_fileIcons             {other.m_fileIcons},
-        m_sortColumnIndex       {other.m_sortColumnIndex},
-        m_sortInversed          {other.m_sortInversed},
-        m_pathHistory           {other.m_pathHistory},
-        m_pathHistoryIndex      {other.m_pathHistoryIndex},
-        m_fileMustExist         {other.m_fileMustExist},
-        m_selectingDirectory    {other.m_selectingDirectory},
-        m_multiSelect           {other.m_multiSelect},
-        m_fileTypeFilters       {other.m_fileTypeFilters},
+        ChildWindow{other},
+        onFileSelect{other.onFileSelect},
+        onCancel{other.onCancel},
+        m_currentDirectory{other.m_currentDirectory},
+        m_filesInDirectory{other.m_filesInDirectory},
+        m_fileIcons{other.m_fileIcons},
+        m_sortColumnIndex{other.m_sortColumnIndex},
+        m_sortInversed{other.m_sortInversed},
+        m_pathHistory{other.m_pathHistory},
+        m_pathHistoryIndex{other.m_pathHistoryIndex},
+        m_fileMustExist{other.m_fileMustExist},
+        m_selectingDirectory{other.m_selectingDirectory},
+        m_multiSelect{other.m_multiSelect},
+        m_fileTypeFilters{other.m_fileTypeFilters},
         m_selectedFileTypeFilter{other.m_selectedFileTypeFilter},
-        m_iconLoader            {FileDialogIconLoader::createInstance()},
-        m_selectedFiles         {other.m_selectedFiles}
+        m_iconLoader{FileDialogIconLoader::createInstance()},
+        m_selectedFiles{other.m_selectedFiles}
     {
         identifyChildWidgets();
         connectSignals();
@@ -168,34 +171,34 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     FileDialog::FileDialog(FileDialog&& other) noexcept :
-        ChildWindow             {std::move(other)},
-        onFileSelect            {std::move(other.onFileSelect)},
-        onCancel                {std::move(other.onCancel)},
-        m_buttonBack            {std::move(other.m_buttonBack)},
-        m_buttonForward         {std::move(other.m_buttonForward)},
-        m_buttonUp              {std::move(other.m_buttonUp)},
-        m_editBoxPath           {std::move(other.m_editBoxPath)},
-        m_listView              {std::move(other.m_listView)},
-        m_labelFilename         {std::move(other.m_labelFilename)},
-        m_editBoxFilename       {std::move(other.m_editBoxFilename)},
-        m_comboBoxFileTypes     {std::move(other.m_comboBoxFileTypes)},
-        m_buttonCancel          {std::move(other.m_buttonCancel)},
-        m_buttonConfirm         {std::move(other.m_buttonConfirm)},
-        m_buttonCreateFolder    {std::move(other.m_buttonCreateFolder)},
-        m_currentDirectory      {std::move(other.m_currentDirectory)},
-        m_filesInDirectory      {std::move(other.m_filesInDirectory)},
-        m_fileIcons             {std::move(other.m_fileIcons)},
-        m_sortColumnIndex       {std::move(other.m_sortColumnIndex)},
-        m_sortInversed          {std::move(other.m_sortInversed)},
-        m_pathHistory           {std::move(other.m_pathHistory)},
-        m_pathHistoryIndex      {std::move(other.m_pathHistoryIndex)},
-        m_fileMustExist         {std::move(other.m_fileMustExist)},
-        m_selectingDirectory    {std::move(other.m_selectingDirectory)},
-        m_multiSelect           {std::move(other.m_multiSelect)},
-        m_fileTypeFilters       {std::move(other.m_fileTypeFilters)},
+        ChildWindow{std::move(other)},
+        onFileSelect{std::move(other.onFileSelect)},
+        onCancel{std::move(other.onCancel)},
+        m_buttonBack{std::move(other.m_buttonBack)},
+        m_buttonForward{std::move(other.m_buttonForward)},
+        m_buttonUp{std::move(other.m_buttonUp)},
+        m_editBoxPath{std::move(other.m_editBoxPath)},
+        m_listView{std::move(other.m_listView)},
+        m_labelFilename{std::move(other.m_labelFilename)},
+        m_editBoxFilename{std::move(other.m_editBoxFilename)},
+        m_comboBoxFileTypes{std::move(other.m_comboBoxFileTypes)},
+        m_buttonCancel{std::move(other.m_buttonCancel)},
+        m_buttonConfirm{std::move(other.m_buttonConfirm)},
+        m_buttonCreateFolder{std::move(other.m_buttonCreateFolder)},
+        m_currentDirectory{std::move(other.m_currentDirectory)},
+        m_filesInDirectory{std::move(other.m_filesInDirectory)},
+        m_fileIcons{std::move(other.m_fileIcons)},
+        m_sortColumnIndex{std::move(other.m_sortColumnIndex)},
+        m_sortInversed{std::move(other.m_sortInversed)},
+        m_pathHistory{std::move(other.m_pathHistory)},
+        m_pathHistoryIndex{std::move(other.m_pathHistoryIndex)},
+        m_fileMustExist{std::move(other.m_fileMustExist)},
+        m_selectingDirectory{std::move(other.m_selectingDirectory)},
+        m_multiSelect{std::move(other.m_multiSelect)},
+        m_fileTypeFilters{std::move(other.m_fileTypeFilters)},
         m_selectedFileTypeFilter{std::move(other.m_selectedFileTypeFilter)},
-        m_iconLoader            {std::move(other.m_iconLoader)},
-        m_selectedFiles         {std::move(other.m_selectedFiles)}
+        m_iconLoader{std::move(other.m_iconLoader)},
+        m_selectedFiles{std::move(other.m_selectedFiles)}
     {
         connectSignals();
     }
@@ -716,8 +719,10 @@ namespace tgui
         // If only directories should be shown then remove the files from the list
         if (m_selectingDirectory)
         {
-            m_filesInDirectory.erase(std::remove_if(m_filesInDirectory.begin(), m_filesInDirectory.end(),
-                [](const Filesystem::FileInfo& info){ return !info.directory; }), m_filesInDirectory.end());
+            m_filesInDirectory.erase(std::remove_if(m_filesInDirectory.begin(),
+                                                    m_filesInDirectory.end(),
+                                                    [](const Filesystem::FileInfo& info) { return !info.directory; }),
+                                     m_filesInDirectory.end());
         }
 
         m_fileIcons.clear();
@@ -753,7 +758,8 @@ namespace tgui
         items.reserve(m_filesInDirectory.size());
         if (!m_fileIcons.empty())
         {
-            TGUI_ASSERT(m_filesInDirectory.size() == m_fileIcons.size(), "Icon count must match file count in FileDialog::sortFilesInListView");
+            TGUI_ASSERT(m_filesInDirectory.size() == m_fileIcons.size(),
+                        "Icon count must match file count in FileDialog::sortFilesInListView");
             for (std::size_t i = 0; i < m_filesInDirectory.size(); ++i)
                 items.emplace_back(m_filesInDirectory[i], m_fileIcons[i]);
         }
@@ -763,34 +769,37 @@ namespace tgui
                 items.emplace_back(file, Texture{});
         }
 
-        std::sort(items.begin(), items.end(), [this](const auto& leftItem, const auto& rightItem){
-            const Filesystem::FileInfo& left = leftItem.first;
-            const Filesystem::FileInfo& right = rightItem.first;
-            if (m_sortColumnIndex == 2) // Sort by modification date
-            {
-                if (m_sortInversed)
-                    return left.modificationTime < right.modificationTime;
-                return left.modificationTime > right.modificationTime;
-            }
-            if (m_sortColumnIndex == 1) // Sort by file size
-            {
-                if (left.directory != right.directory)
-                    return right.directory; // Place directories at the end of the list
-                if (left.directory) // Both are directories, sort them alphabetically by filename since they have no size
-                    return left.filename.toLower() < right.filename.toLower();
-                // Both are files, sort them by file size
-                if (m_sortInversed)
-                    return left.fileSize < right.fileSize;
-                return left.fileSize > right.fileSize;
-            }
-            // Sort by filename
-            if (left.directory != right.directory)
-                return left.directory; // Place directories in front of files
-            // Both are directories or both are files, so sort alphabetically
-            if (m_sortInversed)
-                return left.filename.toLower() > right.filename.toLower();
-            return left.filename.toLower() < right.filename.toLower();
-        });
+        std::sort(items.begin(),
+                  items.end(),
+                  [this](const auto& leftItem, const auto& rightItem)
+                  {
+                      const Filesystem::FileInfo& left = leftItem.first;
+                      const Filesystem::FileInfo& right = rightItem.first;
+                      if (m_sortColumnIndex == 2) // Sort by modification date
+                      {
+                          if (m_sortInversed)
+                              return left.modificationTime < right.modificationTime;
+                          return left.modificationTime > right.modificationTime;
+                      }
+                      if (m_sortColumnIndex == 1) // Sort by file size
+                      {
+                          if (left.directory != right.directory)
+                              return right.directory; // Place directories at the end of the list
+                          if (left.directory) // Both are directories, sort them alphabetically by filename since they have no size
+                              return left.filename.toLower() < right.filename.toLower();
+                          // Both are files, sort them by file size
+                          if (m_sortInversed)
+                              return left.fileSize < right.fileSize;
+                          return left.fileSize > right.fileSize;
+                      }
+                      // Sort by filename
+                      if (left.directory != right.directory)
+                          return left.directory; // Place directories in front of files
+                      // Both are directories or both are files, so sort alphabetically
+                      if (m_sortInversed)
+                          return left.filename.toLower() > right.filename.toLower();
+                      return left.filename.toLower() < right.filename.toLower();
+                  });
 
         if (!m_listView->getHeaderVisible())
         {
@@ -811,13 +820,18 @@ namespace tgui
                 bool fileAccepted = false;
                 for (const auto& filter : m_fileTypeFilters[m_selectedFileTypeFilter].second)
                 {
-                    TGUI_ASSERT(!filter.empty(), "FileDialog::sortFilesInListView can't have empty filter, they are removed in setFileTypeFilters");
+                    TGUI_ASSERT(!filter.empty(),
+                                "FileDialog::sortFilesInListView can't have empty filter, they are removed in setFileTypeFilters");
 
                     if (filter[0] == '*')
                     {
                         if ((lowercaseFilename.length() >= filter.length() - 1)
-                         && (lowercaseFilename.compare(lowercaseFilename.length() - (filter.length() - 1),
-                                                       filter.length() - 1, filter, 1, filter.length() - 1) == 0))
+                            && (lowercaseFilename.compare(lowercaseFilename.length() - (filter.length() - 1),
+                                                          filter.length() - 1,
+                                                          filter,
+                                                          1,
+                                                          filter.length() - 1)
+                                == 0))
                         {
                             fileAccepted = true;
                             break;
@@ -842,13 +856,13 @@ namespace tgui
                     fileSizeStr = U"0.0 KB";
                 else if (file.fileSize < static_cast<std::uintmax_t>(100))
                     fileSizeStr = U"0.1 KB";
-                else if (file.fileSize < static_cast<std::uintmax_t>(1000)*1000)
+                else if (file.fileSize < static_cast<std::uintmax_t>(1000) * 1000)
                     fileSizeStr = String::fromNumberRounded(file.fileSize / 1000.f, 1) + U" KB";
-                else if (file.fileSize < static_cast<std::uintmax_t>(1000)*1000*1000)
+                else if (file.fileSize < static_cast<std::uintmax_t>(1000) * 1000 * 1000)
                     fileSizeStr = String::fromNumberRounded(file.fileSize / 1000.f / 1000.f, 1) + U" MB";
-                else if (file.fileSize < static_cast<std::uintmax_t>(1000)*1000*1000*1000)
+                else if (file.fileSize < static_cast<std::uintmax_t>(1000) * 1000 * 1000 * 1000)
                     fileSizeStr = String::fromNumberRounded(file.fileSize / 1000.f / 1000.f / 1000.f, 1) + U" GB";
-                else if (file.fileSize < static_cast<std::uintmax_t>(1000)*1000*1000*1000*1000)
+                else if (file.fileSize < static_cast<std::uintmax_t>(1000) * 1000 * 1000 * 1000 * 1000)
                     fileSizeStr = String::fromNumberRounded(file.fileSize / 1000.f / 1000.f / 1000.f / 1000.f, 1) + U" TB";
             }
 
@@ -862,7 +876,8 @@ namespace tgui
                 if (std::strftime(&buffer[0], sizeof(buffer), "%e %b %Y  %R", &TimeStructure) != 0)
                     modificationTimeConverted = true;
             }
-#elif defined(TGUI_SYSTEM_WINDOWS) && defined(__GNUC__) // MinGW doesn't support %e (day of the month without leading 0) and %R (same as %H:%M)
+#elif defined(TGUI_SYSTEM_WINDOWS) \
+    && defined(__GNUC__) // MinGW doesn't support %e (day of the month without leading 0) and %R (same as %H:%M)
             if (strftime(&buffer[0], sizeof(buffer), "%d %b %Y  %H:%M", std::localtime(&file.modificationTime)) != 0)
                 modificationTimeConverted = true;
 #else
@@ -876,7 +891,8 @@ namespace tgui
             // Hide .lnk and .url extensions
             String filename = file.filename;
             const auto filenameLen = file.filename.length();
-            if ((filename.length() > 4) && ((filename.compare(filenameLen - 4, 4, U".lnk", 4) == 0) || (filename.compare(filenameLen - 4, 4, U".url", 4) == 0)))
+            if ((filename.length() > 4)
+                && ((filename.compare(filenameLen - 4, 4, U".lnk", 4) == 0) || (filename.compare(filenameLen - 4, 4, U".url", 4) == 0)))
                 filename.erase(filenameLen - 4, 4);
 
             const std::size_t itemIndex = m_listView->addItem({filename, fileSizeStr, modificationTimeStr});
@@ -912,8 +928,10 @@ namespace tgui
     {
         const String& filename = m_editBoxFilename->getText();
         const bool enabled = ((filename != U".") && (filename != U"..")) // Always disabled for "." and ".." filenames
-            && (m_selectingDirectory || !m_listView->getSelectedItemIndices().empty() || !filename.empty()) // Disabled when no file selected
-            && (!m_fileMustExist || Filesystem::fileExists(m_currentDirectory / Filesystem::Path(filename))); // Disabled for non-existent files
+                             && (m_selectingDirectory || !m_listView->getSelectedItemIndices().empty()
+                                 || !filename.empty()) // Disabled when no file selected
+                             && (!m_fileMustExist
+                                 || Filesystem::fileExists(m_currentDirectory / Filesystem::Path(filename))); // Disabled for non-existent files
 
         if (enabled != m_buttonConfirm->isEnabled())
             m_buttonConfirm->setEnabled(enabled);
@@ -945,7 +963,7 @@ namespace tgui
 
             // If we were looking for a file but a directory was selected then just enter that directory
             if (!m_selectingDirectory && (m_listView->getSelectedItemIndices().size() == 1)
-                  && (m_listView->getItemData<bool>(*m_listView->getSelectedItemIndices().begin())))
+                && (m_listView->getItemData<bool>(*m_listView->getSelectedItemIndices().begin())))
             {
                 changePath(m_currentDirectory / m_listView->getItem(*m_listView->getSelectedItemIndices().begin()), true);
                 m_editBoxFilename->setText(U"");
@@ -969,7 +987,7 @@ namespace tgui
         m_buttonCreateFolder->setPosition("10", "100% - 10");
 
         m_buttonCreateFolder->onPress.disconnectAll();
-        m_buttonCreateFolder->onPress([this]{ createCreateFolderDialog(); });
+        m_buttonCreateFolder->onPress([this] { createCreateFolderDialog(); });
 
         add(m_buttonCreateFolder, "#TGUI_INTERNAL$ButtonCreateFolder#");
     }
@@ -1009,19 +1027,21 @@ namespace tgui
         confirmButton->setOrigin(0.5f, 0.5f);
         confirmButton->setEnabled(false);
 
-        folderNameEditBox->onTextChange([editBox=folderNameEditBox.get(), button=confirmButton.get()] {
-            const bool isValid = isValidFolderName(editBox->getText());
-            button->setEnabled(isValid);
-        });
+        folderNameEditBox->onTextChange(
+            [editBox = folderNameEditBox.get(), button = confirmButton.get()]
+            {
+                const bool isValid = isValidFolderName(editBox->getText());
+                button->setEnabled(isValid);
+            });
 
-        cancelButton->onPress([this] {
-            destroyCreateFolderDialog();
-        });
+        cancelButton->onPress([this] { destroyCreateFolderDialog(); });
 
-        confirmButton->onPress([this, editBox=folderNameEditBox.get()] {
-            createFolder(editBox->getText());
-            destroyCreateFolderDialog();
-        });
+        confirmButton->onPress(
+            [this, editBox = folderNameEditBox.get()]
+            {
+                createFolder(editBox->getText());
+                destroyCreateFolderDialog();
+            });
 
         createFolderWindow->add(folderNameEditBox, "FolderNameEditBox");
         createFolderWindow->add(cancelButton);
@@ -1096,99 +1116,114 @@ namespace tgui
         m_buttonConfirm->onPress.disconnectAll();
         m_editBoxFilename->onTextChange.disconnectAll();
 
-        m_buttonBack->onPress([this]{
-            --m_pathHistoryIndex;
-            changePath(m_pathHistory[m_pathHistoryIndex], false);
-            historyChanged();
-        });
-        m_buttonForward->onPress([this]{
-            ++m_pathHistoryIndex;
-            changePath(m_pathHistory[m_pathHistoryIndex], false);
-            historyChanged();
-        });
-        m_buttonUp->onPress([this]{
-            auto parent = m_currentDirectory.getParentPath();
+        m_buttonBack->onPress(
+            [this]
+            {
+                --m_pathHistoryIndex;
+                changePath(m_pathHistory[m_pathHistoryIndex], false);
+                historyChanged();
+            });
+        m_buttonForward->onPress(
+            [this]
+            {
+                ++m_pathHistoryIndex;
+                changePath(m_pathHistory[m_pathHistoryIndex], false);
+                historyChanged();
+            });
+        m_buttonUp->onPress(
+            [this]
+            {
+                auto parent = m_currentDirectory.getParentPath();
 
-            // If the path ended with a slash but without a filename, then getParentPath simply
-            // removed the slash. We however want to go up one level higher.
-            if (m_currentDirectory.getFilename().empty())
-                parent = parent.getParentPath();
+                // If the path ended with a slash but without a filename, then getParentPath simply
+                // removed the slash. We however want to go up one level higher.
+                if (m_currentDirectory.getFilename().empty())
+                    parent = parent.getParentPath();
 
 #ifdef TGUI_SYSTEM_WINDOWS
-            if (parent.asString() == m_currentDirectory.asString())
-                parent = Filesystem::Path("");
+                if (parent.asString() == m_currentDirectory.asString())
+                    parent = Filesystem::Path("");
 #endif // TGUI_SYSTEM_WINDOWS
 
-            changePath(parent, true);
-        });
-        m_editBoxPath->onReturnKeyPress([this]{
-            changePath(Filesystem::Path(m_editBoxPath->getText()), true);
-        });
-        m_comboBoxFileTypes->onItemSelect([this](int selectedItem){
-            TGUI_ASSERT(selectedItem >= 0, "There always needs to be a file type filter selected in FileDialog");
-            TGUI_ASSERT(static_cast<std::size_t>(selectedItem) < m_fileTypeFilters.size(), "Can't select file type filter that doesn't exist");
-            m_selectedFileTypeFilter = static_cast<std::size_t>(selectedItem);
-            sortFilesInListView();
-        });
-        m_listView->onItemSelect([this](int itemIndex){
-            updateConfirmButtonEnabled();
-            if (itemIndex < 0)
-                return;
-
-            if (m_multiSelect && (m_listView->getSelectedItemIndices().size() > 1))
-                m_editBoxFilename->setText(U"");
-            else if (m_selectingDirectory || !m_listView->getItemData<bool>(static_cast<std::size_t>(itemIndex)))
-                m_editBoxFilename->setText(m_listView->getItem(static_cast<std::size_t>(itemIndex)));
-        });
-        m_listView->onHeaderClick([this](int itemIndex){
-            TGUI_ASSERT(itemIndex >= 0, "Can't click on list view header that doesn't exist");
-            if (m_sortColumnIndex != static_cast<std::size_t>(itemIndex))
+                changePath(parent, true);
+            });
+        m_editBoxPath->onReturnKeyPress([this] { changePath(Filesystem::Path(m_editBoxPath->getText()), true); });
+        m_comboBoxFileTypes->onItemSelect(
+            [this](int selectedItem)
             {
-                m_sortColumnIndex = static_cast<std::size_t>(itemIndex);
-                m_sortInversed = false;
-            }
-            else
-                m_sortInversed = !m_sortInversed;
-
-            sortFilesInListView();
-        });
-        m_listView->onDoubleClick([this](int itemIndex){
-            if (itemIndex < 0)
-                return;
-
-            if (m_listView->getItemData<bool>(static_cast<std::size_t>(itemIndex)))
+                TGUI_ASSERT(selectedItem >= 0, "There always needs to be a file type filter selected in FileDialog");
+                TGUI_ASSERT(static_cast<std::size_t>(selectedItem) < m_fileTypeFilters.size(),
+                            "Can't select file type filter that doesn't exist");
+                m_selectedFileTypeFilter = static_cast<std::size_t>(selectedItem);
+                sortFilesInListView();
+            });
+        m_listView->onItemSelect(
+            [this](int itemIndex)
             {
-#ifdef TGUI_SYSTEM_WINDOWS
-                if (m_currentDirectory.asString().empty())
-                {
-                    changePath(Filesystem::Path(m_listView->getItem(static_cast<std::size_t>(itemIndex))), true);
+                updateConfirmButtonEnabled();
+                if (itemIndex < 0)
                     return;
-                }
-#endif
-                changePath(m_currentDirectory / m_listView->getItem(static_cast<std::size_t>(itemIndex)), true);
-                if (m_selectingDirectory)
+
+                if (m_multiSelect && (m_listView->getSelectedItemIndices().size() > 1))
                     m_editBoxFilename->setText(U"");
-            }
-            else
+                else if (m_selectingDirectory || !m_listView->getItemData<bool>(static_cast<std::size_t>(itemIndex)))
+                    m_editBoxFilename->setText(m_listView->getItem(static_cast<std::size_t>(itemIndex)));
+            });
+        m_listView->onHeaderClick(
+            [this](int itemIndex)
             {
-                m_editBoxFilename->setText(m_listView->getItem(static_cast<std::size_t>(itemIndex)));
-                filesSelected({m_currentDirectory / Filesystem::Path(m_editBoxFilename->getText())});
-            }
-        });
-        m_buttonCancel->onPress([this]{ filesSelected({}); });
-        m_buttonConfirm->onPress([this]{ confirmButtonPressed(); });
-        m_editBoxFilename->onTextChange([this]{
-            // Deselect items when the user starts typing while there are still selected items
-            if (!m_listView->getSelectedItemIndices().empty() && !m_editBoxFilename->getText().empty()
-             && (m_listView->getItem(*m_listView->getSelectedItemIndices().begin()) != m_editBoxFilename->getText()))
+                TGUI_ASSERT(itemIndex >= 0, "Can't click on list view header that doesn't exist");
+                if (m_sortColumnIndex != static_cast<std::size_t>(itemIndex))
+                {
+                    m_sortColumnIndex = static_cast<std::size_t>(itemIndex);
+                    m_sortInversed = false;
+                }
+                else
+                    m_sortInversed = !m_sortInversed;
+
+                sortFilesInListView();
+            });
+        m_listView->onDoubleClick(
+            [this](int itemIndex)
             {
-                m_listView->setSelectedItems({});
-            }
+                if (itemIndex < 0)
+                    return;
 
-            updateConfirmButtonEnabled();
-        });
+                if (m_listView->getItemData<bool>(static_cast<std::size_t>(itemIndex)))
+                {
+#ifdef TGUI_SYSTEM_WINDOWS
+                    if (m_currentDirectory.asString().empty())
+                    {
+                        changePath(Filesystem::Path(m_listView->getItem(static_cast<std::size_t>(itemIndex))), true);
+                        return;
+                    }
+#endif
+                    changePath(m_currentDirectory / m_listView->getItem(static_cast<std::size_t>(itemIndex)), true);
+                    if (m_selectingDirectory)
+                        m_editBoxFilename->setText(U"");
+                }
+                else
+                {
+                    m_editBoxFilename->setText(m_listView->getItem(static_cast<std::size_t>(itemIndex)));
+                    filesSelected({m_currentDirectory / Filesystem::Path(m_editBoxFilename->getText())});
+                }
+            });
+        m_buttonCancel->onPress([this] { filesSelected({}); });
+        m_buttonConfirm->onPress([this] { confirmButtonPressed(); });
+        m_editBoxFilename->onTextChange(
+            [this]
+            {
+                // Deselect items when the user starts typing while there are still selected items
+                if (!m_listView->getSelectedItemIndices().empty() && !m_editBoxFilename->getText().empty()
+                    && (m_listView->getItem(*m_listView->getSelectedItemIndices().begin()) != m_editBoxFilename->getText()))
+                {
+                    m_listView->setSelectedItems({});
+                }
 
-        m_closeButton->onPress([this]{ filesSelected({}); });
+                updateConfirmButtonEnabled();
+            });
+
+        m_closeButton->onPress([this] { filesSelected({}); });
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1302,19 +1337,22 @@ namespace tgui
 
         // Child widgets are saved indirectly by saving the child window.
         // The list view however contained items which shouldn't be saved, so we removed the nodes that were created for them.
-        const auto listViewNodeIt = std::find_if(node->children.cbegin(), node->children.cend(), [](const std::unique_ptr<DataIO::Node>& child){
-            return child->name == U"ListView.\"#TGUI_INTERNAL$ListView#\"";
-        });
+        const auto listViewNodeIt = std::find_if(node->children.cbegin(),
+                                                 node->children.cend(),
+                                                 [](const std::unique_ptr<DataIO::Node>& child)
+                                                 { return child->name == U"ListView.\"#TGUI_INTERNAL$ListView#\""; });
         TGUI_ASSERT(listViewNodeIt != node->children.end(), "FileDialog::save couldn't find its ListView");
         const auto& listViewNode = *listViewNodeIt;
-        listViewNode->children.erase(std::remove_if(listViewNode->children.begin(), listViewNode->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-            return child->name == U"Item";
-        }), listViewNode->children.end());
+        listViewNode->children.erase(std::remove_if(listViewNode->children.begin(),
+                                                    listViewNode->children.end(),
+                                                    [](const std::unique_ptr<DataIO::Node>& child) { return child->name == U"Item"; }),
+                                     listViewNode->children.end());
 
         // We currently don't save the path, so the text in the path edit box shouldn't be saved either
-        const auto pathEditBoxNodeIt = std::find_if(node->children.cbegin(), node->children.cend(), [](const std::unique_ptr<DataIO::Node>& child){
-            return child->name == U"EditBox.\"#TGUI_INTERNAL$EditBoxPath#\"";
-        });
+        const auto pathEditBoxNodeIt = std::find_if(node->children.cbegin(),
+                                                    node->children.cend(),
+                                                    [](const std::unique_ptr<DataIO::Node>& child)
+                                                    { return child->name == U"EditBox.\"#TGUI_INTERNAL$EditBoxPath#\""; });
         TGUI_ASSERT(pathEditBoxNodeIt != node->children.end(), "FileDialog::save couldn't find its path EditBox");
         const auto& pathEditBoxNode = *pathEditBoxNodeIt;
         pathEditBoxNode->propertyValuePairs.erase(U"Text");
@@ -1347,7 +1385,8 @@ namespace tgui
             }
 
             if (m_fileTypeFilters.size() > 1)
-                node->propertyValuePairs[U"SelectedFileTypeFilter"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_selectedFileTypeFilter));
+                node->propertyValuePairs[U"SelectedFileTypeFilter"] = std::make_unique<DataIO::ValueNode>(
+                    String::fromNumber(m_selectedFileTypeFilter));
         }
 
         return node;
@@ -1371,7 +1410,9 @@ namespace tgui
             if (!childNode->propertyValuePairs[U"Pattern"]->listNode)
                 throw Exception{U"Failed to parse 'Pattern' property inside the 'FileTypeFilter' property, expected a list as value"};
 
-            const String description = Deserializer::deserialize(ObjectConverter::Type::String, childNode->propertyValuePairs[U"Description"]->value).getString();
+            const String description = Deserializer::deserialize(ObjectConverter::Type::String,
+                                                                 childNode->propertyValuePairs[U"Description"]->value)
+                                           .getString();
 
             std::vector<String> patterns;
             for (const auto& item : childNode->propertyValuePairs[U"Pattern"]->valueList)
@@ -1382,9 +1423,10 @@ namespace tgui
 
         // We have to remove FileTypeFilter nodes before calling the load function on the base class, because Container will
         // assume that all child sections are widgets.
-        node->children.erase(std::remove_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-            return child->name == U"FileTypeFilter";
-        }), node->children.end());
+        node->children.erase(std::remove_if(node->children.begin(),
+                                            node->children.end(),
+                                            [](const std::unique_ptr<DataIO::Node>& child) { return child->name == U"FileTypeFilter"; }),
+                             node->children.end());
 
         // Remove the widgets that the constructor created because they will be created when loading the child window
         removeAllWidgets();
@@ -1395,24 +1437,29 @@ namespace tgui
         if (!m_buttonCreateFolder)
             m_buttonCreateFolder = Button::create();
 
-        if (!m_buttonBack || !m_buttonForward || !m_buttonUp || !m_editBoxPath || !m_listView || !m_labelFilename
-         || !m_editBoxFilename || !m_comboBoxFileTypes || !m_buttonCancel || !m_buttonConfirm)
+        if (!m_buttonBack || !m_buttonForward || !m_buttonUp || !m_editBoxPath || !m_listView || !m_labelFilename || !m_editBoxFilename
+            || !m_comboBoxFileTypes || !m_buttonCancel || !m_buttonConfirm)
             throw Exception{U"Failed to find all internal child widgets while loading FileDialog"};
 
         connectSignals();
 
         if (node->propertyValuePairs[U"FileMustExist"])
-            setFileMustExist(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"FileMustExist"]->value).getBool());
+            setFileMustExist(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"FileMustExist"]->value).getBool());
         if (node->propertyValuePairs[U"SelectingDirectory"])
-            setSelectingDirectory(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"SelectingDirectory"]->value).getBool());
+            setSelectingDirectory(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"SelectingDirectory"]->value).getBool());
         if (node->propertyValuePairs[U"MultiSelect"])
-            setMultiSelect(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"MultiSelect"]->value).getBool());
+            setMultiSelect(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"MultiSelect"]->value).getBool());
 
         if (!fileTypeFilters.empty())
         {
             std::size_t filterIndex = 0;
             if (node->propertyValuePairs[U"SelectedFileTypeFilter"])
-                filterIndex = static_cast<std::size_t>(Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"SelectedFileTypeFilter"]->value).getNumber());
+                filterIndex = static_cast<std::size_t>(
+                    Deserializer::deserialize(ObjectConverter::Type::Number, node->propertyValuePairs[U"SelectedFileTypeFilter"]->value)
+                        .getNumber());
 
             setFileTypeFilters(fileTypeFilters, filterIndex);
         }
@@ -1428,6 +1475,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

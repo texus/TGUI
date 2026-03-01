@@ -25,14 +25,15 @@
 #ifndef TGUI_BACKEND_HPP
 #define TGUI_BACKEND_HPP
 
-#include <TGUI/Font.hpp>
-#include <TGUI/Event.hpp>
-#include <TGUI/Cursor.hpp>
 #include <TGUI/Backend/Font/BackendFont.hpp>
 #include <TGUI/Backend/Font/BackendFontFactory.hpp>
+#include <TGUI/Backend/Renderer/BackendRenderer.hpp>
 #include <TGUI/Backend/Renderer/BackendText.hpp>
 #include <TGUI/Backend/Renderer/BackendTexture.hpp>
-#include <TGUI/Backend/Renderer/BackendRenderer.hpp>
+
+#include <TGUI/Cursor.hpp>
+#include <TGUI/Event.hpp>
+#include <TGUI/Font.hpp>
 
 #include <cstdint>
 #include <memory>
@@ -83,7 +84,6 @@ namespace tgui
     class TGUI_API Backend
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +223,8 @@ namespace tgui
         ///
         /// @return Whether queries modifier key is being pressed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead") TGUI_NODISCARD virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey);
+        TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead")
+        TGUI_NODISCARD virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the contents of the clipboard
@@ -332,8 +333,8 @@ namespace tgui
         void unregisterSvgSprite(Sprite* sprite);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         bool m_destroyOnLastGuiDetatch = false;
         String m_clipboardContents;
         float m_fontScale = 1;
@@ -347,7 +348,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

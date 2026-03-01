@@ -26,6 +26,7 @@
 #define TGUI_GUI_BUILDER_WIDGET_PROPERTIES_HPP
 
 #include <TGUI/TGUI.hpp>
+
 #include <iostream>
 
 using PropertyValueMap = std::map<tgui::String, std::pair<tgui::String, tgui::String>>;
@@ -80,13 +81,16 @@ struct WidgetProperties
         pairs["NavigationDown"] = {"String", widget->getNavigationDown() ? widget->getNavigationDown()->getWidgetName() : U""};
         pairs["NavigationLeft"] = {"String", widget->getNavigationLeft() ? widget->getNavigationLeft()->getWidgetName() : U""};
         pairs["NavigationRight"] = {"String", widget->getNavigationRight() ? widget->getNavigationRight()->getWidgetName() : U""};
-        pairs["MouseCursor"] = {"Enum{Arrow,Text,Hand,SizeLeft,SizeRight,SizeTop,SizeBottom,SizeBottomRight,SizeTopLeft,SizeBottomLeft,SizeTopRight,Cross,Help,NotAllowed,Move}", serializeMouseCursor(widget->getMouseCursor())};
+        pairs["MouseCursor"] =
+            {"Enum{Arrow,Text,Hand,SizeLeft,SizeRight,SizeTop,SizeBottom,SizeBottomRight,SizeTopLeft,SizeBottomLeft,SizeTopRight,"
+             "Cross,Help,NotAllowed,Move}",
+             serializeMouseCursor(widget->getMouseCursor())};
         pairs["IgnoreMouseEvents"] = {"Bool", tgui::Serializer::serialize(widget->getIgnoreMouseEvents())};
         try
         {
             pairs["UserData"] = {"String", widget->getUserData<tgui::String>()};
         }
-        catch(const std::bad_cast&)
+        catch (const std::bad_cast&)
         {
             pairs["UserData"] = {"String", ""};
         }
@@ -208,21 +212,36 @@ struct WidgetProperties
     {
         switch (cursor)
         {
-            case tgui::Cursor::Type::Text:            return "Text";
-            case tgui::Cursor::Type::Hand:            return "Hand";
-            case tgui::Cursor::Type::SizeLeft:        return "SizeLeft";
-            case tgui::Cursor::Type::SizeRight:       return "SizeRight";
-            case tgui::Cursor::Type::SizeTop:         return "SizeTop";
-            case tgui::Cursor::Type::SizeBottom:      return "SizeBottom";
-            case tgui::Cursor::Type::SizeBottomRight: return "SizeBottomRight";
-            case tgui::Cursor::Type::SizeTopLeft:     return "SizeTopLeft";
-            case tgui::Cursor::Type::SizeBottomLeft:  return "SizeBottomLeft";
-            case tgui::Cursor::Type::SizeTopRight:    return "SizeTopRight";
-            case tgui::Cursor::Type::Crosshair:       return "Crosshair";
-            case tgui::Cursor::Type::Help:            return "Help";
-            case tgui::Cursor::Type::NotAllowed:      return "NotAllowed";
-            case tgui::Cursor::Type::Move:            return "Move";
-            default:                                  return "Arrow";
+            case tgui::Cursor::Type::Text:
+                return "Text";
+            case tgui::Cursor::Type::Hand:
+                return "Hand";
+            case tgui::Cursor::Type::SizeLeft:
+                return "SizeLeft";
+            case tgui::Cursor::Type::SizeRight:
+                return "SizeRight";
+            case tgui::Cursor::Type::SizeTop:
+                return "SizeTop";
+            case tgui::Cursor::Type::SizeBottom:
+                return "SizeBottom";
+            case tgui::Cursor::Type::SizeBottomRight:
+                return "SizeBottomRight";
+            case tgui::Cursor::Type::SizeTopLeft:
+                return "SizeTopLeft";
+            case tgui::Cursor::Type::SizeBottomLeft:
+                return "SizeBottomLeft";
+            case tgui::Cursor::Type::SizeTopRight:
+                return "SizeTopRight";
+            case tgui::Cursor::Type::Crosshair:
+                return "Crosshair";
+            case tgui::Cursor::Type::Help:
+                return "Help";
+            case tgui::Cursor::Type::NotAllowed:
+                return "NotAllowed";
+            case tgui::Cursor::Type::Move:
+                return "Move";
+            default:
+                return "Arrow";
         }
     }
 

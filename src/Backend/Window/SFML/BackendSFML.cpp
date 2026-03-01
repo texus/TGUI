@@ -27,9 +27,9 @@
 #include <TGUI/Timer.hpp>
 
 #include <SFML/Config.hpp>
-#include <SFML/Window/Window.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Clipboard.hpp>
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Window.hpp>
 
 #if defined(TGUI_SYSTEM_LINUX) && (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) && defined(TGUI_USE_X11)
     #include <X11/Xlib.h>
@@ -38,10 +38,11 @@
 
 #ifdef TGUI_SYSTEM_ANDROID
     #include <SFML/System/NativeActivity.hpp>
-    #include <android/asset_manager_jni.h>
+
     #include <android/asset_manager.h>
-    #include <android/native_activity.h>
+    #include <android/asset_manager_jni.h>
     #include <android/configuration.h>
+    #include <android/native_activity.h>
 #endif
 
 #if SFML_VERSION_MAJOR < 2 || (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 5)
@@ -116,10 +117,9 @@ namespace tgui
     {
 #ifdef TGUI_SYSTEM_LINUX
         // On Linux we use directional resize arrows, but SFML has no support for them
-        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
-         || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
-         || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
-         || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
+        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight) || (type == Cursor::Type::SizeTop)
+            || (type == Cursor::Type::SizeBottom) || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
+            || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
         {
             // If the cursor was previously set to a bitmap then release its resources
             m_mouseCursors.erase(type);
@@ -169,14 +169,14 @@ namespace tgui
     {
         switch (modifierKey)
         {
-        case Event::KeyModifier::System:
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LSystem) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RSystem);
-        case Event::KeyModifier::Control:
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RControl);
-        case Event::KeyModifier::Shift:
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RShift);
-        case Event::KeyModifier::Alt:
-            return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RAlt);
+            case Event::KeyModifier::System:
+                return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LSystem) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RSystem);
+            case Event::KeyModifier::Control:
+                return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RControl);
+            case Event::KeyModifier::Shift:
+                return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RShift);
+            case Event::KeyModifier::Alt:
+                return sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LAlt) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RAlt);
         }
 
         TGUI_ASSERT(false, "BackendSFML::isKeyboardModifierPressed called with an invalid value");
@@ -241,82 +241,82 @@ namespace tgui
         sf::Cursor::Type typeSFML = sf::Cursor::Type::Arrow;
         switch (type)
         {
-        case Cursor::Type::Arrow:
-            typeSFML = sf::Cursor::Type::Arrow;
-            break;
-        case Cursor::Type::Text:
-            typeSFML = sf::Cursor::Type::Text;
-            break;
-        case Cursor::Type::Hand:
-            typeSFML = sf::Cursor::Type::Hand;
-            break;
+            case Cursor::Type::Arrow:
+                typeSFML = sf::Cursor::Type::Arrow;
+                break;
+            case Cursor::Type::Text:
+                typeSFML = sf::Cursor::Type::Text;
+                break;
+            case Cursor::Type::Hand:
+                typeSFML = sf::Cursor::Type::Hand;
+                break;
 #if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6 // SFML < 2.6 has no directional arrows for Linux
-        case Cursor::Type::SizeLeft:
-        case Cursor::Type::SizeRight:
-            typeSFML = sf::Cursor::Type::SizeHorizontal;
-            break;
-        case Cursor::Type::SizeTop:
-        case Cursor::Type::SizeBottom:
-            typeSFML = sf::Cursor::Type::SizeVertical;
-            break;
-        case Cursor::Type::SizeBottomRight:
-        case Cursor::Type::SizeTopLeft:
-            typeSFML = sf::Cursor::Type::SizeTopLeftBottomRight;
-            break;
-        case Cursor::Type::SizeBottomLeft:
-        case Cursor::Type::SizeTopRight:
-            typeSFML = sf::Cursor::Type::SizeBottomLeftTopRight;
-            break;
+            case Cursor::Type::SizeLeft:
+            case Cursor::Type::SizeRight:
+                typeSFML = sf::Cursor::Type::SizeHorizontal;
+                break;
+            case Cursor::Type::SizeTop:
+            case Cursor::Type::SizeBottom:
+                typeSFML = sf::Cursor::Type::SizeVertical;
+                break;
+            case Cursor::Type::SizeBottomRight:
+            case Cursor::Type::SizeTopLeft:
+                typeSFML = sf::Cursor::Type::SizeTopLeftBottomRight;
+                break;
+            case Cursor::Type::SizeBottomLeft:
+            case Cursor::Type::SizeTopRight:
+                typeSFML = sf::Cursor::Type::SizeBottomLeftTopRight;
+                break;
 #else // SFML >= 2.6
-        case Cursor::Type::SizeLeft:
-            typeSFML = sf::Cursor::Type::SizeLeft;
-            break;
-        case Cursor::Type::SizeRight:
-            typeSFML = sf::Cursor::Type::SizeRight;
-            break;
-        case Cursor::Type::SizeTop:
-            typeSFML = sf::Cursor::Type::SizeTop;
-            break;
-        case Cursor::Type::SizeBottom:
-            typeSFML = sf::Cursor::Type::SizeBottom;
-            break;
-        case Cursor::Type::SizeBottomRight:
-            typeSFML = sf::Cursor::Type::SizeBottomRight;
-            break;
-        case Cursor::Type::SizeTopLeft:
-            typeSFML = sf::Cursor::Type::SizeTopLeft;
-            break;
-        case Cursor::Type::SizeBottomLeft:
-            typeSFML = sf::Cursor::Type::SizeBottomLeft;
-            break;
-        case Cursor::Type::SizeTopRight:
-            typeSFML = sf::Cursor::Type::SizeTopRight;
-            break;
+            case Cursor::Type::SizeLeft:
+                typeSFML = sf::Cursor::Type::SizeLeft;
+                break;
+            case Cursor::Type::SizeRight:
+                typeSFML = sf::Cursor::Type::SizeRight;
+                break;
+            case Cursor::Type::SizeTop:
+                typeSFML = sf::Cursor::Type::SizeTop;
+                break;
+            case Cursor::Type::SizeBottom:
+                typeSFML = sf::Cursor::Type::SizeBottom;
+                break;
+            case Cursor::Type::SizeBottomRight:
+                typeSFML = sf::Cursor::Type::SizeBottomRight;
+                break;
+            case Cursor::Type::SizeTopLeft:
+                typeSFML = sf::Cursor::Type::SizeTopLeft;
+                break;
+            case Cursor::Type::SizeBottomLeft:
+                typeSFML = sf::Cursor::Type::SizeBottomLeft;
+                break;
+            case Cursor::Type::SizeTopRight:
+                typeSFML = sf::Cursor::Type::SizeTopRight;
+                break;
 #endif
-        case Cursor::Type::SizeHorizontal:
-            typeSFML = sf::Cursor::Type::SizeHorizontal;
-            break;
-        case Cursor::Type::SizeVertical:
-            typeSFML = sf::Cursor::Type::SizeVertical;
-            break;
-        case Cursor::Type::Crosshair:
-            typeSFML = sf::Cursor::Type::Cross;
-            break;
-        case Cursor::Type::Help:
-            typeSFML = sf::Cursor::Type::Help;
-            break;
-        case Cursor::Type::NotAllowed:
-            typeSFML = sf::Cursor::Type::NotAllowed;
-            break;
-        case Cursor::Type::Move:
+            case Cursor::Type::SizeHorizontal:
+                typeSFML = sf::Cursor::Type::SizeHorizontal;
+                break;
+            case Cursor::Type::SizeVertical:
+                typeSFML = sf::Cursor::Type::SizeVertical;
+                break;
+            case Cursor::Type::Crosshair:
+                typeSFML = sf::Cursor::Type::Cross;
+                break;
+            case Cursor::Type::Help:
+                typeSFML = sf::Cursor::Type::Help;
+                break;
+            case Cursor::Type::NotAllowed:
+                typeSFML = sf::Cursor::Type::NotAllowed;
+                break;
+            case Cursor::Type::Move:
 #ifdef TGUI_SYSTEM_MACOS
-            // SFML does not support the SizeAll cursor on macOS. Other backends use a grabbing hand cursor on macOS,
-            // but SFML does not support this so we fall back to the crosshair cursor to at least show something.
-            typeSFML = sf::Cursor::Type::Cross;
+                // SFML does not support the SizeAll cursor on macOS. Other backends use a grabbing hand cursor on macOS,
+                // but SFML does not support this so we fall back to the crosshair cursor to at least show something.
+                typeSFML = sf::Cursor::Type::Cross;
 #else
-            typeSFML = sf::Cursor::Type::SizeAll;
+                typeSFML = sf::Cursor::Type::SizeAll;
 #endif
-            break;
+                break;
         }
 
 #if SFML_VERSION_MAJOR >= 3
@@ -359,9 +359,8 @@ namespace tgui
     {
         // On Linux we use directional resize arrows, but SFML < 2.6 had no support for them
 #if defined(TGUI_SYSTEM_LINUX) && (SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR < 6) && defined(TGUI_USE_X11)
-        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight)
-            || (type == Cursor::Type::SizeTop) || (type == Cursor::Type::SizeBottom)
-            || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
+        if ((type == Cursor::Type::SizeLeft) || (type == Cursor::Type::SizeRight) || (type == Cursor::Type::SizeTop)
+            || (type == Cursor::Type::SizeBottom) || (type == Cursor::Type::SizeBottomRight) || (type == Cursor::Type::SizeTopLeft)
             || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
         {
             if (!m_mouseCursors[type]) // Only bypass SFML when system cursors are used
@@ -418,6 +417,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

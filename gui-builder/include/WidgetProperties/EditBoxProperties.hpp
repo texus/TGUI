@@ -63,7 +63,8 @@ struct EditBoxProperties : public WidgetProperties
         pair.first["Text"] = {"String", editBox->getText()};
         pair.first["DefaultText"] = {"String", editBox->getDefaultText()};
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(editBox->getTextSize())};
-        pair.first["PasswordCharacter"] = {"Char", editBox->getPasswordCharacter() ? tgui::String(1, editBox->getPasswordCharacter()) : tgui::String("")};
+        pair.first["PasswordCharacter"] =
+            {"Char", editBox->getPasswordCharacter() ? tgui::String(1, editBox->getPasswordCharacter()) : tgui::String("")};
         pair.first["MaximumCharacters"] = {"UInt", tgui::String::fromNumber(editBox->getMaximumCharacters())};
         pair.first["Alignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(editBox->getAlignment())};
         pair.first["TextWidthLimited"] = {"Bool", tgui::Serializer::serialize(editBox->isTextWidthLimited())};
@@ -87,9 +88,9 @@ struct EditBoxProperties : public WidgetProperties
         pair.second["BackgroundColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorFocused())};
         pair.second["CaretColor"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColor())};
         pair.second["CaretColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColorHover())};
-TGUI_IGNORE_DEPRECATED_WARNINGS_START
+        TGUI_IGNORE_DEPRECATED_WARNINGS_START
         pair.second["CaretColorFocused"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColorFocused())};
-TGUI_IGNORE_DEPRECATED_WARNINGS_END
+        TGUI_IGNORE_DEPRECATED_WARNINGS_END
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["BorderColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorHover())};
         pair.second["BorderColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColorDisabled())};

@@ -34,7 +34,7 @@ namespace tgui
     constexpr char ListBox::StaticWidgetType[];
 #endif
 
-   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ListBox::ListBox(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
@@ -557,14 +557,15 @@ namespace tgui
 
     bool ListBox::contains(const String& itemStr) const
     {
-        return std::find_if(m_items.cbegin(), m_items.cend(), [itemStr](const Item& item){ return item.text.getString() == itemStr; }) != m_items.cend();
+        return std::find_if(m_items.cbegin(), m_items.cend(), [itemStr](const Item& item) { return item.text.getString() == itemStr; })
+               != m_items.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool ListBox::containsId(const String& id) const
     {
-        return std::find_if(m_items.cbegin(), m_items.cend(), [id](const Item& item){ return item.id == id; }) != m_items.cend();
+        return std::find_if(m_items.cbegin(), m_items.cend(), [id](const Item& item) { return item.id == id; }) != m_items.cend();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -595,7 +596,8 @@ namespace tgui
     {
         if (FloatRect{getPosition().x, getPosition().y, getSize().x, getSize().y}.contains(pos))
         {
-            if (!m_transparentTextureCached || !m_spriteBackground.isSet() || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
+            if (!m_transparentTextureCached || !m_spriteBackground.isSet()
+                || !m_spriteBackground.isTransparentPixel(pos - getPosition() - m_bordersCached.getOffset()))
                 return true;
         }
 
@@ -607,7 +609,8 @@ namespace tgui
     void ListBox::setHoveredItemBasedOnMousePos(Vector2f innerPos)
     {
         // NOLINTNEXTLINE(bugprone-integer-division)
-        const int hoveringItem = static_cast<int>(((innerPos.y - (m_itemHeight - (m_scrollbar->getValue() % m_itemHeight))) / m_itemHeight) + (m_scrollbar->getValue() / m_itemHeight) + 1);
+        const int hoveringItem = static_cast<int>(((innerPos.y - (m_itemHeight - (m_scrollbar->getValue() % m_itemHeight))) / m_itemHeight)
+                                                  + (m_scrollbar->getValue() / m_itemHeight) + 1);
         if (hoveringItem < static_cast<int>(m_items.size()))
             updateHoveringItem(hoveringItem);
         else
@@ -643,8 +646,11 @@ namespace tgui
         }
         else
         {
-            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                          getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
+            if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                          m_bordersCached.getTop() + m_paddingCached.getTop(),
+                          getInnerSize().x - m_paddingCached.getLeftPlusRight(),
+                          getInnerSize().y - m_paddingCached.getTopPlusBottom()}
+                    .contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
                 setSelectedItemBasedOnMousePos(pos);
@@ -706,8 +712,11 @@ namespace tgui
             return;
 
         int itemIndex = -1;
-        if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(), m_bordersCached.getTop() + m_paddingCached.getTop(),
-                      getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
+        if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
+                      m_bordersCached.getTop() + m_paddingCached.getTop(),
+                      getInnerSize().x - m_paddingCached.getLeftPlusRight(),
+                      getInnerSize().y - m_paddingCached.getTopPlusBottom()}
+                .contains(pos))
         {
             pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
             setSelectedItemBasedOnMousePos(pos);
@@ -746,7 +755,10 @@ namespace tgui
 
             // Find out on which item the mouse is hovering
             if (FloatRect{m_bordersCached.getLeft() + m_paddingCached.getLeft(),
-                          m_bordersCached.getTop() + m_paddingCached.getTop(), getInnerSize().x - m_paddingCached.getLeftPlusRight(), getInnerSize().y - m_paddingCached.getTopPlusBottom()}.contains(pos))
+                          m_bordersCached.getTop() + m_paddingCached.getTop(),
+                          getInnerSize().x - m_paddingCached.getLeftPlusRight(),
+                          getInnerSize().y - m_paddingCached.getTopPlusBottom()}
+                    .contains(pos))
             {
                 pos.y -= m_bordersCached.getTop() + m_paddingCached.getTop();
                 setHoveredItemBasedOnMousePos(pos);
@@ -810,8 +822,8 @@ namespace tgui
         {
             setSelectedItemByIndex(static_cast<std::size_t>(m_selectedItem - 1));
         }
-        else if ((event.code == Event::KeyboardKey::Down)
-              && (m_selectedItem >= 0) && (static_cast<std::size_t>(m_selectedItem) + 1 < m_items.size()))
+        else if ((event.code == Event::KeyboardKey::Down) && (m_selectedItem >= 0)
+                 && (static_cast<std::size_t>(m_selectedItem) + 1 < m_items.size()))
         {
             setSelectedItemByIndex(static_cast<std::size_t>(m_selectedItem) + 1);
         }
@@ -918,7 +930,8 @@ namespace tgui
         }
         else if (property == U"ScrollbarWidth")
         {
-            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scrollbar->getDefaultWidth();
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth()
+                                                                                : m_scrollbar->getDefaultWidth();
             m_scrollbar->setWidth(width);
             setSize(m_size);
         }
@@ -1043,7 +1056,8 @@ namespace tgui
                 for (std::size_t i = 0; i < node->propertyValuePairs[U"Items"]->valueList.size(); ++i)
                 {
                     addItem(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"Items"]->valueList[i]).getString(),
-                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"ItemIds"]->valueList[i]).getString());
+                            Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"ItemIds"]->valueList[i])
+                                .getString());
                 }
             }
             else // There are no item ids
@@ -1060,7 +1074,9 @@ namespace tgui
 
         if (node->propertyValuePairs[U"TextAlignment"])
         {
-            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"TextAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String,
+                                                               node->propertyValuePairs[U"TextAlignment"]->value)
+                                         .getString();
             if (alignment == U"Right")
                 setTextAlignment(HorizontalAlignment::Right);
             else if (alignment == U"Center")
@@ -1257,7 +1273,9 @@ namespace tgui
             if (m_scrollbar->isShown())
                 maxItemWidth -= m_scrollbar->getSize().x;
 
-            target.addClippingLayer(states, {{m_paddingCached.getLeft(), m_paddingCached.getTop()}, {maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
+            target.addClippingLayer(states,
+                                    {{m_paddingCached.getLeft(), m_paddingCached.getTop()},
+                                     {maxItemWidth, getInnerSize().y - m_paddingCached.getTopPlusBottom()}});
 
             // Find out which items are visible
             std::size_t firstItem = 0;
@@ -1292,7 +1310,9 @@ namespace tgui
             if ((m_hoveringItem >= 0) && (m_hoveringItem != m_selectedItem) && m_backgroundColorHoverCached.isSet())
             {
                 states.transform.translate({0, m_hoveringItem * static_cast<float>(m_itemHeight)});
-                target.drawFilledRect(states, {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)}, Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
+                target.drawFilledRect(states,
+                                      {getInnerSize().x - m_paddingCached.getLeftPlusRight(), static_cast<float>(m_itemHeight)},
+                                      Color::applyOpacity(m_backgroundColorHoverCached, m_opacityCached));
                 states.transform.translate({0, -m_hoveringItem * static_cast<float>(m_itemHeight)});
             }
 
@@ -1340,6 +1360,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

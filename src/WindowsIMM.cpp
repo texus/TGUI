@@ -25,9 +25,9 @@
 #include <TGUI/Config.hpp>
 
 #ifdef TGUI_SYSTEM_WINDOWS
-#include <TGUI/WindowsIMM.hpp>
+    #include <TGUI/WindowsIMM.hpp>
 
-#include <cmath>
+    #include <cmath>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -52,23 +52,24 @@ namespace tgui
         m_dllImmModuleHandle = LoadLibraryW(L"imm32.dll");
         if (m_dllImmModuleHandle)
         {
-#if defined(__clang__)
-#   pragma clang diagnostic push
-#   if defined(__clang_major__) && (__clang_major__ >= 19)
-#     pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
-#   endif
-#elif defined(__GNUC__)
-#   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wcast-function-type"
-#endif
+    #if defined(__clang__)
+        #pragma clang diagnostic push
+        #if defined(__clang_major__) && (__clang_major__ >= 19)
+            #pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
+        #endif
+    #elif defined(__GNUC__)
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wcast-function-type"
+    #endif
             m_dllImmGetContext = reinterpret_cast<ImmGetContextFunc>(GetProcAddress(m_dllImmModuleHandle, "ImmGetContext"));
-            m_dllImmSetCompositionWindow = reinterpret_cast<ImmSetCompositionWindowFunc>(GetProcAddress(m_dllImmModuleHandle, "ImmSetCompositionWindow"));
+            m_dllImmSetCompositionWindow = reinterpret_cast<ImmSetCompositionWindowFunc>(
+                GetProcAddress(m_dllImmModuleHandle, "ImmSetCompositionWindow"));
             m_dllImmReleaseContext = reinterpret_cast<ImmReleaseContextFunc>(GetProcAddress(m_dllImmModuleHandle, "ImmReleaseContext"));
-#if defined(__clang__)
-#   pragma clang diagnostic pop
-#elif defined(__GNUC__)
-#   pragma GCC diagnostic pop
-#endif
+    #if defined(__clang__)
+        #pragma clang diagnostic pop
+    #elif defined(__GNUC__)
+        #pragma GCC diagnostic pop
+    #endif
         }
     }
 
@@ -112,7 +113,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

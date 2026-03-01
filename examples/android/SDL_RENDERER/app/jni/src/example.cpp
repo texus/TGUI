@@ -23,6 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/TGUI.hpp>
+
 #include <TGUI/Backend/SDL-Renderer.hpp>
 
 #if SDL_MAJOR_VERSION >= 3
@@ -68,16 +69,14 @@ bool runExample(tgui::BackendGui& gui)
     auto button = tgui::Button::create("Hello");
     button->setPosition(50, 50);
     button->setSize(200, 50);
-    button->onPress([=]{ editBox->setText("World"); });
+    button->onPress([=] { editBox->setText("World"); });
     gui.add(button);
 
     // Set the background and let is change depending on the screen orientation.
     // As long as we don't manually set a view, the gui view will match the window size.
     setBackground(gui, gui.getView().getSize());
 
-    gui.onViewChange([guiPtr=&gui](tgui::FloatRect view){
-        setBackground(*guiPtr, view.getSize());
-    });
+    gui.onViewChange([guiPtr = &gui](tgui::FloatRect view) { setBackground(*guiPtr, view.getSize()); });
 
     return true;
 }
@@ -100,13 +99,16 @@ int main(int, char**)
     // SDL_WINDOW_RESIZABLE is needed to support screen rotations.
 #if SDL_MAJOR_VERSION >= 3
     SDL_Window* window = SDL_CreateWindow("TGUI window with SDL",
-                                          800, 600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
+                                          800,
+                                          600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
                                           SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, nullptr);
 #else
     SDL_Window* window = SDL_CreateWindow("TGUI window with SDL",
-                                          SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                          800, 600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          800,
+                                          600, // ignored because of SDL_WINDOW_FULLSCREEN_DESKTOP flag
                                           SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_RESIZABLE);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 #endif

@@ -22,12 +22,14 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/SvgImage.hpp>
 #include <TGUI/Global.hpp>
-#include <TGUI/Backend/Window/Backend.hpp>
-#include <TGUI/Backend/Renderer/BackendTexture.hpp>
 
 #include <TGUI/extlibs/IncludeNanoSVG.hpp>
+
+#include <TGUI/Backend/Renderer/BackendTexture.hpp>
+#include <TGUI/Backend/Window/Backend.hpp>
+
+#include <TGUI/SvgImage.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -40,7 +42,7 @@ namespace tgui
             NSVGimage* svg = nullptr;
             NSVGrasterizer* rasterizer = nullptr;
         };
-    }
+    } // namespace priv
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,13 +107,21 @@ namespace tgui
         const float scaleY = size.y / m_data->svg->height;
 
         auto pixels = MakeUniqueForOverwrite<unsigned char[]>(size.x * size.y * 4);
-        nsvgRasterizeXY(m_data->rasterizer, m_data->svg, 0, 0, scaleX, scaleY,
-                        pixels.get(), static_cast<int>(size.x), static_cast<int>(size.y), static_cast<int>(size.x * 4));
+        nsvgRasterizeXY(m_data->rasterizer,
+                        m_data->svg,
+                        0,
+                        0,
+                        scaleX,
+                        scaleY,
+                        pixels.get(),
+                        static_cast<int>(size.x),
+                        static_cast<int>(size.y),
+                        static_cast<int>(size.x * 4));
 
         texture.load(size, std::move(pixels), true);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

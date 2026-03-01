@@ -60,12 +60,12 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox(const MessageBox& other) :
-        ChildWindow      {other},
-        onButtonPress    {other.onButtonPress},
+        ChildWindow{other},
+        onButtonPress{other.onButtonPress},
         m_loadedThemeFile{other.m_loadedThemeFile},
         m_buttonClassName{other.m_buttonClassName},
-        m_autoSize       {other.m_autoSize},
-        m_labelAlignment {other.m_labelAlignment},
+        m_autoSize{other.m_autoSize},
+        m_labelAlignment{other.m_labelAlignment},
         m_buttonAlignment{other.m_buttonAlignment}
     {
         identifyLabelAndButtons();
@@ -74,15 +74,15 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     MessageBox::MessageBox(MessageBox&& other) noexcept :
-        ChildWindow      {std::move(other)},
-        onButtonPress    {std::move(other.onButtonPress)},
+        ChildWindow{std::move(other)},
+        onButtonPress{std::move(other.onButtonPress)},
         m_loadedThemeFile{std::move(other.m_loadedThemeFile)},
         m_buttonClassName{std::move(other.m_buttonClassName)},
-        m_autoSize       {std::move(other.m_autoSize)},
-        m_labelAlignment {std::move(other.m_labelAlignment)},
+        m_autoSize{std::move(other.m_autoSize)},
+        m_labelAlignment{std::move(other.m_labelAlignment)},
         m_buttonAlignment{std::move(other.m_buttonAlignment)},
-        m_buttons        {std::move(other.m_buttons)},
-        m_label          {std::move(other.m_label)}
+        m_buttons{std::move(other.m_buttons)},
+        m_label{std::move(other.m_label)}
     {
         for (std::size_t i = 0; i < m_buttons.size(); ++i)
             connectButtonPressSignal(i);
@@ -95,11 +95,11 @@ namespace tgui
         if (this != &other)
         {
             ChildWindow::operator=(other);
-            onButtonPress     = other.onButtonPress;
+            onButtonPress = other.onButtonPress;
             m_loadedThemeFile = other.m_loadedThemeFile;
             m_buttonClassName = other.m_buttonClassName;
-            m_autoSize        = other.m_autoSize;
-            m_labelAlignment  = other.m_labelAlignment;
+            m_autoSize = other.m_autoSize;
+            m_labelAlignment = other.m_labelAlignment;
             m_buttonAlignment = other.m_buttonAlignment;
 
             identifyLabelAndButtons();
@@ -114,14 +114,14 @@ namespace tgui
     {
         if (this != &other)
         {
-            onButtonPress     = std::move(other.onButtonPress);
+            onButtonPress = std::move(other.onButtonPress);
             m_loadedThemeFile = std::move(other.m_loadedThemeFile);
             m_buttonClassName = std::move(other.m_buttonClassName);
-            m_autoSize        = std::move(other.m_autoSize);
-            m_labelAlignment  = std::move(other.m_labelAlignment);
+            m_autoSize = std::move(other.m_autoSize);
+            m_labelAlignment = std::move(other.m_labelAlignment);
             m_buttonAlignment = std::move(other.m_buttonAlignment);
-            m_buttons         = std::move(other.m_buttons);
-            m_label           = std::move(other.m_label);
+            m_buttons = std::move(other.m_buttons);
+            m_label = std::move(other.m_label);
             ChildWindow::operator=(std::move(other));
 
             for (std::size_t i = 0; i < m_buttons.size(); ++i)
@@ -252,7 +252,8 @@ namespace tgui
     {
         // Go through given list of captions, and add or rename them.
         std::size_t counter = 0;
-        for (const auto& caption : buttonCaptions) {
+        for (const auto& caption : buttonCaptions)
+        {
             if (counter >= m_buttons.size())
                 addButtonImpl(caption);
             else
@@ -352,7 +353,7 @@ namespace tgui
         }
 
         // Calculate the suggested size of the window
-        Vector2f size = {(2*distance) + m_label->getSize().x, (3*distance) + m_label->getSize().y + buttonHeight};
+        Vector2f size = {(2 * distance) + m_label->getSize().x, (3 * distance) + m_label->getSize().y + buttonHeight};
 
         // Make sure the buttons fit inside the message box
         size.x = std::max(buttonsAreaWidth, size.x);
@@ -403,7 +404,7 @@ namespace tgui
             float leftPosition = 0;
             for (auto& button : m_buttons)
             {
-                leftPosition += distance + ((getClientSize().x - buttonsAreaWidth) / (m_buttons.size()+1));
+                leftPosition += distance + ((getClientSize().x - buttonsAreaWidth) / (m_buttons.size() + 1));
                 button->setPosition({leftPosition, topPosition});
                 leftPosition += button->getSize().x;
             }
@@ -549,7 +550,7 @@ namespace tgui
     {
         TGUI_ASSERT(buttonIndex < m_buttons.size(), "Index shouldn't be out-of-range in MessageBox::connectButtonPressSignal");
         m_buttons[buttonIndex]->onPress.disconnectAll();
-        m_buttons[buttonIndex]->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS{
+        m_buttons[buttonIndex]->onPress(TGUI_LAMBDA_CAPTURE_EQ_THIS {
             // We can't copy button into this lambda because it would cause a memory leak.
             // We can however copy the index and access the button from m_buttons via the copied this pointer.
             onButtonPress.emit(this, m_buttons[buttonIndex]->getText());
@@ -578,6 +579,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

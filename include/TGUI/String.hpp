@@ -26,18 +26,19 @@
 #define TGUI_STRING_HPP
 
 #include <TGUI/Config.hpp>
+
 #include <TGUI/StringView.hpp>
 #include <TGUI/Utf.hpp>
 
-#include <string>
-#include <vector>
 #include <cstring>
-#include <locale>
+#include <initializer_list>
 #include <iomanip>
+#include <locale>
 #include <ostream>
 #include <sstream>
+#include <string>
 #include <type_traits>
-#include <initializer_list>
+#include <vector>
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/System/String.hpp>
@@ -99,17 +100,15 @@ namespace tgui
         template <typename StringViewType>
         using IsStringViewType = std::enable_if_t<
             std::is_same_v<StringViewType, std::string_view>
-#if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
-            || std::is_same_v<StringViewType, std::u8string_view>
-#endif
-            || std::is_same_v<StringViewType, std::wstring_view>
-            || std::is_same_v<StringViewType, std::u16string_view>
-            || std::is_same_v<StringViewType, std::u32string_view>,
+    #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
+                || std::is_same_v<StringViewType, std::u8string_view>
+    #endif
+                || std::is_same_v<StringViewType, std::wstring_view> || std::is_same_v<StringViewType, std::u16string_view>
+                || std::is_same_v<StringViewType, std::u32string_view>,
             void>;
 #endif
 
     public:
-
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         static constexpr auto npos = std::u32string_view::npos;
 #else
@@ -126,7 +125,6 @@ namespace tgui
         using const_reference = const char32_t&;
 
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the string to an integer
         ///
@@ -301,7 +299,7 @@ namespace tgui
             // If the value is a floating point then we can't use std::to_string because its result depends on the locale.
             // If the value is an 8-bit type (e.g. uint8_t and int8_t) then using std::ostringstream results in the wrong result,
             // as it will be interpreted as a character instead of a number.
-            TGUI_IF_CONSTEXPR (std::is_integral<T>::value)
+            TGUI_IF_CONSTEXPR(std::is_integral<T>::value)
             {
                 return {std::to_string(value)};
             }
@@ -328,8 +326,8 @@ namespace tgui
             // Precision is ignored by std::ostringstream for integers, so we use std::to_string for integers instead.
             // If the value is an 8-bit type (e.g. uint8_t and int8_t) then using std::ostringstream results in the wrong result,
             // as it will be interpreted as a character instead of a number. Which is why this separate branch for integers exists.
-            TGUI_IF_CONSTEXPR (std::is_integral<T>::value)
-                return {std::to_string(value)};
+            TGUI_IF_CONSTEXPR(std::is_integral<T>::value)
+            return {std::to_string(value)};
             else
             {
                 std::ostringstream oss;
@@ -341,8 +339,8 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         String() = default;
 
         String(const std::string& str);
@@ -439,9 +437,11 @@ namespace tgui
         // This constructor has to be explicit or it will cause MSVC to no longer compile code that performs sf::String + std::string
         explicit String(const sf::String& str)
     #if SFML_VERSION_MAJOR >= 3
-            : m_string{str.toUtf32()}
+            :
+            m_string{str.toUtf32()}
     #else
-            : m_string{reinterpret_cast<const char32_t*>(str.toUtf32().c_str())}
+            :
+            m_string{reinterpret_cast<const char32_t*>(str.toUtf32().c_str())}
     #endif
         {
         }
@@ -513,16 +513,16 @@ namespace tgui
         String& assign(std::u32string::const_iterator first, std::u32string::const_iterator last);
         String& assign(StringView::const_iterator first, StringView::const_iterator last);
 
-        TGUI_NODISCARD reference       at(std::size_t pos);
+        TGUI_NODISCARD reference at(std::size_t pos);
         TGUI_NODISCARD const_reference at(std::size_t pos) const;
 
-        TGUI_NODISCARD const_reference operator [](std::size_t index) const;
-        TGUI_NODISCARD reference operator [](std::size_t index);
+        TGUI_NODISCARD const_reference operator[](std::size_t index) const;
+        TGUI_NODISCARD reference operator[](std::size_t index);
 
-        TGUI_NODISCARD reference       front();
+        TGUI_NODISCARD reference front();
         TGUI_NODISCARD const_reference front() const;
 
-        TGUI_NODISCARD reference       back();
+        TGUI_NODISCARD reference back();
         TGUI_NODISCARD const_reference back() const;
 
         TGUI_NODISCARD const char32_t* data() const noexcept
@@ -950,11 +950,18 @@ namespace tgui
         inline String& append(std::initializer_list<char8_t> chars);
         inline String& append(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
-        TGUI_NODISCARD inline int compare(std::size_t pos1, std::size_t count1, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos) const;
+        TGUI_NODISCARD inline int compare(std::size_t pos1,
+                                          std::size_t count1,
+                                          const std::u8string& str,
+                                          std::size_t pos2,
+                                          std::size_t count2 = npos) const;
         TGUI_NODISCARD inline int compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const;
 
         inline String& replace(std::size_t pos, std::size_t count, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos);
-        inline String& replace(const_iterator first, const_iterator last, std::u8string::const_iterator first2, std::u8string::const_iterator last2);
+        inline String& replace(const_iterator first,
+                               const_iterator last,
+                               std::u8string::const_iterator first2,
+                               std::u8string::const_iterator last2);
         inline String& replace(std::size_t pos, std::size_t count, const char8_t* cstr, std::size_t count2);
         inline String& replace(const_iterator first, const_iterator last, const char8_t* cstr, std::size_t count2);
         inline String& replace(std::size_t pos, std::size_t count, std::size_t count2, char8_t ch);
@@ -1224,43 +1231,43 @@ namespace tgui
     {
     }
 
-    inline String::String(char8_t utfChar)
-        : m_string(1, static_cast<char32_t>(utfChar))
+    inline String::String(char8_t utfChar) :
+        m_string(1, static_cast<char32_t>(utfChar))
     {
     }
 
-    inline String::String(const char8_t* str)
-        : String{utf::convertUtf8toUtf32(str, str + std::char_traits<char8_t>::length(str))}
+    inline String::String(const char8_t* str) :
+        String{utf::convertUtf8toUtf32(str, str + std::char_traits<char8_t>::length(str))}
     {
     }
 
-    inline String::String(std::size_t count, char8_t ch)
-        : m_string(count, static_cast<char32_t>(ch))
+    inline String::String(std::size_t count, char8_t ch) :
+        m_string(count, static_cast<char32_t>(ch))
     {
     }
 
-    inline String::String(const std::u8string& str, std::size_t pos)
-        : String{std::u8string(str, pos)}
+    inline String::String(const std::u8string& str, std::size_t pos) :
+        String{std::u8string(str, pos)}
     {
     }
 
-    inline String::String(const std::u8string& str, std::size_t pos, std::size_t count)
-        : String{std::u8string(str, pos, count)}
+    inline String::String(const std::u8string& str, std::size_t pos, std::size_t count) :
+        String{std::u8string(str, pos, count)}
     {
     }
 
-    inline String::String(const char8_t* str, std::size_t count)
-        : String{std::u8string{str, count}}
+    inline String::String(const char8_t* str, std::size_t count) :
+        String{std::u8string{str, count}}
     {
     }
 
-    inline String::String(std::initializer_list<char8_t> chars)
-        : String(std::u8string(chars.begin(), chars.end()))
+    inline String::String(std::initializer_list<char8_t> chars) :
+        String(std::u8string(chars.begin(), chars.end()))
     {
     }
 
-    inline String::String(std::u8string::const_iterator first, std::u8string::const_iterator last)
-        : String{std::u8string(first, last)}
+    inline String::String(std::u8string::const_iterator first, std::u8string::const_iterator last) :
+        String{std::u8string(first, last)}
     {
     }
 
@@ -1508,7 +1515,7 @@ namespace tgui
 #endif
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

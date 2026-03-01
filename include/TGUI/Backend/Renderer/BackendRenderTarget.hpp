@@ -25,12 +25,12 @@
 #ifndef TGUI_BACKEND_RENDER_TARGET_HPP
 #define TGUI_BACKEND_RENDER_TARGET_HPP
 
-#include <TGUI/Rect.hpp>
 #include <TGUI/Color.hpp>
+#include <TGUI/Outline.hpp>
+#include <TGUI/Rect.hpp>
+#include <TGUI/RenderStates.hpp>
 #include <TGUI/Sprite.hpp>
 #include <TGUI/Text.hpp>
-#include <TGUI/Outline.hpp>
-#include <TGUI/RenderStates.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,7 +45,6 @@ namespace tgui
     class TGUI_API BackendRenderTarget
     {
     public:
-
         // Don't allow copying or moving, because we don't expect derived classes to handle it correctly
         BackendRenderTarget(const BackendRenderTarget&) = delete;
         BackendRenderTarget(BackendRenderTarget&&) = delete;
@@ -202,7 +201,11 @@ namespace tgui
         /// @param borderThickness  Thickness of the border to draw around the circle (outside given size if thickness is positive)
         /// @param borderColor      Color of the border, if borderThickness differs from 0
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void drawCircle(const RenderStates& states, float size, const Color& backgroundColor, float borderThickness = 0, const Color& borderColor = {});
+        virtual void drawCircle(const RenderStates& states,
+                                float size,
+                                const Color& backgroundColor,
+                                float borderThickness = 0,
+                                const Color& borderColor = {});
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws a rounded rectangle
@@ -214,8 +217,12 @@ namespace tgui
         /// @param borders          Optional borders on the sides of the rectangle (must be the same on all sides)
         /// @param borderColor      Color of the borders
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void drawRoundedRectangle(const RenderStates& states, const Vector2f& size, const Color& backgroundColor, float radius,
-                                          const Borders& borders = {0}, const Color& borderColor = Color::Black);
+        virtual void drawRoundedRectangle(const RenderStates& states,
+                                          const Vector2f& size,
+                                          const Color& backgroundColor,
+                                          float radius,
+                                          const Borders& borders = {0},
+                                          const Color& borderColor = Color::Black);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws a vertex array. This is called by the other draw functions when they are not overriden.
@@ -227,8 +234,12 @@ namespace tgui
         /// @param indexCount   Amount of elements in the indices array
         /// @param texture      Texture to use, or nullptr when drawing colored triangles
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void drawVertexArray(const RenderStates& states, const Vertex* vertices, std::size_t vertexCount,
-                                     const unsigned int* indices, std::size_t indexCount, const std::shared_ptr<BackendTexture>& texture) = 0;
+        virtual void drawVertexArray(const RenderStates& states,
+                                     const Vertex* vertices,
+                                     std::size_t vertexCount,
+                                     const unsigned int* indices,
+                                     std::size_t indexCount,
+                                     const std::shared_ptr<BackendTexture>& texture) = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the current mapping between the screen pixels and the points in the current view
@@ -245,8 +256,8 @@ namespace tgui
         TGUI_NODISCARD Vector2f getPixelsPerPoint() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called from addClippingLayer and removeClippingLayer to apply the clipping
         ///
@@ -258,18 +269,18 @@ namespace tgui
         virtual void updateClipping(FloatRect clipRect, FloatRect clipViewport) = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         FloatRect m_viewRect;
         FloatRect m_viewport;
-        Vector2f  m_targetSize;
+        Vector2f m_targetSize;
 
         std::vector<std::pair<FloatRect, FloatRect>> m_clipLayers;
         Vector2f m_pixelsPerPoint = {1, 1};
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

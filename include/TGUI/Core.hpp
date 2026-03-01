@@ -27,18 +27,18 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Animation.hpp>
-#include <TGUI/Cursor.hpp>
-#include <TGUI/Timer.hpp>
-#include <TGUI/Widget.hpp>
-#include <TGUI/ToolTip.hpp>
-#include <TGUI/Container.hpp>
-#include <TGUI/SubwidgetContainer.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
+#include <TGUI/Animation.hpp>
+#include <TGUI/Container.hpp>
+#include <TGUI/Cursor.hpp>
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
+#include <TGUI/SubwidgetContainer.hpp>
+#include <TGUI/Timer.hpp>
+#include <TGUI/ToolTip.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

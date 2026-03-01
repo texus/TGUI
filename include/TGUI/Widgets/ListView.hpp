@@ -25,12 +25,12 @@
 #ifndef TGUI_LIST_VIEW_HPP
 #define TGUI_LIST_VIEW_HPP
 
-#include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Renderers/ListViewRenderer.hpp>
 #include <TGUI/Text.hpp>
+#include <TGUI/Widgets/Scrollbar.hpp>
 
-#include <set>
 #include <limits>
+#include <set>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,9 +43,8 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class TGUI_API ListView : public Widget, public DualScrollbarChildInterface
     {
-      public:
-
-        using Ptr = std::shared_ptr<ListView>; //!< Shared widget pointer
+    public:
+        using Ptr = std::shared_ptr<ListView>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const ListView>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "ListView"; //!< Type name of the widget
@@ -694,31 +693,36 @@ namespace tgui
         ///
         /// @deprecated Replaced by ColumnAutoExpanded and ColumnAutoResize setters and getters in TGUI 1.1
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use ColumnAutoExpanded and ColumnAutoResize setters and getters instead") TGUI_NODISCARD bool getExpandLastColumn() const;
+        TGUI_DEPRECATED("Use ColumnAutoExpanded and ColumnAutoResize setters and getters instead")
+        TGUI_NODISCARD bool getExpandLastColumn() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the vertical scrollbar should be displayed
         /// @param policy  The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->setPolicy(policy) instead") void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->setPolicy(policy) instead")
+        void setVerticalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the vertical scrollbar should be displayed
         /// @return The policy for displaying the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getPolicy() instead")
+        TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the horizontal scrollbar should be displayed
         /// @param policy  The policy for displaying the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setPolicy(policy) instead") void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->setPolicy(policy) instead")
+        void setHorizontalScrollbarPolicy(Scrollbar::Policy policy);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns when the horizontal scrollbar should be displayed
         /// @return The policy for displaying the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getPolicy() instead")
+        TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the vertical scrollbar
@@ -732,7 +736,8 @@ namespace tgui
         ///
         /// @return Value of the vertical scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead")
+        TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the vertical scrollbar
@@ -741,7 +746,8 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead")
+        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
@@ -755,7 +761,8 @@ namespace tgui
         ///
         /// @return Value of the horizontal scrollbar
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -764,7 +771,8 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead")
+        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets a size to which all icons should be scaled
@@ -869,8 +877,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
         ///
@@ -1070,7 +1078,12 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Draw the texts in a single column
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void drawColumn(BackendRenderTarget& target, RenderStates states, std::size_t firstItem, std::size_t lastItem, std::size_t column, float columnWidth) const;
+        void drawColumn(BackendRenderTarget& target,
+                        RenderStates states,
+                        std::size_t firstItem,
+                        std::size_t lastItem,
+                        std::size_t column,
+                        float columnWidth) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // This function is called every frame with the time passed since the last frame.
@@ -1083,24 +1096,25 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         /// An item was selected in the list view
         /// Optional parameter: selected item index (-1 when deselecting)
         ///
         /// Note that when MultiSelect is true, this signal is triggered for every change to the selected items. The optional
         /// parameter will contain the lowest index in the selected items or -1 when none of the items are selected.
-        SignalInt onItemSelect  = {"ItemSelected"};
+        SignalInt onItemSelect = {"ItemSelected"};
 
-        SignalInt onDoubleClick = {"DoubleClicked"};  //!< An item was double clicked. Optional parameter: selected item index
-        SignalInt onRightClick  = {"RightClicked"};   //!< Right mouse pressed. Optional parameter: index of item below mouse (-1 when not on top of item)
-        SignalInt onHeaderClick = {"HeaderClicked"};  //!< The header was clicked. Optional parameter: column index
+        SignalInt onDoubleClick = {"DoubleClicked"}; //!< An item was double clicked. Optional parameter: selected item index
+        SignalInt onRightClick = {
+            "RightClicked"}; //!< Right mouse pressed. Optional parameter: index of item below mouse (-1 when not on top of item)
+        SignalInt onHeaderClick = {"HeaderClicked"}; //!< The header was clicked. Optional parameter: column index
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         std::vector<Column> m_columns;
-        std::vector<Item>   m_items;
+        std::vector<Item> m_items;
         std::set<std::size_t> m_selectedItems;
 
         int m_hoveredItem = -1;
@@ -1136,27 +1150,27 @@ namespace tgui
         Sprite m_spriteBackground;
 
         // Cached renderer properties
-        Borders   m_bordersCached;
-        Borders   m_paddingCached;
-        Color     m_borderColorCached;
-        Color     m_separatorColorCached;
-        Color     m_gridLinesColorCached;
-        Color     m_headerTextColorCached;
-        Color     m_headerBackgroundColorCached;
-        Color     m_backgroundColorCached;
-        Color     m_backgroundColorHoverCached;
-        Color     m_selectedBackgroundColorCached;
-        Color     m_selectedBackgroundColorHoverCached;
-        Color     m_textColorCached;
-        Color     m_textColorHoverCached;
-        Color     m_selectedTextColorCached;
-        Color     m_selectedTextColorHoverCached;
+        Borders m_bordersCached;
+        Borders m_paddingCached;
+        Color m_borderColorCached;
+        Color m_separatorColorCached;
+        Color m_gridLinesColorCached;
+        Color m_headerTextColorCached;
+        Color m_headerBackgroundColorCached;
+        Color m_backgroundColorCached;
+        Color m_backgroundColorHoverCached;
+        Color m_selectedBackgroundColorCached;
+        Color m_selectedBackgroundColorHoverCached;
+        Color m_textColorCached;
+        Color m_textColorHoverCached;
+        Color m_selectedTextColorCached;
+        Color m_selectedTextColorHoverCached;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

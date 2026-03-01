@@ -22,14 +22,15 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Widget.hpp>
-#include <TGUI/ToolTip.hpp>
-#include <TGUI/Container.hpp>
-#include <TGUI/Animation.hpp>
-#include <TGUI/Vector2.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+
+#include <TGUI/Animation.hpp>
+#include <TGUI/Container.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/SignalManager.hpp>
+#include <TGUI/ToolTip.hpp>
+#include <TGUI/Vector2.hpp>
+#include <TGUI/Widget.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -49,8 +50,8 @@ namespace tgui
             {
                 auto& animation = *animIt;
                 if (((type == ShowEffectType::Fade) && (animation->getType() == AnimationType::Opacity))
-                 || ((type == ShowEffectType::Scale) && (animation->getType() == AnimationType::Resize))
-                 || ((type != ShowEffectType::Fade) && (animation->getType() == AnimationType::Move)))
+                    || ((type == ShowEffectType::Scale) && (animation->getType() == AnimationType::Resize))
+                    || ((type != ShowEffectType::Fade) && (animation->getType() == AnimationType::Move)))
                 {
                     animation->finish();
                     animIt = animations.erase(animIt);
@@ -100,12 +101,12 @@ namespace tgui
 
             // Remove quotes around the values
             String x = str.substr(0, commaPos).trim();
-            if ((x.size() >= 2) && ((x[0] == '"') && (x[x.length()-1] == '"')))
-                x = x.substr(1, x.length()-2);
+            if ((x.size() >= 2) && ((x[0] == '"') && (x[x.length() - 1] == '"')))
+                x = x.substr(1, x.length() - 2);
 
             String y = str.substr(commaPos + 1).trim();
-            if ((y.size() >= 2) && ((y[0] == '"') && (y[y.length()-1] == '"')))
-                y = y.substr(1, y.length()-2);
+            if ((y.size() >= 2) && ((y[0] == '"') && (y[y.length() - 1] == '"')))
+                y = y.substr(1, y.length() - 2);
 
             return {x, y};
         }
@@ -117,7 +118,7 @@ namespace tgui
             if (str.empty())
                 throw Exception{U"Failed to parse Vector2f string. String was empty."};
 
-                   // Remove the brackets around the value
+            // Remove the brackets around the value
             if ((str.front() == '(') && (str.back() == ')'))
                 str = str.substr(1, str.length() - 2);
 
@@ -162,40 +163,40 @@ namespace tgui
 
     Widget::Widget(const Widget& other) :
         enable_shared_from_this<Widget>{other},
-        m_type                         {other.m_type},
-        m_name                         {other.m_name},
-        m_position                     {other.m_position},
-        m_size                         {other.m_size},
-        m_textSize                     {other.m_textSize},
-        m_origin                       {other.m_origin},
-        m_rotationOrigin               {other.m_rotationOrigin},
-        m_scaleOrigin                  {other.m_scaleOrigin},
-        m_scaleFactors                 {other.m_scaleFactors},
-        m_rotationDeg                  {other.m_rotationDeg},
-        m_boundPositionLayouts         {},
-        m_boundSizeLayouts             {},
-        m_enabled                      {other.m_enabled},
-        m_visible                      {other.m_visible},
-        m_parent                       {nullptr},
-        m_parentGui                    {nullptr},
-        m_containerWidget              {other.m_containerWidget},
-        m_toolTip                      {other.m_toolTip ? other.m_toolTip->clone() : nullptr},
-        m_renderer                     {other.m_renderer},
-        m_showAnimations               {},
-        m_userData                     {other.m_userData},
-        m_mouseCursor                  {other.m_mouseCursor},
-        m_autoLayout                   {other.m_autoLayout},
-        m_autoLayoutUpdateEnabled      {other.m_autoLayoutUpdateEnabled},
-        m_ignoreMouseEvents            {other.m_ignoreMouseEvents},
-        m_fontCached                   {other.m_fontCached},
-        m_opacityCached                {other.m_opacityCached},
-        m_transparentTextureCached     {other.m_transparentTextureCached},
-        m_textSizeCached               {other.m_textSizeCached}
+        m_type{other.m_type},
+        m_name{other.m_name},
+        m_position{other.m_position},
+        m_size{other.m_size},
+        m_textSize{other.m_textSize},
+        m_origin{other.m_origin},
+        m_rotationOrigin{other.m_rotationOrigin},
+        m_scaleOrigin{other.m_scaleOrigin},
+        m_scaleFactors{other.m_scaleFactors},
+        m_rotationDeg{other.m_rotationDeg},
+        m_boundPositionLayouts{},
+        m_boundSizeLayouts{},
+        m_enabled{other.m_enabled},
+        m_visible{other.m_visible},
+        m_parent{nullptr},
+        m_parentGui{nullptr},
+        m_containerWidget{other.m_containerWidget},
+        m_toolTip{other.m_toolTip ? other.m_toolTip->clone() : nullptr},
+        m_renderer{other.m_renderer},
+        m_showAnimations{},
+        m_userData{other.m_userData},
+        m_mouseCursor{other.m_mouseCursor},
+        m_autoLayout{other.m_autoLayout},
+        m_autoLayoutUpdateEnabled{other.m_autoLayoutUpdateEnabled},
+        m_ignoreMouseEvents{other.m_ignoreMouseEvents},
+        m_fontCached{other.m_fontCached},
+        m_opacityCached{other.m_opacityCached},
+        m_transparentTextureCached{other.m_transparentTextureCached},
+        m_textSizeCached{other.m_textSizeCached}
     {
-        m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
-        m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
-        m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
-        m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
+        m_position.x.connectWidget(this, true, [this] { setPosition(getPositionLayout()); });
+        m_position.y.connectWidget(this, false, [this] { setPosition(getPositionLayout()); });
+        m_size.x.connectWidget(this, true, [this] { setSize(getSizeLayout()); });
+        m_size.y.connectWidget(this, false, [this] { setSize(getSizeLayout()); });
 
         m_renderer->subscribe(this);
     }
@@ -204,59 +205,59 @@ namespace tgui
 
     Widget::Widget(Widget&& other) noexcept :
         enable_shared_from_this<Widget>{other},
-        onPositionChange               {std::move(other.onPositionChange)},
-        onSizeChange                   {std::move(other.onSizeChange)},
-        onFocus                        {std::move(other.onFocus)},
-        onUnfocus                      {std::move(other.onUnfocus)},
-        onMouseEnter                   {std::move(other.onMouseEnter)},
-        onMouseLeave                   {std::move(other.onMouseLeave)},
-        onShowEffectFinish             {std::move(other.onShowEffectFinish)},
-        onAnimationFinish              {std::move(other.onAnimationFinish)},
-        m_type                         {std::move(other.m_type)},
-        m_name                         {std::move(other.m_name)},
-        m_position                     {std::move(other.m_position)},
-        m_size                         {std::move(other.m_size)},
-        m_textSize                     {std::move(other.m_textSize)},
-        m_origin                       {std::move(other.m_origin)},
-        m_rotationOrigin               {std::move(other.m_rotationOrigin)},
-        m_scaleOrigin                  {std::move(other.m_scaleOrigin)},
-        m_scaleFactors                 {std::move(other.m_scaleFactors)},
-        m_rotationDeg                  {std::move(other.m_rotationDeg)},
-        m_prevPosition                 {std::move(other.m_prevPosition)},
-        m_prevSize                     {std::move(other.m_prevSize)},
-        m_boundPositionLayouts         {std::move(other.m_boundPositionLayouts)},
-        m_boundSizeLayouts             {std::move(other.m_boundSizeLayouts)},
-        m_enabled                      {std::move(other.m_enabled)},
-        m_visible                      {std::move(other.m_visible)},
-        m_parent                       {nullptr},
-        m_parentGui                    {nullptr},
-        m_mouseHover                   {std::move(other.m_mouseHover)},
-        m_mouseDown                    {std::move(other.m_mouseDown)},
-        m_focused                      {std::move(other.m_focused)},
-        m_focusable                    {std::move(other.m_focusable)},
-        m_navWidgetUp                  {std::move(other.m_navWidgetUp)},
-        m_navWidgetDown                {std::move(other.m_navWidgetDown)},
-        m_navWidgetRight               {std::move(other.m_navWidgetRight)},
-        m_navWidgetLeft                {std::move(other.m_navWidgetLeft)},
-        m_animationTimeElapsed         {std::move(other.m_animationTimeElapsed)},
-        m_containerWidget              {std::move(other.m_containerWidget)},
-        m_toolTip                      {std::move(other.m_toolTip)},
-        m_renderer                     {other.m_renderer},
-        m_showAnimations               {std::move(other.m_showAnimations)},
-        m_userData                     {std::move(other.m_userData)},
-        m_mouseCursor                  {std::move(other.m_mouseCursor)},
-        m_autoLayout                   {std::move(other.m_autoLayout)},
-        m_autoLayoutUpdateEnabled      {std::move(other.m_autoLayoutUpdateEnabled)},
-        m_ignoreMouseEvents            {std::move(other.m_ignoreMouseEvents)},
-        m_fontCached                   {std::move(other.m_fontCached)},
-        m_opacityCached                {std::move(other.m_opacityCached)},
-        m_transparentTextureCached     {std::move(other.m_transparentTextureCached)},
-        m_textSizeCached               {std::move(other.m_textSizeCached)}
+        onPositionChange{std::move(other.onPositionChange)},
+        onSizeChange{std::move(other.onSizeChange)},
+        onFocus{std::move(other.onFocus)},
+        onUnfocus{std::move(other.onUnfocus)},
+        onMouseEnter{std::move(other.onMouseEnter)},
+        onMouseLeave{std::move(other.onMouseLeave)},
+        onShowEffectFinish{std::move(other.onShowEffectFinish)},
+        onAnimationFinish{std::move(other.onAnimationFinish)},
+        m_type{std::move(other.m_type)},
+        m_name{std::move(other.m_name)},
+        m_position{std::move(other.m_position)},
+        m_size{std::move(other.m_size)},
+        m_textSize{std::move(other.m_textSize)},
+        m_origin{std::move(other.m_origin)},
+        m_rotationOrigin{std::move(other.m_rotationOrigin)},
+        m_scaleOrigin{std::move(other.m_scaleOrigin)},
+        m_scaleFactors{std::move(other.m_scaleFactors)},
+        m_rotationDeg{std::move(other.m_rotationDeg)},
+        m_prevPosition{std::move(other.m_prevPosition)},
+        m_prevSize{std::move(other.m_prevSize)},
+        m_boundPositionLayouts{std::move(other.m_boundPositionLayouts)},
+        m_boundSizeLayouts{std::move(other.m_boundSizeLayouts)},
+        m_enabled{std::move(other.m_enabled)},
+        m_visible{std::move(other.m_visible)},
+        m_parent{nullptr},
+        m_parentGui{nullptr},
+        m_mouseHover{std::move(other.m_mouseHover)},
+        m_mouseDown{std::move(other.m_mouseDown)},
+        m_focused{std::move(other.m_focused)},
+        m_focusable{std::move(other.m_focusable)},
+        m_navWidgetUp{std::move(other.m_navWidgetUp)},
+        m_navWidgetDown{std::move(other.m_navWidgetDown)},
+        m_navWidgetRight{std::move(other.m_navWidgetRight)},
+        m_navWidgetLeft{std::move(other.m_navWidgetLeft)},
+        m_animationTimeElapsed{std::move(other.m_animationTimeElapsed)},
+        m_containerWidget{std::move(other.m_containerWidget)},
+        m_toolTip{std::move(other.m_toolTip)},
+        m_renderer{other.m_renderer},
+        m_showAnimations{std::move(other.m_showAnimations)},
+        m_userData{std::move(other.m_userData)},
+        m_mouseCursor{std::move(other.m_mouseCursor)},
+        m_autoLayout{std::move(other.m_autoLayout)},
+        m_autoLayoutUpdateEnabled{std::move(other.m_autoLayoutUpdateEnabled)},
+        m_ignoreMouseEvents{std::move(other.m_ignoreMouseEvents)},
+        m_fontCached{std::move(other.m_fontCached)},
+        m_opacityCached{std::move(other.m_opacityCached)},
+        m_transparentTextureCached{std::move(other.m_transparentTextureCached)},
+        m_textSizeCached{std::move(other.m_textSizeCached)}
     {
-        m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
-        m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
-        m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
-        m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
+        m_position.x.connectWidget(this, true, [this] { setPosition(getPositionLayout()); });
+        m_position.y.connectWidget(this, false, [this] { setPosition(getPositionLayout()); });
+        m_size.x.connectWidget(this, true, [this] { setSize(getSizeLayout()); });
+        m_size.y.connectWidget(this, false, [this] { setSize(getSizeLayout()); });
 
         other.m_renderer->unsubscribe(&other);
         m_renderer->subscribe(this);
@@ -288,52 +289,52 @@ namespace tgui
 
             m_showAnimations.clear();
 
-            m_type                 = other.m_type;
-            m_name                 = other.m_name;
-            m_position             = other.m_position;
-            m_size                 = other.m_size;
-            m_textSize             = other.m_textSize;
-            m_origin               = other.m_origin;
-            m_rotationOrigin       = other.m_rotationOrigin;
-            m_scaleOrigin          = other.m_scaleOrigin;
-            m_scaleFactors         = other.m_scaleFactors;
-            m_rotationDeg          = other.m_rotationDeg;
-            m_prevPosition         = other.m_prevPosition;
-            m_prevSize             = other.m_prevSize;
+            m_type = other.m_type;
+            m_name = other.m_name;
+            m_position = other.m_position;
+            m_size = other.m_size;
+            m_textSize = other.m_textSize;
+            m_origin = other.m_origin;
+            m_rotationOrigin = other.m_rotationOrigin;
+            m_scaleOrigin = other.m_scaleOrigin;
+            m_scaleFactors = other.m_scaleFactors;
+            m_rotationDeg = other.m_rotationDeg;
+            m_prevPosition = other.m_prevPosition;
+            m_prevSize = other.m_prevSize;
             m_boundPositionLayouts = {};
-            m_boundSizeLayouts     = {};
-            m_enabled              = other.m_enabled;
-            m_visible              = other.m_visible;
-            m_parent               = nullptr;
-            m_parentGui            = nullptr;
-            m_mouseHover           = false;
-            m_mouseDown            = false;
-            m_focused              = false;
-            m_focusable            = other.m_focusable;
-            m_navWidgetUp          = {};
-            m_navWidgetDown        = {};
-            m_navWidgetRight       = {};
-            m_navWidgetLeft        = {};
+            m_boundSizeLayouts = {};
+            m_enabled = other.m_enabled;
+            m_visible = other.m_visible;
+            m_parent = nullptr;
+            m_parentGui = nullptr;
+            m_mouseHover = false;
+            m_mouseDown = false;
+            m_focused = false;
+            m_focusable = other.m_focusable;
+            m_navWidgetUp = {};
+            m_navWidgetDown = {};
+            m_navWidgetRight = {};
+            m_navWidgetLeft = {};
             m_animationTimeElapsed = {};
-            m_containerWidget      = other.m_containerWidget;
-            m_toolTip              = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
-            m_renderer             = other.m_renderer;
-            m_inheritedFont        = {};
-            m_inheritedOpacity     = 1;
-            m_userData             = other.m_userData;
-            m_mouseCursor          = other.m_mouseCursor;
-            m_autoLayout           = other.m_autoLayout;
+            m_containerWidget = other.m_containerWidget;
+            m_toolTip = other.m_toolTip ? other.m_toolTip->clone() : nullptr;
+            m_renderer = other.m_renderer;
+            m_inheritedFont = {};
+            m_inheritedOpacity = 1;
+            m_userData = other.m_userData;
+            m_mouseCursor = other.m_mouseCursor;
+            m_autoLayout = other.m_autoLayout;
             m_autoLayoutUpdateEnabled = other.m_autoLayoutUpdateEnabled;
-            m_ignoreMouseEvents    = other.m_ignoreMouseEvents;
-            m_fontCached           = other.m_fontCached;
-            m_opacityCached        = other.m_opacityCached;
+            m_ignoreMouseEvents = other.m_ignoreMouseEvents;
+            m_fontCached = other.m_fontCached;
+            m_opacityCached = other.m_opacityCached;
             m_transparentTextureCached = other.m_transparentTextureCached;
-            m_textSizeCached       = other.m_textSizeCached;
+            m_textSizeCached = other.m_textSizeCached;
 
-            m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
-            m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
-            m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
-            m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
+            m_position.x.connectWidget(this, true, [this] { setPosition(getPositionLayout()); });
+            m_position.y.connectWidget(this, false, [this] { setPosition(getPositionLayout()); });
+            m_size.x.connectWidget(this, true, [this] { setSize(getSizeLayout()); });
+            m_size.y.connectWidget(this, false, [this] { setSize(getSizeLayout()); });
 
             m_renderer->subscribe(this);
         }
@@ -350,61 +351,61 @@ namespace tgui
             m_renderer->unsubscribe(this);
             other.m_renderer->unsubscribe(&other);
 
-            onPositionChange       = std::move(other.onPositionChange);
-            onSizeChange           = std::move(other.onSizeChange);
-            onFocus                = std::move(other.onFocus);
-            onUnfocus              = std::move(other.onUnfocus);
-            onMouseEnter           = std::move(other.onMouseEnter);
-            onMouseLeave           = std::move(other.onMouseLeave);
-            onShowEffectFinish     = std::move(other.onShowEffectFinish);
-            onAnimationFinish      = std::move(other.onAnimationFinish);
-            m_type                 = std::move(other.m_type);
-            m_name                 = std::move(other.m_name);
-            m_position             = std::move(other.m_position);
-            m_size                 = std::move(other.m_size);
-            m_textSize             = std::move(other.m_textSize);
-            m_origin               = std::move(other.m_origin);
-            m_rotationOrigin       = std::move(other.m_rotationOrigin);
-            m_scaleOrigin          = std::move(other.m_scaleOrigin);
-            m_scaleFactors         = std::move(other.m_scaleFactors);
-            m_rotationDeg          = std::move(other.m_rotationDeg);
-            m_prevPosition         = std::move(other.m_prevPosition);
-            m_prevSize             = std::move(other.m_prevSize);
+            onPositionChange = std::move(other.onPositionChange);
+            onSizeChange = std::move(other.onSizeChange);
+            onFocus = std::move(other.onFocus);
+            onUnfocus = std::move(other.onUnfocus);
+            onMouseEnter = std::move(other.onMouseEnter);
+            onMouseLeave = std::move(other.onMouseLeave);
+            onShowEffectFinish = std::move(other.onShowEffectFinish);
+            onAnimationFinish = std::move(other.onAnimationFinish);
+            m_type = std::move(other.m_type);
+            m_name = std::move(other.m_name);
+            m_position = std::move(other.m_position);
+            m_size = std::move(other.m_size);
+            m_textSize = std::move(other.m_textSize);
+            m_origin = std::move(other.m_origin);
+            m_rotationOrigin = std::move(other.m_rotationOrigin);
+            m_scaleOrigin = std::move(other.m_scaleOrigin);
+            m_scaleFactors = std::move(other.m_scaleFactors);
+            m_rotationDeg = std::move(other.m_rotationDeg);
+            m_prevPosition = std::move(other.m_prevPosition);
+            m_prevSize = std::move(other.m_prevSize);
             m_boundPositionLayouts = std::move(other.m_boundPositionLayouts);
-            m_boundSizeLayouts     = std::move(other.m_boundSizeLayouts);
-            m_enabled              = std::move(other.m_enabled);
-            m_visible              = std::move(other.m_visible);
-            m_parent               = nullptr;
-            m_parentGui            = nullptr;
-            m_mouseHover           = std::move(other.m_mouseHover);
-            m_mouseDown            = std::move(other.m_mouseDown);
-            m_focused              = std::move(other.m_focused);
-            m_focusable            = std::move(other.m_focusable);
-            m_navWidgetUp          = std::move(other.m_navWidgetUp);
-            m_navWidgetDown        = std::move(other.m_navWidgetDown);
-            m_navWidgetRight       = std::move(other.m_navWidgetRight);
-            m_navWidgetLeft        = std::move(other.m_navWidgetLeft);
+            m_boundSizeLayouts = std::move(other.m_boundSizeLayouts);
+            m_enabled = std::move(other.m_enabled);
+            m_visible = std::move(other.m_visible);
+            m_parent = nullptr;
+            m_parentGui = nullptr;
+            m_mouseHover = std::move(other.m_mouseHover);
+            m_mouseDown = std::move(other.m_mouseDown);
+            m_focused = std::move(other.m_focused);
+            m_focusable = std::move(other.m_focusable);
+            m_navWidgetUp = std::move(other.m_navWidgetUp);
+            m_navWidgetDown = std::move(other.m_navWidgetDown);
+            m_navWidgetRight = std::move(other.m_navWidgetRight);
+            m_navWidgetLeft = std::move(other.m_navWidgetLeft);
             m_animationTimeElapsed = std::move(other.m_animationTimeElapsed);
-            m_containerWidget      = std::move(other.m_containerWidget);
-            m_toolTip              = std::move(other.m_toolTip);
-            m_renderer             = std::move(other.m_renderer);
-            m_showAnimations       = std::move(other.m_showAnimations);
-            m_inheritedFont        = {};
-            m_inheritedOpacity     = 1;
-            m_userData             = std::move(other.m_userData);
-            m_mouseCursor          = std::move(other.m_mouseCursor);
-            m_autoLayout           = std::move(other.m_autoLayout);
+            m_containerWidget = std::move(other.m_containerWidget);
+            m_toolTip = std::move(other.m_toolTip);
+            m_renderer = std::move(other.m_renderer);
+            m_showAnimations = std::move(other.m_showAnimations);
+            m_inheritedFont = {};
+            m_inheritedOpacity = 1;
+            m_userData = std::move(other.m_userData);
+            m_mouseCursor = std::move(other.m_mouseCursor);
+            m_autoLayout = std::move(other.m_autoLayout);
             m_autoLayoutUpdateEnabled = std::move(other.m_autoLayoutUpdateEnabled);
-            m_ignoreMouseEvents    = std::move(other.m_ignoreMouseEvents);
-            m_fontCached           = std::move(other.m_fontCached);
-            m_opacityCached        = std::move(other.m_opacityCached);
+            m_ignoreMouseEvents = std::move(other.m_ignoreMouseEvents);
+            m_fontCached = std::move(other.m_fontCached);
+            m_opacityCached = std::move(other.m_opacityCached);
             m_transparentTextureCached = std::move(other.m_transparentTextureCached);
-            m_textSizeCached       = std::move(other.m_textSizeCached);
+            m_textSizeCached = std::move(other.m_textSizeCached);
 
-            m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
-            m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
-            m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
-            m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
+            m_position.x.connectWidget(this, true, [this] { setPosition(getPositionLayout()); });
+            m_position.y.connectWidget(this, false, [this] { setPosition(getPositionLayout()); });
+            m_size.x.connectWidget(this, true, [this] { setSize(getSizeLayout()); });
+            m_size.y.connectWidget(this, false, [this] { setSize(getSizeLayout()); });
 
             m_renderer->subscribe(this);
 
@@ -585,8 +586,8 @@ namespace tgui
     void Widget::setPosition(const Layout2d& position)
     {
         m_position = position;
-        m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
-        m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
+        m_position.x.connectWidget(this, true, [this] { setPosition(getPositionLayout()); });
+        m_position.y.connectWidget(this, false, [this] { setPosition(getPositionLayout()); });
 
         if (getPosition() != m_prevPosition)
         {
@@ -605,8 +606,8 @@ namespace tgui
     void Widget::setSize(const Layout2d& size)
     {
         m_size = size;
-        m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
-        m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
+        m_size.x.connectWidget(this, true, [this] { setSize(getSizeLayout()); });
+        m_size.y.connectWidget(this, false, [this] { setSize(getSizeLayout()); });
 
         if (getSize() != m_prevSize)
         {
@@ -780,25 +781,32 @@ namespace tgui
                     setInheritedOpacity(startOpacity);
                 }
 
-                m_showAnimations.push_back(std::make_unique<priv::FadeAnimation>(shared_from_this(), animStartOpacity, endOpacity, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                m_showAnimations.push_back(std::make_unique<priv::FadeAnimation>(
+                    shared_from_this(),
+                    animStartOpacity,
+                    endOpacity,
+                    duration,
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS {
                         onAnimationFinish.emit(this, AnimationType::Opacity);
                         onShowEffectFinish.emit(this, type, true);
-                    }
-                ));
+                    }));
                 break;
             }
             case ShowEffectType::Scale:
             {
                 // TODO: Use setScale instead of setSize
-                const Vector2f startPos = {getPosition().x - (getOrigin().x * getSize().x) + (getSize().x / 2.f), getPosition().y - (getOrigin().y * getSize().y) + (getSize().y / 2.f)};
+                const Vector2f startPos = {getPosition().x - (getOrigin().x * getSize().x) + (getSize().x / 2.f),
+                                           getPosition().y - (getOrigin().y * getSize().y) + (getSize().y / 2.f)};
                 m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration));
-                m_showAnimations.push_back(std::make_unique<priv::ResizeAnimation>(shared_from_this(), Vector2f{0, 0}, m_size, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                m_showAnimations.push_back(std::make_unique<priv::ResizeAnimation>(
+                    shared_from_this(),
+                    Vector2f{0, 0},
+                    m_size,
+                    duration,
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS {
                         onAnimationFinish.emit(this, AnimationType::Resize);
                         onShowEffectFinish.emit(this, type, true);
-                    }
-                ));
+                    }));
                 setPosition(startPos);
                 setSize(0, 0);
                 break;
@@ -806,12 +814,15 @@ namespace tgui
             case ShowEffectType::SlideFromLeft:
             {
                 const Vector2f startPos = {-getFullSize().x + (getOrigin().x * getSize().x), getPosition().y};
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(
+                    shared_from_this(),
+                    startPos,
+                    m_position,
+                    duration,
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS {
                         onAnimationFinish.emit(this, AnimationType::Move);
                         onShowEffectFinish.emit(this, type, true);
-                    }
-                ));
+                    }));
                 setPosition(startPos);
                 break;
             }
@@ -819,13 +830,17 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    const Vector2f startPos = {getParent()->getSize().x + getWidgetOffset().x + (getOrigin().x * getSize().x), getPosition().y};
-                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration,
-                        TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                    const Vector2f startPos = {getParent()->getSize().x + getWidgetOffset().x + (getOrigin().x * getSize().x),
+                                               getPosition().y};
+                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(
+                        shared_from_this(),
+                        startPos,
+                        m_position,
+                        duration,
+                        TGUI_LAMBDA_CAPTURE_EQ_THIS {
                             onAnimationFinish.emit(this, AnimationType::Move);
                             onShowEffectFinish.emit(this, type, true);
-                        }
-                    ));
+                        }));
                     setPosition(startPos);
                 }
                 else
@@ -838,12 +853,15 @@ namespace tgui
             case ShowEffectType::SlideFromTop:
             {
                 const Vector2f startPos = {getPosition().x, -getFullSize().y + (getOrigin().y * getSize().y)};
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(
+                    shared_from_this(),
+                    startPos,
+                    m_position,
+                    duration,
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS {
                         onAnimationFinish.emit(this, AnimationType::Move);
                         onShowEffectFinish.emit(this, type, true);
-                    }
-                ));
+                    }));
                 setPosition(startPos);
                 break;
             }
@@ -851,13 +869,17 @@ namespace tgui
             {
                 if (getParent())
                 {
-                    const Vector2f startPos = {getPosition().x, getParent()->getSize().y + getWidgetOffset().y + (getOrigin().y * getSize().y)};
-                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), startPos, m_position, duration,
-                        TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                    const Vector2f startPos = {getPosition().x,
+                                               getParent()->getSize().y + getWidgetOffset().y + (getOrigin().y * getSize().y)};
+                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(
+                        shared_from_this(),
+                        startPos,
+                        m_position,
+                        duration,
+                        TGUI_LAMBDA_CAPTURE_EQ_THIS {
                             onAnimationFinish.emit(this, AnimationType::Move);
                             onShowEffectFinish.emit(this, type, true);
-                        }
-                    ));
+                        }));
                     setPosition(startPos);
                 }
                 else
@@ -907,14 +929,17 @@ namespace tgui
                     setInheritedOpacity(startOpacity);
                 }
 
-                m_showAnimations.push_back(std::make_unique<priv::FadeAnimation>(shared_from_this(), startOpacity, 0.f, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                m_showAnimations.push_back(std::make_unique<priv::FadeAnimation>(
+                    shared_from_this(),
+                    startOpacity,
+                    0.f,
+                    duration,
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS {
                         setVisible(false);
                         setInheritedOpacity(endOpacity);
                         onAnimationFinish.emit(this, AnimationType::Opacity);
                         onShowEffectFinish.emit(this, type, false);
-                    }
-                ));
+                    }));
                 break;
             }
             case ShowEffectType::Scale:
@@ -922,32 +947,40 @@ namespace tgui
                 // TODO: Use setScale instead of setSize
                 const Vector2f size = getSize();
                 const Layout2d sizeLayout = m_size;
-                const Vector2f endPos = {position.x - (getOrigin().x * size.x) + (size.x / 2.f), position.y - (getOrigin().y * size.y) + (size.y / 2.f)};
+                const Vector2f endPos = {position.x - (getOrigin().x * size.x) + (size.x / 2.f),
+                                         position.y - (getOrigin().y * size.y) + (size.y / 2.f)};
                 m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration));
-                m_showAnimations.push_back(std::make_unique<priv::ResizeAnimation>(shared_from_this(), size, Vector2f{0, 0}, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                m_showAnimations.push_back(std::make_unique<priv::ResizeAnimation>(
+                    shared_from_this(),
+                    size,
+                    Vector2f{0, 0},
+                    duration,
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS {
                         setVisible(false);
                         setPosition(positionLayout);
                         setSize(sizeLayout);
                         onAnimationFinish.emit(this, AnimationType::Resize);
                         onShowEffectFinish.emit(this, type, false);
-                    }
-                ));
+                    }));
                 break;
             }
             case ShowEffectType::SlideToRight:
             {
                 if (getParent())
                 {
-                    const Vector2f endPos = {getParent()->getSize().x + getWidgetOffset().x + (getOrigin().x * getSize().x), getPosition().y};
-                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration,
-                        TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                    const Vector2f endPos = {getParent()->getSize().x + getWidgetOffset().x + (getOrigin().x * getSize().x),
+                                             getPosition().y};
+                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(
+                        shared_from_this(),
+                        position,
+                        endPos,
+                        duration,
+                        TGUI_LAMBDA_CAPTURE_EQ_THIS {
                             setVisible(false);
                             setPosition(positionLayout);
                             onAnimationFinish.emit(this, AnimationType::Move);
                             onShowEffectFinish.emit(this, type, false);
-                        }
-                    ));
+                        }));
                 }
                 else
                 {
@@ -959,29 +992,36 @@ namespace tgui
             case ShowEffectType::SlideToLeft:
             {
                 const Vector2f endPos = {-getFullSize().x + (getOrigin().x * getSize().x), getPosition().y};
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(
+                    shared_from_this(),
+                    position,
+                    endPos,
+                    duration,
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS {
                         setVisible(false);
                         setPosition(positionLayout);
                         onAnimationFinish.emit(this, AnimationType::Move);
                         onShowEffectFinish.emit(this, type, false);
-                    }
-                ));
+                    }));
                 break;
             }
             case ShowEffectType::SlideToBottom:
             {
                 if (getParent())
                 {
-                    const Vector2f endPos = {getPosition().x, getParent()->getSize().y + getWidgetOffset().y + (getOrigin().y * getSize().y)};
-                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration,
-                        TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                    const Vector2f endPos = {getPosition().x,
+                                             getParent()->getSize().y + getWidgetOffset().y + (getOrigin().y * getSize().y)};
+                    m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(
+                        shared_from_this(),
+                        position,
+                        endPos,
+                        duration,
+                        TGUI_LAMBDA_CAPTURE_EQ_THIS {
                             setVisible(false);
                             setPosition(positionLayout);
                             onAnimationFinish.emit(this, AnimationType::Move);
                             onShowEffectFinish.emit(this, type, false);
-                        }
-                    ));
+                        }));
                 }
                 else
                 {
@@ -993,14 +1033,17 @@ namespace tgui
             case ShowEffectType::SlideToTop:
             {
                 const Vector2f endPos = {getPosition().x, -getFullSize().y + (getOrigin().y * getSize().y)};
-                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), position, endPos, duration,
-                    TGUI_LAMBDA_CAPTURE_EQ_THIS{
+                m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(
+                    shared_from_this(),
+                    position,
+                    endPos,
+                    duration,
+                    TGUI_LAMBDA_CAPTURE_EQ_THIS {
                         setVisible(false);
                         setPosition(positionLayout);
                         onAnimationFinish.emit(this, AnimationType::Move);
                         onShowEffectFinish.emit(this, type, false);
-                    }
-                ));
+                    }));
                 break;
             }
         }
@@ -1013,9 +1056,12 @@ namespace tgui
         position.x.connectWidget(this, true, nullptr);
         position.y.connectWidget(this, false, nullptr);
 
-        m_showAnimations.push_back(std::make_unique<priv::MoveAnimation>(shared_from_this(), getPosition(), position, duration,
-            [this]{ onAnimationFinish.emit(this, AnimationType::Move); }
-        ));
+        m_showAnimations.push_back(
+            std::make_unique<priv::MoveAnimation>(shared_from_this(),
+                                                  getPosition(),
+                                                  position,
+                                                  duration,
+                                                  [this] { onAnimationFinish.emit(this, AnimationType::Move); }));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1025,9 +1071,12 @@ namespace tgui
         size.x.connectWidget(this, true, nullptr);
         size.y.connectWidget(this, false, nullptr);
 
-        m_showAnimations.push_back(std::make_unique<priv::ResizeAnimation>(shared_from_this(), getSize(), size, duration,
-            [this]{ onAnimationFinish.emit(this, AnimationType::Resize); }
-        ));
+        m_showAnimations.push_back(
+            std::make_unique<priv::ResizeAnimation>(shared_from_this(),
+                                                    getSize(),
+                                                    size,
+                                                    duration,
+                                                    [this] { onAnimationFinish.emit(this, AnimationType::Resize); }));
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1389,10 +1438,10 @@ namespace tgui
         // Give the layouts another chance to find widgets to which it refers
         if (parent)
         {
-            m_position.x.connectWidget(this, true, [this]{ setPosition(getPositionLayout()); });
-            m_position.y.connectWidget(this, false, [this]{ setPosition(getPositionLayout()); });
-            m_size.x.connectWidget(this, true, [this]{ setSize(getSizeLayout()); });
-            m_size.y.connectWidget(this, false, [this]{ setSize(getSizeLayout()); });
+            m_position.x.connectWidget(this, true, [this] { setPosition(getPositionLayout()); });
+            m_position.y.connectWidget(this, false, [this] { setPosition(getPositionLayout()); });
+            m_size.x.connectWidget(this, true, [this] { setSize(getSizeLayout()); });
+            m_size.y.connectWidget(this, false, [this] { setSize(getSizeLayout()); });
         }
     }
 
@@ -1612,7 +1661,8 @@ namespace tgui
             m_transparentTextureCached = getSharedRenderer()->getTransparentTexture();
         }
         else
-            throw Exception{U"Could not set property '" + property + U"', widget of type '" + getWidgetType() + U"' does not has this property."};
+            throw Exception{
+                U"Could not set property '" + property + U"', widget of type '" + getWidgetType() + U"' does not has this property."};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1634,18 +1684,22 @@ namespace tgui
         if (getSize() != Vector2f{} || !m_size.x.isConstant() || !m_size.y.isConstant())
             node->propertyValuePairs[U"Size"] = std::make_unique<DataIO::ValueNode>(m_size.toString());
         if (getOrigin() != Vector2f{})
-            node->propertyValuePairs[U"Origin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_origin.x) + "," + String::fromNumber(m_origin.y) + ")");
+            node->propertyValuePairs[U"Origin"] = std::make_unique<DataIO::ValueNode>(
+                "(" + String::fromNumber(m_origin.x) + "," + String::fromNumber(m_origin.y) + ")");
         if (getScale() != Vector2f{1, 1})
         {
-            node->propertyValuePairs[U"Scale"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleFactors.x) + "," + String::fromNumber(m_scaleFactors.y) + ")");
+            node->propertyValuePairs[U"Scale"] = std::make_unique<DataIO::ValueNode>(
+                "(" + String::fromNumber(m_scaleFactors.x) + "," + String::fromNumber(m_scaleFactors.y) + ")");
             if (m_scaleOrigin)
-                node->propertyValuePairs[U"ScaleOrigin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_scaleOrigin->x) + "," + String::fromNumber(m_scaleOrigin->y) + ")");
+                node->propertyValuePairs[U"ScaleOrigin"] = std::make_unique<DataIO::ValueNode>(
+                    "(" + String::fromNumber(m_scaleOrigin->x) + "," + String::fromNumber(m_scaleOrigin->y) + ")");
         }
         if (getRotation() != 0)
         {
             node->propertyValuePairs[U"Rotation"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_rotationDeg));
             if (m_rotationOrigin)
-                node->propertyValuePairs[U"RotationOrigin"] = std::make_unique<DataIO::ValueNode>("(" + String::fromNumber(m_rotationOrigin->x) + "," + String::fromNumber(m_rotationOrigin->y) + ")");
+                node->propertyValuePairs[U"RotationOrigin"] = std::make_unique<DataIO::ValueNode>(
+                    "(" + String::fromNumber(m_rotationOrigin->x) + "," + String::fromNumber(m_rotationOrigin->y) + ")");
         }
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
         if (m_userData.has_value())
@@ -1675,52 +1729,92 @@ namespace tgui
             }
             else if (m_userData.is<std::string>())
             {
-                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(String(m_userData.as<std::string>())));
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(
+                    Serializer::serialize(String(m_userData.as<std::string>())));
             }
             else if (m_userData.is<const char*>())
             {
-                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_userData.as<const char*>()));
+                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(
+                    Serializer::serialize(m_userData.as<const char*>()));
             }
         }
 #endif
         if (m_textSize != 0)
             node->propertyValuePairs[U"TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         if (m_ignoreMouseEvents)
-            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoreMouseEvents));
+            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(m_ignoreMouseEvents));
 
         const auto navWidgetUp = m_navWidgetUp.lock();
         const auto navWidgetDown = m_navWidgetDown.lock();
         const auto navWidgetLeft = m_navWidgetLeft.lock();
         const auto navWidgetRight = m_navWidgetRight.lock();
         if (navWidgetUp)
-            node->propertyValuePairs[U"NavigationUp"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(navWidgetUp->getWidgetName()));
+            node->propertyValuePairs[U"NavigationUp"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(navWidgetUp->getWidgetName()));
         if (navWidgetDown)
-            node->propertyValuePairs[U"NavigationDown"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(navWidgetDown->getWidgetName()));
+            node->propertyValuePairs[U"NavigationDown"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(navWidgetDown->getWidgetName()));
         if (navWidgetLeft)
-            node->propertyValuePairs[U"NavigationLeft"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(navWidgetLeft->getWidgetName()));
+            node->propertyValuePairs[U"NavigationLeft"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(navWidgetLeft->getWidgetName()));
         if (navWidgetRight)
-            node->propertyValuePairs[U"NavigationRight"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(navWidgetRight->getWidgetName()));
+            node->propertyValuePairs[U"NavigationRight"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(navWidgetRight->getWidgetName()));
 
         String mouseCursorStr;
         switch (m_mouseCursor)
         {
-            case Cursor::Type::Text:            mouseCursorStr = "Text"; break;
-            case Cursor::Type::Hand:            mouseCursorStr = "Hand"; break;
-            case Cursor::Type::SizeLeft:        mouseCursorStr = "SizeLeft"; break;
-            case Cursor::Type::SizeRight:       mouseCursorStr = "SizeRight"; break;
-            case Cursor::Type::SizeTop:         mouseCursorStr = "SizeTop"; break;
-            case Cursor::Type::SizeBottom:      mouseCursorStr = "SizeBottom"; break;
-            case Cursor::Type::SizeBottomRight: mouseCursorStr = "SizeBottomRight"; break;
-            case Cursor::Type::SizeTopLeft:     mouseCursorStr = "SizeTopLeft"; break;
-            case Cursor::Type::SizeBottomLeft:  mouseCursorStr = "SizeBottomLeft"; break;
-            case Cursor::Type::SizeTopRight:    mouseCursorStr = "SizeTopRight"; break;
-            case Cursor::Type::SizeHorizontal:  mouseCursorStr = "SizeHorizontal"; break;
-            case Cursor::Type::SizeVertical:    mouseCursorStr = "SizeVertical"; break;
-            case Cursor::Type::Crosshair:       mouseCursorStr = "Crosshair"; break;
-            case Cursor::Type::Help:            mouseCursorStr = "Help"; break;
-            case Cursor::Type::NotAllowed:      mouseCursorStr = "NotAllowed"; break;
-            case Cursor::Type::Move:            mouseCursorStr = "Move"; break;
-            case Cursor::Type::Arrow:           break; // We don't save the cursor if it has the default value
+            case Cursor::Type::Text:
+                mouseCursorStr = "Text";
+                break;
+            case Cursor::Type::Hand:
+                mouseCursorStr = "Hand";
+                break;
+            case Cursor::Type::SizeLeft:
+                mouseCursorStr = "SizeLeft";
+                break;
+            case Cursor::Type::SizeRight:
+                mouseCursorStr = "SizeRight";
+                break;
+            case Cursor::Type::SizeTop:
+                mouseCursorStr = "SizeTop";
+                break;
+            case Cursor::Type::SizeBottom:
+                mouseCursorStr = "SizeBottom";
+                break;
+            case Cursor::Type::SizeBottomRight:
+                mouseCursorStr = "SizeBottomRight";
+                break;
+            case Cursor::Type::SizeTopLeft:
+                mouseCursorStr = "SizeTopLeft";
+                break;
+            case Cursor::Type::SizeBottomLeft:
+                mouseCursorStr = "SizeBottomLeft";
+                break;
+            case Cursor::Type::SizeTopRight:
+                mouseCursorStr = "SizeTopRight";
+                break;
+            case Cursor::Type::SizeHorizontal:
+                mouseCursorStr = "SizeHorizontal";
+                break;
+            case Cursor::Type::SizeVertical:
+                mouseCursorStr = "SizeVertical";
+                break;
+            case Cursor::Type::Crosshair:
+                mouseCursorStr = "Crosshair";
+                break;
+            case Cursor::Type::Help:
+                mouseCursorStr = "Help";
+                break;
+            case Cursor::Type::NotAllowed:
+                mouseCursorStr = "NotAllowed";
+                break;
+            case Cursor::Type::Move:
+                mouseCursorStr = "Move";
+                break;
+            case Cursor::Type::Arrow:
+                break; // We don't save the cursor if it has the default value
         }
         if (!mouseCursorStr.empty())
             node->propertyValuePairs[U"MouseCursor"] = std::make_unique<DataIO::ValueNode>(mouseCursorStr);
@@ -1733,9 +1827,11 @@ namespace tgui
             toolTipNode->name = "ToolTip";
             toolTipNode->children.emplace_back(std::move(toolTipWidgetNode));
 
-            toolTipNode->propertyValuePairs[U"InitialDelay"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(ToolTip::getInitialDelay().asSeconds()));
-            toolTipNode->propertyValuePairs[U"DistanceToMouse"] = std::make_unique<DataIO::ValueNode>(U"("
-                + String::fromNumber(ToolTip::getDistanceToMouse().x) + "," + String::fromNumber(ToolTip::getDistanceToMouse().y) + U")");
+            toolTipNode->propertyValuePairs[U"InitialDelay"] = std::make_unique<DataIO::ValueNode>(
+                String::fromNumber(ToolTip::getInitialDelay().asSeconds()));
+            toolTipNode->propertyValuePairs[U"DistanceToMouse"] = std::make_unique<DataIO::ValueNode>(
+                U"(" + String::fromNumber(ToolTip::getDistanceToMouse().x) + "," + String::fromNumber(ToolTip::getDistanceToMouse().y)
+                + U")");
 
             node->children.emplace_back(std::move(toolTipNode));
         }
@@ -1765,40 +1861,49 @@ namespace tgui
         if (node->propertyValuePairs[U"Scale"])
         {
             if (node->propertyValuePairs[U"ScaleOrigin"])
-                setScale(parseVector2f(node->propertyValuePairs[U"Scale"]->value), parseVector2f(node->propertyValuePairs[U"ScaleOrigin"]->value));
+                setScale(parseVector2f(node->propertyValuePairs[U"Scale"]->value),
+                         parseVector2f(node->propertyValuePairs[U"ScaleOrigin"]->value));
             else
                 setScale(parseVector2f(node->propertyValuePairs[U"Scale"]->value));
         }
         if (node->propertyValuePairs[U"Rotation"])
         {
             if (node->propertyValuePairs[U"RotationOrigin"])
-                setRotation(node->propertyValuePairs[U"Rotation"]->value.toFloat(), parseVector2f(node->propertyValuePairs[U"RotationOrigin"]->value));
+                setRotation(node->propertyValuePairs[U"Rotation"]->value.toFloat(),
+                            parseVector2f(node->propertyValuePairs[U"RotationOrigin"]->value));
             else
                 setRotation(node->propertyValuePairs[U"Rotation"]->value.toFloat());
         }
         if (node->propertyValuePairs[U"UserData"])
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
-            m_userData = std::make_any<String>(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
+            m_userData = std::make_any<String>(
+                Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
 #else
-            m_userData = Any(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
+            m_userData = Any(
+                Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
 #endif
         }
         if (node->propertyValuePairs[U"TextSize"])
             setTextSize(node->propertyValuePairs[U"TextSize"]->value.toUInt());
         if (node->propertyValuePairs[U"IgnoreMouseEvents"])
-            setIgnoreMouseEvents(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool());
+            setIgnoreMouseEvents(
+                Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool());
 
         if (m_parentGui)
         {
             if (node->propertyValuePairs[U"NavigationUp"])
-                m_navWidgetUp = m_parentGui->get(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationUp"]->value).getString());
+                m_navWidgetUp = m_parentGui->get(
+                    Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationUp"]->value).getString());
             if (node->propertyValuePairs[U"NavigationDown"])
-                m_navWidgetDown = m_parentGui->get(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationDown"]->value).getString());
+                m_navWidgetDown = m_parentGui->get(
+                    Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationDown"]->value).getString());
             if (node->propertyValuePairs[U"NavigationLeft"])
-                m_navWidgetLeft = m_parentGui->get(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationLeft"]->value).getString());
+                m_navWidgetLeft = m_parentGui->get(
+                    Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationLeft"]->value).getString());
             if (node->propertyValuePairs[U"NavigationRight"])
-                m_navWidgetRight = m_parentGui->get(Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationRight"]->value).getString());
+                m_navWidgetRight = m_parentGui->get(
+                    Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"NavigationRight"]->value).getString());
         }
 
         if (node->propertyValuePairs[U"MouseCursor"])
@@ -1890,9 +1995,11 @@ namespace tgui
 
             /// TODO: Signals?
         }
-        node->children.erase(std::remove_if(node->children.begin(), node->children.end(), [](const std::unique_ptr<DataIO::Node>& child){
-                return (child->name == U"ToolTip") || (child->name == U"Renderer");
-            }), node->children.end());
+        node->children.erase(std::remove_if(node->children.begin(),
+                                            node->children.end(),
+                                            [](const std::unique_ptr<DataIO::Node>& child)
+                                            { return (child->name == U"ToolTip") || (child->name == U"Renderer"); }),
+                             node->children.end());
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1975,6 +2082,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

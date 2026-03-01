@@ -22,8 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Loading/ThemeLoader.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 
 #include <sstream>
@@ -61,9 +61,11 @@ namespace tgui
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font") || (pair.first == U"Image") || (pair.first == U"Icon"))
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font")
+                || (pair.first == U"Image") || (pair.first == U"Icon"))
             {
-                if (pair.second->value.empty() || viewEqualIgnoreCase(pair.second->value, U"none") || viewEqualIgnoreCase(pair.second->value, U"null") || viewEqualIgnoreCase(pair.second->value, U"nullptr"))
+                if (pair.second->value.empty() || viewEqualIgnoreCase(pair.second->value, U"none")
+                    || viewEqualIgnoreCase(pair.second->value, U"null") || viewEqualIgnoreCase(pair.second->value, U"nullptr"))
                     continue;
 
                 // Insert the path into the filename unless the filename is already an absolute path or if the data is embedded.
@@ -74,7 +76,8 @@ namespace tgui
                         continue;
 
 #ifdef TGUI_SYSTEM_WINDOWS
-                    if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\') && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
+                    if ((pair.second->value[0] != '/') && (pair.second->value[0] != '\\')
+                        && ((pair.second->value.size() <= 1) || (pair.second->value[1] != ':')))
 #else
                     if (pair.second->value[0] != '/')
 #endif
@@ -89,7 +92,8 @@ namespace tgui
                         continue;
 
 #ifdef TGUI_SYSTEM_WINDOWS
-                    if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\') && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
+                    if ((pair.second->value[1] != '/') && (pair.second->value[1] != '\\')
+                        && ((pair.second->value.size() <= 2) || (pair.second->value[2] != ':')))
 #else
                     if (pair.second->value[1] != '/')
 #endif
@@ -272,7 +276,7 @@ namespace tgui
         String resourcePath;
         auto slashPos = filename.find_last_of("/\\");
         if (slashPos != String::npos)
-            resourcePath = filename.substr(0, slashPos+1);
+            resourcePath = filename.substr(0, slashPos + 1);
 
         // Turn texture and font filenames into paths relative to the theme file
         if (!resourcePath.empty())
@@ -282,6 +286,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

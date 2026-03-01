@@ -24,8 +24,8 @@
 
 #include <TGUI/Widgets/Label.hpp>
 
-#include <numeric> // accumulate
 #include <algorithm>
+#include <numeric> // accumulate
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -103,8 +103,7 @@ namespace tgui
         m_bordersCached.updateParentSize(getSize());
         m_paddingCached.updateParentSize(getSize());
 
-        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
-                                    getSize().y - m_bordersCached.getTopPlusBottom()});
+        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(), getSize().y - m_bordersCached.getTopPlusBottom()});
 
         // You are no longer auto-sizing
         m_autoSize = false;
@@ -385,8 +384,8 @@ namespace tgui
         {
             m_bordersCached = getSharedRenderer()->getBorders();
             m_bordersCached.updateParentSize(getSize());
-            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
-                                        getSize().y - m_bordersCached.getTopPlusBottom()});
+            m_spriteBackground.setSize(
+                {getSize().x - m_bordersCached.getLeftPlusRight(), getSize().y - m_bordersCached.getTopPlusBottom()});
             rearrangeText();
         }
         else if (property == U"Padding")
@@ -448,7 +447,8 @@ namespace tgui
         }
         else if (property == U"ScrollbarWidth")
         {
-            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth() : m_scrollbar->getDefaultWidth();
+            const float width = (getSharedRenderer()->getScrollbarWidth() != 0) ? getSharedRenderer()->getScrollbarWidth()
+                                                                                : m_scrollbar->getDefaultWidth();
             m_scrollbar->setWidth(width);
             rearrangeText();
         }
@@ -499,7 +499,8 @@ namespace tgui
         if (m_autoSize)
             node->propertyValuePairs[U"AutoSize"] = std::make_unique<DataIO::ValueNode>("true");
         if (m_ignoringMouseEvents)
-            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_ignoringMouseEvents));
+            node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(m_ignoringMouseEvents));
 
         if (!m_autoSize)
             saveScrollbarPolicy(node);
@@ -516,7 +517,9 @@ namespace tgui
         if (node->propertyValuePairs[U"HorizontalAlignment"])
         {
             // TGUI_NEXT: Remove "tgui::" prefixes
-            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"HorizontalAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String,
+                                                               node->propertyValuePairs[U"HorizontalAlignment"]->value)
+                                         .getString();
             if (alignment == U"Right")
                 setHorizontalAlignment(tgui::HorizontalAlignment::Right);
             else if (alignment == U"Center")
@@ -528,7 +531,9 @@ namespace tgui
         if (node->propertyValuePairs[U"VerticalAlignment"])
         {
             // TGUI_NEXT: Remove "tgui::" prefixes
-            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"VerticalAlignment"]->value).getString();
+            const String alignment = Deserializer::deserialize(ObjectConverter::Type::String,
+                                                               node->propertyValuePairs[U"VerticalAlignment"]->value)
+                                         .getString();
             if (alignment == U"Bottom")
                 setVerticalAlignment(tgui::VerticalAlignment::Bottom);
             else if (alignment == U"Center")
@@ -545,7 +550,9 @@ namespace tgui
             setAutoSize(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"AutoSize"]->value).getBool());
 
         if (node->propertyValuePairs[U"IgnoreMouseEvents"])
-            m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool();
+            m_ignoringMouseEvents = Deserializer::deserialize(ObjectConverter::Type::Bool,
+                                                              node->propertyValuePairs[U"IgnoreMouseEvents"]->value)
+                                        .getBool();
 
         loadScrollbarPolicy(node);
     }
@@ -589,10 +596,10 @@ namespace tgui
         const float textOffset = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached);
         float maxWidth;
         if (m_autoSize)
-            maxWidth = std::max(0.f, m_maximumTextWidth - (2*textOffset));
+            maxWidth = std::max(0.f, m_maximumTextWidth - (2 * textOffset));
         else
         {
-            maxWidth = getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight() - (2*textOffset);
+            maxWidth = getSize().x - m_bordersCached.getLeftPlusRight() - m_paddingCached.getLeftPlusRight() - (2 * textOffset);
 
             // If the scrollbar is always visible then we take it into account, otherwise we assume there is no scrollbar.
             // If the policy is Automatic then we will take it into account later if we find that the text needs a scrollbar.
@@ -604,9 +611,10 @@ namespace tgui
         }
 
         // Fit the text in the available space
-        Optional<String> wordWrappedString = (maxWidth > 0)
-            ? Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold)
-            : Optional<String>();
+        Optional<String>
+            wordWrappedString = (maxWidth > 0)
+                                    ? Text::wordWrap(maxWidth, m_string, m_fontCached, m_textSizeCached, m_textStyleCached & TextStyle::Bold)
+                                    : Optional<String>();
         const String* stringPtr = wordWrappedString.has_value() ? &wordWrappedString.value() : &m_string;
 
         const Outline outline = {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
@@ -616,14 +624,15 @@ namespace tgui
 
         const auto lineCount = std::count(stringPtr->cbegin(), stringPtr->cend(), U'\n') + 1;
         float requiredTextHeight = ((lineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached))
-                                 + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
-                                 + Text::getExtraVerticalPadding(m_textSizeCached);
+                                   + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
+                                   + Text::getExtraVerticalPadding(m_textSizeCached);
 
         // Check if a scrollbar should be added
         if (!m_autoSize)
         {
             // If the text doesn't fit in the label then we need to run the word-wrap again, but this time taking the scrollbar into account
-            if ((m_scrollbar->getPolicy() == Scrollbar::Policy::Automatic) && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
+            if ((m_scrollbar->getPolicy() == Scrollbar::Policy::Automatic)
+                && (requiredTextHeight > getSize().y - outline.getTop() - outline.getBottom()))
             {
                 maxWidth -= m_scrollbar->getSize().x;
                 if (maxWidth <= 0)
@@ -634,8 +643,8 @@ namespace tgui
 
                 const auto newLineCount = std::count(stringPtr->cbegin(), stringPtr->cend(), U'\n') + 1;
                 requiredTextHeight = ((newLineCount - 1) * m_fontCached.getLineSpacing(m_textSizeCached))
-                                   + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
-                                   + Text::getExtraVerticalPadding(m_textSizeCached);
+                                     + std::max(m_fontCached.getFontHeight(m_textSizeCached), m_fontCached.getLineSpacing(m_textSizeCached))
+                                     + Text::getExtraVerticalPadding(m_textSizeCached);
             }
 
             m_scrollbar->setHeight(static_cast<unsigned int>(getSize().y - m_bordersCached.getTopPlusBottom()));
@@ -676,12 +685,13 @@ namespace tgui
         if (m_autoSize)
         {
             m_autoLayout = AutoLayout::Manual;
-            Widget::setSize({std::max(width, maxWidth) + outline.getLeft() + outline.getRight() + (2*textOffset), requiredTextHeight + outline.getTop() + outline.getBottom()});
+            Widget::setSize({std::max(width, maxWidth) + outline.getLeft() + outline.getRight() + (2 * textOffset),
+                             requiredTextHeight + outline.getTop() + outline.getBottom()});
             m_bordersCached.updateParentSize(getSize());
             m_paddingCached.updateParentSize(getSize());
 
-            m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
-                                        getSize().y - m_bordersCached.getTopPlusBottom()});
+            m_spriteBackground.setSize(
+                {getSize().x - m_bordersCached.getLeftPlusRight(), getSize().y - m_bordersCached.getTopPlusBottom()});
         }
 
         updateTextPiecePositions((maxWidth > 0) ? maxWidth : width);
@@ -764,7 +774,7 @@ namespace tgui
                 // If the line ends with whitespace then remove them from the line width for aligning horizontally
                 const auto& lastTextPiece = line.back();
                 std::size_t charsToUse = lastTextPiece.getString().length();
-                while (charsToUse > 0 && isWhitespace(lastTextPiece.getString()[charsToUse-1]))
+                while (charsToUse > 0 && isWhitespace(lastTextPiece.getString()[charsToUse - 1]))
                     charsToUse--;
 
                 float whitespaceOffset = 0;
@@ -774,14 +784,15 @@ namespace tgui
                 float textWidth = lastTextPiece.getSize().x - whitespaceOffset;
                 for (std::size_t j = line.size() - 1; j > 0; --j)
                 {
-                    textWidth += line[j-1].getSize().x;
+                    textWidth += line[j - 1].getSize().x;
 
                     // Take kerning into account
-                    if (!line[j-1].getString().empty() && !line[j].getString().empty())
+                    if (!line[j - 1].getString().empty() && !line[j].getString().empty())
                     {
-                        const bool bold = ((line[j-1].getStyle() & TextStyle::Bold) != 0) && ((line[j].getStyle() & TextStyle::Bold) != 0);
-                        const unsigned int characterSize = std::min(line[j-1].getCharacterSize(), line[j].getCharacterSize());
-                        textWidth += m_fontCached.getKerning(line[j-1].getString().back(), line[j].getString().front(), characterSize, bold);
+                        const bool bold = ((line[j - 1].getStyle() & TextStyle::Bold) != 0)
+                                          && ((line[j].getStyle() & TextStyle::Bold) != 0);
+                        const unsigned int characterSize = std::min(line[j - 1].getCharacterSize(), line[j].getCharacterSize());
+                        textWidth += m_fontCached.getKerning(line[j - 1].getString().back(), line[j].getString().front(), characterSize, bold);
                     }
                 }
 
@@ -798,11 +809,11 @@ namespace tgui
                 piecePos.y = pos.y + (maxHeight - line[j].getSize().y);
 
                 // Take kerning into account
-                if (j > 0 && !line[j-1].getString().empty() && !line[j].getString().empty())
+                if (j > 0 && !line[j - 1].getString().empty() && !line[j].getString().empty())
                 {
-                    const bool bold = ((line[j-1].getStyle() & TextStyle::Bold) != 0) && ((line[j].getStyle() & TextStyle::Bold) != 0);
-                    const unsigned int characterSize = std::min(line[j-1].getCharacterSize(), line[j].getCharacterSize());
-                    piecePos.x += m_fontCached.getKerning(line[j-1].getString().back(), line[j].getString().front(), characterSize, bold);
+                    const bool bold = ((line[j - 1].getStyle() & TextStyle::Bold) != 0) && ((line[j].getStyle() & TextStyle::Bold) != 0);
+                    const unsigned int characterSize = std::min(line[j - 1].getCharacterSize(), line[j].getCharacterSize());
+                    piecePos.x += m_fontCached.getKerning(line[j - 1].getString().back(), line[j].getString().front(), characterSize, bold);
                 }
 
                 line[j].setPosition(piecePos);
@@ -819,8 +830,7 @@ namespace tgui
     {
         const RenderStates statesForScrollbar = states;
 
-        Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(),
-                              getSize().y - m_bordersCached.getTopPlusBottom()};
+        Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(), getSize().y - m_bordersCached.getTopPlusBottom()};
 
         // Draw the borders
         if (m_bordersCached != Borders{0})
@@ -898,6 +908,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

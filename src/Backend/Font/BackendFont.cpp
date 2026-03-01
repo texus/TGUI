@@ -122,11 +122,11 @@ namespace tgui
         // Technically it would be possible to specify character sizes and outline thicknesses that can't uniquely be mapped
         // in the limited amount of bits, but this would require unrealistic sizes and would still unlikely cause a conflic
         // with another existing key.
-        return (static_cast<std::uint64_t>(bold) << 63) // bit 64 = bold flag
-             | (static_cast<std::uint64_t>(outlineThickness < 0) << 62) // bit 63 = sign of outline
-             | (static_cast<std::uint64_t>(std::abs(outlineThickness) * 100) << 45) // bits 46-62 = outline
-             | (static_cast<std::uint64_t>(characterSize) << 32) // bits 33-45 = character size
-             | codePoint; // bits 1-32 = unicode codepoint
+        return (static_cast<std::uint64_t>(bold) << 63)                               // bit 64 = bold flag
+               | (static_cast<std::uint64_t>(outlineThickness < 0) << 62)             // bit 63 = sign of outline
+               | (static_cast<std::uint64_t>(std::abs(outlineThickness) * 100) << 45) // bits 46-62 = outline
+               | (static_cast<std::uint64_t>(characterSize) << 32)                    // bits 33-45 = character size
+               | codePoint;                                                           // bits 1-32 = unicode codepoint
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,6 +161,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

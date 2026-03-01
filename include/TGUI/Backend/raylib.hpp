@@ -30,9 +30,9 @@
     #error "TGUI wasn't build with the RAYLIB backend"
 #endif
 
-#include <TGUI/Backend/Window/Raylib/BackendRaylib.hpp>
-#include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
 #include <TGUI/Backend/Font/Raylib/BackendFontRaylib.hpp>
+#include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
+#include <TGUI/Backend/Window/Raylib/BackendRaylib.hpp>
 
 #include <raylib.h>
 
@@ -49,13 +49,12 @@ namespace tgui
         class TGUI_API Gui : public BackendGuiRaylib
         {
         public:
-
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Default constructor
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Gui();
         };
-    }
-}
+    } // namespace RAYLIB
+} // namespace tgui
 
 #endif // TGUI_BACKEND_RAYLIB_INCLUDE_HPP

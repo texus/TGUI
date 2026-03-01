@@ -25,8 +25,8 @@
 #ifndef TGUI_ANIMATION_HPP
 #define TGUI_ANIMATION_HPP
 
-#include <TGUI/Layout.hpp>
 #include <TGUI/Duration.hpp>
+#include <TGUI/Layout.hpp>
 
 #include <functional>
 #include <memory>
@@ -60,9 +60,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     enum class AnimationType
     {
-        Move,       //!< Position is being changed
-        Resize,     //!< Size is being changed
-        Opacity,    //!< Opacity is being changed
+        Move,    //!< Position is being changed
+        Resize,  //!< Size is being changed
+        Opacity, //!< Opacity is being changed
     };
 
     namespace priv
@@ -72,7 +72,6 @@ namespace tgui
         class TGUI_API Animation
         {
         public:
-
             // Move constructor has to be explicitly declared since this class has a destructor
             Animation(const Animation&) = default;
             Animation(Animation&&) = default;
@@ -103,7 +102,11 @@ namespace tgui
         class TGUI_API MoveAnimation : public Animation
         {
         public:
-            MoveAnimation(std::shared_ptr<Widget> widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback = nullptr);
+            MoveAnimation(std::shared_ptr<Widget> widget,
+                          Vector2f start,
+                          Layout2d end,
+                          Duration duration,
+                          std::function<void()> finishedCallback = nullptr);
 
             bool update(Duration elapsedTime) override;
 
@@ -119,7 +122,11 @@ namespace tgui
         class TGUI_API ResizeAnimation : public Animation
         {
         public:
-            ResizeAnimation(std::shared_ptr<Widget> widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback = nullptr);
+            ResizeAnimation(std::shared_ptr<Widget> widget,
+                            Vector2f start,
+                            Layout2d end,
+                            Duration duration,
+                            std::function<void()> finishedCallback = nullptr);
 
             bool update(Duration elapsedTime) override;
 
@@ -135,7 +142,11 @@ namespace tgui
         class TGUI_API FadeAnimation : public Animation
         {
         public:
-            FadeAnimation(std::shared_ptr<Widget> widget, float start, float end, Duration duration, std::function<void()> finishedCallback = nullptr);
+            FadeAnimation(std::shared_ptr<Widget> widget,
+                          float start,
+                          float end,
+                          Duration duration,
+                          std::function<void()> finishedCallback = nullptr);
 
             bool update(Duration elapsedTime) override;
 
@@ -147,7 +158,6 @@ namespace tgui
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     } // namespace priv
 } // namespace tgui
 

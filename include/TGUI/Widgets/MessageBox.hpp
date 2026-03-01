@@ -25,12 +25,12 @@
 #ifndef TGUI_MESSAGE_BOX_HPP
 #define TGUI_MESSAGE_BOX_HPP
 
-#include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Renderers/MessageBoxRenderer.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
-#include <TGUI/Renderers/MessageBoxRenderer.hpp>
+#include <TGUI/Widgets/Label.hpp>
 
-#undef MessageBox  // windows.h defines MessageBox when NOMB isn't defined before including windows.h
+#undef MessageBox // windows.h defines MessageBox when NOMB isn't defined before including windows.h
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,8 +42,7 @@ namespace tgui
     class TGUI_API MessageBox : public ChildWindow
     {
     public:
-
-        using Ptr = std::shared_ptr<MessageBox>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<MessageBox>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const MessageBox>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "MessageBox"; //!< Type name of the widget
@@ -71,7 +70,9 @@ namespace tgui
         ///
         /// @return The new message box
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static MessageBox::Ptr create(const String& title = "", const String& text = "", const std::vector<String>& buttons = {});
+        TGUI_NODISCARD static MessageBox::Ptr create(const String& title = "",
+                                                     const String& text = "",
+                                                     const std::vector<String>& buttons = {});
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor
@@ -231,8 +232,8 @@ namespace tgui
         TGUI_NODISCARD HorizontalAlignment getButtonAlignment() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes sure all widgets lie within the window and places them on the correct position.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,8 +278,8 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Figure out which widget is the label and which are the buttons after copying or loading
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,13 +296,13 @@ namespace tgui
         void addButtonImpl(const String& caption);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalString onButtonPress = {"ButtonPressed"}; //!< One of the buttons was pressed. Optional parameter: text of the pressed button
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         String m_loadedThemeFile;
         String m_buttonClassName;
         bool m_autoSize = true;
@@ -314,7 +315,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

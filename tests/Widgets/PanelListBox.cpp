@@ -29,15 +29,15 @@ TEST_CASE("[PanelListBox]")
 
     SECTION("Signals")
     {
-        panelListBox->onItemSelect([]{});
-        panelListBox->onItemSelect([](int){});
-        panelListBox->onItemSelect([](const tgui::Panel::Ptr&){});
-        panelListBox->onItemSelect([](const tgui::String&){});
-        panelListBox->onItemSelect([](int, const tgui::Panel::Ptr&){});
-        panelListBox->onItemSelect([](const tgui::Panel::Ptr&, const tgui::String&){});
-        panelListBox->onItemSelect([](int, const tgui::Panel::Ptr&, const tgui::String&){});
+        panelListBox->onItemSelect([] {});
+        panelListBox->onItemSelect([](int) {});
+        panelListBox->onItemSelect([](const tgui::Panel::Ptr&) {});
+        panelListBox->onItemSelect([](const tgui::String&) {});
+        panelListBox->onItemSelect([](int, const tgui::Panel::Ptr&) {});
+        panelListBox->onItemSelect([](const tgui::Panel::Ptr&, const tgui::String&) {});
+        panelListBox->onItemSelect([](int, const tgui::Panel::Ptr&, const tgui::String&) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(panelListBox)->getSignal("ItemSelected").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(panelListBox)->getSignal("ItemSelected").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -158,7 +158,6 @@ TEST_CASE("[PanelListBox]")
         REQUIRE(item1->getWidgets().empty());
         REQUIRE(item2->getWidgets().size() == 1);
         REQUIRE(item2->getWidgets()[0]->getWidgetName() == "Template button");
-
     }
 
     SECTION("Selecting items")
@@ -260,15 +259,11 @@ TEST_CASE("[PanelListBox]")
         auto container = tgui::Group::create({400.f, 300.f});
         container->add(panelListBox);
 
-        auto mouseMoved = [container](const tgui::Vector2f pos){
-            container->processMouseMoveEvent(pos);
-        };
-        auto mousePressed = [container](const tgui::Vector2f pos){
-            container->processMousePressEvent(tgui::Event::MouseButton::Left, pos);
-        };
-        auto mouseReleased = [container](const tgui::Vector2f pos){
-            container->processMouseReleaseEvent(tgui::Event::MouseButton::Left, pos);
-        };
+        auto mouseMoved = [container](const tgui::Vector2f pos) { container->processMouseMoveEvent(pos); };
+        auto mousePressed = [container](const tgui::Vector2f pos)
+        { container->processMousePressEvent(tgui::Event::MouseButton::Left, pos); };
+        auto mouseReleased = [container](const tgui::Vector2f pos)
+        { container->processMouseReleaseEvent(tgui::Event::MouseButton::Left, pos); };
 
         panelListBox->setPosition(10, 20);
         panelListBox->setSize(120, 64);
@@ -441,10 +436,11 @@ TEST_CASE("[PanelListBox]")
         renderer.setOpacity(0.7f);
         panelListBox->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&]{
-                                    renderer.setItemsBackgroundColorHover(tgui::Color::Magenta);
-                                    renderer.setSelectedItemsBackgroundColorHover("#808080");
-                                 };
+        auto setHoverRenderer = [&]
+        {
+            renderer.setItemsBackgroundColorHover(tgui::Color::Magenta);
+            renderer.setSelectedItemsBackgroundColorHover("#808080");
+        };
 
         panelListBox->addItem("1");
         panelListBox->addItem("2");
@@ -460,20 +456,14 @@ TEST_CASE("[PanelListBox]")
         {
             SECTION("No selected item")
             {
-                SECTION("No hover")
-                {
-                    TEST_DRAW("PanelListBox_NoSelectedNoHover.png")
-                }
+                SECTION("No hover"){TEST_DRAW("PanelListBox_NoSelectedNoHover.png")}
 
                 SECTION("Hover")
                 {
                     panelListBox->mouseMoved(mousePos2);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("PanelListBox_NoSelectedHover_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("PanelListBox_NoSelectedHover_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("PanelListBox_NoSelectedHover_HoverSet.png")
@@ -485,20 +475,14 @@ TEST_CASE("[PanelListBox]")
             {
                 panelListBox->setSelectedItemByIndex(0);
 
-                SECTION("No hover")
-                {
-                    TEST_DRAW("PanelListBox_SelectedNoHover.png")
-                }
+                SECTION("No hover"){TEST_DRAW("PanelListBox_SelectedNoHover.png")}
 
                 SECTION("Hover selected")
                 {
                     panelListBox->mouseMoved(mousePos1);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("PanelListBox_SelectedHoverSelected_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("PanelListBox_SelectedHoverSelected_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("PanelListBox_SelectedHoverSelected_HoverSet.png")
@@ -509,11 +493,8 @@ TEST_CASE("[PanelListBox]")
                 {
                     panelListBox->mouseMoved(mousePos2);
 
-                    SECTION("No hover properties set")
-                    {
-                        TEST_DRAW("PanelListBox_SelectedHoverOther_NoHoverSet.png")
-                    }
-                    SECTION("Hover properties set")
+                    SECTION("No hover properties set"){TEST_DRAW("PanelListBox_SelectedHoverOther_NoHoverSet.png")} SECTION(
+                        "Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("PanelListBox_SelectedHoverOther_HoverSet.png")

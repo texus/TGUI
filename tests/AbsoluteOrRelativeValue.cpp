@@ -66,9 +66,9 @@ TEST_CASE("[AbsoluteOrRelativeValue]")
         {
             REQUIRE(v1.getValue() == 0);
             v1.updateParentSize(250);
-            REQUIRE(v1.getValue() == 250*0.6f);
+            REQUIRE(v1.getValue() == 250 * 0.6f);
             v1.updateParentSize(100);
-            REQUIRE(v1.getValue() == 100*0.6f);
+            REQUIRE(v1.getValue() == 100 * 0.6f);
             REQUIRE(v1.toString() == "60%");
 
             v2.updateParentSize(40);

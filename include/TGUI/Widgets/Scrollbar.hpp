@@ -25,9 +25,9 @@
 #ifndef TGUI_SCROLLBAR_HPP
 #define TGUI_SCROLLBAR_HPP
 
-#include <TGUI/Widget.hpp>
-#include <TGUI/Renderers/ScrollbarRenderer.hpp>
 #include <TGUI/CopiedSharedPtr.hpp>
+#include <TGUI/Renderers/ScrollbarRenderer.hpp>
+#include <TGUI/Widget.hpp>
 
 #include <chrono>
 
@@ -41,8 +41,7 @@ namespace tgui
     class TGUI_API Scrollbar : public Widget
     {
     public:
-
-        using Ptr = std::shared_ptr<Scrollbar>; //!< Shared widget pointer
+        using Ptr = std::shared_ptr<Scrollbar>;            //!< Shared widget pointer
         using ConstPtr = std::shared_ptr<const Scrollbar>; //!< Shared constant widget pointer
 
         static constexpr char StaticWidgetType[] = "Scrollbar"; //!< Type name of the widget
@@ -50,9 +49,9 @@ namespace tgui
         /// @brief Defines when the scrollbar shows up
         enum class Policy : std::uint8_t
         {
-            Automatic,  //!< Show the scrollbar only when needed (default)
-            Always,     //!< Always show the scrollbar, even when the contents fits
-            Never       //!< Never show the scrollbar, even if the contents does not fit
+            Automatic, //!< Show the scrollbar only when needed (default)
+            Always,    //!< Always show the scrollbar, even when the contents fits
+            Never      //!< Never show the scrollbar, even if the contents does not fit
         };
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -322,8 +321,8 @@ namespace tgui
         void draw(BackendRenderTarget& target, RenderStates states) const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates the scrollbar after a size change
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -368,21 +367,21 @@ namespace tgui
         TGUI_NODISCARD Widget::Ptr clone() const override;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private:
 
+    private:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Schedules a callback to regularly change the value of the scrollbar as long as the mouse remains pressed on an arrow
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void callMousePressPeriodically(std::chrono::time_point<std::chrono::steady_clock> clickedTime, bool repeatedCall);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         SignalUInt onValueChange = {"ValueChanged"}; //!< Value of the scrollbar changed. Optional parameter: new value
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         enum class Part : std::uint8_t
         {
             None,
@@ -405,9 +404,9 @@ namespace tgui
         // Maximum should be above this value before the scrollbar is needed
         unsigned int m_viewportSize = 1;
 
-        Orientation m_orientation = Orientation::Vertical; // Is the scrollbar drawn horizontally or vertically?
-        Orientation m_imageOrientation = Orientation::Vertical;  // Does the loaded image lie horizontally or vertically?
-        bool m_orientationLocked = false; // TGUI_NEXT: Remove property and make locked the default
+        Orientation m_orientation = Orientation::Vertical;      // Is the scrollbar drawn horizontally or vertically?
+        Orientation m_imageOrientation = Orientation::Vertical; // Does the loaded image lie horizontally or vertically?
+        bool m_orientationLocked = false;                       // TGUI_NEXT: Remove property and make locked the default
 
         // How far should the value change when pressing one of the arrows?
         unsigned int m_scrollAmount = 1;
@@ -423,7 +422,7 @@ namespace tgui
         bool m_sizeSet = false; // Has setSize been called?
 
         std::chrono::steady_clock::time_point m_lastSuccessfulScrollTime; // Timestamp of the last mouse wheel scroll event
-        Vector2f m_lastSuccessfulScrollPos; // Mouse position at the last mouse wheel scroll event
+        Vector2f m_lastSuccessfulScrollPos;                               // Mouse position at the last mouse wheel scroll event
 
         FloatRect m_track;
         FloatRect m_thumb;
@@ -459,7 +458,6 @@ namespace tgui
     class TGUI_API ScrollbarChildWidget : public Scrollbar
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /// @param orientation  Whether the scrollbar lies horizontally or vertically
@@ -487,7 +485,6 @@ namespace tgui
     class TGUI_API ScrollbarAccessor
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Constructor
         /// @param scrollbar  The scrollbar to which this class provides access
@@ -594,7 +591,6 @@ namespace tgui
     class TGUI_API ScrollbarChildInterface
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -638,8 +634,8 @@ namespace tgui
         TGUI_NODISCARD const ScrollbarAccessor* getScrollbar() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called when the value of the scrollbar has been changed via getScrollbar()->setValue(...)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -666,8 +662,8 @@ namespace tgui
         void loadScrollbarPolicy(const std::unique_ptr<DataIO::Node>& node);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         CopiedSharedPtr<ScrollbarChildWidget> m_scrollbar;
         ScrollbarAccessor m_scrollbarAccessor;
     };
@@ -681,7 +677,6 @@ namespace tgui
     class TGUI_API DualScrollbarChildInterface
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -737,8 +732,8 @@ namespace tgui
         TGUI_NODISCARD const ScrollbarAccessor* getHorizontalScrollbar() const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called when the value of one of the scrollbars has been changed by calling either
         ///        getVerticalScrollbar()->setValue(...) or getHorizontalScrollbar()->setValue(...)
@@ -774,8 +769,8 @@ namespace tgui
         void loadScrollbarPolicies(const std::unique_ptr<DataIO::Node>& node);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected:
 
+    protected:
         CopiedSharedPtr<ScrollbarChildWidget> m_verticalScrollbar;
         CopiedSharedPtr<ScrollbarChildWidget> m_horizontalScrollbar;
         ScrollbarAccessor m_verticalScrollbarAccessor;
@@ -783,8 +778,7 @@ namespace tgui
     };
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

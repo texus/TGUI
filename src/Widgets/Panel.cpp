@@ -97,8 +97,7 @@ namespace tgui
 
         Group::setSize(size);
 
-        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(),
-                                    getSize().y - m_bordersCached.getTopPlusBottom()});
+        m_spriteBackground.setSize({getSize().x - m_bordersCached.getLeftPlusRight(), getSize().y - m_bordersCached.getTopPlusBottom()});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,8 +112,7 @@ namespace tgui
 
     Vector2f Panel::getChildWidgetsOffset() const
     {
-        return {m_paddingCached.getLeft() + m_bordersCached.getLeft(),
-                m_paddingCached.getTop() + m_bordersCached.getTop()};
+        return {m_paddingCached.getLeft() + m_bordersCached.getLeft(), m_paddingCached.getTop() + m_bordersCached.getTop()};
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -322,13 +320,16 @@ namespace tgui
 
     void Panel::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(),
-                                    getSize().y - m_bordersCached.getTopPlusBottom()};
+        const Vector2f innerSize = {getSize().x - m_bordersCached.getLeftPlusRight(), getSize().y - m_bordersCached.getTopPlusBottom()};
 
         if ((m_roundedBorderRadius > 0) && !m_spriteBackground.isSet())
         {
-            target.drawRoundedRectangle(states, getSize(), Color::applyOpacity(m_backgroundColorCached, m_opacityCached),
-                                        m_roundedBorderRadius, m_bordersCached, Color::applyOpacity(m_borderColorCached, m_opacityCached));
+            target.drawRoundedRectangle(states,
+                                        getSize(),
+                                        Color::applyOpacity(m_backgroundColorCached, m_opacityCached),
+                                        m_roundedBorderRadius,
+                                        m_bordersCached,
+                                        Color::applyOpacity(m_borderColorCached, m_opacityCached));
             states.transform.translate(m_bordersCached.getOffset());
         }
         else
@@ -348,8 +349,7 @@ namespace tgui
         }
 
         states.transform.translate({m_paddingCached.getLeft(), m_paddingCached.getTop()});
-        const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeftPlusRight(),
-                                      innerSize.y - m_paddingCached.getTopPlusBottom()};
+        const Vector2f contentSize = {innerSize.x - m_paddingCached.getLeftPlusRight(), innerSize.y - m_paddingCached.getTopPlusBottom()};
 
         // Draw the child widgets
         target.addClippingLayer(states, {{}, contentSize});
@@ -365,6 +365,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

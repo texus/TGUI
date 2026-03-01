@@ -39,7 +39,6 @@ namespace tgui
     class Rect
     {
     public:
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Default constructor
         ///
@@ -54,9 +53,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename U>
         explicit constexpr Rect(const Rect<U>& rect) :
-            left  {static_cast<T>(rect.left)},
-            top   {static_cast<T>(rect.top)},
-            width {static_cast<T>(rect.width)},
+            left{static_cast<T>(rect.left)},
+            top{static_cast<T>(rect.top)},
+            width{static_cast<T>(rect.width)},
             height{static_cast<T>(rect.height)}
         {
         }
@@ -68,9 +67,9 @@ namespace tgui
         /// @param rect  Rectangle to initialize
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         explicit constexpr Rect(sf::Rect<T> rect) :
-            left  {rect.left},
-            top   {rect.top},
-            width {rect.width},
+            left{rect.left},
+            top{rect.top},
+            width{rect.width},
             height{rect.height}
         {
         }
@@ -85,9 +84,9 @@ namespace tgui
         /// @param rectHeight Height of the rectangle
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         constexpr Rect(T rectLeft, T rectTop, T rectWidth, T rectHeight) :
-            left  {rectLeft},
-            top   {rectTop},
-            width {rectWidth},
+            left{rectLeft},
+            top{rectTop},
+            width{rectWidth},
             height{rectHeight}
         {
         }
@@ -99,9 +98,9 @@ namespace tgui
         /// @param size     Size of the rectangle
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         constexpr Rect(Vector2<T> position, Vector2<T> size) :
-            left  {position.x},
-            top   {position.y},
-            width {size.x},
+            left{position.x},
+            top{position.y},
+            width{size.x},
             height{size.y}
         {
         }
@@ -186,9 +185,9 @@ namespace tgui
         TGUI_NODISCARD constexpr bool intersects(const Rect<T>& rect) const
         {
             // Compute the intersection boundaries
-            const T interLeft   = std::max(left, rect.left);
-            const T interTop    = std::max(top, rect.top);
-            const T interRight  = std::min(left + width, rect.left + rect.width);
+            const T interLeft = std::max(left, rect.left);
+            const T interTop = std::max(top, rect.top);
+            const T interRight = std::min(left + width, rect.left + rect.width);
             const T interBottom = std::min(top + height, rect.top + rect.height);
 
             // If the intersection is valid (positive non zero area), then there is an intersection
@@ -196,8 +195,8 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public:
 
+    public:
         T left = 0;   //!< Left coordinate of the rectangle
         T top = 0;    //!< Top coordinate of the rectangle
         T width = 0;  //!< Width of the rectangle
@@ -210,8 +209,7 @@ namespace tgui
     template <typename T>
     TGUI_NODISCARD constexpr bool operator==(const Rect<T>& left, const Rect<T>& right)
     {
-        return (left.left == right.left) && (left.width == right.width)
-            && (left.top == right.top) && (left.height == right.height);
+        return (left.left == right.left) && (left.width == right.width) && (left.top == right.top) && (left.height == right.height);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +226,7 @@ namespace tgui
     using FloatRect = Rect<float>;
     using IntRect = Rect<int>;
     using UIntRect = Rect<unsigned int>;
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

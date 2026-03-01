@@ -26,46 +26,47 @@
 
 #if defined(TGUI_SYSTEM_WINDOWS)
 
-#include <TGUI/extlibs/IncludeWindows.hpp>
+    #include <TGUI/extlibs/IncludeWindows.hpp>
 
-#if defined(__has_include)
-    #if __has_include (<shellapi.h>)
-        #define TGUI_SHELL_API_HEADER_INCLUDED
-        #include <shellapi.h>
+    #if defined(__has_include)
+        #if __has_include(<shellapi.h>)
+            #define TGUI_SHELL_API_HEADER_INCLUDED
+            #include <shellapi.h>
 
-        // MinGW.org based TDM-GCC doesn't define SHGFI_ADDOVERLAYS
-        #ifndef SHGFI_ADDOVERLAYS
-            #define SHGFI_ADDOVERLAYS   0x000000020
-        #endif
-    #endif
-#endif
-
-#if !defined(TGUI_SHELL_API_HEADER_INCLUDED)
-    // We define the required contents of shellapi.h ourselves if the Windows API can't be found
-    #ifndef SHSTDAPI_
-        #if !defined(_SHELL32_)
-            #define SHSTDAPI_(type)   extern "C" DECLSPEC_IMPORT type STDAPICALLTYPE
-        #else
-            #define SHSTDAPI_(type)   STDAPI_(type)
+            // MinGW.org based TDM-GCC doesn't define SHGFI_ADDOVERLAYS
+            #ifndef SHGFI_ADDOVERLAYS
+                #define SHGFI_ADDOVERLAYS 0x000000020
+            #endif
         #endif
     #endif
 
-    #define SHGFI_ICON              0x000000100     // get icon
-    #define SHGFI_LARGEICON         0x000000000     // get large icon
-    #define SHGFI_USEFILEATTRIBUTES 0x000000010     // use passed dwFileAttribute
-    #define SHGFI_ADDOVERLAYS       0x000000020     // apply the appropriate overlays
+    #if !defined(TGUI_SHELL_API_HEADER_INCLUDED)
+        // We define the required contents of shellapi.h ourselves if the Windows API can't be found
+        #ifndef SHSTDAPI_
+            #if !defined(_SHELL32_)
+                #define SHSTDAPI_(type) extern "C" DECLSPEC_IMPORT type STDAPICALLTYPE
+            #else
+                #define SHSTDAPI_(type) STDAPI_(type)
+            #endif
+        #endif
 
-    typedef struct _SHFILEINFOW
-    {
-        HICON hIcon;
-        int   iIcon;
-        DWORD dwAttributes;
-        WCHAR szDisplayName[MAX_PATH];
-        WCHAR szTypeName[80];
-    } SHFILEINFOW;
+        #define SHGFI_ICON 0x000000100              // get icon
+        #define SHGFI_LARGEICON 0x000000000         // get large icon
+        #define SHGFI_USEFILEATTRIBUTES 0x000000010 // use passed dwFileAttribute
+        #define SHGFI_ADDOVERLAYS 0x000000020       // apply the appropriate overlays
 
-    SHSTDAPI_(DWORD_PTR) SHGetFileInfoW(_In_ LPCWSTR pszPath, DWORD dwFileAttributes, _Inout_updates_bytes_opt_(cbFileInfo) SHFILEINFOW* psfi, UINT cbFileInfo, UINT uFlags);
-#endif
+typedef struct _SHFILEINFOW
+{
+    HICON hIcon;
+    int iIcon;
+    DWORD dwAttributes;
+    WCHAR szDisplayName[MAX_PATH];
+    WCHAR szTypeName[80];
+} SHFILEINFOW;
+
+SHSTDAPI_(DWORD_PTR)
+SHGetFileInfoW(_In_ LPCWSTR pszPath, DWORD dwFileAttributes, _Inout_updates_bytes_opt_(cbFileInfo) SHFILEINFOW* psfi, UINT cbFileInfo, UINT uFlags);
+    #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -98,7 +99,7 @@ namespace tgui
         {
             decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle = nullptr;
             std::vector<Filesystem::FileInfo> files; // List of files for which the thread should load the icons
-            std::vector<IconData> icons; // List of loaded icons
+            std::vector<IconData> icons;             // List of loaded icons
             HANDLE cancelEvent = nullptr;
             HANDLE finishedEvent = nullptr;
         };
@@ -136,21 +137,22 @@ namespace tgui
         m_dllModuleHandle = LoadLibraryW(L"shell32.dll");
         if (m_dllModuleHandle)
         {
-#if defined(__clang__)
-#   pragma clang diagnostic push
-#   if defined(__clang_major__) && (__clang_major__ >= 19)
-#     pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
-#   endif
-#elif defined(__GNUC__)
-#   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wcast-function-type"
-#endif
-            m_dllGetFileInfoFuncHandle = reinterpret_cast<decltype(&SHGetFileInfoW)>(GetProcAddress(m_dllModuleHandle, "SHGetFileInfoW"));
-#if defined(__clang__)
-#   pragma clang diagnostic pop
-#elif defined(__GNUC__)
-#   pragma GCC diagnostic pop
-#endif
+    #if defined(__clang__)
+        #pragma clang diagnostic push
+        #if defined(__clang_major__) && (__clang_major__ >= 19)
+            #pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
+        #endif
+    #elif defined(__GNUC__)
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wcast-function-type"
+    #endif
+            m_dllGetFileInfoFuncHandle = reinterpret_cast<decltype(&SHGetFileInfoW)>(
+                GetProcAddress(m_dllModuleHandle, "SHGetFileInfoW"));
+    #if defined(__clang__)
+        #pragma clang diagnostic pop
+    #elif defined(__GNUC__)
+        #pragma GCC diagnostic pop
+    #endif
         }
 
         if (!m_dllGetFileInfoFuncHandle)
@@ -272,7 +274,8 @@ namespace tgui
         {
             TGUI_EMPLACE_BACK(texture, icons);
             if (iconData.pixels)
-                texture.loadFromPixelData({iconData.width, iconData.height}, iconData.pixels.get()); // Don't care if this fails or succeeds, we add the texture either way
+                texture.loadFromPixelData({iconData.width, iconData.height},
+                                          iconData.pixels.get()); // Don't care if this fails or succeeds, we add the texture either way
         }
 
         m_threadStarted = false;
@@ -283,7 +286,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    FileDialogIconLoaderWindows::IconData FileDialogIconLoaderWindows::loadIconPixels(decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle, const String& filename, bool isDirectory)
+    FileDialogIconLoaderWindows::IconData FileDialogIconLoaderWindows::loadIconPixels(
+        decltype(&SHGetFileInfoW) dllGetFileInfoFuncHandle,
+        const String& filename,
+        bool isDirectory)
     {
         IconData iconData;
         if (!dllGetFileInfoFuncHandle)
@@ -309,7 +315,8 @@ namespace tgui
 
         HDC hDC = nullptr;
 
-        auto releaseResources = [&] {
+        auto releaseResources = [&]
+        {
             if (iconInfo.hbmColor)
                 DeleteObject(iconInfo.hbmColor);
 
@@ -375,9 +382,9 @@ namespace tgui
                     // Source pixels are stored in BGRA with the origin at the bottom left of the bitmap
                     const DWORD srcPos = ((iconHeight - 1 - y) * (iconWidth * 4)) + (x * 4);
                     const DWORD destPos = (y * iconWidth * 4) + (x * 4);
-                    imagePixels[destPos] = pixelsBGRA[srcPos + 2]; // R
+                    imagePixels[destPos] = pixelsBGRA[srcPos + 2];     // R
                     imagePixels[destPos + 1] = pixelsBGRA[srcPos + 1]; // G
-                    imagePixels[destPos + 2] = pixelsBGRA[srcPos]; // B
+                    imagePixels[destPos + 2] = pixelsBGRA[srcPos];     // B
                     imagePixels[destPos + 3] = pixelsBGRA[srcPos + 3]; // A
                 }
             }
@@ -420,9 +427,9 @@ namespace tgui
                     // Source pixels are stored in BGR with the origin at the bottom left of the bitmap
                     const DWORD srcPos = ((iconHeight - 1 - y) * (iconWidth * 3)) + (x * 3);
                     const DWORD destPos = (y * iconWidth * 4) + (x * 4);
-                    imagePixels[destPos] = pixelsBGR[srcPos + 2]; // R
-                    imagePixels[destPos + 1] = pixelsBGR[srcPos + 1]; // G
-                    imagePixels[destPos + 2] = pixelsBGR[srcPos]; // B
+                    imagePixels[destPos] = pixelsBGR[srcPos + 2];               // R
+                    imagePixels[destPos + 1] = pixelsBGR[srcPos + 1];           // G
+                    imagePixels[destPos + 2] = pixelsBGR[srcPos];               // B
                     imagePixels[destPos + 3] = (pixelsAlpha[srcPos] ? 0 : 255); // A
                 }
             }
@@ -440,7 +447,8 @@ namespace tgui
 
         Texture texture;
         if (iconData.pixels)
-            texture.loadFromPixelData({iconData.width, iconData.height}, iconData.pixels.get()); // Don't care if this fails or succeeds, we return the texture anyway
+            texture.loadFromPixelData({iconData.width, iconData.height},
+                                      iconData.pixels.get()); // Don't care if this fails or succeeds, we return the texture anyway
 
         return texture;
     }
@@ -467,7 +475,7 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 #endif // TGUI_SYSTEM_WINDOWS
 

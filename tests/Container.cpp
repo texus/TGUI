@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include "Tests.hpp"
+
+#include <iostream>
 
 TEST_CASE("[Container]")
 {
@@ -125,7 +125,7 @@ TEST_CASE("[Container]")
         SECTION("reusing name")
         {
             // Ignore warnings about duplicate names being used
-            std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
+            std::streambuf* oldbuf = std::cerr.rdbuf(nullptr);
 
             container->removeAllWidgets();
 
@@ -193,11 +193,11 @@ TEST_CASE("[Container]")
             REQUIRE(container->getWidgets()[0] == widget1);
             REQUIRE(container->getWidgets()[1] == widget3);
             REQUIRE(container->getWidgets()[0]->getWidgetName() == "w1");
-            REQUIRE(container->getWidgets()[1]->getWidgetName()  == "w3");
+            REQUIRE(container->getWidgets()[1]->getWidgetName() == "w3");
 
             REQUIRE(widget2->getWidgets().size() == 1);
             REQUIRE(widget2->getWidgets()[0] == widget4);
-            REQUIRE(widget2->getWidgets()[0]->getWidgetName()  == "w4");
+            REQUIRE(widget2->getWidgets()[0]->getWidgetName() == "w4");
 
             REQUIRE(widget2->remove(widget4));
 
@@ -277,11 +277,11 @@ TEST_CASE("[Container]")
         container->add(widget3);
         container->add(widget4);
         container->add(widget5);
-        REQUIRE(container->setWidgetIndex(widget2, 3)); // Place widget2 after widget4
-        REQUIRE(container->setWidgetIndex(widget1, 4)); // Place widget1 after widget5
-        REQUIRE(container->setWidgetIndex(widget3, 0)); // Place widget3 before widget4
-        REQUIRE(container->setWidgetIndex(widget4, 1)); // Keeps widget4 in the same spot
-        REQUIRE(!container->setWidgetIndex(widget3, 5)); // Index too high
+        REQUIRE(container->setWidgetIndex(widget2, 3));                 // Place widget2 after widget4
+        REQUIRE(container->setWidgetIndex(widget1, 4));                 // Place widget1 after widget5
+        REQUIRE(container->setWidgetIndex(widget3, 0));                 // Place widget3 before widget4
+        REQUIRE(container->setWidgetIndex(widget4, 1));                 // Keeps widget4 in the same spot
+        REQUIRE(!container->setWidgetIndex(widget3, 5));                // Index too high
         REQUIRE(!container->setWidgetIndex(tgui::Button::create(), 1)); // No such widget
 
         REQUIRE(container->getWidgetIndex(widget1) == 4);
@@ -317,9 +317,8 @@ TEST_CASE("[Container]")
         widget2->setWidgetName("2");
         widget3->setWidgetName("3");
 
-        container->getContainer()->sortWidgets([](const tgui::Widget::Ptr& p, const tgui::Widget::Ptr& p2){
-            return p->getWidgetName()[0] < p2->getWidgetName()[0];
-        });
+        container->getContainer()->sortWidgets(
+            [](const tgui::Widget::Ptr& p, const tgui::Widget::Ptr& p2) { return p->getWidgetName()[0] < p2->getWidgetName()[0]; });
 
         REQUIRE(container->getWidgets()[0] == widget1);
         REQUIRE(container->getWidgets()[1] == widget2);

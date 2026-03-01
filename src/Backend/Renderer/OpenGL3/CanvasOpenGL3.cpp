@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,8 @@ namespace tgui
     CanvasOpenGL3::CanvasOpenGL3(const char* typeName, bool initRenderer) :
         CanvasBase{typeName, initRenderer}
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                        && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
                     "CanvasOpenGL3 can only be created when using the OpenGL3 backend renderer");
 
         glGenFramebuffers(1, &m_frameBuffer);
@@ -51,7 +52,8 @@ namespace tgui
     CanvasOpenGL3::CanvasOpenGL3(const CanvasOpenGL3& other) :
         CanvasBase{other}
     {
-        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
+        TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                        && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
                     "CanvasOpenGL3 can only be used when using the OpenGL3 backend renderer");
 
         glGenFramebuffers(1, &m_frameBuffer);
@@ -69,7 +71,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    CanvasOpenGL3& CanvasOpenGL3::operator= (const CanvasOpenGL3& right)
+    CanvasOpenGL3& CanvasOpenGL3::operator=(const CanvasOpenGL3& right)
     {
         if (this != &right)
         {
@@ -111,8 +113,9 @@ namespace tgui
             const Vector2u newTextureSize{newSize};
             if ((m_textureSize.x < newTextureSize.x) || (m_textureSize.y < newTextureSize.y))
             {
-                TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer() && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
-                    "CanvasOpenGL3 can only be used when using the OpenGL3 backend renderer");
+                TGUI_ASSERT(isBackendSet() && getBackend()->hasRenderer()
+                                && std::dynamic_pointer_cast<BackendRendererOpenGL3>(getBackend()->getRenderer()),
+                            "CanvasOpenGL3 can only be used when using the OpenGL3 backend renderer");
 
                 m_backendTexture->loadTextureOnly(newTextureSize, nullptr, false);
                 m_textureSize = newTextureSize;
@@ -139,10 +142,7 @@ namespace tgui
             {{0, size.y}, vertexColor, {0, -normalizedTextureSize.y}},
             {{size.x, size.y}, vertexColor, {normalizedTextureSize.x, -normalizedTextureSize.y}},
         }};
-        const std::array<unsigned int, 6> indices = {{
-            0, 2, 1,
-            1, 2, 3
-        }};
+        const std::array<unsigned int, 6> indices = {{0, 2, 1, 1, 2, 3}};
         target.drawVertexArray(states, vertices.data(), vertices.size(), indices.data(), indices.size(), m_backendTexture);
     }
 
@@ -163,6 +163,6 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

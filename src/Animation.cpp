@@ -49,9 +49,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         Animation::Animation(AnimationType type, Widget::Ptr widget, Duration duration, std::function<void()> finishedCallback) :
-            m_type            {type},
-            m_widget          {std::move(widget)},
-            m_totalDuration   {duration},
+            m_type{type},
+            m_widget{std::move(widget)},
+            m_totalDuration{duration},
             m_finishedCallback{std::move(finishedCallback)}
         {
         }
@@ -59,9 +59,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback) :
-            Animation {AnimationType::Move, std::move(widget), duration, std::move(finishedCallback)},
+            Animation{AnimationType::Move, std::move(widget), duration, std::move(finishedCallback)},
             m_startPos{start},
-            m_endPos  {std::move(end)}
+            m_endPos{std::move(end)}
         {
         }
 
@@ -91,9 +91,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback) :
-            Animation  {AnimationType::Resize, std::move(widget), duration, std::move(finishedCallback)},
+            Animation{AnimationType::Resize, std::move(widget), duration, std::move(finishedCallback)},
             m_startSize{start},
-            m_endSize  {std::move(end)}
+            m_endSize{std::move(end)}
         {
         }
 
@@ -123,9 +123,9 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, Duration duration, std::function<void()> finishedCallback) :
-            Animation     {AnimationType::Opacity, std::move(widget), duration, std::move(finishedCallback)},
+            Animation{AnimationType::Opacity, std::move(widget), duration, std::move(finishedCallback)},
             m_startOpacity{clamp(start, 0.f, 1.f)},
-            m_endOpacity  {clamp(end, 0.f, 1.f)}
+            m_endOpacity{clamp(end, 0.f, 1.f)}
         {
         }
 
@@ -153,9 +153,9 @@ namespace tgui
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    }
+    } // namespace priv
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

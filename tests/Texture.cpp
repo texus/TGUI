@@ -117,7 +117,8 @@ TEST_CASE("[Texture]")
         SECTION("loadFromBase64")
         {
             tgui::Texture texture;
-            texture.loadFromBase64("iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9bpSI"
+            texture.loadFromBase64(
+                "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9bpSI"
                 "VB+sH4pChumhBVMRRq1CECqFWaNXB5NIvaNKQpLg4Cq4FBz8Wqw4uzro6uAqC4AeIm5uToouU+L+k0CLGg+N+vLv3uHsH+Gslpppt44CqWUYyH"
                 "hPSmVUh+IoQ+tGLPoxKzNTnRDEBz/F1Dx9f76I8y/vcn6NLyZoM8AnEs0w3LOIN4ulNS+e8TxxmBUkhPiceM+iCxI9cl11+45x32M8zw0YqOU8"
                 "cJhbyLSy3MCsYKvEUcURRNcr3p11WOG9xVksV1rgnf2Eoq60sc53mEOJYxBJECJBRQRElWIjSqpFiIkn7MQ//oOMXySWTqwhGjgWUoUJy/OB/8"
@@ -130,7 +131,9 @@ TEST_CASE("[Texture]")
                 "P6PTQteinGtY7ZDzb/ZQi3DBNspioBMomjXcf0fgFdj/yTiYdJod7pJFPK0+hs42+500/Fw4/lvhsfNAGbRIdv4jOXmzkLygXIuYK24j9u9/uA"
                 "4HlUEWCC5RnkpQCuR5SusF3k2bBZ5Vvb6g3fRYlPFx/HVi+GVuyp/xGBYCeingL7Z7eXxcGPU7nQnkd1Wpa2KGFVVzwP0He9jbbHIs1F92izF1"
                 "DgX82Wtol69PFp4HdDFeP52wO7DyejNXUryK3Qc1fC2yLPNP07syl9AO0Z/M+q1lNhW2sSkyLPhrNifn2O2xjCyiUUAAAAASUVORK5CYII=",
-                {2, 1, 6, 5}, {1, 2, 4, 1}, false);
+                {2, 1, 6, 5},
+                {1, 2, 4, 1},
+                false);
             REQUIRE(texture.getId().empty());
             REQUIRE(texture.getData() != nullptr);
             REQUIRE(texture.getData()->backendTexture != nullptr);
@@ -147,18 +150,18 @@ TEST_CASE("[Texture]")
         unsigned int destructCount = 0;
         {
             tgui::Texture texture{"resources/image.png", {}, {10, 0, 30, 50}, false};
-            texture.setCopyCallback([&](const std::shared_ptr<tgui::TextureData>& data)
+            texture.setCopyCallback(
+                [&](const std::shared_ptr<tgui::TextureData>& data)
                 {
                     copyCount++;
                     tgui::TextureManager::copyTexture(data);
-                }
-            );
-            texture.setDestructCallback([&](const std::shared_ptr<tgui::TextureData>& data)
+                });
+            texture.setDestructCallback(
+                [&](const std::shared_ptr<tgui::TextureData>& data)
                 {
                     destructCount++;
                     tgui::TextureManager::removeTexture(data);
-                }
-            );
+                });
 
             REQUIRE(texture.getId() == "resources/image.png");
             REQUIRE(texture.getData() != nullptr);
@@ -310,7 +313,8 @@ TEST_CASE("[Texture]")
         unsigned int count = 0;
         auto oldBackendTextureLoader = tgui::Texture::getBackendTextureLoader();
 
-        auto func = [&](tgui::BackendTexture&, const tgui::String& filename, bool) {
+        auto func = [&](tgui::BackendTexture&, const tgui::String& filename, bool)
+        {
             REQUIRE(filename == "resources/image.png");
             count++;
             return true;
@@ -328,7 +332,8 @@ TEST_CASE("[Texture]")
         unsigned int count = 0;
         auto oldTextureLoader = tgui::Texture::getTextureLoader();
 
-        auto func = [&](tgui::Texture&, const tgui::String& filename, bool smooth) {
+        auto func = [&](tgui::Texture&, const tgui::String& filename, bool smooth)
+        {
             REQUIRE(filename == "resources/image.png");
             auto data = std::make_shared<tgui::TextureData>();
             data->backendTexture = std::make_shared<tgui::BackendTexture>();

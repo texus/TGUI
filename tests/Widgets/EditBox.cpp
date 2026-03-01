@@ -36,22 +36,22 @@ TEST_CASE("[EditBox]")
 
     SECTION("Signals")
     {
-        editBox->onTextChange([](){});
-        editBox->onTextChange([](const tgui::String&){});
+        editBox->onTextChange([]() {});
+        editBox->onTextChange([](const tgui::String&) {});
 
-        editBox->onReturnKeyPress([](){});
-        editBox->onReturnKeyPress([](const tgui::String&){});
+        editBox->onReturnKeyPress([]() {});
+        editBox->onReturnKeyPress([](const tgui::String&) {});
 
-        editBox->onReturnOrUnfocus([](){});
-        editBox->onReturnOrUnfocus([](const tgui::String&){});
+        editBox->onReturnOrUnfocus([]() {});
+        editBox->onReturnOrUnfocus([](const tgui::String&) {});
 
-        editBox->onCaretPositionChange([](){});
-        editBox->onCaretPositionChange([](std::size_t){});
+        editBox->onCaretPositionChange([]() {});
+        editBox->onCaretPositionChange([](std::size_t) {});
 
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("TextChanged").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("ReturnKeyPressed").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("ReturnOrUnfocused").connect([]{}));
-        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("CaretPositionChanged").connect([]{}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("TextChanged").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("ReturnKeyPressed").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("ReturnOrUnfocused").connect([] {}));
+        REQUIRE_NOTHROW(tgui::Widget::Ptr(editBox)->getSignal("CaretPositionChanged").connect([] {}));
     }
 
     SECTION("WidgetType")
@@ -428,7 +428,12 @@ TEST_CASE("[EditBox]")
         {
             unsigned int count = 0;
             tgui::String expectedText = "";
-            editBox->onReturnKeyPress([&](const tgui::String& text){ REQUIRE(text == expectedText); count++; });
+            editBox->onReturnKeyPress(
+                [&](const tgui::String& text)
+                {
+                    REQUIRE(text == expectedText);
+                    count++;
+                });
 
             keyEvent.code = tgui::Event::KeyboardKey::Enter;
             editBox->keyPressed(keyEvent);
@@ -499,7 +504,8 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", tgui::Color{180, 190, 200}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
-                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("DefaultTextStyle", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));
@@ -660,21 +666,23 @@ TEST_CASE("[EditBox]")
         renderer.setOpacity(0.7f);
         editBox->setRenderer(renderer.getData());
 
-        auto setHoverRenderer = [&](bool textured){
-                                        renderer.setCaretColorHover({0, 150, 150});
-                                        renderer.setBackgroundColorHover({150, 150, 0});
-                                        renderer.setBorderColorHover({150, 0, 0});
-                                        if (textured)
-                                            renderer.setTextureHover("resources/Texture2.png");
-                                    };
+        auto setHoverRenderer = [&](bool textured)
+        {
+            renderer.setCaretColorHover({0, 150, 150});
+            renderer.setBackgroundColorHover({150, 150, 0});
+            renderer.setBorderColorHover({150, 0, 0});
+            if (textured)
+                renderer.setTextureHover("resources/Texture2.png");
+        };
 
-        auto setDisabledRenderer = [&](bool textured){
-                                        renderer.setTextColorDisabled({0, 0, 80});
-                                        renderer.setBackgroundColorDisabled({80, 80, 0});
-                                        renderer.setBorderColorDisabled({80, 0, 0});
-                                        if (textured)
-                                            renderer.setTextureDisabled("resources/Texture3.png");
-                                    };
+        auto setDisabledRenderer = [&](bool textured)
+        {
+            renderer.setTextColorDisabled({0, 0, 80});
+            renderer.setBackgroundColorDisabled({80, 80, 0});
+            renderer.setBorderColorDisabled({80, 0, 0});
+            if (textured)
+                renderer.setTextureDisabled("resources/Texture3.png");
+        };
 
         const auto mousePos = editBox->getPosition() + (editBox->getSize() / 2.f);
 
@@ -837,15 +845,15 @@ TEST_CASE("[EditBox]")
         SECTION("ctrl+alt+A should not act as ctrl+A (https://github.com/texus/TGUI/issues/43)")
         {
             tgui::Event::KeyEvent event;
-            event.code    = tgui::Event::KeyboardKey::A;
-            event.alt     = false;
-            event.shift   = false;
+            event.code = tgui::Event::KeyboardKey::A;
+            event.alt = false;
+            event.shift = false;
 #ifdef TGUI_SYSTEM_MACOS
             event.control = false;
-            event.system  = true;
+            event.system = true;
 #else
             event.control = true;
-            event.system  = false;
+            event.system = false;
 #endif
 
             editBox->setText("Test");

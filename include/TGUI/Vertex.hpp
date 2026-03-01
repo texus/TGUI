@@ -52,8 +52,8 @@ namespace tgui
         };
 
         Vertex(Vector2f vertexPos = {}, Color vertexColor = {}, Vector2f vertexTexCoord = {}) :
-            position {vertexPos},
-            color    {vertexColor},
+            position{vertexPos},
+            color{vertexColor},
             texCoords{vertexTexCoord}
         {
         }
@@ -62,7 +62,7 @@ namespace tgui
         Color color;
         Vector2f texCoords;
     };
-}
+} // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

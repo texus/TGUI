@@ -26,15 +26,16 @@
 #include <GLFW/glfw3.h>
 
 #if TGUI_BUILD_CXX20_MODULE
-    import tgui;
-    import tgui.backend.glfw_gles2;
+import tgui;
+import tgui.backend.glfw_gles2;
 #else
     #include <TGUI/TGUI.hpp>
+
     #include <TGUI/Backend/GLFW-GLES2.hpp>
 
-    // Optional: include OpenGL ES functions via TGUI (which you can call AFTER creating the Gui object)
-    // This will include a built-in GLAD header that defines all functions that exist in GLES 3.2 (and OpenGL 4.6)
-    //#include <TGUI/Backend/Renderer/OpenGL.hpp>
+// Optional: include OpenGL ES functions via TGUI (which you can call AFTER creating the Gui object)
+// This will include a built-in GLAD header that defines all functions that exist in GLES 3.2 (and OpenGL 4.6)
+//#include <TGUI/Backend/Renderer/OpenGL.hpp>
 #endif
 
 bool runExample(tgui::BackendGui& gui);

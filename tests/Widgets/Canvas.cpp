@@ -25,16 +25,16 @@
 #include <TGUI/Config.hpp>
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
-    #include <SFML/Graphics/View.hpp>
     #include <SFML/Graphics/Sprite.hpp>
+    #include <SFML/Graphics/View.hpp>
 #endif
 #if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
     #include <TGUI/extlibs/IncludeSDL.hpp>
 #endif
 
-#include <TGUI/Widgets/CanvasBase.hpp>
-
 #include "Tests.hpp"
+
+#include <TGUI/Widgets/CanvasBase.hpp>
 
 namespace
 {
@@ -58,19 +58,17 @@ namespace
 
 #if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS
 
-#include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
-#include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+    #include <TGUI/Backend/Renderer/SFML-Graphics/BackendRendererSFML.hpp>
+    #include <TGUI/Backend/Renderer/SFML-Graphics/CanvasSFML.hpp>
 
-namespace sf  // Anonymous namespace didn't work for Clang on macOS
+namespace sf // Anonymous namespace didn't work for Clang on macOS
 {
     bool operator==(const sf::View& left, const sf::View& right)
     {
-        return left.getCenter() == right.getCenter()
-            && left.getSize() == right.getSize()
-            && left.getRotation() == right.getRotation()
-            && left.getViewport() == right.getViewport();
+        return left.getCenter() == right.getCenter() && left.getSize() == right.getSize() && left.getRotation() == right.getRotation()
+               && left.getViewport() == right.getViewport();
     }
-}
+} // namespace sf
 
 TEST_CASE("[CanvasSFML]")
 {
@@ -93,8 +91,8 @@ TEST_CASE("[CanvasSFML]")
         SECTION("view")
         {
             canvas = tgui::CanvasSFML::create({300, 200});
-            canvas->setSize({50, 30}); // Test shrinking size
-            canvas->setSize({200, 100}); // Test expanding size
+            canvas->setSize({50, 30});     // Test shrinking size
+            canvas->setSize({200, 100});   // Test expanding size
             canvas->setPosition({80, 70}); // Position should not affect results
 
             REQUIRE(canvas->getView() == sf::View(sf::FloatRect{{0, 0}, {200, 100}}));
@@ -126,7 +124,7 @@ TEST_CASE("[CanvasSFML]")
         SECTION("internal render texture")
         {
             canvas = tgui::CanvasSFML::create({50, 50});
-            const sf::RenderTexture *internalRenderTexture = &canvas->getRenderTexture();
+            const sf::RenderTexture* internalRenderTexture = &canvas->getRenderTexture();
 
             canvas->setSize({70, 80});
             canvas->setView(sf::View(sf::FloatRect{{20, 10}, {100, 50}}));
@@ -169,12 +167,10 @@ TEST_CASE("[CanvasSFML]")
             sprite2.setSize({25, 25});
             sprite2.setPosition({40, 35});
 
-            std::vector<sf::Vertex> vertices = {
-                    {{80, 90}, tgui::Color::Red},
-                    {{80, 115}, tgui::Color::Red},
-                    {{100, 90}, tgui::Color::Red},
-                    {{100, 115}, tgui::Color::Red}
-                };
+            std::vector<sf::Vertex> vertices = {{{80, 90}, tgui::Color::Red},
+                                                {{80, 115}, tgui::Color::Red},
+                                                {{100, 90}, tgui::Color::Red},
+                                                {{100, 115}, tgui::Color::Red}};
 
             canvas->clear(tgui::Color::Yellow);
             canvas->draw(sprite);
@@ -190,8 +186,8 @@ TEST_CASE("[CanvasSFML]")
 
 #if TGUI_HAS_RENDERER_BACKEND_SDL_GPU
 
-#include <TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp>
-#include <TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp>
+    #include <TGUI/Backend/Renderer/SDL_GPU/BackendRendererSDLGPU.hpp>
+    #include <TGUI/Backend/Renderer/SDL_GPU/CanvasSDLGPU.hpp>
 
 TEST_CASE("[CanvasSDLGPU]")
 {
@@ -243,8 +239,8 @@ TEST_CASE("[CanvasSDLGPU]")
 
 #if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
 
-#include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
-#include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+    #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>
+    #include <TGUI/Backend/Renderer/SDL_Renderer/CanvasSDL.hpp>
 
 TEST_CASE("[CanvasSDL]")
 {
@@ -296,8 +292,8 @@ TEST_CASE("[CanvasSDL]")
 
 #if TGUI_HAS_RENDERER_BACKEND_OPENGL3
 
-#include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
-#include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+    #include <TGUI/Backend/Renderer/OpenGL3/BackendRendererOpenGL3.hpp>
+    #include <TGUI/Backend/Renderer/OpenGL3/CanvasOpenGL3.hpp>
 
 TEST_CASE("[CanvasOpenGL3]")
 {
@@ -333,8 +329,8 @@ TEST_CASE("[CanvasOpenGL3]")
 
 #if TGUI_HAS_RENDERER_BACKEND_GLES2
 
-#include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
-#include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
+    #include <TGUI/Backend/Renderer/GLES2/BackendRendererGLES2.hpp>
+    #include <TGUI/Backend/Renderer/GLES2/CanvasGLES2.hpp>
 
 TEST_CASE("[CanvasGLES2]")
 {
@@ -370,8 +366,8 @@ TEST_CASE("[CanvasGLES2]")
 
 #if TGUI_HAS_RENDERER_BACKEND_RAYLIB
 
-#include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
-#include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
+    #include <TGUI/Backend/Renderer/Raylib/BackendRendererRaylib.hpp>
+    #include <TGUI/Backend/Renderer/Raylib/CanvasRaylib.hpp>
 
 TEST_CASE("[CanvasRaylib]")
 {

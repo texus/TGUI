@@ -22,9 +22,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
 #include "Tests.hpp"
+
+#include <iostream>
 
 using namespace tgui::bind_functions;
 using tgui::Layout;
@@ -127,7 +127,7 @@ TEST_CASE("[Layouts]")
             REQUIRE((l1 + l2).getValue() == 5);
             REQUIRE((l1 - l2).getValue() == -1);
             REQUIRE((l1 * l2).getValue() == 6);
-            REQUIRE((l1 / l2).getValue() == 2.f/3.f);
+            REQUIRE((l1 / l2).getValue() == 2.f / 3.f);
             REQUIRE((-Layout{1}).getValue() == -1);
             REQUIRE((-Layout{-2}).getValue() == 2);
 
@@ -165,8 +165,10 @@ TEST_CASE("[Layouts]")
             REQUIRE((Layout(5) + Layout(3) * Layout(2) - Layout(1)).toString() == "(5 + (3 * 2)) - 1");
             REQUIRE((Layout(5) + Layout(3) * (Layout(2) - Layout(1))).toString() == "5 + (3 * (2 - 1))");
             REQUIRE(((Layout(5) + Layout(3)) * Layout(2) - Layout(1)).toString() == "((5 + 3) * 2) - 1");
-            REQUIRE((Layout2d(5, 2) + Layout2d(3, -3) / Layout(2) - Layout2d(-1, 6)).toString() == "((5 + (3 / 2)) - -1, (2 + (-3 / 2)) - 6)");
-            REQUIRE(((Layout2d(5, 2) + Layout2d(3, -3)) / Layout(2) - Layout2d(-1, 6)).toString() == "(((5 + 3) / 2) - -1, ((2 + -3) / 2) - 6)");
+            REQUIRE((Layout2d(5, 2) + Layout2d(3, -3) / Layout(2) - Layout2d(-1, 6)).toString()
+                    == "((5 + (3 / 2)) - -1, (2 + (-3 / 2)) - 6)");
+            REQUIRE(((Layout2d(5, 2) + Layout2d(3, -3)) / Layout(2) - Layout2d(-1, 6)).toString()
+                    == "(((5 + 3) / 2) - -1, ((2 + -3) / 2) - 6)");
         }
 
         SECTION("bind functions")
@@ -217,7 +219,8 @@ TEST_CASE("[Layouts]")
                 button3->setSize(2.5 * bindPosition(button1) + bindSize(button2) / 4 + tgui::Vector2f(100, 50));
                 REQUIRE(button3->getSize() == tgui::Vector2f(300, 210));
 
-                button3->setPosition(2 * bindRight(button1) + bindLeft(button2) / 4 + bindWidth(button1), 50 - bindBottom(button2) + 75 * bindTop(button2));
+                button3->setPosition(2 * bindRight(button1) + bindLeft(button2) / 4 + bindWidth(button1),
+                                     50 - bindBottom(button2) + 75 * bindTop(button2));
                 REQUIRE(button3->getPosition() == tgui::Vector2f(995, 5560));
                 REQUIRE(button3->getAbsolutePosition() == tgui::Vector2f(1005, 5585));
 
@@ -288,7 +291,8 @@ TEST_CASE("[Layouts]")
                 panel->add(button2, "b2");
 
                 auto layout = bindRight(button1) + bindBottom(button2) + bindInnerWidth(panel) + bindInnerHeight(panel) + 10;
-                REQUIRE(layout.toString() == "((((b1.left + b1.width) + (b2.top + b2.height)) + Panel.innerwidth) + Panel.innerheight) + 10");
+                REQUIRE(layout.toString()
+                        == "((((b1.left + b1.width) + (b2.top + b2.height)) + Panel.innerwidth) + Panel.innerheight) + 10");
             }
         }
     }
@@ -341,7 +345,7 @@ TEST_CASE("[Layouts]")
             REQUIRE(Layout("2 - 3").getValue() == -1);
             REQUIRE(Layout("2 + -3").getValue() == -1);
             REQUIRE(Layout("2 * 3").getValue() == 6);
-            REQUIRE(Layout("5 / 3").getValue() == 5.f/3.f);
+            REQUIRE(Layout("5 / 3").getValue() == 5.f / 3.f);
             REQUIRE(Layout("min(1,2)").getValue() == 1);
             REQUIRE(Layout("min(2,1)").getValue() == 1);
             REQUIRE(Layout("max(1,2)").getValue() == 2);
@@ -386,7 +390,7 @@ TEST_CASE("[Layouts]")
 
             REQUIRE(Layout("width").getValue() == 0);
 
-            std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
+            std::streambuf* oldbuf = std::cerr.rdbuf(nullptr);
             REQUIRE(Layout("xyz").getValue() == 0);
             std::cerr.rdbuf(oldbuf);
         }
@@ -416,7 +420,7 @@ TEST_CASE("[Layouts]")
             REQUIRE(button2->getSizeLayout().toString() == "(b1.size, b1.size)");
             REQUIRE(button2->getPositionLayout().toString() == "(b1.position, b1.position)");
 
-            std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
+            std::streambuf* oldbuf = std::cerr.rdbuf(nullptr);
             button2->setPosition({"b1.p"});
             REQUIRE(button2->getPosition() == tgui::Vector2f(0, 0));
             std::cerr.rdbuf(oldbuf);
@@ -468,12 +472,14 @@ TEST_CASE("[Layouts]")
 
             button3->setSize({"2.5 * b1.pos + b2.size / 4 + 50"});
             REQUIRE(button3->getSize() == tgui::Vector2f(250, 210));
-            REQUIRE(button3->getSizeLayout().toString() == "(((2.5 * b1.pos) + (b2.size / 4)) + 50, ((2.5 * b1.pos) + (b2.size / 4)) + 50)");
+            REQUIRE(button3->getSizeLayout().toString()
+                    == "(((2.5 * b1.pos) + (b2.size / 4)) + 50, ((2.5 * b1.pos) + (b2.size / 4)) + 50)");
 
             button3->setPosition({"2 * b1.right + b2.x / 4 + b1.w"}, {"50 - b2.bottom + 75 * b2.y"});
             REQUIRE(button3->getPosition() == tgui::Vector2f(995, 5560));
             REQUIRE(button3->getAbsolutePosition() == tgui::Vector2f(1005, 5585));
-            REQUIRE(button3->getPositionLayout().toString() == "(((2 * (b1.left + b1.width)) + (b2.x / 4)) + b1.w, (50 - (b2.top + b2.height)) + (75 * b2.y))");
+            REQUIRE(button3->getPositionLayout().toString()
+                    == "(((2 * (b1.left + b1.width)) + (b2.x / 4)) + b1.w, (50 - (b2.top + b2.height)) + (75 * b2.y))");
 
             auto button4 = std::make_shared<tgui::Button>();
             button4->setSize(200, 50);
@@ -495,10 +501,10 @@ TEST_CASE("[Layouts]")
         {
             auto widget = std::make_shared<tgui::ClickableWidget>();
             widget->setPosition({0, 0});
-            widget->setPosition(0,0);
-            widget->setPosition({"0","0"});
-            widget->setPosition({"0"},{"0"});
-            widget->setPosition("0","0");
+            widget->setPosition(0, 0);
+            widget->setPosition({"0", "0"});
+            widget->setPosition({"0"}, {"0"});
+            widget->setPosition("0", "0");
         }
     }
 
@@ -923,7 +929,7 @@ TEST_CASE("[Layouts]")
 
         SECTION("Recursive layouts could crash (https://github.com/texus/TGUI/issues/198)")
         {
-            std::streambuf *oldbuf = std::cerr.rdbuf(nullptr);
+            std::streambuf* oldbuf = std::cerr.rdbuf(nullptr);
 
             auto widget = tgui::ClickableWidget::create();
             widget->setSize({100, 100});
