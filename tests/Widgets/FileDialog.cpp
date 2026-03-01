@@ -128,6 +128,12 @@ TEST_CASE("[FileDialog]")
         REQUIRE(dialog->getMultiSelect());
         dialog->setMultiSelect(false);
         REQUIRE(!dialog->getMultiSelect());
+
+        REQUIRE(!dialog->getAllowCreateFolder());
+        dialog->setAllowCreateFolder(true);
+        REQUIRE(dialog->getAllowCreateFolder());
+        dialog->setAllowCreateFolder(false);
+        REQUIRE(!dialog->getAllowCreateFolder());
     }
 
     SECTION("Icon loader")
