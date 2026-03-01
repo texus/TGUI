@@ -243,7 +243,7 @@ namespace tgui
         // Set the new maximum
         m_maximum = maximum;
 
-        // The minimum can't be below the maximum
+        // The minimum can't be above the maximum
         if (m_minimum > m_maximum)
             setMinimum(m_maximum);
 
