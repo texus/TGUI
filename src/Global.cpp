@@ -26,9 +26,7 @@
 #include <TGUI/Backend/Window/Backend.hpp>
 #include "TGUI/Exception.hpp"
 
-#include <functional>
 #include <sstream>
-#include <locale>
 #include <limits>
 
 #include <stdio.h> // C header for compatibility with _wfopen_s, NOLINT(modernize-deprecated-headers)
