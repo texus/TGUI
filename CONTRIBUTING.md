@@ -12,7 +12,7 @@ If you have any questions about TGUI, the [Discord server](https://discord.gg/Ms
 
 ## Style guide
 
-TGUI has no official style guide yet, but since its style was heavily influenced by SFML code, the [SFML code style guide](https://www.sfml-dev.org/style.php) mostly matches with TGUI code.
+The official TGUI style is encoded in the .clang-format file found in the root of the repository. The style was heavily influenced by SFML code, the [SFML code style guide](https://www.sfml-dev.org/style.php) mostly matches with TGUI code, but contributions should be run through clang-format --style=file to make sure they follow the official style.
 
 There are 3 differences that I'm aware of:
 - TGUI uses `@` in Doxygen documentation where SFML uses `\`
