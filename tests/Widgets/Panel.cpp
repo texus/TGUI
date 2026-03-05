@@ -145,6 +145,15 @@ TEST_CASE("[Panel]")
             REQUIRE(mouseEnteredCount == 1);
             REQUIRE(mouseLeftCount == 1);
         }
+
+        SECTION("event bubbling")
+        {
+            REQUIRE(!panel->getEventBubbling());
+            panel->setEventBubbling(true);
+            REQUIRE(panel->getEventBubbling());
+            panel->setEventBubbling(false);
+            REQUIRE(!panel->getEventBubbling());
+        }
     }
 
     testWidgetRenderer(panel->getRenderer());
