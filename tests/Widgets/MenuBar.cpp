@@ -244,6 +244,7 @@ TEST_CASE("[MenuBar]")
 
         // We can't rename something that doesn't exist
         REQUIRE(!menuBar->changeMenuItem({"This", "won't", "work"}, "Just testing"));
+        REQUIRE(!menuBar->changeMenuItem({}, "Testing"));
     }
 
     SECTION("Disabling menus")
