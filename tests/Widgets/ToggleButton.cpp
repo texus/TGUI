@@ -66,7 +66,11 @@ TEST_CASE("[ToggleButton]")
         REQUIRE(!button->isDown());
         button->setDown(true);
         REQUIRE(button->isDown());
+        REQUIRE_NOTHROW(button->setDown(true));
+        REQUIRE(button->isDown());
         button->setDown(false);
+        REQUIRE(!button->isDown());
+        REQUIRE_NOTHROW(button->setDown(false));
         REQUIRE(!button->isDown());
     }
 
