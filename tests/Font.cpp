@@ -27,6 +27,7 @@
 TEST_CASE("[Font]")
 {
     tgui::Font font("resources/DejaVuSans.ttf");
+    tgui::Font nullFont(nullptr);
 
     SECTION("Constructor")
     {
@@ -43,6 +44,11 @@ TEST_CASE("[Font]")
         REQUIRE(!font.isSmooth());
         font.setSmooth(true);
         REQUIRE(font.isSmooth());
+        REQUIRE(nullFont.isSmooth());
+        nullFont.setSmooth(false);
+        REQUIRE(nullFont.isSmooth());
+        nullFont.setSmooth(true);
+        REQUIRE(nullFont.isSmooth());
     }
 
     SECTION("Font height")
@@ -53,5 +59,6 @@ TEST_CASE("[Font]")
         REQUIRE((fontHeight >= 33 && fontHeight <= 39));
         REQUIRE((ascent >= 27 && ascent <= 30));
         REQUIRE((descent >= -9 && descent <= -6));
+        REQUIRE(nullFont.getFontHeight(42) == 0);
     }
 }
