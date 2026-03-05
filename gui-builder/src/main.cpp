@@ -67,7 +67,7 @@ int main(int, char* argv[])
         if (argvW == nullptr)
         {
             std::cerr << "Failed to access command line arguments\n";
-            return 1;
+            return EXIT_FAILURE;
         }
 
         const tgui::String exePath = argvW[0];
