@@ -37,6 +37,7 @@ set(TEST_SOURCES
     Filesystem.cpp
     Focus.cpp
     Font.cpp
+    Global.cpp
     Layouts.cpp
     Loading/DataIO.cpp
     Loading/Deserializer.cpp
