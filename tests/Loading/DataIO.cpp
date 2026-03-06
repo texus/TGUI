@@ -32,6 +32,10 @@ TEST_CASE("[DataIO]")
         {
             std::stringstream input("");
             REQUIRE_NOTHROW(tgui::DataIO::parse(input));
+            std::stringstream input2;
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input2));
+            std::stringstream input3(" ");
+            REQUIRE_NOTHROW(tgui::DataIO::parse(input3));
         }
 
         SECTION("Global properties")
