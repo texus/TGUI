@@ -63,6 +63,7 @@ namespace tgui
     template <typename T>
     TGUI_NODISCARD constexpr const T& clamp(const T& v, const T& lo, const T& hi)
     {
+        TGUI_ASSERT(!(hi < lo), "The highest value must not be less than the lowest value");
         return (v < lo) ? lo : (hi < v) ? hi : v;
     }
 
