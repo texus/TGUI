@@ -186,6 +186,9 @@ namespace tgui
             {
                 const String name = Deserializer::deserialize(ObjectConverter::Type::String, child->name).getString();
                 sections.emplace(name, std::cref(child));
+
+                // Make certain that the section will exist, even if the section is empty
+                m_propertiesCache[filename][name] = {};
             }
 
             // Resolve references to sections
