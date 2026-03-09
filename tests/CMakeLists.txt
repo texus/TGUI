@@ -180,6 +180,10 @@ if(TGUI_ENABLE_DRAW_TESTS)
     target_compile_definitions(tests PRIVATE TGUI_ENABLE_DRAW_TESTS)
 endif()
 
+if(TGUI_USE_SYSTEM_STB)
+    target_include_directories(tests SYSTEM PRIVATE "${TGUI_SYSTEM_STB_IMAGE_WRITE_INCLUDE_DIR}")
+endif()
+
 # Use a precompiled header to speed up compilation.
 # We must exclude the main file since it contains the implementation of Catch.
 target_precompile_headers(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Tests.hpp")

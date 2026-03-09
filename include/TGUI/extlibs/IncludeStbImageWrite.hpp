@@ -46,12 +46,12 @@
 #endif
 
 #define STBI_WRITE_NO_STDIO
+#define STB_IMAGE_WRITE_STATIC
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 
 #if TGUI_USE_SYSTEM_STB
 #   include <stb_image_write.h>
 #else
-#   define STB_IMAGE_WRITE_STATIC
-#   define STB_IMAGE_WRITE_IMPLEMENTATION
 #   include <TGUI/extlibs/stb/stb_image_write.h>
 #endif
 

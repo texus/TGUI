@@ -388,21 +388,22 @@ void testDraw(tgui::BackendGui& gui, const char* filename, tgui::Vector2u imageS
 
         void* pixelData = SDL_MapGPUTransferBuffer(device, transferBuffer, false);
 
-        int dataLength = 0;
-        unsigned char* pngData = stbi_write_png_to_mem(static_cast<const unsigned char*>(pixelData),
-                                                       static_cast<int>(textureCreateInfo.width * 4),
-                                                       static_cast<int>(textureCreateInfo.width),
-                                                       static_cast<int>(textureCreateInfo.height),
-                                                       4,
-                                                       &dataLength);
-        if (!pngData || dataLength <= 0)
+        const auto writeFunc = [](void* filenamePtr, void* pngData, int dataLength)
+        {
+            tgui::writeFile(*static_cast<decltype(filename)*>(filenamePtr),
+                            tgui::CharStringView(static_cast<const char*>(pngData), static_cast<std::size_t>(dataLength)));
+        };
+        if (!stbi_write_png_to_func(writeFunc,
+                                    &filename,
+                                    static_cast<int>(textureCreateInfo.width),
+                                    static_cast<int>(textureCreateInfo.height),
+                                    4,
+                                    pixelData,
+                                    static_cast<int>(textureCreateInfo.width * 4)))
         {
             assert(false);
             return;
         }
-
-        tgui::writeFile(filename, tgui::CharStringView(reinterpret_cast<const char*>(pngData), static_cast<std::size_t>(dataLength)));
-        STBIW_FREE(pngData); // NOLINT(cppcoreguidelines-no-malloc)
 
         SDL_UnmapGPUTransferBuffer(device, transferBuffer);
         SDL_ReleaseGPUTransferBuffer(device, transferBuffer);

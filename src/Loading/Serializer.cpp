@@ -191,19 +191,24 @@ namespace tgui
                 const Vector2u imageSize = texture.getData()->backendTexture->getSize();
                 const std::uint8_t* pixels = texture.getData()->backendTexture->getPixels();
 
-                int dataLength = 0;
-                unsigned char* pngData = stbi_write_png_to_mem(static_cast<const unsigned char*>(pixels),
-                                                               static_cast<int>(imageSize.x * 4),
-                                                               static_cast<int>(imageSize.x),
-                                                               static_cast<int>(imageSize.y),
-                                                               4,
-                                                               &dataLength);
-                if (!pngData)
+                const auto writeFunc = [](void* resultPtr, void* pngData, int dataLength)
+                {
+                    assert(dataLength >= 0); // Length is always positive, but passed as a signed int
+                    *static_cast<decltype(result)*>(
+                        resultPtr) = "\"data:image/png;base64,"
+                                     + base64Encode(static_cast<const std::uint8_t*>(pngData), static_cast<std::size_t>(dataLength))
+                                     + "\"";
+                };
+                if (!stbi_write_png_to_func(writeFunc,
+                                            &result,
+                                            static_cast<int>(imageSize.x),
+                                            static_cast<int>(imageSize.y),
+                                            4,
+                                            pixels,
+                                            static_cast<int>(imageSize.x * 4)))
+                {
                     return "None";
-
-                assert(dataLength >= 0); // Length is always positive, but returned as a signed int
-                result = "\"data:image/png;base64," + base64Encode(pngData, static_cast<std::size_t>(dataLength)) + "\"";
-                STBIW_FREE(pngData); // NOLINT(cppcoreguidelines-no-malloc)
+                }
             }
 
             if (texture.getData()->backendTexture)
