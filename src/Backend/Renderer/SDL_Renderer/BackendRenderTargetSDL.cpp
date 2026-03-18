@@ -212,7 +212,8 @@ namespace tgui
         {
             m_pixelsPerPoint = {1, 1};
 
-            SDL_SetRenderClipRect(m_renderer, nullptr);
+            SDL_Rect clipRectSDL = {0, 0, 0, 0};
+            SDL_SetRenderClipRect(m_renderer, &clipRectSDL);
         }
     }
 
