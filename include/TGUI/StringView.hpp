@@ -35,9 +35,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
 namespace tgui
 {
+#if TGUI_COMPILED_WITH_CPP_VER >= 17
     inline namespace literals
     {
         inline namespace string_view_literals
@@ -47,12 +47,7 @@ namespace tgui
             using namespace std::literals::string_view_literals;
         } // namespace string_view_literals
     } // namespace literals
-} // namespace tgui
-#endif
 
-namespace tgui
-{
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
     using StringView = std::u32string_view;
     using CharStringView = std::string_view;
 #else
