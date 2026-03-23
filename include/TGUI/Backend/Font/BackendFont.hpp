@@ -81,7 +81,7 @@ namespace tgui
         ///
         /// @return True if the font was loaded successfully, false otherwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadFromFile(const String& filename);
+        TGUI_NODISCARD virtual bool loadFromFile(const String& filename);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a font from memory
@@ -91,7 +91,7 @@ namespace tgui
         ///
         /// @return True if the font was loaded successfully, false otherwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) = 0;
+        TGUI_NODISCARD virtual bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) = 0;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a font from memory
@@ -103,7 +103,7 @@ namespace tgui
         ///
         /// This function makes a copy of the data. Use the overload with a unique_ptr when possible to move instead of copy.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool loadFromMemory(const void* data, std::size_t sizeInBytes);
+        TGUI_NODISCARD bool loadFromMemory(const void* data, std::size_t sizeInBytes);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether a font contains a certain glyph
