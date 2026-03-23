@@ -65,7 +65,7 @@ namespace tgui
         ///
         /// @return True if the font was loaded successfully, false otherwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) override;
+        TGUI_NODISCARD bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) override;
         using BackendFont::loadFromMemory;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

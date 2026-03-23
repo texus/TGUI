@@ -79,7 +79,12 @@ namespace tgui
     Font::Font(const void* data, std::size_t sizeInBytes) :
         m_backendFont{getBackend()->createFont()}
     {
-        m_backendFont->loadFromMemory(data, sizeInBytes);
+        if (!m_backendFont->loadFromMemory(data, sizeInBytes))
+        {
+            std::ostringstream oss;
+            oss << "Unable to construct Font from " << sizeInBytes << " bytes of data at " << data;
+            throw Exception(oss.str());
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
