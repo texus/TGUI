@@ -25,6 +25,8 @@
 #ifndef TGUI_STRING_VIEW_HPP
 #define TGUI_STRING_VIEW_HPP
 
+#include <TGUI/Config.hpp>
+
 #include <algorithm> // equal, min
 #include <cctype>    // tolower
 #include <string>
