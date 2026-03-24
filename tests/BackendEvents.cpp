@@ -2031,6 +2031,11 @@ TEST_CASE("[Backend events]")
                 unsigned int nrTextEnteredCallbacks = 0;
 
             private:
+                bool canHandleKeyPress(const tgui::Event::KeyEvent&) override
+                {
+                    return true;
+                }
+
                 void keyPressed(const tgui::Event::KeyEvent& event) override
                 {
                     REQUIRE(event.code == expectedKeyCode);
@@ -2170,6 +2175,9 @@ TEST_CASE("[Backend events]")
                                 ++nrKeysRequiredHandling;
 
                             REQUIRE(backendGuiRaylib->handleKeyPressed(pair.first));
+
+                            if (pair.first == KEY_TAB)
+                                testWidget->setFocused(true);
                         }
                         else
                         {

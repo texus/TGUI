@@ -633,5 +633,10 @@ int main(int argc, char* argv[])
 
 TEST_CASE("[Memory leak test]")
 {
+    // Draw tests may add widgets to the global gui. Make sure they have been removed before
+    // we check that everything has been freed correctly.
+    if (globalGui)
+        globalGui->removeAllWidgets();
+
     REQUIRE(tgui::TextureManager::getCachedImagesCount() == 0);
 }
