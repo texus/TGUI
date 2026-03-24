@@ -120,6 +120,14 @@ namespace tgui
                                 && std::dynamic_pointer_cast<BackendRendererRaylib>(getBackend()->getRenderer()),
                             "CanvasRaylib can only be used when using the Raylib backend renderer");
 
+                if (m_textureTarget.id > 0)
+                {
+                    // The texture itself will already be unloaded by the replaceInternalTexture call below,
+                    // but the rest of the render texture needs to be unloaded as well, which we do here.
+                    m_textureTarget.texture.id = 0;
+                    UnloadRenderTexture(m_textureTarget);
+                }
+
                 m_textureTarget = LoadRenderTexture(static_cast<int>(newTextureSize.x), static_cast<int>(newTextureSize.y));
 
                 // Move the ownership of the texture to our backend texture
