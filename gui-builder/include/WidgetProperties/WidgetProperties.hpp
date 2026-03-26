@@ -133,7 +133,7 @@ struct WidgetProperties
         }
         catch (const tgui::Exception&)
         {
-            std::cout << "Failed to deserialize list '" + listStr + "'" << std::endl;
+            std::cout << "Failed to deserialize list '" + listStr + "'\n";
         }
 
         return {};

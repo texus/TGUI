@@ -174,7 +174,7 @@ struct ListViewProperties : public WidgetProperties
     {
         if ((serializedColumn.length() < 2) || (serializedColumn.front() != '(') || (serializedColumn.back() != ')'))
         {
-            std::cout << "Failed to deserialize column '" + serializedColumn + "'. Expected brackets around value." << std::endl;
+            std::cout << "Failed to deserialize column '" + serializedColumn + "'. Expected brackets around value.\n";
             return false;
         }
 
@@ -189,8 +189,7 @@ struct ListViewProperties : public WidgetProperties
                 const auto& values = node->propertyValuePairs["l"]->valueList;
                 if (values.size() != 5)
                 {
-                    std::cout << "Failed to deserialize column '" + serializedColumn + "'. Expected 5 values between brackets."
-                              << std::endl;
+                    std::cout << "Failed to deserialize column '" + serializedColumn + "'. Expected 5 values between brackets.\n";
                     return false;
                 }
 
@@ -204,8 +203,7 @@ struct ListViewProperties : public WidgetProperties
                 else
                 {
                     std::cout << "Failed to deserialize column '" + serializedColumn
-                                     + "'. Alignment has to be either 'Left', 'Center' or 'Right'."
-                              << std::endl;
+                                     + "'. Alignment has to be either 'Left', 'Center' or 'Right'.\n";
                     return false;
                 }
 
@@ -220,7 +218,7 @@ struct ListViewProperties : public WidgetProperties
         {
         }
 
-        std::cout << "Failed to deserialize column '" + serializedColumn + "'" << std::endl;
+        std::cout << "Failed to deserialize column '" + serializedColumn + "'\n";
         return false;
     }
 };
