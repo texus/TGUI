@@ -204,7 +204,7 @@ MainIncludeChar: Quote
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
 ObjCBinPackProtocolList: Auto
-ObjCBlockIndentWidth: 2
+ObjCBlockIndentWidth: 4
 ObjCBreakBeforeNestedBlockParam: true
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
