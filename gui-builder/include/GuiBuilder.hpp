@@ -73,7 +73,7 @@ public:
     void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
     void saveUndoState(UndoType type);
-    bool isEnabledDragBeforeSelect() const;
+    TGUI_NODISCARD bool isEnabledDragBeforeSelect() const;
 
 private:
     using PropertyValuePair = std::pair<tgui::String, std::pair<tgui::String, tgui::String>>;
