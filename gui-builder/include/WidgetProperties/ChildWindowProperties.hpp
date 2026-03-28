@@ -78,7 +78,7 @@ struct ChildWindowProperties : public WidgetProperties
         pair.first["MaximumWidth"] = {"Float", tgui::String::fromNumber(childWindow->getMaximumSize().x)};
         pair.first["MaximumHeight"] = {"Float", tgui::String::fromNumber(childWindow->getMaximumSize().y)};
 
-        const auto renderer = childWindow->getSharedRenderer();
+        const auto* const renderer = childWindow->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["ClientPadding"] = {"Outline", renderer->getClientPadding().toString()};
         pair.second["TitleColor"] = {"Color", tgui::Serializer::serialize(renderer->getTitleColor())};

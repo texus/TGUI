@@ -56,7 +56,7 @@ struct RangeSliderProperties : public WidgetProperties
         pair.first["SelectionEnd"] = {"Float", tgui::String::fromNumber(slider->getSelectionEnd())};
         pair.first["Step"] = {"Float", tgui::String::fromNumber(slider->getStep())};
 
-        const auto renderer = slider->getSharedRenderer();
+        const auto* const renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};
         pair.second["TrackColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColorHover())};

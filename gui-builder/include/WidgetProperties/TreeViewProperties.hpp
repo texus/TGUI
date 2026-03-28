@@ -57,7 +57,7 @@ struct TreeViewProperties : public WidgetProperties
         pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
                                                    serializeScrollbarPolicy(treeView->getHorizontalScrollbar()->getPolicy())};
 
-        const auto renderer = treeView->getSharedRenderer();
+        const auto* const renderer = treeView->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

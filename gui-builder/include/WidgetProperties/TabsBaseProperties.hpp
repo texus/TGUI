@@ -68,7 +68,7 @@ struct TabsBaseProperties : public WidgetProperties
         pair.first["Selected"] = {"Int", tgui::String::fromNumber(tabs->getSelectedIndex())};
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(tabs->getTextSize())};
 
-        const auto renderer = tabs->getSharedRenderer();
+        const auto* const renderer = tabs->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};

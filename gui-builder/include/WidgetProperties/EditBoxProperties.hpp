@@ -72,7 +72,7 @@ struct EditBoxProperties : public WidgetProperties
         pair.first["InputValidator"] = {"EditBoxInputValidator", editBox->getInputValidator()};
         pair.first["Suffix"] = {"String", editBox->getSuffix()};
 
-        const auto renderer = editBox->getSharedRenderer();
+        const auto* const renderer = editBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["CaretWidth"] = {"Float", tgui::String::fromNumber(renderer->getCaretWidth())};

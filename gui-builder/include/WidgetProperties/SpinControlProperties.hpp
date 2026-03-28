@@ -59,7 +59,7 @@ struct SpinControlProperties : public WidgetProperties
         pair.first["DecimalPlaces"] = {"UInt", tgui::String::fromNumber(spinControl->getDecimalPlaces())};
         pair.first["SpinButtonWidth"] = {"Float", tgui::String::fromNumber(spinControl->getSpinButtonWidth())};
 
-        const auto buttonRenderer = spinControl->getSpinButtonSharedRenderer();
+        const auto* const buttonRenderer = spinControl->getSpinButtonSharedRenderer();
         pair.second["SpinButton.ButtonsBorders"] = {"Outline", tgui::Serializer::serialize(buttonRenderer->getBorders())};
         pair.second["SpinButton.BorderBetweenArrows"] = {"Float", tgui::Serializer::serialize(buttonRenderer->getBorderBetweenArrows())};
         pair.second["SpinButton.ButtonsBackgroundColor"] = {"Color", tgui::Serializer::serialize(buttonRenderer->getBackgroundColor())};
@@ -74,7 +74,7 @@ struct SpinControlProperties : public WidgetProperties
         pair.second["SpinButton.TextureArrowDownHover"] = {"Texture",
                                                            tgui::Serializer::serialize(buttonRenderer->getTextureArrowDownHover())};
 
-        const auto textRenderer = spinControl->getSpinTextSharedRenderer();
+        const auto* const textRenderer = spinControl->getSpinTextSharedRenderer();
         pair.second["SpinText.Padding"] = {"Outline", textRenderer->getPadding().toString()};
         pair.second["SpinText.CaretWidth"] = {"Float", tgui::String::fromNumber(textRenderer->getCaretWidth())};
         pair.second["SpinText.TextColor"] = {"Color", tgui::Serializer::serialize(textRenderer->getTextColor())};

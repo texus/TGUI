@@ -34,7 +34,7 @@ struct PanelProperties : public GroupProperties
         auto pair = GroupProperties::initProperties(widget);
         auto panel = widget->cast<tgui::Panel>();
 
-        const auto renderer = panel->getSharedRenderer();
+        const auto* const renderer = panel->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};

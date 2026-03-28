@@ -56,7 +56,7 @@ struct PictureProperties : public WidgetProperties
         auto pair = WidgetProperties::initProperties(widget);
         auto picture = widget->cast<tgui::Picture>();
 
-        const auto renderer = picture->getSharedRenderer();
+        const auto* const renderer = picture->getSharedRenderer();
         pair.second["Texture"] = {"Texture", tgui::Serializer::serialize(renderer->getTexture())};
         return pair;
     }

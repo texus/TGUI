@@ -66,7 +66,7 @@ struct TextAreaProperties : public WidgetProperties
         pair.first["HorizontalScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
                                                    serializeScrollbarPolicy(textArea->getHorizontalScrollbar()->getPolicy())};
 
-        const auto renderer = textArea->getSharedRenderer();
+        const auto* const renderer = textArea->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

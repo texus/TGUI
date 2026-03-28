@@ -72,7 +72,7 @@ struct ComboBoxProperties : public WidgetProperties
         pair.first["ExpandDirection"] = {"Enum{Down, Up, Automatic}", serializeExpandDirection(comboBox->getExpandDirection())};
         pair.first["ChangeItemOnScroll"] = {"Bool", tgui::Serializer::serialize(comboBox->getChangeItemOnScroll())};
 
-        const auto renderer = comboBox->getSharedRenderer();
+        const auto* const renderer = comboBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

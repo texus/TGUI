@@ -60,7 +60,7 @@ struct EditBoxSliderProperties : public WidgetProperties
         pair.first["DecimalPlaces"] = {"UInt", tgui::String::fromNumber(editBoxSlider->getDecimalPlaces())};
         pair.first["TextAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(editBoxSlider->getTextAlignment())};
 
-        const auto editBoxRenderer = editBoxSlider->getEditBoxSharedRenderer();
+        const auto* const editBoxRenderer = editBoxSlider->getEditBoxSharedRenderer();
         pair.second["EditBox.Padding"] = {"Outline", editBoxRenderer->getPadding().toString()};
         pair.second["EditBox.CaretWidth"] = {"Float", tgui::String::fromNumber(editBoxRenderer->getCaretWidth())};
         pair.second["EditBox.TextColor"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getTextColor())};
@@ -91,7 +91,7 @@ struct EditBoxSliderProperties : public WidgetProperties
         pair.second["EditBox.TextStyle"] = {"TextStyle", tgui::Serializer::serialize(editBoxRenderer->getTextStyle())};
         pair.second["EditBox.DefaultTextStyle"] = {"TextStyle", tgui::Serializer::serialize(editBoxRenderer->getDefaultTextStyle())};
 
-        const auto sliderRenderer = editBoxSlider->getSliderSharedRenderer();
+        const auto* const sliderRenderer = editBoxSlider->getSliderSharedRenderer();
         pair.second["Slider.Borders"] = {"Outline", tgui::Serializer::serialize(sliderRenderer->getBorders())};
         pair.second["Slider.TrackColor"] = {"Color", tgui::Serializer::serialize(sliderRenderer->getTrackColor())};
         pair.second["Slider.TrackColorHover"] = {"Color", tgui::Serializer::serialize(sliderRenderer->getTrackColorHover())};

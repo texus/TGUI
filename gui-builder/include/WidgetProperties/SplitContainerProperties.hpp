@@ -61,7 +61,7 @@ struct SplitContainerProperties : public WidgetProperties
         pair.first["SplitterWidth"] = {"Float", tgui::String::fromNumber(splitContainer->getSplitterWidth())};
         pair.first["MinimumGrabWidth"] = {"Float", tgui::String::fromNumber(splitContainer->getSplitterWidth())};
 
-        const auto renderer = splitContainer->getSharedRenderer();
+        const auto* const renderer = splitContainer->getSharedRenderer();
         pair.second["SplitterColor"] = {"Color", tgui::Serializer::serialize(renderer->getSplitterColor())};
         pair.second["SplitterColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSplitterColorHover())};
         return pair;

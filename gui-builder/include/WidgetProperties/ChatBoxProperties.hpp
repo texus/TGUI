@@ -64,7 +64,7 @@ struct ChatBoxProperties : public WidgetProperties
         pair.first["NewLinesBelowOthers"] = {"Bool", tgui::Serializer::serialize(chatBox->getNewLinesBelowOthers())};
         pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(chatBox->getScrollbar()->getPolicy())};
 
-        const auto renderer = chatBox->getSharedRenderer();
+        const auto* const renderer = chatBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["Padding"] = {"Outline", tgui::Serializer::serialize(renderer->getPadding())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
