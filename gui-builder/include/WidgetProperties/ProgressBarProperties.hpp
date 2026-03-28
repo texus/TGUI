@@ -81,24 +81,22 @@ private:
         value = value.trim().toLower();
         if (value == "bottomtotop")
             return tgui::ProgressBar::FillDirection::BottomToTop;
-        else if (value == "toptobottom")
+        if (value == "toptobottom")
             return tgui::ProgressBar::FillDirection::TopToBottom;
-        else if (value == "righttoleft")
+        if (value == "righttoleft")
             return tgui::ProgressBar::FillDirection::RightToLeft;
-        else
-            return tgui::ProgressBar::FillDirection::LeftToRight;
+        return tgui::ProgressBar::FillDirection::LeftToRight;
     }
 
     TGUI_NODISCARD static tgui::String serializeFillDirection(tgui::ProgressBar::FillDirection direction)
     {
         if (direction == tgui::ProgressBar::FillDirection::BottomToTop)
             return "BottomToTop";
-        else if (direction == tgui::ProgressBar::FillDirection::TopToBottom)
+        if (direction == tgui::ProgressBar::FillDirection::TopToBottom)
             return "TopToBottom";
-        else if (direction == tgui::ProgressBar::FillDirection::RightToLeft)
+        if (direction == tgui::ProgressBar::FillDirection::RightToLeft)
             return "RightToLeft";
-        else
-            return "LeftToRight";
+        return "LeftToRight";
     }
 };
 

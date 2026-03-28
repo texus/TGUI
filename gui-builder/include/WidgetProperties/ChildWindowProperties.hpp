@@ -139,20 +139,18 @@ private:
         value = value.trim().toLower();
         if (value == "none")
             return tgui::ChildWindow::CloseBehavior::None;
-        else if (value == "hide")
+        if (value == "hide")
             return tgui::ChildWindow::CloseBehavior::Hide;
-        else
-            return tgui::ChildWindow::CloseBehavior::Remove;
+        return tgui::ChildWindow::CloseBehavior::Remove;
     }
 
     TGUI_NODISCARD static tgui::String serializeCloseBehavior(tgui::ChildWindow::CloseBehavior behavior)
     {
         if (behavior == tgui::ChildWindow::CloseBehavior::None)
             return "None";
-        else if (behavior == tgui::ChildWindow::CloseBehavior::Hide)
+        if (behavior == tgui::ChildWindow::CloseBehavior::Hide)
             return "Hide";
-        else
-            return "Remove";
+        return "Remove";
     }
 };
 
