@@ -178,34 +178,33 @@ struct WidgetProperties
         value = value.trim().toLower();
         if (value == "text")
             return tgui::Cursor::Type::Text;
-        else if (value == "hand")
+        if (value == "hand")
             return tgui::Cursor::Type::Hand;
-        else if (value == "sizeleft")
+        if (value == "sizeleft")
             return tgui::Cursor::Type::SizeLeft;
-        else if (value == "sizeright")
+        if (value == "sizeright")
             return tgui::Cursor::Type::SizeRight;
-        else if (value == "sizetop")
+        if (value == "sizetop")
             return tgui::Cursor::Type::SizeTop;
-        else if (value == "sizebottom")
+        if (value == "sizebottom")
             return tgui::Cursor::Type::SizeBottom;
-        else if (value == "sizebottomright")
+        if (value == "sizebottomright")
             return tgui::Cursor::Type::SizeBottomRight;
-        else if (value == "sizetopleft")
+        if (value == "sizetopleft")
             return tgui::Cursor::Type::SizeTopLeft;
-        else if (value == "sizebottomleft")
+        if (value == "sizebottomleft")
             return tgui::Cursor::Type::SizeBottomLeft;
-        else if (value == "sizetopright")
+        if (value == "sizetopright")
             return tgui::Cursor::Type::SizeTopRight;
-        else if (value == "crosshair")
+        if (value == "crosshair")
             return tgui::Cursor::Type::Crosshair;
-        else if (value == "help")
+        if (value == "help")
             return tgui::Cursor::Type::Help;
-        else if (value == "notallowed")
+        if (value == "notallowed")
             return tgui::Cursor::Type::NotAllowed;
-        else if (value == "move")
+        if (value == "move")
             return tgui::Cursor::Type::Move;
-        else
-            return tgui::Cursor::Type::Arrow;
+        return tgui::Cursor::Type::Arrow;
     }
 
     TGUI_NODISCARD static tgui::String serializeMouseCursor(tgui::Cursor::Type cursor)
@@ -250,10 +249,9 @@ struct WidgetProperties
         value = value.trim().toLower();
         if (value == "right")
             return tgui::HorizontalAlignment::Right;
-        else if (value == "center")
+        if (value == "center")
             return tgui::HorizontalAlignment::Center;
-        else
-            return tgui::HorizontalAlignment::Left;
+        return tgui::HorizontalAlignment::Left;
     }
 
     TGUI_NODISCARD static tgui::VerticalAlignment deserializeVerticalAlignment(tgui::String value)
@@ -261,38 +259,34 @@ struct WidgetProperties
         value = value.trim().toLower();
         if (value == "bottom")
             return tgui::VerticalAlignment::Bottom;
-        else if (value == "center")
+        if (value == "center")
             return tgui::VerticalAlignment::Center;
-        else
-            return tgui::VerticalAlignment::Top;
+        return tgui::VerticalAlignment::Top;
     }
 
     TGUI_NODISCARD static tgui::String serializeHorizontalAlignment(tgui::HorizontalAlignment alignment)
     {
         if (alignment == tgui::HorizontalAlignment::Center)
             return "Center";
-        else if (alignment == tgui::HorizontalAlignment::Right)
+        if (alignment == tgui::HorizontalAlignment::Right)
             return "Right";
-        else
-            return "Left";
+        return "Left";
     }
 
     TGUI_NODISCARD static tgui::String serializeVerticalAlignment(tgui::VerticalAlignment alignment)
     {
         if (alignment == tgui::VerticalAlignment::Center)
             return "Center";
-        else if (alignment == tgui::VerticalAlignment::Bottom)
+        if (alignment == tgui::VerticalAlignment::Bottom)
             return "Bottom";
-        else
-            return "Top";
+        return "Top";
     }
 
     TGUI_NODISCARD static tgui::String serializeOrientation(tgui::Orientation orientation)
     {
         if (orientation == tgui::Orientation::Horizontal)
             return "Horizontal";
-        else
-            return "Vertical";
+        return "Vertical";
     }
 
     TGUI_NODISCARD static tgui::Orientation deserializeOrientation(tgui::String value)
@@ -300,8 +294,7 @@ struct WidgetProperties
         value = value.trim().toLower();
         if (value == "horizontal")
             return tgui::Orientation::Horizontal;
-        else
-            return tgui::Orientation::Vertical;
+        return tgui::Orientation::Vertical;
     }
 };
 

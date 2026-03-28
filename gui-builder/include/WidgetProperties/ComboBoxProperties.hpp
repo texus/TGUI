@@ -104,20 +104,18 @@ private:
         value = value.trim().toLower();
         if (value == "up")
             return tgui::ComboBox::ExpandDirection::Up;
-        else if (value == "down")
+        if (value == "down")
             return tgui::ComboBox::ExpandDirection::Down;
-        else
-            return tgui::ComboBox::ExpandDirection::Automatic;
+        return tgui::ComboBox::ExpandDirection::Automatic;
     }
 
     TGUI_NODISCARD static tgui::String serializeExpandDirection(tgui::ComboBox::ExpandDirection alignment)
     {
         if (alignment == tgui::ComboBox::ExpandDirection::Up)
             return "Up";
-        else if (alignment == tgui::ComboBox::ExpandDirection::Down)
+        if (alignment == tgui::ComboBox::ExpandDirection::Down)
             return "Down";
-        else
-            return "Automatic";
+        return "Automatic";
     }
 };
 

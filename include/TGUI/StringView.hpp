@@ -316,9 +316,7 @@ namespace tgui
                           {
                               if (char1 == char2)
                                   return true;
-                              else
-                                  return std::tolower(static_cast<unsigned char>(char1))
-                                         == std::tolower(static_cast<unsigned char>(char2));
+                              return std::tolower(static_cast<unsigned char>(char1)) == std::tolower(static_cast<unsigned char>(char2));
                           });
     }
 
@@ -340,11 +338,10 @@ namespace tgui
                           {
                               if (char1 == char2)
                                   return true;
-                              else if ((char1 < 128) && (char2 < 128))
+                              if ((char1 < 128) && (char2 < 128))
                                   return std::tolower(static_cast<unsigned char>(char1))
                                          == std::tolower(static_cast<unsigned char>(char2));
-                              else
-                                  return false;
+                              return false;
                           });
     }
 

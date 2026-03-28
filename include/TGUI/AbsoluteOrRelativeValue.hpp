@@ -144,8 +144,7 @@ namespace tgui
         {
             if (m_constant)
                 return String::fromNumber(m_value);
-            else
-                return String::fromNumber(m_ratio * 100) + '%';
+            return String::fromNumber(m_ratio * 100) + '%';
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
