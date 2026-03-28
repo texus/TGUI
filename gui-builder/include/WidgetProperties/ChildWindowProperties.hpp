@@ -101,10 +101,10 @@ private:
     TGUI_NODISCARD static unsigned int deserializeTitleButtons(const tgui::String& value)
     {
         unsigned int decodedTitleButtons = tgui::ChildWindow::TitleButton::None;
-        std::vector<tgui::String> titleButtons = tgui::Deserializer::split(value, '|');
+        const std::vector<tgui::String> titleButtons = tgui::Deserializer::split(value, '|');
         for (const auto& elem : titleButtons)
         {
-            tgui::String requestedTitleButton = elem.trim().toLower();
+            const tgui::String requestedTitleButton = elem.trim().toLower();
             if (requestedTitleButton == "close")
                 decodedTitleButtons |= tgui::ChildWindow::TitleButton::Close;
             else if (requestedTitleButton == "maximize")
