@@ -62,7 +62,7 @@ struct SpinButtonProperties : public WidgetProperties
         pair.first["Step"] = {"Float", tgui::String::fromNumber(spinButton->getStep())};
         pair.first["Orientation"] = {"Enum{Vertical,Horizontal}", serializeOrientation(spinButton->getOrientation())};
 
-        const auto renderer = spinButton->getSharedRenderer();
+        const auto* const renderer = spinButton->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["BorderBetweenArrows"] = {"Float", tgui::Serializer::serialize(renderer->getBorderBetweenArrows())};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

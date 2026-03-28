@@ -124,7 +124,7 @@ struct ListViewProperties : public WidgetProperties
         pair.first["ExpandLastColumn"] = {"Bool", tgui::Serializer::serialize(listView->getExpandLastColumn())};
         TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
-        const auto renderer = listView->getSharedRenderer();
+        const auto* const renderer = listView->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

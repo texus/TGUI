@@ -65,7 +65,7 @@ struct ScrollbarProperties : public WidgetProperties
         pair.first["Policy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(scrollbar->getPolicy())};
         pair.first["Orientation"] = {"Enum{Vertical,Horizontal}", serializeOrientation(scrollbar->getOrientation())};
 
-        const auto renderer = scrollbar->getSharedRenderer();
+        const auto* const renderer = scrollbar->getSharedRenderer();
         pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};
         pair.second["TrackColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColorHover())};
         pair.second["ThumbColor"] = {"Color", tgui::Serializer::serialize(renderer->getThumbColor())};

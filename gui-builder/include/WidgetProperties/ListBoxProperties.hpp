@@ -73,7 +73,7 @@ struct ListBoxProperties : public WidgetProperties
         pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(listBox->getScrollbar()->getPolicy())};
         pair.first["TextAlignment"] = {"Enum{Left,Center,Right}", serializeHorizontalAlignment(listBox->getTextAlignment())};
 
-        const auto renderer = listBox->getSharedRenderer();
+        const auto* const renderer = listBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};

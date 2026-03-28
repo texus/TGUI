@@ -96,7 +96,7 @@ struct WidgetProperties
         }
 
         PropertyValueMap rendererPairs;
-        const auto renderer = widget->getSharedRenderer();
+        const auto* const renderer = widget->getSharedRenderer();
         rendererPairs["Opacity"] = {"Float", tgui::String::fromNumber(renderer->getOpacity())};
         rendererPairs["OpacityDisabled"] = {"Float", tgui::String::fromNumber(renderer->getOpacityDisabled())};
         rendererPairs["Font"] = {"Font", tgui::Serializer::serialize(renderer->getFont())};

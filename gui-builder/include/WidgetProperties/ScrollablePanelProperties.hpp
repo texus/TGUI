@@ -59,7 +59,7 @@ struct ScrollablePanelProperties : public PanelProperties
         pair.first["ContentWidth"] = {"Float", tgui::String::fromNumber(panel->getContentSize().x)};
         pair.first["ContentHeight"] = {"Float", tgui::String::fromNumber(panel->getContentSize().y)};
 
-        const auto renderer = panel->getSharedRenderer();
+        const auto* const renderer = panel->getSharedRenderer();
         pair.second["ScrollbarWidth"] = {"Float", tgui::String::fromNumber(renderer->getScrollbarWidth())};
         return pair;
     }

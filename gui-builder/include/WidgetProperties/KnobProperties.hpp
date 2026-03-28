@@ -59,7 +59,7 @@ struct KnobProperties : public WidgetProperties
         pair.first["EndRotation"] = {"Float", tgui::String::fromNumber(knob->getEndRotation())};
         pair.first["ClockwiseTurning"] = {"Bool", tgui::Serializer::serialize(knob->getClockwiseTurning())};
 
-        const auto renderer = knob->getSharedRenderer();
+        const auto* const renderer = knob->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["ThumbColor"] = {"Color", tgui::Serializer::serialize(renderer->getThumbColor())};

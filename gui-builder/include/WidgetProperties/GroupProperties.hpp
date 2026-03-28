@@ -44,7 +44,7 @@ struct GroupProperties : public WidgetProperties
         auto group = widget->cast<tgui::Group>();
         pair.first["TextSize"] = {"UInt", tgui::String::fromNumber(group->getTextSize())};
 
-        const auto renderer = group->getSharedRenderer();
+        const auto* const renderer = group->getSharedRenderer();
         pair.second["Padding"] = {"Outline", renderer->getPadding().toString()};
         return pair;
     }

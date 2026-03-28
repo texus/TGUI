@@ -65,7 +65,7 @@ struct SliderProperties : public WidgetProperties
         pair.first["InvertedDirection"] = {"Bool", tgui::Serializer::serialize(slider->getInvertedDirection())};
         pair.first["Orientation"] = {"Enum{Vertical,Horizontal}", serializeOrientation(slider->getOrientation())};
 
-        const auto renderer = slider->getSharedRenderer();
+        const auto* const renderer = slider->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};
         pair.second["TrackColor"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColor())};
         pair.second["TrackColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTrackColorHover())};
