@@ -426,6 +426,9 @@ namespace tgui
                                          const Color& borderColor)
     {
         const float radius = size / 2.f;
+        if (radius <= 0)
+            return;
+
         const auto nrPoints = static_cast<unsigned int>(std::ceil((radius + std::abs(borderThickness)) * 4));
         if (borderThickness > 0)
         {
@@ -461,7 +464,7 @@ namespace tgui
         const Color& borderColor)
     {
         // Radius can never be larger than half the width or height
-        radius = std::min({radius, size.x / 2, size.y / 2});
+        radius = std::max(0.f, std::min({radius, size.x / 2, size.y / 2}));
 
         const unsigned int nrCornerPoints = std::max(1u, static_cast<unsigned int>(std::ceil(radius * 2)));
         const std::vector<Vector2f>& outerPoints = drawRoundedRectHelperGetPoints(nrCornerPoints, size, radius, 0);
