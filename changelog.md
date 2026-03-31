@@ -1,6 +1,7 @@
 TGUI 1.13  (TBD)
 ----------------
 
+- `loadWidgetsFromStream` now clears and restores the default theme during load, matching `loadWidgetsFromFile`
 - Added Emscripten support
 - Each tab in Tabs and VerticalTabs widgets can now be assigned a unique id
 - Position and size layout expressions weren't saved when the result equaled (0,0)

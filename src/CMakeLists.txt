@@ -280,6 +280,7 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/TextBoxRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/TreeViewRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/WidgetRenderer.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/ScopeExit.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Signal.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/SignalManager.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Sprite.hpp"
