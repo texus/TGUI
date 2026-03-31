@@ -40,6 +40,7 @@ set(TEST_SOURCES
     Global.cpp
     Layouts.cpp
     Loading/DataIO.cpp
+    Loading/FormThemeLoad.cpp
     Loading/Deserializer.cpp
     Loading/Serializer.cpp
     Loading/Theme.cpp

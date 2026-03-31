@@ -27,6 +27,7 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Filesystem.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
+#include <TGUI/ScopeExit.hpp>
 #include <TGUI/SubwidgetContainer.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
@@ -472,9 +473,6 @@ namespace tgui
 
     void Container::loadWidgetsFromFile(const String& filename, bool replaceExisting)
     {
-        auto oldTheme = Theme::getDefault();
-        Theme::setDefault(nullptr);
-
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
         String filenameInResources = filename;
         if (!getResourcePath().isEmpty())
@@ -497,9 +495,7 @@ namespace tgui
             injectFormFilePath(rootNode, parentPath.asString(), checkedFilenames);
         }
 
-        loadWidgetsFromNodeTree(rootNode, replaceExisting);
-
-        Theme::setDefault(oldTheme);
+        loadWidgetsImpl(rootNode, replaceExisting);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -525,6 +521,17 @@ namespace tgui
     void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
     {
         const auto rootNode = DataIO::parse(stream);
+        loadWidgetsImpl(rootNode, replaceExisting);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting)
+    {
+        const Theme::Ptr oldTheme = Theme::getDefault();
+        Theme::setDefault(nullptr);
+        const auto restoreTheme = makeScopeExit([&] { Theme::setDefault(oldTheme); });
+
         loadWidgetsFromNodeTree(rootNode, replaceExisting);
     }
 
