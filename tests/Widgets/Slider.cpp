@@ -582,7 +582,7 @@ TEST_CASE("[Slider]")
                 for (unsigned y = 0; y < imageSize.y; ++y)
                 {
                     for (unsigned x = 0; x < imageSize.x; ++x)
-                        std::memcpy(&rotatedImagePixels[(x * imageSize.y + y) * 4], &pixels[(y * imageSize.x + x) * 4], 4);
+                        std::memcpy(&rotatedImagePixels[((x * imageSize.y) + y) * 4], &pixels[((y * imageSize.x) + x) * 4], 4);
                 }
 
                 tgui::Texture rotatedTexture;
