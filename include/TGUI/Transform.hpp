@@ -105,8 +105,8 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Vector2f transformPoint(const Vector2f& point) const
         {
-            return {m_matrix[0] * point.x + m_matrix[4] * point.y + m_matrix[12],
-                    m_matrix[1] * point.x + m_matrix[5] * point.y + m_matrix[13]};
+            return {(m_matrix[0] * point.x) + (m_matrix[4] * point.y) + m_matrix[12],
+                    (m_matrix[1] * point.x) + (m_matrix[5] * point.y) + m_matrix[13]};
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

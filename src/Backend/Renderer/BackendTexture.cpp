@@ -76,7 +76,7 @@ namespace tgui
 
         TGUI_ASSERT((pixel.x < m_imageSize.x) && (pixel.y < m_imageSize.y), "Pixel out of range in BackendTexture::isTransparentPixel");
 
-        const auto pixelOffset = (pixel.y * m_imageSize.x + pixel.x) * 4;
+        const auto pixelOffset = ((pixel.y * m_imageSize.x) + pixel.x) * 4;
         return m_pixels[pixelOffset + 3] == 0;
     }
 
