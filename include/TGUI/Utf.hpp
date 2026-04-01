@@ -296,7 +296,7 @@ namespace tgui
 
                     continue;
                 }
-                else if (codepoint > 0x0010FFFF)
+                if (codepoint > 0x0010FFFF)
                     continue; // Invalid character (greater than the maximum Unicode value)
 
                 // The input character needs be converted to two UTF-16 elements

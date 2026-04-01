@@ -109,10 +109,9 @@ struct WidgetProperties
         str = str.trim().toLower();
         if (str == "true" || str == "yes" || str == "on" || str == "y" || str == "t" || str == "1")
             return true;
-        else if (str == "false" || str == "no" || str == "off" || str == "n" || str == "f" || str == "0")
+        if (str == "false" || str == "no" || str == "off" || str == "n" || str == "f" || str == "0")
             return false;
-        else
-            return defaultValue;
+        return defaultValue;
     }
 
     TGUI_NODISCARD static std::vector<tgui::String> deserializeList(const tgui::String& listStr)
@@ -157,20 +156,18 @@ struct WidgetProperties
         value = value.trim().toLower();
         if (value == "always")
             return tgui::Scrollbar::Policy::Always;
-        else if (value == "never")
+        if (value == "never")
             return tgui::Scrollbar::Policy::Never;
-        else
-            return tgui::Scrollbar::Policy::Automatic;
+        return tgui::Scrollbar::Policy::Automatic;
     }
 
     TGUI_NODISCARD static tgui::String serializeScrollbarPolicy(tgui::Scrollbar::Policy policy)
     {
         if (policy == tgui::Scrollbar::Policy::Always)
             return "Always";
-        else if (policy == tgui::Scrollbar::Policy::Never)
+        if (policy == tgui::Scrollbar::Policy::Never)
             return "Never";
-        else
-            return "Automatic";
+        return "Automatic";
     }
 
     TGUI_NODISCARD static tgui::Cursor::Type deserializeMouseCursor(tgui::String value)
