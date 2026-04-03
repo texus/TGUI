@@ -155,11 +155,11 @@
 #endif
 
 #if __cplusplus >= 201703L
-    #define TGUI_EMPLACE_BACK(object, vector) auto& object = vector.emplace_back();
+    #define TGUI_EMPLACE_BACK(object, vector) auto&(object) = (vector).emplace_back();
 #else
     #define TGUI_EMPLACE_BACK(object, vector) \
-        vector.emplace_back();                \
-        auto& object = vector.back();
+        (vector).emplace_back();              \
+        auto&(object) = (vector).back();
 #endif
 
 #ifndef TGUI_NO_DEPRECATED_WARNINGS
