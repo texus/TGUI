@@ -64,7 +64,7 @@ public:
         HierarchyChange,
     };
 
-    GuiBuilder(const tgui::String& programName);
+    explicit GuiBuilder(const tgui::String& programName);
     ~GuiBuilder();
     void mainLoop();
 
