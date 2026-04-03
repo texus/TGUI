@@ -206,21 +206,21 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool writeFile(const String& filename, const std::stringstream& stream)
+    bool writeFile(const String& filename, const std::stringstream& textToWrite)
     {
 #if TGUI_COMPILED_WITH_CPP_VER > 20
-        return writeFile(filename, stream.view());
+        return writeFile(filename, textToWrite.view());
 #elif TGUI_COMPILED_WITH_CPP_VER == 20
-        const auto& stringOrView = StreamToStringViewConverter<std::stringstream>::convert(stream);
+        const auto& stringOrView = StreamToStringViewConverter<std::stringstream>::convert(textToWrite);
         return writeFile(filename, stringOrView);
 #else
-        return writeFile(filename, stream.str());
+        return writeFile(filename, textToWrite.str());
 #endif
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    bool writeFile(const String& filename, CharStringView stringView)
+    bool writeFile(const String& filename, CharStringView textToWrite)
     {
         // On Windows, we use _wfopen_s with MSVC, MinGW-w64 and Clang (both LLVM Clang and Clang-CL).
         // With MinGW.org based TDM-GCC, we can't use _wfopen_s so we call _wfopen if the function is defined (i.e. if __STRICT_ANSI__ is undefined).
@@ -237,7 +237,7 @@ namespace tgui
         if (!file)
             return false;
 
-        const bool success = (fwrite(stringView.data(), 1, stringView.size(), file) == stringView.size());
+        const bool success = (fwrite(textToWrite.data(), 1, textToWrite.size(), file) == textToWrite.size());
 
         if (fclose(file))
             throw tgui::Exception{
