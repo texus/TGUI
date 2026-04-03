@@ -1218,10 +1218,10 @@ namespace tgui
     // even clang 15 can't compile them when using libc++.
     // We could define them for VS, GCC and for clang with libstdc++, but there is no real use for them.
     TGUI_API std::ostream& operator<<(std::ostream& os, const String& str);
-    TGUI_API std::wostream& operator<<(std::wostream& os, const String& str);
+    TGUI_API std::wostream& operator<<(std::wostream& wos, const String& str);
 
-    TGUI_API std::istream& operator>>(std::istream& os, String& str);
-    TGUI_API std::wistream& operator>>(std::wistream& os, String& str);
+    TGUI_API std::istream& operator>>(std::istream& is, String& str);
+    TGUI_API std::wistream& operator>>(std::wistream& wis, String& str);
 
     // UTF-8 function are defined in the header so that they can be enabled/disabled based on
     // the compiler settings without having to recompile TGUI with a different C++ standard.

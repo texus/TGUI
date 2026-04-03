@@ -2335,10 +2335,10 @@ namespace tgui
         return os;
     }
 
-    std::wostream& operator<<(std::wostream& os, const String& str)
+    std::wostream& operator<<(std::wostream& wos, const String& str)
     {
-        os << std::wstring(str);
-        return os;
+        wos << std::wstring(str);
+        return wos;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2351,12 +2351,12 @@ namespace tgui
         return is;
     }
 
-    std::wistream& operator>>(std::wistream& is, String& str)
+    std::wistream& operator>>(std::wistream& wis, String& str)
     {
         std::wstring strVal;
-        is >> strVal;
+        wis >> strVal;
         str = std::move(strVal);
-        return is;
+        return wis;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
