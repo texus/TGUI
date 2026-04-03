@@ -61,7 +61,9 @@ struct TabsBaseProperties : public WidgetProperties
         auto tabs = widget->cast<tgui::TabsBase>();
 
         std::vector<tgui::String> tabTexts;
-        for (unsigned int i = 0; i < tabs->getTabsCount(); ++i)
+        const auto tabCount = tabs->getTabsCount();
+        tabTexts.reserve(tabCount);
+        for (unsigned int i = 0; i < tabCount; ++i)
             tabTexts.push_back(tabs->getText(i));
 
         pair.first["Tabs"] = {"List<String>", serializeList(tabTexts)};
