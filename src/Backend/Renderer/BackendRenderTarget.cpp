@@ -94,14 +94,16 @@ namespace
         for (unsigned int i = 0; i < nrCornerPoints; ++i)
         {
             points.emplace_back(offset + radius + (radius * std::cos(twoPi * ((2 * (nrCornerPoints - 1)) + i) / nrPointsInCircle)),
-                                offset + size.y - radius - (radius * std::sin(twoPi * ((2 * (nrCornerPoints - 1)) + i) / nrPointsInCircle)));
+                                offset + size.y - radius
+                                    - (radius * std::sin(twoPi * ((2 * (nrCornerPoints - 1)) + i) / nrPointsInCircle)));
         }
 
         // Bottom right corner
         for (unsigned int i = 0; i < nrCornerPoints; ++i)
         {
             points.emplace_back(offset + size.x - radius + (radius * std::cos(twoPi * ((3 * (nrCornerPoints - 1)) + i) / nrPointsInCircle)),
-                                offset + size.y - radius - (radius * std::sin(twoPi * ((3 * (nrCornerPoints - 1)) + i) / nrPointsInCircle)));
+                                offset + size.y - radius
+                                    - (radius * std::sin(twoPi * ((3 * (nrCornerPoints - 1)) + i) / nrPointsInCircle)));
         }
 
         return points;
