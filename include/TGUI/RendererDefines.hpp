@@ -147,6 +147,4 @@
 #define TGUI_RENDERER_PROPERTY_RENDERER(CLASS, NAME, RENDERER) \
     TGUI_RENDERER_PROPERTY_RENDERER_WITH_DEFAULT(CLASS, NAME, RENDERER, tgui::RendererData::create())
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 #endif // TGUI_RENDERER_DEFINES_HPP

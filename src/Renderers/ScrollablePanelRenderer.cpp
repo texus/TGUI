@@ -32,5 +32,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_RENDERER(ScrollablePanelRenderer, Scrollbar, "Scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(ScrollablePanelRenderer, ScrollbarWidth, 0)
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

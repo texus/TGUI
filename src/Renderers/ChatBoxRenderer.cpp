@@ -40,5 +40,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_RENDERER(ChatBoxRenderer, Scrollbar, "Scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(ChatBoxRenderer, ScrollbarWidth, 0)
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

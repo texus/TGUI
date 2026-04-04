@@ -50,5 +50,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_RENDERER(TreeViewRenderer, Scrollbar, "Scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(TreeViewRenderer, ScrollbarWidth, 0)
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

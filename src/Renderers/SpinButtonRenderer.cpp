@@ -44,5 +44,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(SpinButtonRenderer, TextureArrowDown)
     TGUI_RENDERER_PROPERTY_TEXTURE(SpinButtonRenderer, TextureArrowDownHover)
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

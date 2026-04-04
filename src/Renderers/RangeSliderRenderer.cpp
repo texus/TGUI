@@ -35,5 +35,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_TEXTURE(RangeSliderRenderer, TextureSelectedTrack)
     TGUI_RENDERER_PROPERTY_TEXTURE(RangeSliderRenderer, TextureSelectedTrackHover)
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

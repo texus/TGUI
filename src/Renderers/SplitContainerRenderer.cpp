@@ -32,5 +32,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(SplitContainerRenderer, SplitterColor, Color::Black)
     TGUI_RENDERER_PROPERTY_COLOR(SplitContainerRenderer, SplitterColorHover, {})
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

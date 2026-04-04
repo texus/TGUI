@@ -34,6 +34,4 @@ namespace tgui
     using TextBoxRenderer TGUI_DEPRECATED("TextBoxRenderer has been renamed to TextAreaRenderer") = TextAreaRenderer;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 #endif // TGUI_TEXT_BOX_RENDERER_HPP

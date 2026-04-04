@@ -52,5 +52,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_RENDERER(ListViewRenderer, Scrollbar, "Scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(ListViewRenderer, ScrollbarWidth, 0)
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

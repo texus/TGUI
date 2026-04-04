@@ -44,5 +44,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_NUMBER(MenuWidgetBaseRenderer, SeparatorVerticalPadding, 0)
     TGUI_RENDERER_PROPERTY_NUMBER(MenuWidgetBaseRenderer, SeparatorSidePadding, 0)
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
