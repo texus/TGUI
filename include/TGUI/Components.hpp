@@ -396,8 +396,8 @@ namespace tgui
                 Component() = default;
                 virtual ~Component() = default;
 
-                Component(const Component&);
-                Component& operator=(const Component&);
+                Component(const Component& other);
+                Component& operator=(const Component& other);
 
                 Component(Component&&) = default;
                 Component& operator=(Component&&) = default;
@@ -438,8 +438,8 @@ namespace tgui
             class TGUI_API GroupComponent : public Component
             {
             public:
-                GroupComponent(const GroupComponent&);
-                GroupComponent& operator=(const GroupComponent&);
+                GroupComponent(const GroupComponent& other);
+                GroupComponent& operator=(const GroupComponent& other);
 
                 GroupComponent(GroupComponent&&) = default;
                 GroupComponent& operator=(GroupComponent&&) = default;
