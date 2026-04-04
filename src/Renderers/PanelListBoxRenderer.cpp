@@ -34,5 +34,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_COLOR(PanelListBoxRenderer, SelectedItemsBackgroundColor, Color(100, 100, 100))
     TGUI_RENDERER_PROPERTY_COLOR(PanelListBoxRenderer, SelectedItemsBackgroundColorHover, Color(150, 150, 150))
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

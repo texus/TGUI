@@ -48,5 +48,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_RENDERER(TextAreaRenderer, Scrollbar, "Scrollbar")
     TGUI_RENDERER_PROPERTY_NUMBER(TextAreaRenderer, ScrollbarWidth, 0)
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

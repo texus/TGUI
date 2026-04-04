@@ -39,5 +39,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_RENDERER_WITH_DEFAULT(FileDialogRenderer, UpButton, "UpButton", nullptr)
     TGUI_RENDERER_PROPERTY_BOOL(FileDialogRenderer, ArrowsOnNavigationButtonsVisible, "ArrowsOnNavigationButtonsVisible")
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

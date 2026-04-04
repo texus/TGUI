@@ -34,5 +34,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, Slider, "Slider")
     TGUI_RENDERER_PROPERTY_RENDERER(ColorPickerRenderer, EditBox, "EditBox")
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

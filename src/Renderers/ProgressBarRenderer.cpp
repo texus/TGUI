@@ -45,5 +45,3 @@ namespace tgui
     TGUI_RENDERER_PROPERTY_NUMBER(ProgressBarRenderer, TextOutlineThickness, 0)
     TGUI_RENDERER_PROPERTY_COLOR(ProgressBarRenderer, TextOutlineColor, {})
 } // namespace tgui
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
