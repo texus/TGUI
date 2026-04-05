@@ -23,6 +23,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
     set(TGUI_OS_IOS 1)
 elseif(CMAKE_SYSTEM_NAME MATCHES "MINGW64_NT.*") # MSYS2 with MinGW x64
     set(TGUI_OS_WINDOWS 1)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    set(TGUI_OS_EMSCRIPTEN 1)
 else()
     message(FATAL_ERROR "Unsupported CMAKE_SYSTEM_NAME value: ${CMAKE_SYSTEM_NAME}")
     return()

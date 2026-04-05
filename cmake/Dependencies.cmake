@@ -356,7 +356,7 @@ endfunction()
 
 # Find GLFW and add it as a dependency
 macro(tgui_add_dependency_glfw)
-    if(NOT TARGET glfw)
+    if(NOT TARGET glfw AND NOT TGUI_OS_EMSCRIPTEN)
         # First try looking for an GLFW config file, which will be found on Linux or when using vcpkg
         tgui_try_find_glfw_config()
 

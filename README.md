@@ -17,19 +17,19 @@ Status
 
 OS support for each backend:
 
-|                         | Windows             | Linux               | macOS               | Android             | iOS                 |
-|:------------------------|:-------------------:|:-------------------:|:-------------------:|:-------------------:|:-------------------:|
-| **SFML\_GRAPHICS**      | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: |
-| **SFML\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| **SDL\_GPU**            | :heavy_check_mark:  | :heavy_check_mark:  | :question:          | :heavy_check_mark:  | :question:          |
-| **SDL\_RENDERER**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: |
-| **SDL\_TTF\_OPENGL3**   | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| **SDL\_TTF\_GLES2**     |                     | :heavy_check_mark:  | N/A                 | :heavy_check_mark:  | :heavy_check_mark: :question: |
-| **SDL\_OPENGL3**        | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| **SDL\_GLES2**          |                     | :heavy_check_mark:  | N/A                 |                     |                     |
-| **GLFW\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 |
-| **GLFW\_GLES2**         |                     | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
-| **RAYLIB**              | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 |
+|                         | Windows             | Linux               | macOS               | Android             | iOS                 | Emscripten          |
+|:------------------------|:-------------------:|:-------------------:|:-------------------:|:-------------------:|:-------------------:|:-------------------:|
+| **SFML\_GRAPHICS**      | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: | N/A       |
+| **SFML\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
+| **SDL\_GPU**            | :heavy_check_mark:  | :heavy_check_mark:  | :question:          | :heavy_check_mark:  | :question:          | N/A                 |
+| **SDL\_RENDERER**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark: :question: | :heavy_check_mark: |
+| **SDL\_TTF\_OPENGL3**   | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
+| **SDL\_TTF\_GLES2**     |                     | :heavy_check_mark:  | N/A                 | :heavy_check_mark:  | :heavy_check_mark: :question: | :heavy_check_mark: |
+| **SDL\_OPENGL3**        | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
+| **SDL\_GLES2**          |                     | :heavy_check_mark:  | N/A                 |                     |                     | :heavy_check_mark:  |
+| **GLFW\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
+| **GLFW\_GLES2**         |                     | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 | :heavy_check_mark:  |
+| **RAYLIB**              | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 |                     |
 
 
 Dependencies for each backend:
