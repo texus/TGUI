@@ -29,7 +29,7 @@ OS support for each backend:
 | **SDL\_GLES2**          |                     | :heavy_check_mark:  | N/A                 |                     |                     | :heavy_check_mark:  |
 | **GLFW\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
 | **GLFW\_GLES2**         |                     | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 | :heavy_check_mark:  |
-| **RAYLIB**              | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 |                     |
+| **RAYLIB**              | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | :heavy_check_mark:  |
 
 
 Dependencies for each backend:

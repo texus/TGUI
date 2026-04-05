@@ -153,7 +153,7 @@ macro(tgui_find_dependency_sdl)
         endif()
     endif()
     if(NOT DEFINED TGUI_USE_SDL3 OR NOT TGUI_USE_SDL3)
-        if(TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static)
+        if(TARGET SDL2::SDL2 OR TARGET SDL2::SDL2-static OR TGUI_OS_EMSCRIPTEN)
             set(TGUI_FOUND_SDL2_CONFIG TRUE)
         else()
             if(NOT TGUI_SKIP_SDL_CONFIG) # e.g. to skip macOS config file when building for iOS
@@ -187,7 +187,7 @@ macro(tgui_find_dependency_sdl)
     endif()
 
     if(TGUI_USE_SDL3)
-        if(NOT TARGET SDL3::SDL3) # Only search if the target wasn't defined yet
+        if(NOT TARGET SDL3::SDL3 AND NOT TGUI_OS_EMSCRIPTEN) # Only search if the target wasn't defined yet
             if(TGUI_FOUND_SDL3)
                 find_package(SDL3 CONFIG REQUIRED)
             else()
@@ -215,7 +215,7 @@ macro(tgui_find_dependency_sdl)
         unset(SDL2_INCLUDE_DIR CACHE)
         unset(SDL2_NO_DEFAULT_PATH CACHE)
     else() # Using SDL2
-        if(NOT TARGET SDL2::SDL2 AND NOT TARGET SDL2::SDL2-static) # Only search if the target wasn't defined yet
+        if(NOT TARGET SDL2::SDL2 AND NOT TARGET SDL2::SDL2-static AND NOT TGUI_OS_EMSCRIPTEN) # Only search if the target wasn't defined yet
             if(TGUI_FOUND_SDL2_CONFIG)
                 find_package(SDL2 CONFIG REQUIRED)
 
@@ -289,55 +289,67 @@ macro(tgui_add_dependency_sdl)
     # Link to SDL and set include and library search directories.
     # TGUI_USE_STATIC_SDL allows explicitly chosing how SDL is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
     if(TGUI_USE_SDL3)
-        if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS AND TARGET SDL3::SDL3-static))
-            set(link_static_sdl_libs TRUE)
+        if (TGUI_OS_EMSCRIPTEN AND NOT TARGET SDL3::SDL3-shared AND NOT TARGET SDL3::SDL3-static)
+            target_compile_options(tgui PUBLIC "-sUSE_SDL=3")
+            target_link_options(tgui PUBLIC "-sUSE_SDL=3")
         else()
-            set(link_static_sdl_libs FALSE)
-        endif()
+            if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS AND TARGET SDL3::SDL3-static))
+                set(link_static_sdl_libs TRUE)
+            else()
+                set(link_static_sdl_libs FALSE)
+            endif()
 
-        if(link_static_sdl_libs)
-            if(TGUI_SHARED_LIBS)
-                # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
-                message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library by setting TGUI_USE_STATIC_SDL to FALSE.")
+            if(link_static_sdl_libs)
+                if(TGUI_SHARED_LIBS)
+                    # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
+                    message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library by setting TGUI_USE_STATIC_SDL to FALSE.")
+                endif()
+                if(NOT TARGET SDL3::SDL3-static)
+                    message(FATAL_ERROR "Couldn't link to SDL3::SDL3-static, no such target exists")
+                endif()
+                target_link_libraries(tgui PUBLIC SDL3::SDL3-static)
+            else()
+                if(NOT TARGET SDL3::SDL3-shared)
+                    message(FATAL_ERROR "Couldn't link to SDL3::SDL3-shared, no such target exists")
+                endif()
+                target_link_libraries(tgui PUBLIC SDL3::SDL3-shared)
             endif()
-            if(NOT TARGET SDL3::SDL3-static)
-                message(FATAL_ERROR "Couldn't link to SDL3::SDL3-static, no such target exists")
-            endif()
-            target_link_libraries(tgui PUBLIC SDL3::SDL3-static)
-        else()
-            if(NOT TARGET SDL3::SDL3-shared)
-                message(FATAL_ERROR "Couldn't link to SDL3::SDL3-shared, no such target exists")
-            endif()
-            target_link_libraries(tgui PUBLIC SDL3::SDL3-shared)
         endif()
     else() # Using SDL2
-        if(TGUI_USE_STATIC_SDL AND NOT TARGET SDL2::SDL2-static)
-            # If the user explicitly asks for a static target then it must exist
-            message(FATAL_ERROR "Couldn't link to SDL2::SDL2-static, no such target exists")
-        endif()
-        if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS))
-            if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL)
-                # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
-                message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library by setting TGUI_USE_STATIC_SDL to FALSE.")
+        if (TGUI_OS_EMSCRIPTEN AND NOT TARGET SDL2::SDL2 AND NOT TARGET SDL2::SDL2-static)
+            target_compile_options(tgui PUBLIC "-sUSE_SDL=2")
+            target_link_options(tgui PUBLIC "-sUSE_SDL=2")
+        else()
+            if(TGUI_USE_STATIC_SDL AND NOT TARGET SDL2::SDL2-static)
+                # If the user explicitly asks for a static target then it must exist
+                message(FATAL_ERROR "Couldn't link to SDL2::SDL2-static, no such target exists")
             endif()
-            if(TARGET SDL2::SDL2-static)
-                target_link_libraries(tgui PUBLIC SDL2::SDL2-static)
-            else()
-                # If no static version was found then fall back to a shared library
-                message(STATUS "Using shared SDL2 lib because static target didn't exist")
-                target_link_libraries(tgui PUBLIC SDL2::SDL2)
-            endif()
-        else() # Linking dynamically
-            if(TGUI_SHARED_LIBS)
-                # When possible, verify that the library really isn't a static library. The SDL2::SDL2 target may be a static library if SDL was only build statically.
-                get_target_property(sdl_target_type SDL2::SDL2 TYPE)
-                if(TGUI_USE_STATIC_SDL OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+            if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS))
+                if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL)
                     # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
-                    message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library.")
+                    message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library by setting TGUI_USE_STATIC_SDL to FALSE.")
+                endif()
+                if(TARGET SDL2::SDL2-static)
+                    target_link_libraries(tgui PUBLIC SDL2::SDL2-static)
+                elseif (TARGET SDL2::SDL2 OR NOT TGUI_OS_EMSCRIPTEN)
+                    # If no static version was found then fall back to a shared library
+                    message(STATUS "Using shared SDL2 lib because static target didn't exist")
+                    target_link_libraries(tgui PUBLIC SDL2::SDL2)
+                endif()
+            else() # Linking dynamically
+                if(TGUI_SHARED_LIBS)
+                    # When possible, verify that the library really isn't a static library. The SDL2::SDL2 target may be a static library if SDL was only build statically.
+                    get_target_property(sdl_target_type SDL2::SDL2 TYPE)
+                    if(TGUI_USE_STATIC_SDL OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+                        # The user has to link SDL in his own program, which would conflict with the one already inside the TGUI dll.
+                        message(FATAL_ERROR "Linking statically to SDL isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL library.")
+                    endif()
+                endif()
+
+                if (TARGET SDL2::SDL2 OR NOT TGUI_OS_EMSCRIPTEN)
+                    target_link_libraries(tgui PUBLIC SDL2::SDL2)
                 endif()
             endif()
-
-            target_link_libraries(tgui PUBLIC SDL2::SDL2)
         endif()
     endif()
 endmacro()
@@ -399,7 +411,11 @@ macro(tgui_add_dependency_glfw)
     endif()
 
     # Link to GLFW and set include and library search directories
-    target_link_libraries(tgui PUBLIC glfw)
+    if (TGUI_OS_EMSCRIPTEN AND NOT TARGET glfw)
+        target_link_options(tgui PUBLIC "-sUSE_GLFW=3")
+    else()
+        target_link_libraries(tgui PUBLIC glfw)
+    endif()
 endmacro()
 
 
@@ -417,7 +433,7 @@ endfunction()
 macro(tgui_add_dependency_sdl_ttf)
     set(TGUI_FOUND_SDL2_TTF_CONFIG FALSE)
     if(TGUI_USE_SDL3)
-        if(NOT TARGET SDL3_ttf::SDL3_ttf)
+        if(NOT TARGET SDL3_ttf::SDL3_ttf AND NOT TGUI_OS_EMSCRIPTEN)
             find_package(SDL3_ttf CONFIG)
             if(NOT SDL3_ttf_FOUND)
                 message(FATAL_ERROR
@@ -434,29 +450,34 @@ macro(tgui_add_dependency_sdl_ttf)
         unset(SDL2_TTF_INCLUDE_DIR CACHE)
         unset(SDL2_TTF_NO_DEFAULT_PATH CACHE)
 
-        if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS AND TARGET SDL3_ttf::SDL3_ttf-static))
-            set(link_static_sdl_libs TRUE)
+        if (TGUI_OS_EMSCRIPTEN AND NOT TARGET SDL3_ttf::SDL3_ttf-shared AND NOT TARGET SDL3_ttf::SDL3_ttf-static)
+            target_compile_options(tgui PUBLIC "-sUSE_SDL_TTF=3")
+            target_link_options(tgui PUBLIC "-sUSE_SDL_TTF=3")
         else()
-            set(link_static_sdl_libs FALSE)
-        endif()
+            if(TGUI_USE_STATIC_SDL OR (NOT DEFINED TGUI_USE_STATIC_SDL AND NOT TGUI_SHARED_LIBS AND TARGET SDL3_ttf::SDL3_ttf-static))
+                set(link_static_sdl_libs TRUE)
+            else()
+                set(link_static_sdl_libs FALSE)
+            endif()
 
-        if(link_static_sdl_libs)
-            if(TGUI_SHARED_LIBS)
-                # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
-                message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library by setting TGUI_USE_STATIC_SDL to FALSE.")
+            if(link_static_sdl_libs)
+                if(TGUI_SHARED_LIBS)
+                    # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
+                    message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library by setting TGUI_USE_STATIC_SDL to FALSE.")
+                endif()
+                if(NOT TARGET SDL3_ttf::SDL3_ttf-static)
+                    message(FATAL_ERROR "Couldn't link to SDL3_ttf::SDL3_ttf-static, no such target exists")
+                endif()
+                target_link_libraries(tgui PUBLIC SDL3_ttf::SDL3_ttf-static)
+            else()
+                if(NOT TARGET SDL3_ttf::SDL3_ttf-shared)
+                    message(FATAL_ERROR "Couldn't link to SDL3_ttf::SDL3_ttf-shared, no such target exists")
+                endif()
+                target_link_libraries(tgui PUBLIC SDL3_ttf::SDL3_ttf-shared)
             endif()
-            if(NOT TARGET SDL3_ttf::SDL3_ttf-static)
-                message(FATAL_ERROR "Couldn't link to SDL3_ttf::SDL3_ttf-static, no such target exists")
-            endif()
-            target_link_libraries(tgui PUBLIC SDL3_ttf::SDL3_ttf-static)
-        else()
-            if(NOT TARGET SDL3_ttf::SDL3_ttf-shared)
-                message(FATAL_ERROR "Couldn't link to SDL3_ttf::SDL3_ttf-shared, no such target exists")
-            endif()
-            target_link_libraries(tgui PUBLIC SDL3_ttf::SDL3_ttf-shared)
         endif()
     else() # Using SDL2
-        if(NOT TARGET SDL2_ttf::SDL2_ttf AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
+        if(NOT TARGET SDL2_ttf::SDL2_ttf AND NOT TARGET SDL2_ttf::SDL2_ttf-static AND NOT TGUI_OS_EMSCRIPTEN)
             if(NOT TGUI_SKIP_SDL_CONFIG) # e.g. to skip macOS config file when building for iOS
                 # First try looking for an SDL2_ttf config file
                 tgui_try_find_sdl2_ttf_config()
@@ -507,35 +528,40 @@ macro(tgui_add_dependency_sdl_ttf)
             endif()
         endif()
 
-        # Link to SDL_ttf and set include and library search directories. The dependency is PUBLIC because the user has to call TTF_Init and TTF_Quit.
-        # TGUI_USE_STATIC_SDL_TTF allows explicitly chosing how SDL_ttf is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
-        if(TGUI_USE_STATIC_SDL_TTF AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
-            # If the user explicitly asks for a static target then it must exist
-            message(FATAL_ERROR "Couldn't link to SDL2_ttf::SDL2_ttf-static, no such target exists")
-        endif()
-        if(TGUI_USE_STATIC_SDL_TTF OR (NOT DEFINED TGUI_USE_STATIC_SDL_TTF AND NOT TGUI_SHARED_LIBS))
-            if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL_TTF)
-                # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
-                message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library by setting TGUI_USE_STATIC_SDL_TTF to FALSE.")
+        if (TGUI_OS_EMSCRIPTEN AND NOT TARGET SDL2_ttf::SDL2_ttf AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
+            target_compile_options(tgui PUBLIC "-sUSE_SDL_TTF=2")
+            target_link_options(tgui PUBLIC "-sUSE_SDL_TTF=2")
+        else()
+            # Link to SDL_ttf and set include and library search directories. The dependency is PUBLIC because the user has to call TTF_Init and TTF_Quit.
+            # TGUI_USE_STATIC_SDL_TTF allows explicitly chosing how SDL_ttf is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
+            if(TGUI_USE_STATIC_SDL_TTF AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
+                # If the user explicitly asks for a static target then it must exist
+                message(FATAL_ERROR "Couldn't link to SDL2_ttf::SDL2_ttf-static, no such target exists")
             endif()
-            if(TARGET SDL2_ttf::SDL2_ttf-static)
-                target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf-static)
-            else()
-                # If no static version was found then fall back to a shared library
-                message(STATUS "Using shared SDL2_ttf lib because static target didn't exist")
+            if(TGUI_USE_STATIC_SDL_TTF OR (NOT DEFINED TGUI_USE_STATIC_SDL_TTF AND NOT TGUI_SHARED_LIBS))
+                if(TGUI_SHARED_LIBS AND TGUI_USE_STATIC_SDL_TTF)
+                    # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
+                    message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library by setting TGUI_USE_STATIC_SDL_TTF to FALSE.")
+                endif()
+                if(TARGET SDL2_ttf::SDL2_ttf-static)
+                    target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf-static)
+                elseif(TARGET SDL2_ttf::SDL2_ttf OR NOT TGUI_OS_EMSCRIPTEN)
+                    # If no static version was found then fall back to a shared library
+                    message(STATUS "Using shared SDL2_ttf lib because static target didn't exist")
+                    target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
+                endif()
+            else() # Linking dynamically
+                if(TGUI_SHARED_LIBS)
+                    # When possible, verify that the library really isn't a static library. The SDL2_ttf::SDL2_ttf target may be a static library if SDL_ttf was only build statically.
+                    get_target_property(sdl_target_type SDL2_ttf::SDL2_ttf TYPE)
+                    if(TGUI_USE_STATIC_SDL_TTF OR sdl_target_type STREQUAL "STATIC_LIBRARY")
+                        # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
+                        message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library.")
+                    endif()
+                endif()
+
                 target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
             endif()
-        else() # Linking dynamically
-            if(TGUI_SHARED_LIBS)
-                # When possible, verify that the library really isn't a static library. The SDL2_ttf::SDL2_ttf target may be a static library if SDL_ttf was only build statically.
-                get_target_property(sdl_target_type SDL2_ttf::SDL2_ttf TYPE)
-                if(TGUI_USE_STATIC_SDL_TTF OR sdl_target_type STREQUAL "STATIC_LIBRARY")
-                    # The user has to link SDL_ttf in his own program, which would conflict with the one already inside the TGUI dll.
-                    message(FATAL_ERROR "Linking statically to SDL_ttf isn't allowed when linking TGUI dynamically. Either set TGUI_SHARED_LIBS to FALSE to link TGUI statically or use a dynamic SDL_ttf library.")
-                endif()
-            endif()
-
-            target_link_libraries(tgui PUBLIC SDL2_ttf::SDL2_ttf)
         endif()
     endif()
 endmacro()
@@ -543,7 +569,7 @@ endmacro()
 
 # Find FreeType and add it as a dependency
 macro(tgui_add_dependency_freetype)
-    if(NOT TARGET Freetype::Freetype)
+    if(NOT TARGET Freetype::Freetype AND NOT TGUI_OS_EMSCRIPTEN)
         if(TGUI_OS_WINDOWS AND TGUI_COMPILER_MSVC)
             # On Windows we will provide some help to find freetype (since it is more difficult on this platform).
             # We only do this for MSVC because FreeType only provides prebuilt binaries for this compiler.
@@ -606,7 +632,12 @@ macro(tgui_add_dependency_freetype)
         endif()
     endif()
 
-    target_link_libraries(tgui PRIVATE Freetype::Freetype)
+    if (TGUI_OS_EMSCRIPTEN AND NOT TARGET Freetype::Freetype)
+        target_compile_options(tgui PUBLIC "-sUSE_FREETYPE=1")
+        target_link_options(tgui PUBLIC "-sUSE_FREETYPE=1")
+    else()
+        target_link_libraries(tgui PRIVATE Freetype::Freetype)
+    endif()
 endmacro()
 
 
