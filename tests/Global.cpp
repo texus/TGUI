@@ -63,6 +63,12 @@ TEST_CASE("[Global]")
     SECTION("Resource path")
     {
         REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path(""));
+        tgui::setResourcePath(tgui::String("/Some_arbitrary_string_path"));
+        REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("/Some_arbitrary_string_path/"));
+        tgui::setResourcePath(tgui::String("/Some_other_arbitrary_string_path/"));
+        REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("/Some_other_arbitrary_string_path/"));
+        tgui::setResourcePath(tgui::String("arbitrary_string_path"));
+        REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("arbitrary_string_path/"));
         tgui::setResourcePath(tgui::Filesystem::Path("/Some_arbitrary_path"));
         REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("/Some_arbitrary_path/"));
         tgui::setResourcePath(tgui::Filesystem::Path("/Some_other_arbitrary_path/"));
