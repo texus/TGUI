@@ -473,6 +473,13 @@ namespace tgui
 
     void Container::loadWidgetsFromFile(const String& filename, bool replaceExisting)
     {
+        loadWidgetsFromFile(filename, replaceExisting, FormLoadOptions{});
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsFromFile(const String& filename, bool replaceExisting, const FormLoadOptions& options)
+    {
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
         String filenameInResources = filename;
         if (!getResourcePath().isEmpty())
@@ -495,7 +502,7 @@ namespace tgui
             injectFormFilePath(rootNode, parentPath.asString(), checkedFilenames);
         }
 
-        loadWidgetsImpl(rootNode, replaceExisting);
+        loadWidgetsImpl(rootNode, replaceExisting, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -520,19 +527,39 @@ namespace tgui
 
     void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
     {
-        const auto rootNode = DataIO::parse(stream);
-        loadWidgetsImpl(rootNode, replaceExisting);
+        loadWidgetsFromStream(stream, replaceExisting, FormLoadOptions{});
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting)
+    void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting, const FormLoadOptions& options)
+    {
+        const auto rootNode = DataIO::parse(stream);
+        loadWidgetsImpl(rootNode, replaceExisting, options);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting, const FormLoadOptions& options)
     {
         const Theme::Ptr oldTheme = Theme::getDefault();
-        Theme::setDefault(nullptr);
-        const auto restoreTheme = makeScopeExit([&] { Theme::setDefault(oldTheme); });
+        if (!options.applyDefaultTheme)
+            Theme::setDefault(nullptr);
+        const auto restoreTheme = makeScopeExit(
+            [&oldTheme, &options]
+            {
+                if (!options.applyDefaultTheme)
+                    Theme::setDefault(oldTheme);
+            });
 
         loadWidgetsFromNodeTree(rootNode, replaceExisting);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting, const FormLoadOptions& options)
+    {
+        loadWidgetsFromStream(stream, replaceExisting, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,9 +24,15 @@
 
 #include <TGUI/Global.hpp>
 
+#include <TGUI/FormLoadOptions.hpp>
+#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 
-TEST_CASE("[FormThemeLoad]")
+#include <sstream>
+#include <string>
+
+TEST_CASE("[FormApplyDefaultLoad]")
 {
     SECTION("Default theme pointer restored after loadWidgetsFromFile and loadWidgetsFromStream")
     {
@@ -69,5 +75,126 @@ TEST_CASE("[FormThemeLoad]")
 
         REQUIRE(pFile->get("B1")->getRenderer()->getProperty("TextColor").getColor()
                 == pStream->get("B1")->getRenderer()->getProperty("TextColor").getColor());
+    }
+
+    SECTION("applyDefaultTheme controls whether widgets without Renderer use global default theme")
+    {
+        auto theme = std::make_shared<tgui::Theme>();
+        auto rd = std::make_shared<tgui::RendererData>();
+        rd->propertyValuePairs[U"TextColor"] = tgui::Color::Yellow;
+        theme->addRenderer(U"Button", rd);
+        tgui::Theme::setDefault(theme);
+
+        const std::string form = "Button.B1 { Position = (0, 0); Size = (50, 30); Text = \"X\"; }\n";
+
+        tgui::FormLoadOptions optOn;
+        optOn.applyDefaultTheme = true;
+        tgui::Panel::Ptr on = tgui::Panel::create();
+        std::stringstream sOn(form);
+        on->loadWidgetsFromStream(sOn, true, optOn);
+        REQUIRE(on->get("B1")->getRenderer()->getProperty("TextColor").getColor() == tgui::Color::Yellow);
+
+        tgui::Theme::setDefault(theme);
+        tgui::FormLoadOptions optOff;
+        optOff.applyDefaultTheme = false;
+        tgui::Panel::Ptr off = tgui::Panel::create();
+        std::stringstream sOff(form);
+        off->loadWidgetsFromStream(sOff, true, optOff);
+        REQUIRE(off->get("B1")->getRenderer()->getProperty("TextColor").getColor() != tgui::Color::Yellow);
+    }
+
+    SECTION("Default FormLoadOptions matches two-parameter loadWidgetsFromStream")
+    {
+        const std::string form =
+            "Renderer.1 { TextColor = rgb(12, 34, 56); }\n"
+            "Button.B1 { Position = (0, 0); Size = (50, 30); Text = \"X\"; Renderer = &1; }\n";
+
+        tgui::Panel::Ptr pStream = tgui::Panel::create();
+        std::stringstream s1(form);
+        pStream->loadWidgetsFromStream(s1, true, tgui::FormLoadOptions{});
+
+        tgui::Panel::Ptr pOld = tgui::Panel::create();
+        std::stringstream s2(form);
+        pOld->loadWidgetsFromStream(s2);
+
+        const auto cStream = pStream->get("B1")->getRenderer()->getProperty("TextColor").getColor();
+        const auto cOld = pOld->get("B1")->getRenderer()->getProperty("TextColor").getColor();
+        REQUIRE(cStream == cOld);
+    }
+
+    SECTION("Default FormLoadOptions matches two-parameter loadWidgetsFromFile")
+    {
+        const std::string form =
+            "Renderer.1 { TextColor = rgb(12, 34, 56); }\n"
+            "Button.B1 { Position = (0, 0); Size = (50, 30); Text = \"X\"; Renderer = &1; }\n";
+
+        REQUIRE(tgui::writeFile("FormThemeLoadCompatFile.txt", std::stringstream(form)));
+
+        tgui::Panel::Ptr pNew = tgui::Panel::create();
+        pNew->loadWidgetsFromFile("FormThemeLoadCompatFile.txt", true, tgui::FormLoadOptions{});
+
+        tgui::Panel::Ptr pOld = tgui::Panel::create();
+        pOld->loadWidgetsFromFile("FormThemeLoadCompatFile.txt");
+
+        REQUIRE(pNew->get("B1")->getRenderer()->getProperty("TextColor").getColor()
+                == pOld->get("B1")->getRenderer()->getProperty("TextColor").getColor());
+    }
+
+    SECTION("applyDefaultTheme applies to buttons nested inside Panel")
+    {
+        const tgui::Theme::Ptr oldDefault = tgui::Theme::getDefault();
+        auto theme = std::make_shared<tgui::Theme>();
+        auto rd = std::make_shared<tgui::RendererData>();
+        rd->propertyValuePairs[U"TextColor"] = tgui::Color::Yellow;
+        theme->addRenderer(U"Button", rd);
+        tgui::Theme::setDefault(theme);
+
+        const std::string form =
+            "Panel.P1 {\n"
+            "    Position = (0, 0);\n"
+            "    Size = (400, 300);\n"
+            "    Button.B1 { Position = (10, 10); Size = (50, 30); Text = \"X\"; }\n"
+            "}\n";
+
+        tgui::FormLoadOptions optOn;
+        optOn.applyDefaultTheme = true;
+
+        tgui::Panel::Ptr root = tgui::Panel::create();
+        std::stringstream stream(form);
+        root->loadWidgetsFromStream(stream, true, optOn);
+
+        const auto p1 = std::dynamic_pointer_cast<tgui::Panel>(root->get("P1"));
+        REQUIRE(p1 != nullptr);
+        REQUIRE(p1->get("B1")->getRenderer()->getProperty("TextColor").getColor() == tgui::Color::Yellow);
+
+        tgui::Theme::setDefault(oldDefault);
+    }
+
+    SECTION("replaceExisting false matches between loadWidgetsFromStream overloads")
+    {
+        const std::string form1 =
+            "Renderer.1 { TextColor = rgb(10, 20, 30); }\n"
+            "Button.B1 { Position = (0, 0); Size = (50, 30); Text = \"A\"; Renderer = &1; }\n";
+        const std::string form2 =
+            "Renderer.2 { TextColor = rgb(40, 50, 60); }\n"
+            "Button.B2 { Position = (60, 0); Size = (50, 30); Text = \"B\"; Renderer = &2; }\n";
+
+        tgui::Panel::Ptr pNew = tgui::Panel::create();
+        std::stringstream s1a(form1);
+        pNew->loadWidgetsFromStream(s1a, true, tgui::FormLoadOptions{});
+        std::stringstream s1b(form2);
+        pNew->loadWidgetsFromStream(s1b, false, tgui::FormLoadOptions{});
+
+        tgui::Panel::Ptr pOld = tgui::Panel::create();
+        std::stringstream s2a(form1);
+        pOld->loadWidgetsFromStream(s2a, true);
+        std::stringstream s2b(form2);
+        pOld->loadWidgetsFromStream(s2b, false);
+
+        REQUIRE(pNew->getWidgets().size() == pOld->getWidgets().size());
+        REQUIRE(pNew->get("B1")->getRenderer()->getProperty("TextColor").getColor()
+                == pOld->get("B1")->getRenderer()->getProperty("TextColor").getColor());
+        REQUIRE(pNew->get("B2")->getRenderer()->getProperty("TextColor").getColor()
+                == pOld->get("B2")->getRenderer()->getProperty("TextColor").getColor());
     }
 }

@@ -227,6 +227,7 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Exception.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/FileDialogIconLoader.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Filesystem.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/FormLoadOptions.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Font.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Global.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Keyboard.hpp"
