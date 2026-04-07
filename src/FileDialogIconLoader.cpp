@@ -84,5 +84,4 @@ namespace tgui
     {
         return {};
     }
-
 } // namespace tgui

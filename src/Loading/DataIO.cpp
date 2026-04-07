@@ -547,7 +547,6 @@ namespace tgui
             output.emplace_back("}");
             return output;
         }
-
     } // namespace
 
     std::unique_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
@@ -597,5 +596,4 @@ namespace tgui
         for (const auto& line : output)
             stream << line << '\n';
     }
-
 } // namespace tgui

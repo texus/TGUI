@@ -1874,5 +1874,4 @@ namespace tgui
     {
         return std::make_shared<TreeView>(*this);
     }
-
 } // namespace tgui

@@ -75,5 +75,4 @@ namespace tgui
     {
         return m_showOnDisabledWidget;
     }
-
 } // namespace tgui

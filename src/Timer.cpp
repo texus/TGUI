@@ -211,5 +211,4 @@ namespace tgui
     {
         m_activeTimers.clear();
     }
-
 } // namespace tgui

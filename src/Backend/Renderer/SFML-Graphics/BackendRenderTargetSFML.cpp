@@ -276,5 +276,4 @@ namespace tgui
 
         return statesSFML;
     }
-
 } // namespace tgui

@@ -1566,5 +1566,4 @@ namespace tgui
         m_minimizeButton->onPress([this] { onMinimize.emit(this); });
         m_closeButton->onPress([this] { close(); });
     }
-
 } // namespace tgui

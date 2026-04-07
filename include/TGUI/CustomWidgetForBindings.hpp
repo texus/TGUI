@@ -286,7 +286,6 @@ namespace tgui
         std::function<bool(const String&)> implRendererChanged;
         std::function<void(BackendRenderTarget&, RenderStates)> implDrawFunction;
     };
-
 } // namespace tgui
 
 #endif // TGUI_REMOVE_DEPRECATED_CODE

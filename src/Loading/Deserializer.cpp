@@ -526,5 +526,4 @@ namespace tgui
         tokens.push_back(str.substr(start).trim());
         return tokens;
     }
-
 } // namespace tgui

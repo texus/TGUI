@@ -109,5 +109,4 @@ namespace tgui
         centroid /= static_cast<float>(m_fingerPositions.size());
         return centroid;
     }
-
 } // namespace tgui

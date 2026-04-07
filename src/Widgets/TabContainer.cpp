@@ -543,5 +543,4 @@ namespace tgui
     {
         return std::make_shared<TabContainer>(*this);
     }
-
 } // namespace tgui

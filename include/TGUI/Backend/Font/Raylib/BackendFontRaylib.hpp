@@ -244,7 +244,6 @@ namespace tgui
         std::unordered_map<unsigned int, int> m_cachedAscents;      // text size -> font ascent
         std::unordered_map<unsigned int, int> m_correctedTextSizes; // text size (ascent) -> raylib text size (ascent + descent)
     };
-
 } // namespace tgui
 
 #endif // TGUI_BACKEND_FONT_RAYLIB_HPP

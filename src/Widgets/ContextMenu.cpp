@@ -527,5 +527,4 @@ namespace tgui
 
         MenuWidgetBase::mouseMovedOnMenu(pos, m_menu, {0, 0});
     }
-
 } // namespace tgui

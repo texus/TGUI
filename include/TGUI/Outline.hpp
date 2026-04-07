@@ -278,7 +278,6 @@ namespace tgui
 
     using Borders = Outline;
     using Padding = Outline;
-
 } // namespace tgui
 
 #endif // TGUI_OUTLINE_HPP

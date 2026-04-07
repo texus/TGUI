@@ -619,5 +619,4 @@ namespace tgui
     {
         return std::make_shared<Knob>(*this);
     }
-
 } // namespace tgui

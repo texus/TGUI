@@ -42,5 +42,4 @@ namespace tgui
         TextStyles(String{string})
     {
     }
-
 } // namespace tgui

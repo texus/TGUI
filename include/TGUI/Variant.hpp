@@ -203,7 +203,6 @@ namespace tgui
         Any m_any;
 #endif
     };
-
 } // namespace tgui
 
 #endif // TGUI_VARIANT_HPP

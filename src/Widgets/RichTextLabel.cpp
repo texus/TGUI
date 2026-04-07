@@ -757,5 +757,4 @@ namespace tgui
     {
         return std::make_shared<RichTextLabel>(*this);
     }
-
 } // namespace tgui

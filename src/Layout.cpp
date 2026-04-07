@@ -1125,7 +1125,5 @@ namespace tgui
         {
             return Layout{Layout::Operation::Maximum, std::make_unique<Layout>(value1), std::make_unique<Layout>(value2)};
         }
-
     } // namespace bind_functions
-
 } // namespace tgui

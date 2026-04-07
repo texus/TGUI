@@ -523,5 +523,4 @@ namespace tgui
         }
         return {m_paddingCached.getLeft(), top, getInnerSize().x, height};
     }
-
 } // namespace tgui

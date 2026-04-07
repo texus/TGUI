@@ -3145,5 +3145,4 @@ namespace tgui
     {
         return std::make_shared<ListView>(*this);
     }
-
 } // namespace tgui

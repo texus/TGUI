@@ -625,5 +625,4 @@ namespace tgui
         for (const auto& component : m_components)
             component->draw(target, states);
     }
-
 } // namespace tgui

@@ -123,7 +123,6 @@ namespace tgui
 
         unsigned int m_style; // Stores the text styles represented by this object.
     };
-
 } // namespace tgui
 
 #endif // TGUI_TEXT_STYLE_HPP

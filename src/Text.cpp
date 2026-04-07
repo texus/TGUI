@@ -656,5 +656,4 @@ namespace tgui
     {
         return m_backendText;
     }
-
 } // namespace tgui

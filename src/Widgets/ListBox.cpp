@@ -1358,5 +1358,4 @@ namespace tgui
     {
         return std::make_shared<ListBox>(*this);
     }
-
 } // namespace tgui

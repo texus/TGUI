@@ -594,5 +594,4 @@ namespace tgui
             }
         }
     }
-
 } // namespace tgui

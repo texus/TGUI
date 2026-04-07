@@ -296,7 +296,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::shared_ptr<RendererData> getMinimizeButton() const;
     };
-
 } // namespace tgui
 
 #endif // TGUI_CHILD_WINDOW_RENDERER_HPP

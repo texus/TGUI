@@ -225,7 +225,6 @@ namespace tgui
     {
         return CopiedPtr<T>(CopiedPtrEmplaceTag{}, std::forward<Args>(args)...);
     }
-
 } // namespace tgui
 
 #endif // TGUI_COPIED_PTR_HPP

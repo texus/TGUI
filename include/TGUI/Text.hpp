@@ -352,7 +352,6 @@ namespace tgui
         Color m_outlineColor;
         float m_opacity = 1;
     };
-
 } // namespace tgui
 
 #endif // TGUI_TEXT_HPP

@@ -440,5 +440,4 @@ namespace tgui
     {
         return std::make_shared<Tabs>(*this);
     }
-
 } // namespace tgui

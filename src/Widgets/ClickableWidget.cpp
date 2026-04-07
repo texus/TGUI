@@ -143,5 +143,4 @@ namespace tgui
     {
         return std::make_shared<ClickableWidget>(*this);
     }
-
 } // namespace tgui

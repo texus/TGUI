@@ -50,5 +50,4 @@ namespace tgui
         }
         return 0;
     }
-
 } // namespace tgui

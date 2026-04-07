@@ -264,7 +264,6 @@ namespace tgui
             SizeEvent size;               //!< Size event parameters (Event::Resized)
         };
     };
-
 } // namespace tgui
 
 #endif // TGUI_EVENT_HPP

@@ -244,7 +244,6 @@ namespace tgui
     protected:
         std::shared_ptr<RendererData> m_data = RendererData::create();
     };
-
 } // namespace tgui
 
 #endif // TGUI_WIDGETS_HPP

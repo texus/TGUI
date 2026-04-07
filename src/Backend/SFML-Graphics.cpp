@@ -108,7 +108,5 @@ namespace tgui
             // NOLINTNEXTLINE(bugprone-parent-virtual-call)
             BackendGui::updateContainerSize();
         }
-
     } // namespace SFML_GRAPHICS
-
 } // namespace tgui

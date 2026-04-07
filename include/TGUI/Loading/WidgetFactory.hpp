@@ -70,7 +70,6 @@ namespace tgui
     private:
         static std::map<String, std::function<Widget::Ptr()>> m_constructFunctions;
     };
-
 } // namespace tgui
 
 #endif // TGUI_WIDGET_FACTORY_HPP

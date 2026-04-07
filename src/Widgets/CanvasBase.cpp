@@ -90,5 +90,4 @@ namespace tgui
                                                               node->propertyValuePairs[U"IgnoreMouseEvents"]->value)
                                         .getBool();
     }
-
 } // namespace tgui

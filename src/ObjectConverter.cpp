@@ -230,5 +230,4 @@ namespace tgui
     {
         return !(*this == right);
     }
-
 } // namespace tgui

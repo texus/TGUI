@@ -214,7 +214,6 @@ namespace tgui
         std::shared_ptr<BackendFont> m_backendFont;
         String m_id;
     };
-
 } // namespace tgui
 
 #endif // TGUI_FONT_HPP

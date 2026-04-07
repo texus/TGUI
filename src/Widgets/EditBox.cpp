@@ -1750,5 +1750,4 @@ namespace tgui
     {
         return std::make_shared<EditBox>(*this);
     }
-
 } // namespace tgui

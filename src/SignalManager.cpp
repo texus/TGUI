@@ -188,5 +188,4 @@ namespace tgui
     {
         return ++m_lastId;
     }
-
 } // namespace tgui

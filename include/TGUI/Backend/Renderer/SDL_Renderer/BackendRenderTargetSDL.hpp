@@ -106,7 +106,6 @@ namespace tgui
         SDL_Renderer* m_renderer = nullptr;
         Transform m_projectionTransform;
     };
-
 } // namespace tgui
 
 #endif // TGUI_BACKEND_RENDER_TARGET_SDL_HPP

@@ -322,5 +322,4 @@ namespace tgui
     {
         return std::make_shared<CheckBox>(*this);
     }
-
 } // namespace tgui

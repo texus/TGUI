@@ -94,7 +94,6 @@ namespace tgui
     private:
         std::shared_ptr<WidgetType> m_WidgetPtr;
     };
-
 } // namespace tgui
 
 #endif // TGUI_COPIED_SHARED_PTR_HPP

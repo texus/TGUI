@@ -1197,5 +1197,4 @@ namespace tgui
     {
         return std::make_shared<ComboBox>(*this);
     }
-
 } // namespace tgui

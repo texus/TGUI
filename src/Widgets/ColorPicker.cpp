@@ -807,5 +807,4 @@ namespace tgui
     {
         return std::make_shared<ColorPicker>(*this);
     }
-
 } // namespace tgui

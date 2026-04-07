@@ -307,5 +307,4 @@ namespace tgui
         // Destroy all textures to force texts to update their glyphs
         m_textures.clear();
     }
-
 } // namespace tgui

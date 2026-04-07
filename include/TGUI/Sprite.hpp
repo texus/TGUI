@@ -259,7 +259,6 @@ namespace tgui
 
         ScalingType m_scalingType = ScalingType::Normal;
     };
-
 } // namespace tgui
 
 #endif // TGUI_SPRITE_HPP

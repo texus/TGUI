@@ -112,10 +112,9 @@ namespace tgui
         // When compiling with Emscipten (which used Clang 23), those iterators are the same
         // and we can't have a seperate function for each.
         template <typename IteratorType>
-        using IsU32Iterator = std::enable_if_t<
-            std::is_convertible<IteratorType, std::u32string::const_iterator>::value
-            || std::is_convertible<IteratorType, StringView::const_iterator>::value,
-            void>;
+        using IsU32Iterator = std::enable_if_t<std::is_convertible<IteratorType, std::u32string::const_iterator>::value
+                                                   || std::is_convertible<IteratorType, StringView::const_iterator>::value,
+                                               void>;
 
     public:
 #if TGUI_COMPILED_WITH_CPP_VER >= 17

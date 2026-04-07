@@ -96,7 +96,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::shared_ptr<RendererData> getEditBox() const;
     };
-
 } // namespace tgui
 
 #endif // TGUI_COLOR_PICKER_RENDERER_HPP

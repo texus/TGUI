@@ -519,5 +519,4 @@ namespace tgui
 
         setMiddleRect(middleRect);
     }
-
 } // namespace tgui

@@ -107,5 +107,4 @@ namespace tgui
 
         return types;
     }
-
 } // namespace tgui

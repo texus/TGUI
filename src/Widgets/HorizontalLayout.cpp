@@ -103,5 +103,4 @@ namespace tgui
     {
         return std::make_shared<HorizontalLayout>(*this);
     }
-
 } // namespace tgui

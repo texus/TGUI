@@ -276,7 +276,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const Texture& getTextureArrowDownHover() const;
     };
-
 } // namespace tgui
 
 #endif // TGUI_SCROLLBAR_RENDERER_HPP

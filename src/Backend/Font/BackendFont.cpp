@@ -159,5 +159,4 @@ namespace tgui
     {
         return m_fontScale;
     }
-
 } // namespace tgui

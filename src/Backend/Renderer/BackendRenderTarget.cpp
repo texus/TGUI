@@ -493,5 +493,4 @@ namespace tgui
     {
         return m_pixelsPerPoint;
     }
-
 } // namespace tgui

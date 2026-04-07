@@ -665,7 +665,6 @@ namespace tgui
 
     using ToggleButtonRenderer = ButtonRenderer;
     using BitmapButtonRenderer = ButtonRenderer;
-
 } // namespace tgui
 
 #endif // TGUI_BUTTON_RENDERER_HPP

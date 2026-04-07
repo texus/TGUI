@@ -176,7 +176,6 @@ namespace tgui
 
         Duration m_remainingDuration;
     };
-
 } // namespace tgui
 
 #endif // TGUI_TIMER_HPP

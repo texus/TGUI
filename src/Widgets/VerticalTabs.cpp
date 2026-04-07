@@ -362,5 +362,4 @@ namespace tgui
     {
         return std::make_shared<VerticalTabs>(*this);
     }
-
 } // namespace tgui

@@ -473,7 +473,6 @@ namespace tgui
         static TextureLoaderFunc m_textureLoader;
         static BackendTextureLoaderFunc m_backendTextureLoader;
     };
-
 } // namespace tgui
 
 #endif // TGUI_TEXTURE_HPP

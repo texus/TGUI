@@ -1111,5 +1111,4 @@ namespace tgui
         // This function should never be called
         return nullptr;
     }
-
 } // namespace tgui

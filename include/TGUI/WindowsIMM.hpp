@@ -81,7 +81,6 @@ namespace tgui
 
         static unsigned int m_referenceCount;
     };
-
 } // namespace tgui
 
 #endif // TGUI_WINDOWS_IMM_HPP

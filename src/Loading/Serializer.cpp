@@ -286,7 +286,6 @@ namespace tgui
             DataIO::emit(node, ss);
             return ss.str();
         }
-
     } // namespace
 
     std::unordered_map<ObjectConverter::Type, Serializer::SerializeFunc> Serializer::m_serializers =
@@ -321,5 +320,4 @@ namespace tgui
     {
         return m_serializers[type];
     }
-
 } // namespace tgui

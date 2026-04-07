@@ -176,5 +176,4 @@ namespace tgui
         BoxLayout::removeAllWidgets();
         updateWidgets();
     }
-
 } // namespace tgui
