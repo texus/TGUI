@@ -2288,5 +2288,4 @@ namespace tgui
         str = std::move(strVal);
         return wis;
     }
-
 } // namespace tgui

@@ -106,5 +106,4 @@ namespace tgui
     {
         return std::make_shared<SeparatorLine>(*this);
     }
-
 } // namespace tgui

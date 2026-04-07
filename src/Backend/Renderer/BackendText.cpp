@@ -509,5 +509,4 @@ namespace tgui
         vertices.emplace_back(Vector2f{lineLength + outlineThickness, top - outlineThickness}, color, Vector2f{1, 1});
         vertices.emplace_back(Vector2f{lineLength + outlineThickness, bottom + outlineThickness}, color, Vector2f{1, 1});
     }
-
 } // namespace tgui

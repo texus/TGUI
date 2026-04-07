@@ -387,5 +387,4 @@ namespace tgui
         Widget::setParent(parent);
         m_container->setParentGui(m_parentGui);
     }
-
 } // namespace tgui

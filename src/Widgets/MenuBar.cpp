@@ -752,5 +752,4 @@ namespace tgui
     {
         return std::make_shared<MenuBar>(*this);
     }
-
 } // namespace tgui

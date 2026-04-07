@@ -92,7 +92,6 @@ namespace tgui
     private:
         std::shared_ptr<priv::SvgImageData> m_data;
     };
-
 } // namespace tgui
 
 #endif // TGUI_SVG_IMAGE_HPP

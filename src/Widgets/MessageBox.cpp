@@ -577,5 +577,4 @@ namespace tgui
     {
         return std::make_shared<MessageBox>(*this);
     }
-
 } // namespace tgui

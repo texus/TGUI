@@ -98,5 +98,4 @@ namespace tgui
     {
         return std::make_shared<HorizontalWrap>(*this);
     }
-
 } // namespace tgui

@@ -680,5 +680,4 @@ namespace tgui
     {
         return std::make_shared<ChatBox>(*this);
     }
-
 } // namespace tgui

@@ -39,7 +39,6 @@ namespace tgui
     public:
         using MenuWidgetBaseRenderer::MenuWidgetBaseRenderer;
     };
-
 } // namespace tgui
 
 #endif // TGUI_CONTEXT_MENU_RENDERER_HPP

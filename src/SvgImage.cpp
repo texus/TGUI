@@ -120,5 +120,4 @@ namespace tgui
 
         texture.load(size, std::move(pixels), true);
     }
-
 } // namespace tgui

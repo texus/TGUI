@@ -86,5 +86,4 @@ namespace tgui
     {
         return m_pixels.get();
     }
-
 } // namespace tgui

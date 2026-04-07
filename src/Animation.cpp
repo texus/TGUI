@@ -151,7 +151,5 @@ namespace tgui
             m_widget->setInheritedOpacity(m_endOpacity);
             Animation::finish();
         }
-
     } // namespace priv
-
 } // namespace tgui

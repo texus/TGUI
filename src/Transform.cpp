@@ -206,5 +206,4 @@ namespace tgui
         m_matrix[12] = std::round(m_matrix[12] * pixelScale.x) / pixelScale.x;
         m_matrix[13] = std::round(m_matrix[13] * pixelScale.y) / pixelScale.y;
     }
-
 } // namespace tgui

@@ -100,7 +100,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD const Texture& getTextureSelectedTrackHover() const;
     };
-
 } // namespace tgui
 
 #endif // TGUI_RANGE_SLIDER_RENDERER_HPP

@@ -278,7 +278,6 @@ namespace tgui
         std::vector<std::pair<FloatRect, FloatRect>> m_clipLayers;
         Vector2f m_pixelsPerPoint = {1, 1};
     };
-
 } // namespace tgui
 
 #endif // TGUI_BACKEND_RENDER_TARGET_HPP

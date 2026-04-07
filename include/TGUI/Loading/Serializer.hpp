@@ -50,7 +50,6 @@ namespace tgui
     private:
         static std::unordered_map<ObjectConverter::Type, SerializeFunc> m_serializers;
     };
-
 } // namespace tgui
 
 #endif // TGUI_SERIALIZER_HPP

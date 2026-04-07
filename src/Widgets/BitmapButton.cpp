@@ -322,5 +322,4 @@ namespace tgui
     {
         return std::make_shared<BitmapButton>(*this);
     }
-
 } // namespace tgui

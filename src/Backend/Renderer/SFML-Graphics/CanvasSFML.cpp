@@ -400,5 +400,4 @@ namespace tgui
     {
         return std::make_shared<CanvasSFML>(*this);
     }
-
 } // namespace tgui

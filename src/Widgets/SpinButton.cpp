@@ -554,5 +554,4 @@ namespace tgui
     {
         return std::make_shared<SpinButton>(*this);
     }
-
 } // namespace tgui

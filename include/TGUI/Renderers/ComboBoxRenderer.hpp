@@ -380,7 +380,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD std::shared_ptr<RendererData> getListBox() const;
     };
-
 } // namespace tgui
 
 #endif // TGUI_COMBO_BOX_RENDERER_HPP

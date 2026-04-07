@@ -806,5 +806,4 @@ namespace tgui
                 return Event::KeyboardKey::Unknown; // Let's ignore this key press
         };
     }
-
 } // namespace tgui

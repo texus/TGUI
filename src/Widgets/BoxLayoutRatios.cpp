@@ -187,5 +187,4 @@ namespace tgui
                              .getNumber());
         }
     }
-
 } // namespace tgui

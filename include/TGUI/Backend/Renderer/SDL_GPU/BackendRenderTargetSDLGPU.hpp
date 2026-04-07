@@ -169,7 +169,6 @@ namespace tgui
         SDL_GPUBuffer* m_vertexBuffer = nullptr;
         SDL_GPUBuffer* m_indexBuffer = nullptr;
     };
-
 } // namespace tgui
 
 #endif // TGUI_BACKEND_RENDER_TARGET_SDL_GPU_HPP

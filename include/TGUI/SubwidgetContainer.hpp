@@ -209,7 +209,6 @@ namespace tgui
     protected:
         CopiedSharedPtr<Group> m_container;
     };
-
 } // namespace tgui
 
 #endif // TGUI_SUBWIDGET_CONTAINER_HPP

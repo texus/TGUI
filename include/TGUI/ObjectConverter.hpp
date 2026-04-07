@@ -300,7 +300,6 @@ namespace tgui
         bool m_serialized = false;
         String m_string;
     };
-
 } // namespace tgui
 
 #endif // TGUI_OBJECT_CONVERTER_HPP

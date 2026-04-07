@@ -675,5 +675,4 @@ namespace tgui
             }
         }
     }
-
 } // namespace tgui

@@ -197,5 +197,4 @@ namespace tgui
         m_parameters[2] = static_cast<const void*>(&fullItem);
         return Signal::emit(widget);
     }
-
 } // namespace tgui

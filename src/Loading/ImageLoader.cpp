@@ -72,5 +72,4 @@ namespace tgui
         stbi_image_free(buffer);
         return pixelData;
     }
-
 } // namespace tgui

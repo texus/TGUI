@@ -276,7 +276,6 @@ namespace tgui
         std::map<String, ObjectConverter> m_globalProperties;        //!< Maps id to value
         String m_primary;
     };
-
 } // namespace tgui
 
 #endif // TGUI_THEME_HPP

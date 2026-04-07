@@ -1317,7 +1317,6 @@ namespace tgui
 
         friend class Container; // Container accesses save and load functions
     };
-
 } // namespace tgui
 
 #endif // TGUI_WIDGET_HPP

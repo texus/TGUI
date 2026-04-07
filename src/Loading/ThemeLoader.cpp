@@ -287,5 +287,4 @@ namespace tgui
 
         return root;
     }
-
 } // namespace tgui

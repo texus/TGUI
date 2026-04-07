@@ -1197,7 +1197,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool emit(const Widget* widget, const String& item, const std::vector<String>& fullItem);
     };
-
 } // namespace tgui
 
 #endif // TGUI_SIGNAL_HPP

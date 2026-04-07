@@ -156,5 +156,4 @@ namespace tgui
         else
             Group::rendererChanged(property);
     }
-
 } // namespace tgui

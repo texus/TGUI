@@ -97,5 +97,4 @@ namespace tgui
         m_imageSize = {texture.getSize().x, texture.getSize().y};
         m_isSmooth = texture.isSmooth();
     }
-
 } // namespace tgui

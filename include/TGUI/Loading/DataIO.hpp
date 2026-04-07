@@ -109,7 +109,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         static void emit(const std::unique_ptr<Node>& rootNode, std::stringstream& stream);
     };
-
 } // namespace tgui
 
 #endif // TGUI_DATA_IO_HPP

@@ -54,7 +54,6 @@ namespace tgui
     private:
         static std::unordered_map<ObjectConverter::Type, DeserializeFunc> m_deserializers;
     };
-
 } // namespace tgui
 
 #endif // TGUI_DESERIALIZER_HPP

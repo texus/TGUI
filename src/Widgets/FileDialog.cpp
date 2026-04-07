@@ -1473,5 +1473,4 @@ namespace tgui
     {
         return std::make_shared<FileDialog>(*this);
     }
-
 } // namespace tgui

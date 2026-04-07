@@ -109,5 +109,4 @@ namespace tgui
     {
         return std::make_shared<RadioButtonGroup>(*this);
     }
-
 } // namespace tgui

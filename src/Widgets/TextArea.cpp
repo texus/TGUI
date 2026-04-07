@@ -2197,5 +2197,4 @@ namespace tgui
         if (emit)
             onCaretPositionChange.emit(this);
     }
-
 } // namespace tgui

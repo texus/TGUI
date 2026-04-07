@@ -2080,5 +2080,4 @@ namespace tgui
     {
         rendererChanged(property);
     }
-
 } // namespace tgui

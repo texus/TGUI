@@ -144,5 +144,4 @@ namespace tgui
     {
         return std::make_shared<Button>(*this);
     }
-
 } // namespace tgui

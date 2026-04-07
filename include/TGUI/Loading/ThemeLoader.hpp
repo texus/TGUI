@@ -190,7 +190,6 @@ namespace tgui
         static std::map<String, std::map<String, std::map<String, String>>> m_propertiesCache;
         static std::map<String, std::map<String, String>> m_globalPropertiesCache;
     };
-
 } // namespace tgui
 
 #endif // TGUI_THEME_LOADER_HPP

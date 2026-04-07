@@ -111,6 +111,5 @@ namespace tgui
             m_dllImmReleaseContext(hWnd, hIMC);
         }
     }
-
 } // namespace tgui
 #endif

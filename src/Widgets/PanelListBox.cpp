@@ -699,5 +699,4 @@ namespace tgui
         for (std::size_t i = 0; i < getItemCount(); ++i)
             clearItemStyle(static_cast<int>(i));
     }
-
 } // namespace tgui

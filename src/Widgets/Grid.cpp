@@ -889,5 +889,4 @@ namespace tgui
     {
         return std::make_shared<Grid>(*this);
     }
-
 } // namespace tgui

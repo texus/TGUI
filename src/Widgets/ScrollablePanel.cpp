@@ -971,5 +971,4 @@ namespace tgui
     {
         return std::make_shared<ScrollablePanel>(*this);
     }
-
 } // namespace tgui

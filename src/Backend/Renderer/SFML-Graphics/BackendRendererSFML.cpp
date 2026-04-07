@@ -50,5 +50,4 @@ namespace tgui
     {
         return sf::Texture::getMaximumSize();
     }
-
 } // namespace tgui

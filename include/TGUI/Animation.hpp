@@ -156,7 +156,6 @@ namespace tgui
             float m_startOpacity;
             float m_endOpacity;
         };
-
     } // namespace priv
 } // namespace tgui
 

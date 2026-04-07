@@ -154,5 +154,4 @@ namespace tgui
     {
         return m_imageMap.size();
     }
-
 } // namespace tgui

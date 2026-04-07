@@ -906,5 +906,4 @@ namespace tgui
     {
         return std::make_shared<Label>(*this);
     }
-
 } // namespace tgui

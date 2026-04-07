@@ -245,5 +245,4 @@ namespace tgui
     {
         return std::make_shared<Picture>(*this);
     }
-
 } // namespace tgui

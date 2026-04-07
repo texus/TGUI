@@ -773,5 +773,4 @@ namespace tgui
     {
         return std::make_shared<Slider>(*this);
     }
-
 } // namespace tgui

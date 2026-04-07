@@ -1653,5 +1653,4 @@ namespace tgui
                 throw Exception{U"Failed to parse HorizontalScrollbarPolicy property, found unknown value '" + policy + U"'."};
         }
     }
-
 } // namespace tgui

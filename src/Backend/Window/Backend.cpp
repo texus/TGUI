@@ -281,5 +281,4 @@ namespace tgui
     {
         m_registeredSvgSprites.erase(sprite);
     }
-
 } // namespace tgui

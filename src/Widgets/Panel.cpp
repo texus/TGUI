@@ -363,5 +363,4 @@ namespace tgui
     {
         return std::make_shared<Panel>(*this);
     }
-
 } // namespace tgui

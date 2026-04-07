@@ -342,7 +342,6 @@ namespace tgui
             return (event.code == Event::KeyboardKey::Delete) && event.control && !event.alt && !event.system;
 #endif
         }
-
     } // namespace keyboard
 } // namespace tgui
 

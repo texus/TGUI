@@ -349,7 +349,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD static std::vector<FileInfo> listFilesInDirectory(const Path& path);
     };
-
 } // namespace tgui
 
 #endif // TGUI_FILESYSTEM_HPP

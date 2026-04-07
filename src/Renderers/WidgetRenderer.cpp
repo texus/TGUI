@@ -251,5 +251,4 @@ namespace tgui
         data->shared = false;
         return data;
     }
-
 } // namespace tgui

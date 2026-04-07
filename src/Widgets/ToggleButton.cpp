@@ -156,5 +156,4 @@ namespace tgui
     {
         return std::make_shared<ToggleButton>(*this);
     }
-
 } // namespace tgui

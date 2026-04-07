@@ -383,5 +383,4 @@ namespace tgui
     {
         return std::make_shared<EditBoxSlider>(*this);
     }
-
 } // namespace tgui

@@ -113,7 +113,6 @@ namespace tgui
         Material m_material = LoadMaterialDefault();
         Texture2D m_defaultTexture = m_material.maps[MATERIAL_MAP_DIFFUSE].texture;
     };
-
 } // namespace tgui
 
 #endif // TGUI_BACKEND_RENDER_TARGET_RAYLIB_HPP

@@ -590,5 +590,4 @@ namespace tgui
     {
         return std::make_shared<ProgressBar>(*this);
     }
-
 } // namespace tgui

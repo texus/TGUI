@@ -92,7 +92,6 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Color getSelectedItemsBackgroundColorHover() const;
     };
-
 } // namespace tgui
 
 #endif // TGUI_PANEL_LIST_BOX_RENDERER_HPP

@@ -137,7 +137,6 @@ namespace tgui
         unsigned int m_colorShaderLocation = 1;
         unsigned int m_texCoordShaderLocation = 2;
     };
-
 } // namespace tgui
 
 #endif // TGUI_BACKEND_RENDER_TARGET_GLES2_HPP

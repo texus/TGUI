@@ -1028,5 +1028,4 @@ namespace tgui
     {
         return m_rendererInheritedGlobalProperties[widgetType];
     }
-
 } // namespace tgui
