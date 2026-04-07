@@ -552,7 +552,7 @@ namespace tgui
                     Theme::setDefault(oldTheme);
             });
 
-        loadWidgetsFromNodeTree(rootNode, replaceExisting);
+        loadWidgetsFromNodeTree(rootNode, replaceExisting, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -581,19 +581,25 @@ namespace tgui
 
     void Container::loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting)
     {
+        FormLoadOptions options;
+        loadWidgetsFromNodeTree(rootNode, replaceExisting, options);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting, const FormLoadOptions& options)
+    {
         // Replace the existing widgets by the ones that will be loaded if requested
         if (replaceExisting)
             removeAllWidgets();
 
-        if (!rootNode->propertyValuePairs.empty())
-            Widget::load(rootNode, {});
+        LoadingRenderersMap availableRenderers;
+        ThemeFallbackMap themeFallbacks;
 
-        std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
-        std::map<String, std::shared_ptr<RendererData>> availableRenderers;
         for (const auto& node : rootNode->children)
         {
-            auto nameSeparator = node->name.find('.');
-            auto widgetType = node->name.substr(0, nameSeparator);
+            const auto nameSeparator = node->name.find('.');
+            const auto widgetType = node->name.substr(0, nameSeparator);
 
             String objectName;
             if (nameSeparator != String::npos)
@@ -604,29 +610,91 @@ namespace tgui
                 if (!objectName.empty())
                     availableRenderers[objectName] = RendererData::createFromDataIONode(node.get());
             }
-            else // Section describes a widget
-            {
-                const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
-                if (constructor)
-                {
-                    const Widget::Ptr widget = constructor();
-                    add(widget, objectName);
+        }
 
-                    // We delay loading of widgets until they have all been added to the container.
-                    // Otherwise there would be issues if their position and size layouts refer to
-                    // widgets that have not yet been loaded.
-                    widgetsToLoad.emplace_back(widget, std::cref(node));
-                }
-                else
-                    throw Exception{U"No construct function exists for widget type '" + widgetType + U"'."};
+        for (const auto& node : rootNode->children)
+        {
+            const auto nameSeparator = node->name.find('.');
+            const auto widgetType = node->name.substr(0, nameSeparator);
+
+            String objectName;
+            if (nameSeparator != String::npos)
+                objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
+
+            if (widgetType != U"Theme")
+                continue;
+
+            if (objectName.empty())
+                throw Exception{U"Theme section in widget file requires a name (e.g. Theme.MyTheme)."};
+            for (const auto& pair : node->propertyValuePairs)
+            {
+                if (!pair.second)
+                    continue;
+
+                const String ref = pair.second->value.trim();
+                if (!ref.starts_with(U'&'))
+                    throw Exception{U"Invalid value for theme section '" + objectName + U"." + pair.first
+                                    + U"'. Expected renderer reference (e.g. &1)."};
+
+                const String id = ref.substr(1);
+                const auto rendererIt = availableRenderers.find(id);
+                if (rendererIt == availableRenderers.end())
+                    throw Exception{U"Theme '" + objectName + U"' references unknown renderer '" + id + U"'."};
+
+                themeFallbacks[objectName][pair.first] = rendererIt->second;
             }
+        }
+
+        WidgetLoadResources widgetResources(availableRenderers);
+        widgetResources.runtimeThemesByAlias = &options.themesByAlias;
+        widgetResources.themeFallbacks = &themeFallbacks;
+
+        if (!rootNode->propertyValuePairs.empty())
+        {
+            m_loadRuntimeThemesByAlias = widgetResources.runtimeThemesByAlias;
+            m_loadThemeFallbacks = widgetResources.themeFallbacks;
+            const auto clearLoadContext = makeScopeExit(
+                [this]
+                {
+                    m_loadRuntimeThemesByAlias = nullptr;
+                    m_loadThemeFallbacks = nullptr;
+                });
+            Widget::load(rootNode, availableRenderers);
+        }
+
+        std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
+        for (const auto& node : rootNode->children)
+        {
+            const auto nameSeparator = node->name.find('.');
+            const auto widgetType = node->name.substr(0, nameSeparator);
+
+            String objectName;
+            if (nameSeparator != String::npos)
+                objectName = Deserializer::deserialize(ObjectConverter::Type::String, node->name.substr(nameSeparator + 1)).getString();
+
+            if ((widgetType == U"Renderer") || (widgetType == U"Theme"))
+                continue;
+
+            const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
+            if (constructor)
+            {
+                const Widget::Ptr widget = constructor();
+                add(widget, objectName);
+
+                // We delay loading of widgets until they have all been added to the container.
+                // Otherwise there would be issues if their position and size layouts refer to
+                // widgets that have not yet been loaded.
+                widgetsToLoad.emplace_back(widget, std::cref(node));
+            }
+            else
+                throw Exception{U"No construct function exists for widget type '" + widgetType + U"'."};
         }
 
         for (auto& pair : widgetsToLoad)
         {
             const Widget::Ptr& widget = pair.first;
             const auto& node = pair.second.get();
-            widget->load(node, availableRenderers);
+            widget->load(node, widgetResources);
         }
     }
 
@@ -1152,10 +1220,8 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    void Container::loadContainedWidgetsFromNodes(const std::unique_ptr<DataIO::Node>& node, const WidgetLoadResources& resources)
     {
-        Widget::load(node, renderers);
-
         std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
         for (const auto& childNode : node->children)
         {
@@ -1185,8 +1251,19 @@ namespace tgui
         {
             const Widget::Ptr& childWidget = pair.first;
             const auto& childNode = pair.second.get();
-            childWidget->load(childNode, renderers);
+            childWidget->load(childNode, resources);
         }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        WidgetLoadResources wlr(renderers);
+        wlr.runtimeThemesByAlias = m_loadRuntimeThemesByAlias;
+        wlr.themeFallbacks = m_loadThemeFallbacks;
+        Widget::loadUsingResources(node, wlr);
+        loadContainedWidgetsFromNodes(node, wlr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

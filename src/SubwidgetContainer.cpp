@@ -320,7 +320,10 @@ namespace tgui
         Widget::load(node, renderers);
         if (node->children.size() == 1)
         {
-            m_container->load(node->children[0], renderers);
+            WidgetLoadResources childWlr(renderers);
+            childWlr.runtimeThemesByAlias = m_loadRuntimeThemesByAlias;
+            childWlr.themeFallbacks = m_loadThemeFallbacks;
+            m_container->Widget::load(node->children[0], childWlr);
             m_container->setSize(getSize());
         }
     }

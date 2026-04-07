@@ -1,8 +1,12 @@
 TGUI 1.13  (TBD)
 ----------------
 
-- `loadWidgetsFromStream` now clears and restores the default theme during load, matching `loadWidgetsFromFile`
-- Added `FormLoadOptions` and overloads of `loadWidgetsFromFile` / `loadWidgetsFromStream`; set `applyDefaultTheme` to keep the global default theme active during load (widgets without a `Renderer` property then match programmatic construction)
+- Implemented support for themes in forms ([Issue #325](https://github.com/texus/TGUI/issues/325)):
+  - `loadWidgetsFromStream` now clears and restores the default theme during load, matching `loadWidgetsFromFile`
+  - `FormLoadOptions::applyDefaultTheme` keeps the global default theme active during form load so widgets without a `Renderer` property match programmatic construction
+  - Form files may declare top-level `Theme.<Alias>` sections with per-section renderer fallbacks (`Button = &1;`, etc.)
+  - `Renderer = @Alias` / `@Alias.Section` bind to runtime themes (`FormLoadOptions::themesByAlias`) or form fallbacks
+  - Form loading calls non-virtual `Widget::load(node, WidgetLoadResources)`, which sets a short-lived load context then dispatches to virtual `load(node, LoadingRenderersMap)` so custom widget subclasses keep a single override; `load(map)` builds a full `WidgetLoadResources` (including themes) and calls `Widget::loadUsingResources`
 - Added Emscripten support
 - Each tab in Tabs and VerticalTabs widgets can now be assigned a unique id
 - Position and size layout expressions weren't saved when the result equaled (0,0)
