@@ -22,10 +22,10 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TGUI_FORM_LOAD_OPTIONS_HPP
-#define TGUI_FORM_LOAD_OPTIONS_HPP
+#ifndef TGUI_WIDGET_LOAD_RESOURCES_HPP
+#define TGUI_WIDGET_LOAD_RESOURCES_HPP
 
-#include <TGUI/Loading/Theme.hpp>
+#include <TGUI/Renderers/WidgetRenderer.hpp>
 #include <TGUI/String.hpp>
 
 #include <map>
@@ -35,16 +35,28 @@
 
 namespace tgui
 {
+    class Theme;
+
+    /// Fallback renderers from Theme.\<Alias\> sections in the form file
+    using ThemeFallbackMap = std::map<String, std::map<String, std::shared_ptr<RendererData>>>;
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Options for loading widget forms
+    /// @internal
+    /// @brief Resources used when loading widgets from a form file
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    struct TGUI_API FormLoadOptions
+    struct TGUI_API WidgetLoadResources
     {
-        std::map<String, Theme::Ptr> themesByAlias;
-        bool applyDefaultTheme = false;
+        const std::map<String, std::shared_ptr<RendererData>>& renderers;
+        const std::map<String, std::shared_ptr<Theme>>* runtimeThemesByAlias = nullptr;
+        const ThemeFallbackMap* themeFallbacks = nullptr;
+
+        explicit WidgetLoadResources(const std::map<String, std::shared_ptr<RendererData>>& r) :
+            renderers(r)
+        {
+        }
     };
 } // namespace tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // TGUI_FORM_LOAD_OPTIONS_HPP
+#endif // TGUI_WIDGET_LOAD_RESOURCES_HPP

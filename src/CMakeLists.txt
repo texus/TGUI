@@ -304,6 +304,7 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Vector2.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Vertex.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widget.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/WidgetLoadResources.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/BitmapButton.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/BoxLayout.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/BoxLayoutRatios.hpp"

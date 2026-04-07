@@ -27,6 +27,7 @@
 #include <TGUI/Animation.hpp>
 #include <TGUI/Container.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
+#include <TGUI/ScopeExit.hpp>
 #include <TGUI/SignalManager.hpp>
 #include <TGUI/ToolTip.hpp>
 #include <TGUI/Vector2.hpp>
@@ -127,6 +128,77 @@ namespace tgui
                 throw Exception{U"Failed to parse Vector2f string '" + str + U"'. No comma found."};
 
             return {str.substr(0, commaPos).trim().toFloat(), str.substr(commaPos + 1).trim().toFloat()};
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void loadRendererFromFormValue(Widget* widget, const String& value, const WidgetLoadResources& resources)
+        {
+            const String trimmed = value.trim();
+            if (trimmed.empty())
+                throw Exception{U"Renderer property has empty value."};
+
+            if (trimmed[0] == U'&')
+            {
+                const auto it = resources.renderers.find(trimmed.substr(1));
+                if (it == resources.renderers.end())
+                    throw Exception{
+                        U"Widget refers to renderer with name '" + trimmed.substr(1) + U"', but no such renderer was found"};
+
+                widget->setRenderer(it->second);
+                return;
+            }
+
+            if (trimmed[0] == U'@')
+            {
+                const String body = trimmed.substr(1).trim();
+                if (body.empty())
+                    throw Exception{U"Invalid renderer theme binding '@' with empty name."};
+
+                String alias;
+                String section;
+
+                const auto dotPos = body.find('.');
+                if (dotPos == String::npos)
+                {
+                    alias = body;
+                    section = widget->getWidgetType();
+                }
+                else
+                {
+                    alias = body.substr(0, dotPos);
+                    section = body.substr(dotPos + 1);
+                }
+
+                if (alias.empty() || section.empty())
+                    throw Exception{U"Invalid renderer theme binding '" + trimmed + U"'."};
+
+                if (resources.runtimeThemesByAlias)
+                {
+                    const auto runtimeIt = resources.runtimeThemesByAlias->find(alias);
+                    if (runtimeIt != resources.runtimeThemesByAlias->end() && runtimeIt->second)
+                    {
+                        widget->setRenderer(runtimeIt->second->getRenderer(section));
+                        return;
+                    }
+                }
+
+                if (!resources.themeFallbacks)
+                    throw Exception{U"No runtime theme provided for alias '" + alias + U"' and no theme fallbacks are available."};
+
+                const auto fbThemeIt = resources.themeFallbacks->find(alias);
+                if (fbThemeIt == resources.themeFallbacks->end())
+                    throw Exception{U"No runtime theme or Theme section for alias '" + alias + U"'."};
+
+                const auto fbSectionIt = fbThemeIt->second.find(section);
+                if (fbSectionIt == fbThemeIt->second.end())
+                    throw Exception{U"Theme '" + alias + U"' has no fallback for section '" + section + U"'."};
+
+                widget->setRenderer(fbSectionIt->second);
+                return;
+            }
+
+            throw Exception{U"Expected renderer reference '&' or theme binding '@' in Renderer property, got '" + trimmed + U"'."};
         }
     } // anonymous namespace
 
@@ -1846,7 +1918,7 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    void Widget::loadUsingResources(const std::unique_ptr<DataIO::Node>& node, const WidgetLoadResources& resources)
     {
         if (node->propertyValuePairs[U"Visible"])
             setVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Visible"]->value).getBool());
@@ -1948,17 +2020,7 @@ namespace tgui
         }
 
         if (node->propertyValuePairs[U"Renderer"])
-        {
-            const String value = node->propertyValuePairs[U"Renderer"]->value;
-            if (value.empty() || (value[0] != '&'))
-                throw Exception{U"Expected reference to renderer, did not find '&' character"};
-
-            const auto it = renderers.find(value.substr(1));
-            if (it == renderers.end())
-                throw Exception{U"Widget refers to renderer with name '" + value.substr(1) + U"', but no such renderer was found"};
-
-            setRenderer(it->second);
-        }
+            loadRendererFromFormValue(this, node->propertyValuePairs[U"Renderer"]->value, resources);
 
         for (const auto& childNode : node->children)
         {
@@ -1983,7 +2045,7 @@ namespace tgui
                     if (constructor)
                     {
                         const Widget::Ptr toolTip = constructor();
-                        toolTip->load(toolTipWidgetNode, renderers);
+                        toolTip->load(toolTipWidgetNode, resources);
                         setToolTip(toolTip);
                     }
                     else
@@ -2000,6 +2062,31 @@ namespace tgui
                                             [](const std::unique_ptr<DataIO::Node>& child)
                                             { return (child->name == U"ToolTip") || (child->name == U"Renderer"); }),
                              node->children.end());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::load(const std::unique_ptr<DataIO::Node>& node, const WidgetLoadResources& resources)
+    {
+        const auto clearLoadContext = makeScopeExit(
+            [this]
+            {
+                m_loadRuntimeThemesByAlias = nullptr;
+                m_loadThemeFallbacks = nullptr;
+            });
+        m_loadRuntimeThemesByAlias = resources.runtimeThemesByAlias;
+        m_loadThemeFallbacks = resources.themeFallbacks;
+        load(node, resources.renderers);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        WidgetLoadResources wlr(renderers);
+        wlr.runtimeThemesByAlias = m_loadRuntimeThemesByAlias;
+        wlr.themeFallbacks = m_loadThemeFallbacks;
+        loadUsingResources(node, wlr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
