@@ -73,7 +73,7 @@ namespace tgui
                 Bottom, //!< Places the component on on the bottom and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
                 Leftmost, //!< Places the component on the left side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no component uses Top or Bottom alignment.
                 Rightmost, //!< Places the component on the right side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no component uses Top or Bottom alignment.
-                Fill       //!< Sets the position to (0,0) and size to (100%,100%).
+                Fill       //!< Sets the position to (0, 0) and size to (100%, 100%).
             };
 
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -49,7 +49,7 @@
 #ifdef TGUI_SYSTEM_WINDOWS
 int main(int, char**) // We don't use argv on Windows
 #else
-// cppcheck-suppress[constParameter,unmatchedSuppression]
+// cppcheck-suppress[constParameter, unmatchedSuppression]
 int main(int, char* argv[])
 #endif
 {

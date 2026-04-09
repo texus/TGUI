@@ -290,7 +290,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
         ///
-        /// The offset is (0,0) for almost all widgets.
+        /// The offset is (0, 0) for almost all widgets.
         ///
         /// @return Offset of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -355,10 +355,10 @@ namespace tgui
         /// @param scaleFactors How many times should the widget be enlarged horizontally and vertically (or shrunk if factor < 1)
         ///
         /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
-        /// of (3,2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
+        /// of (3, 2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
         ///
         /// The origin of the scaling is set with the setOrigin function. If you want to use a separate origin for position
-        /// and scale then you can use the setScale(Vector2f,Vector2f) function to pass a scaling origin.
+        /// and scale then you can use the setScale(Vector2f, Vector2f) function to pass a scaling origin.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScale(Vector2f scaleFactors);
 
@@ -369,7 +369,7 @@ namespace tgui
         /// @param origin       The origin from where to scale the widget. The widget origin will be used if no value is provided.
         ///
         /// This scaling works on top of the size that is set with setSize. A widget with size (50, 20) with a scaling factor
-        /// of (3,2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
+        /// of (3, 2) will appear on the screen as a (150, 40) widget with its entire contents stretched.
         ///
         /// In the origin the x and y value 0 represent the left/top of the widget while 1 represents right/bottom
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -384,7 +384,7 @@ namespace tgui
         /// of 2 will appear on the screen as a (100, 40) widget with its entire contents stretched.
         ///
         /// The origin of the scaling is set with the setOrigin function. If you want to use a separate origin for position
-        /// and scale then you can use the setScale(float,Vector2f) function to pass a scaling origin.
+        /// and scale then you can use the setScale(float, Vector2f) function to pass a scaling origin.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setScale(float scaleFactor)
         {
@@ -430,7 +430,7 @@ namespace tgui
         /// @param angle  How many degrees clockwise should the widget be rotated?
         ///
         /// The origin of the rotation is set with the setOrigin function. If you want to use a separate origin for position
-        /// and rotation then you can use the setRotation(float,Vector2f) function to pass a rotation origin.
+        /// and rotation then you can use the setRotation(float, Vector2f) function to pass a rotation origin.
         ///
         /// @warning This functionality is still experimental. Clipping isn't supported and is disabled when a rotation is set!
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -779,7 +779,7 @@ namespace tgui
         ///
         /// @param iconSize  Wanted size for all icons
         ///
-        /// By default the fixed icon size is set to (0,0) which doesn't scale the icons and lets each icon use the texture size.
+        /// By default the fixed icon size is set to (0, 0) which doesn't scale the icons and lets each icon use the texture size.
         /// By setting only the x or y component of the vector to 0, that dimension will be calculated to keep the icon ratio.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setFixedIconSize(Vector2f iconSize);
@@ -789,7 +789,7 @@ namespace tgui
         ///
         /// @return Wanted size for all icons
         ///
-        /// By default the fixed icon size is set to (0,0) which doesn't scale the icons and lets each icon use the texture size.
+        /// By default the fixed icon size is set to (0, 0) which doesn't scale the icons and lets each icon use the texture size.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD Vector2f getFixedIconSize() const;
 

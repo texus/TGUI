@@ -71,7 +71,7 @@ namespace tgui
         /// @code
         /// auto picture1 = Picture::create("image.png");
         ///
-        /// auto picture2 = Picture::create({"image.png", {20, 15, 60, 40}}); // Load part of the image from (20,15) to (80,55)
+        /// auto picture2 = Picture::create({"image.png", {20, 15, 60, 40}}); // Load part of the image from (20, 15) to (80, 55)
         ///
         /// sf::Texture texture;
         /// texture.loadFromFile("image.png", {20, 15, 60, 40});

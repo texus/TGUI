@@ -81,7 +81,7 @@ namespace tgui
         /// @param size  Size of the panel
         /// @param contentSize Size of the content area for which the scrollbars will appear if larger than the size
         ///
-        /// When contentSize is set to (0,0), the content size is determined by the child widgets of the panel.
+        /// When contentSize is set to (0, 0), the content size is determined by the child widgets of the panel.
         ///
         /// @return The new scrollable panel
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ namespace tgui
         ///
         /// If the content size is larger than the size of the panel then scrollbars will be displayed.
         ///
-        /// When the content size is (0,0), which is the default, then the content size is determined by the child widgets.
+        /// When the content size is (0, 0), which is the default, then the content size is determined by the child widgets.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setContentSize(Vector2f size);
 

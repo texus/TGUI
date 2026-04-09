@@ -103,7 +103,7 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
         ///
-        /// This function returns (0,0) is the height of the text next to the radio button is less than the radio button height.
+        /// This function returns (0, 0) is the height of the text next to the radio button is less than the radio button height.
         /// Otherwise (0, -offset) will be returned where the offset is the distance between the top of the text and the top
         /// of the radio button.
         ///

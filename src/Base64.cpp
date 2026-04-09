@@ -35,7 +35,7 @@ namespace
     const char* const base64CharactersTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     // The following table maps each character from base64CharactersTable to its index in the table.
-    // All characters that don't appear in base64CharactersTable are mapped to 255. Valid indices are in range [0,63]
+    // All characters that don't appear in base64CharactersTable are mapped to 255. Valid indices are in range [0, 63]
     constexpr std::array<std::uint8_t, 256> base64InverseCharactersTable{
         {255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,   // [  0 -  15]
          255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,   // [ 16 -  31]
