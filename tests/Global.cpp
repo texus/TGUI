@@ -30,6 +30,11 @@ TEST_CASE("[Global]")
 {
     SECTION("clamp")
     {
+        REQUIRE(tgui::clamp(-3, -1, 2) == -1);
+        REQUIRE(tgui::clamp(-1, 0, 1) == 0);
+        REQUIRE(tgui::clamp(-5, -7, -3) == -5);
+        REQUIRE(tgui::clamp(-9, -9, -9) == -9);
+        REQUIRE(tgui::clamp(-9, -10, -9) == -9);
         REQUIRE(tgui::clamp(0, 1, 3) == 1);
         REQUIRE(tgui::clamp(1, 1, 3) == 1);
         REQUIRE(tgui::clamp(2, 1, 3) == 2);
