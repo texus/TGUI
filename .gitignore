@@ -11,6 +11,7 @@
 /cmake-build-release
 /examples/Android/libs
 /examples/Android/obj
+/filesystem-test-dir
 /gui-builder/GuiBuilderState.txt
 /gui-builder/form.txt
 /gui-builder/gui-builder
