@@ -74,12 +74,16 @@ TEST_CASE("[Global]")
         REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("/Some_other_arbitrary_string_path/"));
         tgui::setResourcePath(tgui::String("arbitrary_string_path"));
         REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("arbitrary_string_path/"));
+        tgui::setResourcePath(tgui::String("arbitrary string path with spaces"));
+        REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("arbitrary string path with spaces/"));
         tgui::setResourcePath(tgui::Filesystem::Path("/Some_arbitrary_path"));
         REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("/Some_arbitrary_path/"));
         tgui::setResourcePath(tgui::Filesystem::Path("/Some_other_arbitrary_path/"));
         REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("/Some_other_arbitrary_path/"));
         tgui::setResourcePath(tgui::Filesystem::Path("arbitrary_path"));
         REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("arbitrary_path/"));
+        tgui::setResourcePath(tgui::Filesystem::Path("arbitrary path with spaces"));
+        REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path("arbitrary path with spaces/"));
         // We need to set the global resource path back to the default or other tests will fail
         REQUIRE_NOTHROW(tgui::setResourcePath(tgui::Filesystem::Path()));
         REQUIRE(tgui::getResourcePath() == tgui::Filesystem::Path());
