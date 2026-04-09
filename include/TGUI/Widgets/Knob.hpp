@@ -95,14 +95,14 @@ namespace tgui
         ///
         /// @param startRotation  New start rotation
         ///
-        /// The rotation is a number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise.
+        /// The rotation is a number in the interval [0, 360[, for which 0 to to the right and the rotation goes counter-clockwise.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setStartRotation(float startRotation);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the start rotation, which is the place where the value should be minimal
         ///
-        /// @return number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise
+        /// @return number in the interval [0, 360[, for which 0 to to the right and the rotation goes counter-clockwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD float getStartRotation() const;
 
@@ -111,14 +111,14 @@ namespace tgui
         ///
         /// @param endRotation  New end rotation
         ///
-        /// The rotation is a number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise.
+        /// The rotation is a number in the interval [0, 360[, for which 0 to to the right and the rotation goes counter-clockwise.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setEndRotation(float endRotation);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the end rotation, which is the place where the value should be maximal
         ///
-        /// @return number in the interval [0,360[, for which 0 to to the right and the rotation goes counter-clockwise
+        /// @return number in the interval [0, 360[, for which 0 to to the right and the rotation goes counter-clockwise
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD float getEndRotation() const;
 

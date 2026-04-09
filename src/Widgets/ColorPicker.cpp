@@ -173,7 +173,7 @@ namespace
         const float x = hsv.s * std::cos(hsv.h * 2.f*pi);
         const float y = hsv.s * std::sin(hsv.h * 2.f*pi);
 
-        // Returned values are in range [0,1] and represent the position from
+        // Returned values are in range [0, 1] and represent the position from
         // the top-left of the color wheel to the bottom-right of the color wheel.
         return {(x + 1) / 2.f, (-y + 1) / 2.f};
     }

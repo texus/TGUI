@@ -105,7 +105,7 @@ namespace tgui
         ///
         /// No stretching will occur when the view has the same size as the viewport (default).
         ///
-        /// Example code to use the contents of the gui container from top-left (200,100) to bottom-right (600, 400) and stetch
+        /// Example code to use the contents of the gui container from top-left (200, 100) to bottom-right (600, 400) and stetch
         /// it to fill the viewport (which equals the entire window by default):
         /// @code
         /// gui.setAbsoluteView({200, 100, 400, 300});

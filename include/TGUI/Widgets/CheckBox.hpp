@@ -98,7 +98,7 @@ namespace tgui
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
         ///
         /// When using textures and the checked texture is larger than the unchecked one (when the check mark leaves the box)
-        /// then this function will return (0, -heightDiff), otherwise (0,0) is returned.
+        /// then this function will return (0, -heightDiff), otherwise (0, 0) is returned.
         ///
         /// @return Offset of the widget
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

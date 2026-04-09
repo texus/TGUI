@@ -222,7 +222,7 @@
     #define TGUI_ASSERT(condition, msg)
 #endif
 
-// Using [=] gives a warning in C++20, but using [=,this] may not compile with older C++ versions
+// Using [=] gives a warning in C++20, but using [=, this] may not compile with older C++ versions
 #if __cplusplus > 201703L
     #define TGUI_LAMBDA_CAPTURE_EQ_THIS [=, this]
 #else
