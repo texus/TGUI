@@ -559,6 +559,12 @@ int main(int argc, char* argv[])
     if (session.applyCommandLine(argc, argv) != 0)
         return EXIT_FAILURE;
 
+    if (!tgui::Filesystem::directoryExists("resources") || !tgui::Filesystem::directoryExists("expected"))
+    {
+        std::cerr << "'resources' and 'expected' folders need to exist to run the tests\n";
+        return EXIT_FAILURE;
+    }
+
     std::unique_ptr<TestsWindowBase> window;
     if (selectedBackend.empty())
         window = std::make_unique<TestsWindowDefault>();
