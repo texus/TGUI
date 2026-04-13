@@ -1,7 +1,7 @@
 import os
 import json
-import numpy as np
 from string import Template
+import numpy as np
 from PIL import Image
 from PyTexturePacker import Packer
 
