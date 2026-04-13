@@ -34,7 +34,7 @@ TEST_CASE("[Font]")
         REQUIRE(tgui::Font() == nullptr);
         REQUIRE(tgui::Font(nullptr) == nullptr);
         REQUIRE(tgui::Font("resources/DejaVuSans.ttf") != nullptr);
-
+        REQUIRE_THROWS_AS(tgui::Font(nullptr, 0), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Font("NonExistentFile.ttf"), tgui::Exception);
     }
 
