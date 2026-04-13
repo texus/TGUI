@@ -36,11 +36,29 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Options for loading widget forms
+    /// @brief Options for loadWidgetsFromFile / loadWidgetsFromStream overloads that take FormLoadOptions
+    ///
+    /// Controls runtime theme binding and default-theme behavior while a .txt form is loaded.
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API FormLoadOptions
     {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Runtime themes keyed by alias name used in the form file
+        ///
+        /// When a widget line sets Renderer to \@Alias or \@Alias.Section, the renderer is taken from
+        /// themesByAlias[Alias] (Section defaults to the widget type if omitted). If the alias is missing from this map,
+        /// loading falls back to a matching Theme.Alias block in the same form file when present.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::map<String, Theme::Ptr> themesByAlias;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Whether Theme::getDefault() stays active for the duration of the load
+        ///
+        /// If false (default), the implementation temporarily clears the stored default theme while parsing and constructing
+        /// widgets (matching historical loadWidgetsFromFile behavior and aligning stream loading with file loading).
+        /// If true, the current default theme remains set so widgets without an explicit Renderer line keep the same
+        /// renderer they would get from normal construction with Theme::getDefault().
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool applyDefaultTheme = false;
     };
 } // namespace tgui

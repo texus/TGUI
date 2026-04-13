@@ -633,6 +633,19 @@ namespace tgui
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting, const FormLoadOptions& options);
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Loads child widgets from a parsed form root using renderer and theme data from the node tree and options
+        ///
+        /// Scans @a rootNode for Renderer and Theme sections, builds renderer lookup maps, then instantiates each widget
+        /// section and loads it. Theme aliases in Renderer values (e.g. \@Name or \@Name.Section) are resolved from
+        /// @a options.themesByAlias, with Theme.Name blocks in the file as fallback. When @a replaceExisting is true,
+        /// existing child widgets are removed first. Clearing or preserving the global default theme during load is done
+        /// in loadWidgetsImpl before this function runs.
+        ///
+        /// @param rootNode         Root node produced by DataIO::parse (widget form)
+        /// @param replaceExisting  If true, remove all widgets before loading
+        /// @param options          Theme bindings and other load options (see FormLoadOptions)
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting, const FormLoadOptions& options);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
