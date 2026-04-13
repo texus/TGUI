@@ -58,7 +58,7 @@ Image.fromarray(pixels[0:requiredRows,0:requiredColumns]).save('Black.png')
 
 # Generate the theme file based on the template and where the texture packer placed each image
 mapping = {}
-with open('tmp.json', 'r') as f:
+with open('tmp.json', mode='r', encoding="utf-8") as f:
     data = json.load(f)
     for imageFilename in data['frames']:
         frame = data['frames'][imageFilename]['frame']
@@ -68,11 +68,11 @@ with open('tmp.json', 'r') as f:
         mapping[filenameWithoutExtension] = '"Black.png" Part({}, {}, {}, {})'.format(
             posX, posY, frame['w'], frame['h'])
 
-with open('Black.txt.in', 'r') as f:
+with open('Black.txt.in', mode='r', encoding="utf-8") as f:
     contents = f.read()
 
 changedContents = Template(contents).substitute(mapping)
-with open('Black.txt', 'w') as f:
+with open('Black.txt', mode='w', encoding="utf-8") as f:
     f.write(changedContents)
 
 # Remove teporary files created by texture packer
