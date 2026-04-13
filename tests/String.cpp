@@ -22,6 +22,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "TGUI/String.hpp"
+
 #include <TGUI/Config.hpp>
 #if TGUI_HAS_WINDOW_BACKEND_SFML
     #include <SFML/System/String.hpp>
@@ -1903,6 +1905,39 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'a', 0) == 1);
         REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'a', 1) == 0);
         REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'a', 40) == 0);
+    }
+
+    SECTION("isDigit")
+    {
+        REQUIRE(tgui::isDigit('0'));
+        REQUIRE(tgui::isDigit('1'));
+        REQUIRE(tgui::isDigit('2'));
+        REQUIRE(tgui::isDigit('3'));
+        REQUIRE(tgui::isDigit('4'));
+        REQUIRE(tgui::isDigit('5'));
+        REQUIRE(tgui::isDigit('6'));
+        REQUIRE(tgui::isDigit('7'));
+        REQUIRE(tgui::isDigit('8'));
+        REQUIRE(tgui::isDigit('9'));
+        REQUIRE(!tgui::isDigit(' '));
+        REQUIRE(!tgui::isDigit('a'));
+        REQUIRE(!tgui::isDigit('A'));
+        REQUIRE(!tgui::isDigit('z'));
+        REQUIRE(!tgui::isDigit('Z'));
+        REQUIRE(!tgui::isDigit('!'));
+        REQUIRE(!tgui::isDigit('/'));
+        REQUIRE(!tgui::isDigit('\\'));
+        REQUIRE(!tgui::isDigit('@'));
+        REQUIRE(!tgui::isDigit('|'));
+        REQUIRE(!tgui::isDigit('_'));
+        REQUIRE(!tgui::isDigit('-'));
+        REQUIRE(!tgui::isDigit(','));
+        REQUIRE(!tgui::isDigit('.'));
+        REQUIRE(!tgui::isDigit('\t'));
+        REQUIRE(!tgui::isDigit('\r'));
+        REQUIRE(!tgui::isDigit('\n'));
+        REQUIRE(!tgui::isDigit('*'));
+        REQUIRE(!tgui::isDigit('#'));
     }
 
     SECTION("isWhitespace")
