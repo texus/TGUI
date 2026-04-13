@@ -27,13 +27,16 @@
 #include <TGUI/FormLoadOptions.hpp>
 #include <TGUI/Loading/DataIO.hpp>
 #include <TGUI/Loading/Deserializer.hpp>
+#include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Loading/WidgetFactory.hpp>
 #include <TGUI/ObjectConverter.hpp>
+#include <TGUI/Texture.hpp>
 #include <TGUI/WidgetLoadResources.hpp>
 #include <TGUI/Widgets/Button.hpp>
 #include <TGUI/Widgets/ChildWindow.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 
+#include <array>
 #include <string>
 
 namespace
@@ -116,6 +119,54 @@ namespace
         std::stringstream stream(form);
         REQUIRE_THROWS_AS(panel->loadWidgetsFromStream(stream), tgui::Exception);
     }
+
+    /// Property names from TGUI_RENDERER_PROPERTY_* macros in src/Renderers/ButtonRenderer.cpp (keep in sync).
+    constexpr std::array<const char*, 44> buttonRendererPropertyNames = {
+        "Borders",
+        "TextColor",
+        "TextColorDown",
+        "TextColorHover",
+        "TextColorDownHover",
+        "TextColorDisabled",
+        "TextColorDownDisabled",
+        "TextColorFocused",
+        "TextColorDownFocused",
+        "BackgroundColor",
+        "BackgroundColorDown",
+        "BackgroundColorHover",
+        "BackgroundColorDownHover",
+        "BackgroundColorDisabled",
+        "BackgroundColorDownDisabled",
+        "BackgroundColorFocused",
+        "BackgroundColorDownFocused",
+        "BorderColor",
+        "BorderColorDown",
+        "BorderColorHover",
+        "BorderColorDownHover",
+        "BorderColorDisabled",
+        "BorderColorDownDisabled",
+        "BorderColorFocused",
+        "BorderColorDownFocused",
+        "Texture",
+        "TextureDown",
+        "TextureHover",
+        "TextureDownHover",
+        "TextureDisabled",
+        "TextureDownDisabled",
+        "TextureFocused",
+        "TextureDownFocused",
+        "TextStyle",
+        "TextStyleDown",
+        "TextStyleHover",
+        "TextStyleDownHover",
+        "TextStyleDisabled",
+        "TextStyleDownDisabled",
+        "TextStyleFocused",
+        "TextStyleDownFocused",
+        "TextOutlineThickness",
+        "TextOutlineColor",
+        "RoundedBorderRadius",
+    };
 } // namespace
 
 TEST_CASE("[FormThemeLoad]")
@@ -522,6 +573,160 @@ TEST_CASE("[FormThemeLoad]")
         REQUIRE(panel->get("TB")->getRenderer()->getProperty("TextColor").getColor() == tgui::Color(90, 91, 92));
 
         tgui::Theme::setDefault(oldDefault);
+    }
+
+    SECTION("applyDefaultTheme true: sparse form renderer does not keep default theme texture image")
+    {
+        const tgui::Theme::Ptr oldDefault = tgui::Theme::getDefault();
+        auto theme = std::make_shared<tgui::Theme>();
+        auto rd = std::make_shared<tgui::RendererData>();
+        rd->propertyValuePairs[U"Texture"] = tgui::Texture{"resources/Texture1.png"};
+        theme->addRenderer(U"Button", rd);
+        tgui::Theme::setDefault(theme);
+        REQUIRE(rd->propertyValuePairs[U"Texture"].getTexture().getData() != nullptr);
+
+        const std::string form =
+            "Renderer.1 { TextColor = rgb(11, 22, 33); }\n"
+            "Button.B1 { Position = (0, 0); Size = (50, 30); Text = \"X\"; Renderer = &1; }\n";
+
+        tgui::FormLoadOptions opt;
+        opt.applyDefaultTheme = true;
+
+        tgui::Panel::Ptr panel = tgui::Panel::create();
+        std::stringstream stream(form);
+        panel->loadWidgetsFromStream(stream, true, opt);
+
+        const tgui::Button::Ptr btn = panel->get<tgui::Button>(U"B1");
+        REQUIRE(btn->getSharedRenderer()->getProperty(U"TextColor").getColor() == tgui::Color(11, 22, 33));
+        // Inline renderer has no Texture; setRenderer notifies removal of old Texture and ButtonBase::rendererChanged
+        // calls getTexture(), whose generated getter inserts Texture{} when the key is missing (RendererDefines.hpp).
+        REQUIRE(btn->getSharedRenderer()->getProperty(U"Texture").getType() == tgui::ObjectConverter::Type::Texture);
+        REQUIRE(btn->getSharedRenderer()->getProperty(U"Texture").getTexture().getData() == nullptr);
+
+        tgui::Theme::setDefault(oldDefault);
+    }
+
+    SECTION("applyDefaultTheme false: sparse inline renderer has no Texture key (built-in default Button has no Texture)")
+    {
+        const tgui::Theme::Ptr oldDefault = tgui::Theme::getDefault();
+        auto theme = std::make_shared<tgui::Theme>();
+        auto rd = std::make_shared<tgui::RendererData>();
+        rd->propertyValuePairs[U"Texture"] = tgui::Texture{"resources/Texture1.png"};
+        theme->addRenderer(U"Button", rd);
+        tgui::Theme::setDefault(theme);
+
+        const std::string form =
+            "Renderer.1 { TextColor = rgb(11, 22, 33); }\n"
+            "Button.B1 { Position = (0, 0); Size = (50, 30); Text = \"X\"; Renderer = &1; }\n";
+
+        tgui::FormLoadOptions opt;
+        opt.applyDefaultTheme = false;
+
+        tgui::Panel::Ptr panel = tgui::Panel::create();
+        std::stringstream stream(form);
+        panel->loadWidgetsFromStream(stream, true, opt);
+
+        const tgui::Button::Ptr btn = panel->get<tgui::Button>(U"B1");
+        REQUIRE(btn->getSharedRenderer()->getProperty(U"TextColor").getColor() == tgui::Color(11, 22, 33));
+        REQUIRE(btn->getSharedRenderer()->getPropertyValuePairs().count(U"Texture") == 0);
+        REQUIRE(btn->getSharedRenderer()->getProperty(U"Texture").getType() == tgui::ObjectConverter::Type::None);
+
+        tgui::Theme::setDefault(oldDefault);
+    }
+
+    SECTION("applyDefaultTheme true: button without Renderer keeps default theme Texture")
+    {
+        const tgui::Theme::Ptr oldDefault = tgui::Theme::getDefault();
+        auto theme = std::make_shared<tgui::Theme>();
+        auto rd = std::make_shared<tgui::RendererData>();
+        rd->propertyValuePairs[U"Texture"] = tgui::Texture{"resources/Texture1.png"};
+        theme->addRenderer(U"Button", rd);
+        tgui::Theme::setDefault(theme);
+
+        const std::string form = "Button.B1 { Position = (0, 0); Size = (50, 30); Text = \"X\"; }\n";
+
+        tgui::FormLoadOptions opt;
+        opt.applyDefaultTheme = true;
+
+        tgui::Panel::Ptr panel = tgui::Panel::create();
+        std::stringstream stream(form);
+        panel->loadWidgetsFromStream(stream, true, opt);
+
+        const tgui::Button::Ptr btn = panel->get<tgui::Button>(U"B1");
+        REQUIRE(btn->getSharedRenderer()->getProperty(U"Texture").getType() != tgui::ObjectConverter::Type::None);
+        REQUIRE(btn->getSharedRenderer()->getProperty(U"Texture").getTexture().getData() != nullptr);
+
+        tgui::Theme::setDefault(oldDefault);
+    }
+
+    SECTION("applyDefaultTheme true vs false: sparse load matches on form fields; Texture key differs when default Button had Texture")
+    {
+        const tgui::Theme::Ptr oldDefault = tgui::Theme::getDefault();
+        auto theme = std::make_shared<tgui::Theme>();
+        auto rd = std::make_shared<tgui::RendererData>();
+        rd->propertyValuePairs[U"Texture"] = tgui::Texture{"resources/Texture1.png"};
+        theme->addRenderer(U"Button", rd);
+        tgui::Theme::setDefault(theme);
+
+        const std::string form =
+            "Renderer.1 { TextColor = rgb(44, 55, 66); }\n"
+            "Button.B1 { Position = (0, 0); Size = (50, 30); Text = \"X\"; Renderer = &1; }\n";
+
+        tgui::Panel::Ptr panelTrue = tgui::Panel::create();
+        {
+            tgui::FormLoadOptions opt;
+            opt.applyDefaultTheme = true;
+            std::stringstream stream(form);
+            panelTrue->loadWidgetsFromStream(stream, true, opt);
+        }
+
+        tgui::Theme::setDefault(theme);
+
+        tgui::Panel::Ptr panelFalse = tgui::Panel::create();
+        {
+            tgui::FormLoadOptions opt;
+            opt.applyDefaultTheme = false;
+            std::stringstream stream(form);
+            panelFalse->loadWidgetsFromStream(stream, true, opt);
+        }
+
+        const tgui::Button::Ptr btnTrue = panelTrue->get<tgui::Button>(U"B1");
+        const tgui::Button::Ptr btnFalse = panelFalse->get<tgui::Button>(U"B1");
+
+        REQUIRE(btnTrue->getSharedRenderer()->getProperty(U"TextColor") == btnFalse->getSharedRenderer()->getProperty(U"TextColor"));
+        REQUIRE(btnTrue->getSharedRenderer()->getPropertyValuePairs().count(U"Texture") == 1);
+        REQUIRE(btnFalse->getSharedRenderer()->getPropertyValuePairs().count(U"Texture") == 0);
+
+        for (const char* propName : buttonRendererPropertyNames)
+        {
+            const tgui::String name(propName);
+            auto pTrue = btnTrue->getSharedRenderer()->getProperty(name);
+            auto pFalse = btnFalse->getSharedRenderer()->getProperty(name);
+            if (name == U"Texture")
+            {
+                REQUIRE(pFalse.getType() == tgui::ObjectConverter::Type::None);
+                REQUIRE(pTrue.getType() == tgui::ObjectConverter::Type::Texture);
+                REQUIRE(pTrue.getTexture().getData() == nullptr);
+            }
+            else
+                REQUIRE(pTrue == pFalse);
+        }
+
+        tgui::Theme::setDefault(oldDefault);
+    }
+
+    SECTION("ButtonRenderer::getTexture const getter can insert empty Texture when map key is missing")
+    {
+        tgui::Button::Ptr btn = tgui::Button::create();
+        auto data = tgui::RendererData::create();
+        data->propertyValuePairs[U"TextColor"] = tgui::Color::Red;
+        btn->setRenderer(data);
+
+        REQUIRE(btn->getSharedRenderer()->getPropertyValuePairs().count(U"Texture") == 0);
+        (void)btn->getSharedRenderer()->getTexture();
+        REQUIRE(btn->getSharedRenderer()->getPropertyValuePairs().count(U"Texture") == 1);
+        auto texProp = btn->getSharedRenderer()->getProperty(U"Texture");
+        REQUIRE(texProp.getTexture().getData() == nullptr);
     }
 
     SECTION("Widget::load with WidgetLoadResources matches former renderers-map-only behavior")
