@@ -1184,7 +1184,7 @@ jobs:
     needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sdl-gpu, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
     runs-on: windows-2025
     env:
-      SFML_VERSION: 3.0.2
+      SFML_VERSION: 3.1.0
       MSVC_TOOLSET_VERSION: 143  # VS2022
     steps:
       - name: Checkout TGUI
