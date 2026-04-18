@@ -443,22 +443,23 @@ namespace tgui
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
         // This constructor has to be explicit or it will cause MSVC to no longer compile code that performs sf::String + std::string
-        explicit String(const sf::String& str)
+        explicit String(const sf::String& str) :
     #if SFML_VERSION_MAJOR >= 3
-            :
             m_string{str.toUtf32()}
     #else
-            :
             m_string{reinterpret_cast<const char32_t*>(str.toUtf32().c_str())}
     #endif
         {
         }
 
+    #if (TGUI_COMPILED_WITH_CPP_VER < 17) || (SFML_VERSION_MAJOR < 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR < 1)
+        // When compiling with c++17, the conversion to sf::String is done with the StringView operator for SFML 3.1 or higher
         explicit operator sf::String() const
         {
             return sf::String::fromUtf32(m_string.cbegin(), m_string.cend());
         }
-#endif
+    #endif
+#endif // TGUI_HAS_WINDOW_BACKEND_SFML
 
         explicit operator std::string() const;
         explicit operator std::wstring() const;
