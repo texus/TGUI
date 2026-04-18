@@ -446,11 +446,14 @@ namespace tgui
         {
         }
 
+    #if (TGUI_COMPILED_WITH_CPP_VER < 17) || (SFML_VERSION_MAJOR < 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR < 1)
+        // When compiling with c++17, the conversion to sf::String is done with the StringView operator for SFML 3.1 or higher
         explicit operator sf::String() const
         {
-            return sf::String::fromUtf32(m_string.begin(), m_string.end());
+            return sf::String::fromUtf32(m_string.cbegin(), m_string.cend());
         }
-#endif
+    #endif
+#endif // TGUI_HAS_WINDOW_BACKEND_SFML
 
         explicit operator std::string() const;
         explicit operator std::wstring() const;
