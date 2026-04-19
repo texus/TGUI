@@ -510,12 +510,16 @@ namespace tgui
                     || (pressedKey == KEY_RIGHT_CONTROL) || (pressedKey == KEY_LEFT_SHIFT) || (pressedKey == KEY_RIGHT_SHIFT)
                     || (pressedKey == KEY_LEFT_SUPER) || (pressedKey == KEY_RIGHT_SUPER))
                 {
+                    pressedKey = GetKeyPressed();
                     continue;
                 }
 
                 const Event::KeyboardKey code = convertKeyCode(pressedKey);
                 if (code == Event::KeyboardKey::Unknown)
+                {
+                    pressedKey = GetKeyPressed();
                     continue;
+                }
 
                 TGUI_EMPLACE_BACK(event, events)
                 event.type = Event::Type::KeyPressed;
