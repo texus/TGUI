@@ -473,12 +473,14 @@ namespace tgui
 
     void Container::loadWidgetsFromFile(const String& filename, bool replaceExisting)
     {
-        loadWidgetsFromFile(filename, replaceExisting, FormLoadOptions{});
+        FormLoadOptions options;
+        options.replaceExistingWidgets = replaceExisting;
+        loadWidgetsFromFile(filename, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadWidgetsFromFile(const String& filename, bool replaceExisting, const FormLoadOptions& options)
+    void Container::loadWidgetsFromFile(const String& filename, const FormLoadOptions& options)
     {
         // If a resource path is set then place it in front of the filename (unless the filename is an absolute path)
         String filenameInResources = filename;
@@ -502,7 +504,7 @@ namespace tgui
             injectFormFilePath(rootNode, parentPath.asString(), checkedFilenames);
         }
 
-        loadWidgetsImpl(rootNode, replaceExisting, options);
+        loadWidgetsFromNodeTree(rootNode, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -527,46 +529,33 @@ namespace tgui
 
     void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting)
     {
-        loadWidgetsFromStream(stream, replaceExisting, FormLoadOptions{});
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting, const FormLoadOptions& options)
-    {
-        const auto rootNode = DataIO::parse(stream);
-        loadWidgetsImpl(rootNode, replaceExisting, options);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting, const FormLoadOptions& options)
-    {
-        const Theme::Ptr oldTheme = Theme::getDefault();
-        if (!options.applyDefaultTheme)
-            Theme::setDefault(nullptr);
-        const auto restoreTheme = makeScopeExit(
-            [&oldTheme, &options]
-            {
-                if (!options.applyDefaultTheme)
-                    Theme::setDefault(oldTheme);
-            });
-
-        loadWidgetsFromNodeTree(rootNode, replaceExisting, options);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting, const FormLoadOptions& options)
-    {
-        loadWidgetsFromStream(stream, replaceExisting, options);
+        FormLoadOptions options;
+        options.replaceExistingWidgets = replaceExisting;
+        loadWidgetsFromStream(stream, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Container::loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting)
     {
-        loadWidgetsFromStream(stream, replaceExisting);
+        FormLoadOptions options;
+        options.replaceExistingWidgets = replaceExisting;
+        loadWidgetsFromStream(std::move(stream), options);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsFromStream(std::stringstream& stream, const FormLoadOptions& options)
+    {
+        const auto rootNode = DataIO::parse(stream);
+        loadWidgetsFromNodeTree(rootNode, options);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Container::loadWidgetsFromStream(std::stringstream&& stream, const FormLoadOptions& options)
+    {
+        loadWidgetsFromStream(stream, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -582,20 +571,19 @@ namespace tgui
     void Container::loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting)
     {
         FormLoadOptions options;
-        loadWidgetsFromNodeTree(rootNode, replaceExisting, options);
+        options.replaceExistingWidgets = replaceExisting;
+        loadWidgetsFromNodeTree(rootNode, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting, const FormLoadOptions& options)
+    void Container::loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, const FormLoadOptions& options)
     {
         // Replace the existing widgets by the ones that will be loaded if requested
-        if (replaceExisting)
+        if (options.replaceExistingWidgets)
             removeAllWidgets();
 
         LoadingRenderersMap availableRenderers;
-        ThemeFallbackMap themeFallbacks;
-
         for (const auto& node : rootNode->children)
         {
             const auto nameSeparator = node->name.find('.');
@@ -612,6 +600,7 @@ namespace tgui
             }
         }
 
+        ThemeFallbackMap themeFallbacks;
         for (const auto& node : rootNode->children)
         {
             const auto nameSeparator = node->name.find('.');
@@ -645,7 +634,8 @@ namespace tgui
             }
         }
 
-        WidgetLoadResources widgetResources(availableRenderers);
+        WidgetLoadResources widgetResources;
+        widgetResources.renderers = availableRenderers;
         widgetResources.runtimeThemesByAlias = &options.themesByAlias;
         widgetResources.themeFallbacks = &themeFallbacks;
 
@@ -1220,8 +1210,10 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Container::loadContainedWidgetsFromNodes(const std::unique_ptr<DataIO::Node>& node, const WidgetLoadResources& resources)
+    void Container::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
     {
+        Widget::load(node, renderers);
+
         std::vector<std::pair<Widget::Ptr, std::reference_wrapper<const std::unique_ptr<DataIO::Node>>>> widgetsToLoad;
         for (const auto& childNode : node->children)
         {
@@ -1247,23 +1239,17 @@ namespace tgui
                 throw Exception{U"No construct function exists for widget type '" + widgetType + U"'."};
         }
 
+        WidgetLoadResources resources;
+        resources.renderers = renderers;
+        resources.runtimeThemesByAlias = m_loadRuntimeThemesByAlias;
+        resources.themeFallbacks = m_loadThemeFallbacks;
+
         for (const auto& pair : widgetsToLoad)
         {
             const Widget::Ptr& childWidget = pair.first;
             const auto& childNode = pair.second.get();
             childWidget->load(childNode, resources);
         }
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Container::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
-    {
-        WidgetLoadResources wlr(renderers);
-        wlr.runtimeThemesByAlias = m_loadRuntimeThemesByAlias;
-        wlr.themeFallbacks = m_loadThemeFallbacks;
-        Widget::loadUsingResources(node, wlr);
-        loadContainedWidgetsFromNodes(node, wlr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

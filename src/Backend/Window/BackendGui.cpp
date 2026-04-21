@@ -537,9 +537,9 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGui::loadWidgetsFromFile(const String& filename, bool replaceExisting, const FormLoadOptions& options)
+    void BackendGui::loadWidgetsFromFile(const String& filename, const FormLoadOptions& options)
     {
-        m_container->loadWidgetsFromFile(filename, replaceExisting, options);
+        m_container->loadWidgetsFromFile(filename, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -558,13 +558,6 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGui::loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting, const FormLoadOptions& options)
-    {
-        m_container->loadWidgetsFromStream(stream, replaceExisting, options);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     void BackendGui::loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting)
     {
         loadWidgetsFromStream(stream, replaceExisting);
@@ -572,9 +565,16 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void BackendGui::loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting, const FormLoadOptions& options)
+    void BackendGui::loadWidgetsFromStream(std::stringstream& stream, const FormLoadOptions& options)
     {
-        loadWidgetsFromStream(stream, replaceExisting, options);
+        m_container->loadWidgetsFromStream(stream, options);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGui::loadWidgetsFromStream(std::stringstream&& stream, const FormLoadOptions& options)
+    {
+        loadWidgetsFromStream(stream, options);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

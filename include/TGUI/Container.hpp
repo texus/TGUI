@@ -194,13 +194,20 @@ namespace tgui
         /// @param replaceExisting  Remove existing widgets first if there are any
         ///
         /// @throw Exception when file could not be opened or parsing failed
+        ///
+        /// @deprecated Use the overload with FormLoadOptions if you wish to pass a value for replaceExisting
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromFile(const String& filename, bool replaceExisting = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads the child widgets from a text file with load options
+        /// @brief Loads the child widgets from a text file
+        ///
+        /// @param filename  Filename of the widget file
+        /// @param options   Settings to use for loading
+        ///
+        /// @throw Exception when file could not be opened or parsing failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromFile(const String& filename, bool replaceExisting, const FormLoadOptions& options);
+        void loadWidgetsFromFile(const String& filename, const FormLoadOptions& options);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the child widgets to a text file
@@ -216,6 +223,8 @@ namespace tgui
         ///
         /// @param stream  stringstream that contains the widget file
         /// @param replaceExisting  Remove existing widgets first if there are any
+        ///
+        /// @deprecated Use the overload with FormLoadOptions if you wish to pass a value for replaceExisting
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting = true);
 
@@ -224,18 +233,26 @@ namespace tgui
         ///
         /// @param stream  stringstream that contains the widget file
         /// @param replaceExisting  Remove existing widgets first if there are any
+        ///
+        /// @deprecated Use the overload with FormLoadOptions if you wish to pass a value for replaceExisting
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads the child widgets from a string stream with load options
+        /// @brief Loads the child widgets from a string stream
+        ///
+        /// @param stream   stringstream that contains the widget file
+        /// @param options  Settings to use for loading
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting, const FormLoadOptions& options);
+        void loadWidgetsFromStream(std::stringstream& stream, const FormLoadOptions& options);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the child widgets from a string stream with load options
+        ///
+        /// @param stream   stringstream that contains the widget file
+        /// @param options  Settings to use for loading
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting, const FormLoadOptions& options);
+        void loadWidgetsFromStream(std::stringstream&& stream, const FormLoadOptions& options);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the child widgets to a text file
@@ -585,6 +602,7 @@ namespace tgui
         /// @brief Loads the widget from a tree of nodes
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers) override;
+        using Widget::load;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called when the text size is changed (either by setTextSize or via the renderer)
@@ -629,24 +647,16 @@ namespace tgui
         void injectFormFilePath(const std::unique_ptr<DataIO::Node>& node, const String& path, std::map<String, bool>& checkedFilenames) const;
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Mutual code in loadWidgetsFromFile and loadWidgetsFromStream
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsImpl(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting, const FormLoadOptions& options);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads child widgets from a parsed form root using renderer and theme data from the node tree and options
         ///
         /// Scans @a rootNode for Renderer and Theme sections, builds renderer lookup maps, then instantiates each widget
         /// section and loads it. Theme aliases in Renderer values (e.g. \@Name or \@Name.Section) are resolved from
-        /// @a options.themesByAlias, with Theme.Name blocks in the file as fallback. When @a replaceExisting is true,
-        /// existing child widgets are removed first. Clearing or preserving the global default theme during load is done
-        /// in loadWidgetsImpl before this function runs.
+        /// @a options.themesByAlias, with Theme.Name blocks in the file as fallback.
         ///
         /// @param rootNode         Root node produced by DataIO::parse (widget form)
-        /// @param replaceExisting  If true, remove all widgets before loading
         /// @param options          Theme bindings and other load options (see FormLoadOptions)
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, bool replaceExisting, const FormLoadOptions& options);
+        void loadWidgetsFromNodeTree(const std::unique_ptr<DataIO::Node>& rootNode, const FormLoadOptions& options);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -665,11 +675,6 @@ namespace tgui
         bool m_isolatedFocus = false;
 
         friend class SubwidgetContainer; // Needs access to save and load functions
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @internal
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadContainedWidgetsFromNodes(const std::unique_ptr<DataIO::Node>& node, const WidgetLoadResources& resources);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };

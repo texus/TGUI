@@ -36,12 +36,17 @@
 namespace tgui
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Options for loadWidgetsFromFile / loadWidgetsFromStream overloads that take FormLoadOptions
-    ///
-    /// Controls runtime theme binding and default-theme behavior while a .txt form is loaded.
+    /// @brief Options for loadWidgetsFromFile / loadWidgetsFromStream
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API FormLoadOptions
     {
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Remove existing widgets first if there are any
+        ///
+        /// If true (default), removeAllWidgets() will be called at the start of the load function.
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool replaceExistingWidgets = true;
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Runtime themes keyed by alias name used in the form file
         ///
@@ -50,16 +55,6 @@ namespace tgui
         /// loading falls back to a matching Theme.Alias block in the same form file when present.
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::map<String, Theme::Ptr> themesByAlias;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Whether Theme::getDefault() stays active for the duration of the load
-        ///
-        /// If false (default), the implementation temporarily clears the stored default theme while parsing and constructing
-        /// widgets (matching historical loadWidgetsFromFile behavior and aligning stream loading with file loading).
-        /// If true, the current default theme remains set so widgets without an explicit Renderer line keep the same
-        /// renderer they would get from normal construction with Theme::getDefault().
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        bool applyDefaultTheme = false;
     };
 } // namespace tgui
 
