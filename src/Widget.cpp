@@ -1918,8 +1918,28 @@ namespace tgui
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void Widget::loadUsingResources(const std::unique_ptr<DataIO::Node>& node, const WidgetLoadResources& resources)
+    void Widget::load(const std::unique_ptr<DataIO::Node>& node, const WidgetLoadResources& resources)
     {
+        const auto clearLoadContext = makeScopeExit(
+            [this]
+            {
+                m_loadRuntimeThemesByAlias = nullptr;
+                m_loadThemeFallbacks = nullptr;
+            });
+        m_loadRuntimeThemesByAlias = resources.runtimeThemesByAlias;
+        m_loadThemeFallbacks = resources.themeFallbacks;
+        load(node, resources.renderers);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
+    {
+        WidgetLoadResources resources;
+        resources.renderers = renderers;
+        resources.runtimeThemesByAlias = m_loadRuntimeThemesByAlias;
+        resources.themeFallbacks = m_loadThemeFallbacks;
+
         if (node->propertyValuePairs[U"Visible"])
             setVisible(Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"Visible"]->value).getBool());
         if (node->propertyValuePairs[U"Enabled"])
@@ -2062,31 +2082,6 @@ namespace tgui
                                             [](const std::unique_ptr<DataIO::Node>& child)
                                             { return (child->name == U"ToolTip") || (child->name == U"Renderer"); }),
                              node->children.end());
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::load(const std::unique_ptr<DataIO::Node>& node, const WidgetLoadResources& resources)
-    {
-        const auto clearLoadContext = makeScopeExit(
-            [this]
-            {
-                m_loadRuntimeThemesByAlias = nullptr;
-                m_loadThemeFallbacks = nullptr;
-            });
-        m_loadRuntimeThemesByAlias = resources.runtimeThemesByAlias;
-        m_loadThemeFallbacks = resources.themeFallbacks;
-        load(node, resources.renderers);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void Widget::load(const std::unique_ptr<DataIO::Node>& node, const LoadingRenderersMap& renderers)
-    {
-        WidgetLoadResources wlr(renderers);
-        wlr.runtimeThemesByAlias = m_loadRuntimeThemesByAlias;
-        wlr.themeFallbacks = m_loadThemeFallbacks;
-        loadUsingResources(node, wlr);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

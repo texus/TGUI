@@ -1,16 +1,11 @@
 TGUI 1.13  (TBD)
 ----------------
 
-- Implemented support for themes in forms ([Issue #325](https://github.com/texus/TGUI/issues/325)):
-  - `loadWidgetsFromStream` now clears and restores the default theme during load, matching `loadWidgetsFromFile`
-  - `FormLoadOptions::applyDefaultTheme` keeps the global default theme active during form load so widgets without a `Renderer` property match programmatic construction
-  - Form files may declare top-level `Theme.<Alias>` sections with per-section renderer fallbacks (`Button = &1;`, etc.)
-  - `Renderer = @Alias` / `@Alias.Section` bind to runtime themes (`FormLoadOptions::themesByAlias`) or form fallbacks
-  - Form loading calls non-virtual `Widget::load(node, WidgetLoadResources)`, which sets a short-lived load context then dispatches to virtual `load(node, LoadingRenderersMap)` so custom widget subclasses keep a single override; `load(map)` builds a full `WidgetLoadResources` (including themes) and calls `Widget::loadUsingResources`
+- Implemented support for using themes in form files ([PR #348](https://github.com/texus/TGUI/pull/348))
+- Code quality improvements (e.g. introduce clang-format [PR #318](https://github.com/texus/TGUI/pull/318))
 - Added Emscripten support
 - Each tab in Tabs and VerticalTabs widgets can now be assigned a unique id
 - Position and size layout expressions weren't saved when the result equaled (0,0)
-- Code quality improvements (e.g. introduce clang-format [PR #318](https://github.com/texus/TGUI/pull/318))
 
 
 TGUI 1.12  (26 January 2026)

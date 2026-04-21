@@ -467,13 +467,22 @@ namespace tgui
         ///
         /// @param filename  Filename of the widget file
         /// @param replaceExisting  Remove existing widgets first if there are any
+        ///
+        /// @throw Exception when file could not be opened or parsing failed
+        ///
+        /// @deprecated Use the overload with FormLoadOptions if you wish to pass a value for replaceExisting
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromFile(const String& filename, bool replaceExisting = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Loads the child widgets from a text file with load options
+        /// @brief Loads the child widgets from a text file
+        ///
+        /// @param filename  Filename of the widget file
+        /// @param options   Settings to use for loading
+        ///
+        /// @throw Exception when file could not be opened or parsing failed
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromFile(const String& filename, bool replaceExisting, const FormLoadOptions& options);
+        void loadWidgetsFromFile(const String& filename, const FormLoadOptions& options);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the child widgets to a text file
@@ -489,6 +498,8 @@ namespace tgui
         ///
         /// @param stream  stringstream that contains the widget file
         /// @param replaceExisting  Remove existing widgets first if there are any
+        ///
+        /// @deprecated Use the overload with FormLoadOptions if you wish to pass a value for replaceExisting
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting = true);
 
@@ -497,18 +508,26 @@ namespace tgui
         ///
         /// @param stream  stringstream that contains the widget file
         /// @param replaceExisting  Remove existing widgets first if there are any
+        ///
+        /// @deprecated Use the overload with FormLoadOptions if you wish to pass a value for replaceExisting
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting = true);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the child widgets from a string stream with load options
+        ///
+        /// @param stream   stringstream that contains the widget file
+        /// @param options  Settings to use for loading
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromStream(std::stringstream& stream, bool replaceExisting, const FormLoadOptions& options);
+        void loadWidgetsFromStream(std::stringstream& stream, const FormLoadOptions& options);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the child widgets from a string stream with load options
+        ///
+        /// @param stream   stringstream that contains the widget file
+        /// @param options  Settings to use for loading
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        void loadWidgetsFromStream(std::stringstream&& stream, bool replaceExisting, const FormLoadOptions& options);
+        void loadWidgetsFromStream(std::stringstream&& stream, const FormLoadOptions& options);
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves this the child widgets to a text file

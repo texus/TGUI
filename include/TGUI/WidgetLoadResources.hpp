@@ -46,14 +46,9 @@ namespace tgui
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     struct TGUI_API WidgetLoadResources
     {
-        const std::map<String, std::shared_ptr<RendererData>>& renderers;
+        std::map<String, std::shared_ptr<RendererData>> renderers;
         const std::map<String, std::shared_ptr<Theme>>* runtimeThemesByAlias = nullptr;
         const ThemeFallbackMap* themeFallbacks = nullptr;
-
-        explicit WidgetLoadResources(const std::map<String, std::shared_ptr<RendererData>>& r) :
-            renderers(r)
-        {
-        }
     };
 } // namespace tgui
 
