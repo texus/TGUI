@@ -46,6 +46,7 @@ int main()
 {
     SetTraceLogLevel(LOG_WARNING);
 
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 600, "TGUI example (RAYLIB)");
     SetTargetFPS(30);
 
