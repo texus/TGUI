@@ -254,6 +254,7 @@ namespace tgui
             // Auto-size the text
             const Vector2f innerSize = m_backgroundComponent->getClientSize();
             const unsigned int textSize = Text::findBestTextSize(m_fontCached, innerSize.y * 0.8f);
+            m_textComponent->setCharacterSize(textSize);
 
             // Make the text smaller when it's too width
             if (m_textComponent->getSize().x > (innerSize.x * 0.85f))
