@@ -549,7 +549,9 @@ namespace tgui
         BackendWindowRaylib(unsigned int width, unsigned int height, const String& title)
         {
             SetTraceLogLevel(LOG_WARNING);
+            SetConfigFlags(FLAG_WINDOW_RESIZABLE);
             InitWindow(static_cast<int>(width), static_cast<int>(height), title.toStdString().c_str());
+            SetExitKey(KEY_NULL);
 
             m_gui = std::make_unique<Gui>();
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
