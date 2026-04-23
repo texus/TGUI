@@ -46,6 +46,10 @@ struct WidgetProperties
             widget->setSize(value, widget->getSizeLayout().y);
         else if (property == "Height")
             widget->setSize(widget->getSizeLayout().x, value);
+        else if (property == "OriginX")
+            widget->setOrigin(value.toFloat(), widget->getOrigin().y);
+        else if (property == "OriginY")
+            widget->setOrigin(widget->getOrigin().x, value.toFloat());
         else if (property == "Visible")
             widget->setVisible(parseBoolean(value, true));
         else if (property == "Enabled")
@@ -75,6 +79,8 @@ struct WidgetProperties
         pairs["Top"] = {"Layout", widget->getPositionLayout().y.toString()};
         pairs["Width"] = {"Layout", widget->getSizeLayout().x.toString()};
         pairs["Height"] = {"Layout", widget->getSizeLayout().y.toString()};
+        pairs["OriginX"] = {"Float", tgui::String::fromNumber(widget->getOrigin().x)};
+        pairs["OriginY"] = {"Float", tgui::String::fromNumber(widget->getOrigin().y)};
         pairs["Visible"] = {"Bool", tgui::Serializer::serialize(widget->isVisible())};
         pairs["Enabled"] = {"Bool", tgui::Serializer::serialize(widget->isEnabled())};
         pairs["NavigationUp"] = {"String", widget->getNavigationUp() ? widget->getNavigationUp()->getWidgetName() : U""};

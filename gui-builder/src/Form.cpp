@@ -628,6 +628,9 @@ void Form::updateSelectionSquarePositions()
     }
 
     auto size = widget->getSize();
+    position.x -= widget->getOrigin().x * size.x;
+    position.y -= widget->getOrigin().y * size.y;
+
     if (std::abs(size.x) < 5)
         size.x = 5;
     if (std::abs(size.y) < 5)
@@ -763,25 +766,31 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
     }
     else if (keyEvent.shift)
     {
-        if (keyEvent.code == tgui::Event::KeyboardKey::Left)
+        if ((keyEvent.code == tgui::Event::KeyboardKey::Left) || (keyEvent.code == tgui::Event::KeyboardKey::Right))
         {
+            const float originalLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+
             m_guiBuilder->saveUndoState(GuiBuilder::UndoType::Resize);
-            selectedWidget->setSize({selectedWidget->getSize().x - 1, selectedWidget->getSizeLayout().y});
+            if (keyEvent.code == tgui::Event::KeyboardKey::Left)
+                selectedWidget->setSize({selectedWidget->getSize().x - 1, selectedWidget->getSizeLayout().y});
+            else
+                selectedWidget->setSize({selectedWidget->getSize().x + 1, selectedWidget->getSizeLayout().y});
+
+            const float updatedLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+            selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPositionLayout().y});
         }
-        else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
+        else if ((keyEvent.code == tgui::Event::KeyboardKey::Up) || (keyEvent.code == tgui::Event::KeyboardKey::Down))
         {
-            m_guiBuilder->saveUndoState(GuiBuilder::UndoType::Move);
-            selectedWidget->setSize({selectedWidget->getSize().x + 1, selectedWidget->getSizeLayout().y});
-        }
-        else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
-        {
-            m_guiBuilder->saveUndoState(GuiBuilder::UndoType::Move);
-            selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - 1});
-        }
-        else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
-        {
-            m_guiBuilder->saveUndoState(GuiBuilder::UndoType::Move);
-            selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + 1});
+            const float originalTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+
+            m_guiBuilder->saveUndoState(GuiBuilder::UndoType::Resize);
+            if (keyEvent.code == tgui::Event::KeyboardKey::Up)
+                selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - 1});
+            else
+                selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + 1});
+
+            const float updatedTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalTop - updatedTop)});
         }
 
         setChanged(true);
@@ -1094,8 +1103,8 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(const tgui::Container::Ptr& parent, 
         if (!widget || !widget->isVisible())
             continue;
 
-        if (tgui::FloatRect{widget->getPosition().x + widget->getWidgetOffset().x,
-                            widget->getPosition().y + widget->getWidgetOffset().y,
+        if (tgui::FloatRect{widget->getPosition().x + widget->getWidgetOffset().x - (widget->getOrigin().x * widget->getSize().x),
+                            widget->getPosition().y + widget->getWidgetOffset().y - (widget->getOrigin().y * widget->getSize().y),
                             widget->getFullSize().x,
                             widget->getFullSize().y}
                 .contains(pos))
@@ -1214,9 +1223,11 @@ void Form::onDrag(tgui::Vector2i mousePos)
 
         if (m_draggingSelectionSquare == m_selectionSquares[1]) // Top
         {
+            const float originalBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
+                - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+
             while (pos.y - m_draggingPos.y >= MOVE_STEP)
             {
-                selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP});
                 selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y - MOVE_STEP});
                 m_draggingPos.y += MOVE_STEP;
                 updated = true;
@@ -1224,14 +1235,19 @@ void Form::onDrag(tgui::Vector2i mousePos)
 
             while (m_draggingPos.y - pos.y >= MOVE_STEP)
             {
-                selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP});
                 selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + MOVE_STEP});
                 m_draggingPos.y -= MOVE_STEP;
                 updated = true;
             }
+
+            const float updatedBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
+                - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
         }
         else if (m_draggingSelectionSquare == m_selectionSquares[3]) // Right
         {
+            const float originalLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+
             while (pos.x - m_draggingPos.x >= MOVE_STEP)
             {
                 selectedWidget->setSize({selectedWidget->getSize().x + MOVE_STEP, selectedWidget->getSizeLayout().y});
@@ -1245,9 +1261,14 @@ void Form::onDrag(tgui::Vector2i mousePos)
                 m_draggingPos.x -= MOVE_STEP;
                 updated = true;
             }
+
+            const float updatedLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+            selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPositionLayout().y});
         }
         else if (m_draggingSelectionSquare == m_selectionSquares[2]) // Bottom
         {
+            const float originalTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+
             while (pos.y - m_draggingPos.y >= MOVE_STEP)
             {
                 selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + MOVE_STEP});
@@ -1261,9 +1282,15 @@ void Form::onDrag(tgui::Vector2i mousePos)
                 m_draggingPos.y -= MOVE_STEP;
                 updated = true;
             }
+
+            const float updatedTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalTop - updatedTop)});
         }
         else if (m_draggingSelectionSquare == m_selectionSquares[0]) // Left
         {
+            const float originalRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
+                - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+
             while (pos.x - m_draggingPos.x >= MOVE_STEP)
             {
                 selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPositionLayout().y});
@@ -1279,6 +1306,10 @@ void Form::onDrag(tgui::Vector2i mousePos)
                 m_draggingPos.x -= MOVE_STEP;
                 updated = true;
             }
+
+            const float updatedRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
+                - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+            selectedWidget->setPosition({selectedWidget->getPosition().x + (originalRight - updatedRight), selectedWidget->getPositionLayout().y});
         }
         else // Corner
         {
@@ -1296,6 +1327,11 @@ void Form::onDrag(tgui::Vector2i mousePos)
 
             if (m_draggingSelectionSquare == m_selectionSquares[4]) // Top left
             {
+                const float originalRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
+                    - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float originalBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
+                    - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+
                 while ((pos.x - m_draggingPos.x >= change.x) && (pos.y - m_draggingPos.y >= change.y))
                 {
                     selectedWidget->setPosition({selectedWidget->getPosition().x + change.x, selectedWidget->getPosition().y + change.y});
@@ -1313,9 +1349,19 @@ void Form::onDrag(tgui::Vector2i mousePos)
                     m_draggingPos.y -= change.y;
                     updated = true;
                 }
+
+                const float updatedRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
+                    - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float updatedBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
+                    - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalRight - updatedRight), selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
             }
             else if (m_draggingSelectionSquare == m_selectionSquares[6]) // Top right
             {
+                const float originalLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float originalBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
+                    - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+
                 while ((m_draggingPos.x - pos.x >= change.x) && (pos.y - m_draggingPos.y >= change.y))
                 {
                     selectedWidget->setPosition({selectedWidget->getPosition().x, selectedWidget->getPosition().y + change.y});
@@ -1333,9 +1379,17 @@ void Form::onDrag(tgui::Vector2i mousePos)
                     m_draggingPos.y -= change.y;
                     updated = true;
                 }
+
+                const float updatedLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float updatedBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
+                    - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
             }
             else if (m_draggingSelectionSquare == m_selectionSquares[7]) // Bottom right
             {
+                const float originalLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float originalTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+
                 while ((m_draggingPos.x - pos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
                     selectedWidget->setSize({selectedWidget->getSize().x - change.x, selectedWidget->getSize().y - change.y});
@@ -1351,9 +1405,17 @@ void Form::onDrag(tgui::Vector2i mousePos)
                     m_draggingPos.y += change.y;
                     updated = true;
                 }
+
+                const float updatedLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float updatedTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPosition().y + (originalTop - updatedTop)});
             }
             else if (m_draggingSelectionSquare == m_selectionSquares[5]) // Bottom left
             {
+                const float originalTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                const float originalRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
+                    - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+
                 while ((pos.x - m_draggingPos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
                     selectedWidget->setPosition({selectedWidget->getPosition().x + change.x, selectedWidget->getPosition().y});
@@ -1371,6 +1433,11 @@ void Form::onDrag(tgui::Vector2i mousePos)
                     m_draggingPos.y += change.y;
                     updated = true;
                 }
+
+                const float updatedTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                const float updatedRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
+                    - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalRight - updatedRight), selectedWidget->getPosition().y + (originalTop - updatedTop)});
             }
         }
     }
