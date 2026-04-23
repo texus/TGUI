@@ -69,7 +69,7 @@ namespace tgui
 
         m_fileContents = std::move(data);
         m_fileSize = sizeInBytes;
-        return true;
+        return m_fileContents != nullptr;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
