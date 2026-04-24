@@ -68,6 +68,28 @@ namespace tgui
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Changes the default mouse cursor of EditBox and TextArea widgets from an arrow to the I-beam cursor.
+    /// @param useIBeam  True to use the I-beam cursor, false to set the default behavior of using a normal arrow
+    ///
+    /// For backwards compatibility text fields do not alter the mouse cursor by default.
+    /// By enabling this option, all text widgets created afterwards will use the I-beam cursor by default.
+    /// Eiter way, the mouse cursor can always be changed for each widget individually with the setMouseCursor function.
+    ///
+    /// @since TGUI 1.13
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_API void setTextInputUsesTextCursorByDefault(bool useIBeam);
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Returns whether the default mouse cursor of EditBox and TextArea widgets is an I-beam instead of an arrow.
+    /// @returns True if the I-beam cursor is used false if the default behavior of using a normal arrow is configured
+    ///
+    /// @see setTextInputUsesTextCursorByDefault
+    ///
+    /// @since TGUI 1.13
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    TGUI_API bool getTextInputUsesTextCursorByDefault();
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Sets the default text size for all widgets created after calling the function
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     TGUI_API void setGlobalTextSize(unsigned int textSize);

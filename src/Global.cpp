@@ -70,11 +70,26 @@ namespace tgui
 {
     namespace
     {
+        bool globalTextInputUsesIBeamByDefault = false;
         unsigned int globalTextSize = 13;
         Duration globalDoubleClickTime = std::chrono::milliseconds(500);
         Duration globalEditBlinkRate = std::chrono::milliseconds(500);
         Filesystem::Path globalResourcePath;
     } // namespace
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void setTextInputUsesTextCursorByDefault(bool useIBeam)
+    {
+        globalTextInputUsesIBeamByDefault = useIBeam;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool getTextInputUsesTextCursorByDefault()
+    {
+        return globalTextInputUsesIBeamByDefault;
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

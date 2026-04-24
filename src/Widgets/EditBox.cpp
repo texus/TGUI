@@ -56,6 +56,9 @@ namespace tgui
         m_textSuffix.setFont(m_fontCached);
         m_defaultText.setFont(m_fontCached);
 
+        if (getTextInputUsesTextCursorByDefault())
+            m_mouseCursor = Cursor::Type::Text;
+
         if (initRenderer)
         {
             m_renderer = makeCopied<EditBoxRenderer>();

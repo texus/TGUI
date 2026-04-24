@@ -51,6 +51,9 @@ namespace tgui
 
         m_horizontalScrollbar->setPolicy(Scrollbar::Policy::Never);
 
+        if (getTextInputUsesTextCursorByDefault())
+            m_mouseCursor = Cursor::Type::Text;
+
         if (initRenderer)
         {
             m_renderer = makeCopied<TextAreaRenderer>();
