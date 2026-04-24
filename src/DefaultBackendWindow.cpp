@@ -490,7 +490,21 @@ namespace tgui
         bool pollEvent(Event& event) override
         {
             if (m_events.empty())
+            {
                 glfwPollEvents();
+
+                // If the window has been closed then generate a Close event.
+                // We will cancel closing the window, as we expect the calling code
+                // to call our close() function as result of the Close event.
+                // This is to maintain the same behavior between different backends.
+                if (!m_closeEventGenerated && glfwWindowShouldClose(m_window))
+                {
+                    m_closeEventGenerated = true;
+                    glfwSetWindowShouldClose(m_window, GLFW_FALSE);
+                    event.type = Event::Type::Closed;
+                    return true;
+                }
+            }
 
             if (!m_events.empty())
             {
@@ -539,6 +553,7 @@ namespace tgui
         GLFWwindow* m_window = nullptr;
         std::unique_ptr<Gui> m_gui;
         std::queue<Event> m_events;
+        bool m_closeEventGenerated = false;
     };
 
 #elif TGUI_HAS_BACKEND_RAYLIB
@@ -557,6 +572,7 @@ namespace tgui
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
 
             m_mouseOnWindow = IsCursorOnScreen();
+            m_windowOpen = true;
         }
 
         ~BackendWindowRaylib() override
@@ -572,11 +588,16 @@ namespace tgui
 
         bool isOpen() const override
         {
-            return !WindowShouldClose();
+            // We don't check WindowShouldClose() here because we first want to generate a Close event
+            // when the window is closed. The calling code should handle the Close event and call
+            // the close() function of this class, which sets m_windowOpen to false.
+            // This is to maintain the same behavior between different backends.
+            return m_windowOpen;
         }
 
         void close() override
         {
+            m_windowOpen = false;
             m_gui->endMainLoop();
         }
 
@@ -590,6 +611,21 @@ namespace tgui
                 m_events = m_gui->generateEventQueue(true);
                 m_nextEventIndex = 0;
                 m_eventsPolled = true;
+
+                // If the window has been closed then generate a Close event.
+                // The calling code should handle the Close event and call the close() function of this class.
+                // This is to maintain the same behavior between different backends.
+                if (WindowShouldClose())
+                {
+                    if (!m_closeEventGenerated)
+                    {
+                        m_closeEventGenerated = true;
+                        event.type = Event::Type::Closed;
+                        return true;
+                    }
+                    else // This is the second attempt to close the window (this should not happen), just close it
+                        close();
+                }
             }
 
             if (m_nextEventIndex < m_events.size())
@@ -639,6 +675,8 @@ namespace tgui
         std::size_t m_nextEventIndex = 0;
         bool m_mouseOnWindow = false;
         bool m_eventsPolled = false;
+        bool m_windowOpen = false;
+        bool m_closeEventGenerated = false;
     };
 
 #endif
