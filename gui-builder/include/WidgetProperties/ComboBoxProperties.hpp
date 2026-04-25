@@ -85,7 +85,8 @@ struct ComboBoxProperties : public WidgetProperties
         pair.second["ArrowColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getArrowColorDisabled())};
         pair.second["ArrowBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getArrowBackgroundColor())};
         pair.second["ArrowBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getArrowBackgroundColorHover())};
-        pair.second["ArrowBackgroundColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getArrowBackgroundColorDisabled())};
+        pair.second["ArrowBackgroundColorDisabled"] = {"Color",
+                                                       tgui::Serializer::serialize(renderer->getArrowBackgroundColorDisabled())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["TextureBackground"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackground())};
         pair.second["TextureBackgroundDisabled"] = {"Texture", tgui::Serializer::serialize(renderer->getTextureBackgroundDisabled())};

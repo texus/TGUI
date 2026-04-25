@@ -45,8 +45,14 @@ TEST_CASE("[SignalManager]")
         REQUIRE(manager->connect("NameOfWidget", "Pressed", [](int) {}, 5) == ++id);
         REQUIRE(manager->connect("NameOfWidget", "Pressed", [](auto) {}, 10.f) == ++id);
         REQUIRE(manager->connect("NameOfWidget", "Pressed", [](const tgui::Widget::Ptr&, const tgui::String&) {}) == ++id);
-        REQUIRE(
-            manager->connect("NameOfWidget", "Pressed", [](auto, auto, auto, const tgui::Widget::Ptr&, const tgui::String&) {}, "Hey", 15, 3.f) == ++id);
+        REQUIRE(manager->connect(
+                    "NameOfWidget",
+                    "Pressed",
+                    [](auto, auto, auto, const tgui::Widget::Ptr&, const tgui::String&) {},
+                    "Hey",
+                    15,
+                    3.f)
+                == ++id);
         REQUIRE(manager->connect("NameOfWidget", "Pressed", std::bind([](int) {}, 5)) == ++id); // NOLINT(modernize-avoid-bind)
 
         struct Class
@@ -106,7 +112,9 @@ TEST_CASE("[SignalManager]")
         parent->setPosition({60, 55});
         parent->add(widget, "NameOfWidget");
 
-        manager->connect("NameOfWidget", "MousePressed", [&](const tgui::Widget::Ptr&, const tgui::String&) { mousePressedCount2++; });
+        manager->connect("NameOfWidget",
+                         "MousePressed",
+                         [&](const tgui::Widget::Ptr&, const tgui::String&) { mousePressedCount2++; });
 
         parent->leftMouseReleased({175, 135});
         REQUIRE(mousePressedCount == 0);

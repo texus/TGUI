@@ -45,7 +45,8 @@ struct SplitContainerProperties : public WidgetProperties
         else if (property == "SplitterWidth")
             splitContainer->setSplitterWidth(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
         else if (property == "MinimumGrabWidth")
-            splitContainer->setMinimumGrabWidth(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
+            splitContainer->setMinimumGrabWidth(
+                tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber());
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

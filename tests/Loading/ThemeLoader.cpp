@@ -91,7 +91,8 @@ TEST_CASE("[ThemeLoader]")
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox1");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["ListBox"] == "{\nBackgroundColor = White;\nScrollbar = {\nThumbColor = Green;\nTrackColor = Red;\n};\n}");
+        REQUIRE(properties["ListBox"]
+                == "{\nBackgroundColor = White;\nScrollbar = {\nThumbColor = Green;\nTrackColor = Red;\n};\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox2");
         REQUIRE(properties.size() == 1);
@@ -103,7 +104,8 @@ TEST_CASE("[ThemeLoader]")
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox4");
         REQUIRE(properties.size() == 1);
-        REQUIRE(properties["ListBox"] == "{\nBackgroundColor = Magenta;\nScrollbar = {\nThumbColor = Green;\nTrackColor = Red;\n};\n}");
+        REQUIRE(properties["ListBox"]
+                == "{\nBackgroundColor = Magenta;\nScrollbar = {\nThumbColor = Green;\nTrackColor = Red;\n};\n}");
 
         properties = loader->load("resources/ThemeNested.txt", "ComboBox5");
         REQUIRE(properties.size() == 1);

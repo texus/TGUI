@@ -273,7 +273,8 @@ TEST_CASE("[RangeSlider]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextureThumb", tgui::Serializer::serialize(textureThumb)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureThumbHover", tgui::Serializer::serialize(textureThumbHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTrack", tgui::Serializer::serialize(textureSelectedTrack)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedTrackHover", tgui::Serializer::serialize(textureSelectedTrackHover)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextureSelectedTrackHover", tgui::Serializer::serialize(textureSelectedTrackHover)));
             }
 
             SECTION("set object property")

@@ -340,8 +340,10 @@ TEST_CASE("[Label]")
             TEST_DRAW_INIT(420, 215, label)
             label->setScrollbarPolicy(tgui::Scrollbar::Policy::Automatic);
             label->setText(
-                "Bacon ipsum dolor amet alcatra jerky turkey ball tip jowl beef. Shank landjaeger frankfurter, doner burgdoggen strip "
-                "steak chicken pancetta jowl. Pork loin leberkas meatloaf ham shoulder cow hamburger pancetta. Rump turducken ribeye "
+                "Bacon ipsum dolor amet alcatra jerky turkey ball tip jowl beef. Shank landjaeger frankfurter, doner burgdoggen "
+                "strip "
+                "steak chicken pancetta jowl. Pork loin leberkas meatloaf ham shoulder cow hamburger pancetta. Rump turducken "
+                "ribeye "
                 "salami pork chop sirloin. Leberkas alcatra filet mignon jerky pork belly.");
             label->setTextSize(18);
             label->setSize(400, 205);

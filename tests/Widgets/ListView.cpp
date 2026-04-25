@@ -189,9 +189,10 @@ TEST_CASE("[ListView]")
                 == std::vector<std::vector<tgui::String>>{{"1,1", "a,2"}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
 
         listView->insertMultipleItems(1, {{"y,1", "y,2", "y,3"}, {"z,1"}});
-        REQUIRE(listView->getItemRows()
-                == std::vector<
-                    std::vector<tgui::String>>{{"1,1", "a,2"}, {"y,1", "y,2"}, {"z,1", ""}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
+        REQUIRE(
+            listView->getItemRows()
+            == std::vector<
+                std::vector<tgui::String>>{{"1,1", "a,2"}, {"y,1", "y,2"}, {"z,1", ""}, {"b,1", ""}, {"x,1", ""}, {"c,1", "c,2"}});
 
         listView->removeAllItems();
         listView->insertItem(0, "2,1");
@@ -282,7 +283,8 @@ TEST_CASE("[ListView]")
 
         listView->addColumn("Col 4");
         REQUIRE(listView->getItemRow(0) == std::vector<tgui::String>{"1,1", "1,2", "1,3", ""});
-        REQUIRE(listView->getItemRows() == std::vector<std::vector<tgui::String>>{{"1,1", "1,2", "1,3", ""}, {"2,1", "2,2", "", ""}});
+        REQUIRE(listView->getItemRows()
+                == std::vector<std::vector<tgui::String>>{{"1,1", "1,2", "1,3", ""}, {"2,1", "2,2", "", ""}});
     }
 
     SECTION("Returned item cells")
@@ -1099,7 +1101,8 @@ TEST_CASE("[ListView]")
 
             SECTION("set serialized property")
             {
-                REQUIRE_NOTHROW(renderer->setProperty("TextureHeaderBackground", tgui::Serializer::serialize(textureHeaderBackground)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextureHeaderBackground", tgui::Serializer::serialize(textureHeaderBackground)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
             }
 

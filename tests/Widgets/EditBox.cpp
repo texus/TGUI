@@ -497,8 +497,8 @@ TEST_CASE("[EditBox]")
                 REQUIRE_NOTHROW(renderer->setProperty("BorderColorFocused", tgui::Color{180, 190, 200}));
                 REQUIRE_NOTHROW(renderer->setProperty("CaretWidth", 2));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyle", tgui::TextStyle::Italic));
-                REQUIRE_NOTHROW(
-                    renderer->setProperty("DefaultTextStyle", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
+                REQUIRE_NOTHROW(renderer->setProperty("DefaultTextStyle",
+                                                      tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::Underlined)));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
                 REQUIRE_NOTHROW(renderer->setProperty("Padding", tgui::Borders{5, 6, 7, 8}));
                 REQUIRE_NOTHROW(renderer->setProperty("RoundedBorderRadius", 5));

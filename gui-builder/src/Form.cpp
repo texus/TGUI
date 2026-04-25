@@ -106,7 +106,8 @@ namespace
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font") || (pair.first == U"Image"))
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font")
+                || (pair.first == U"Image"))
             {
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
                     || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
@@ -177,7 +178,8 @@ namespace
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font") || (pair.first == U"Image"))
+            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font")
+                || (pair.first == U"Image"))
             {
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
                     || pair.second->value.equalIgnoreCase(U"null") || pair.second->value.equalIgnoreCase(U"nullptr"))
@@ -309,8 +311,8 @@ namespace
                                     }
                                 }
                                 else
-                                    std::cerr << "Failed to make path relative. '" + filename + "' does not start with '" + basePathStr
-                                                     + "'.\n";
+                                    std::cerr << "Failed to make path relative. '" + filename + "' does not start with '"
+                                                     + basePathStr + "'.\n";
 
                                 break;
                             }
@@ -357,17 +359,25 @@ namespace
                                                     .initProperties(tgui::WidgetFactory::getConstructFunction("EditBox")())
                                                     .second);
         importOldFormFileExtractValidProperties(possibleProperties,
-                                                GroupProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Group")()).second);
+                                                GroupProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Group")())
+                                                    .second);
         importOldFormFileExtractValidProperties(possibleProperties,
-                                                KnobProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Knob")()).second);
+                                                KnobProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Knob")())
+                                                    .second);
         importOldFormFileExtractValidProperties(possibleProperties,
-                                                LabelProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Label")()).second);
+                                                LabelProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Label")())
+                                                    .second);
         importOldFormFileExtractValidProperties(possibleProperties,
                                                 ListBoxProperties()
                                                     .initProperties(tgui::WidgetFactory::getConstructFunction("ListBox")())
                                                     .second);
         importOldFormFileExtractValidProperties(possibleProperties,
-                                                PanelProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Panel")()).second);
+                                                PanelProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Panel")())
+                                                    .second);
         importOldFormFileExtractValidProperties(possibleProperties,
                                                 PictureProperties()
                                                     .initProperties(tgui::WidgetFactory::getConstructFunction("Picture")())
@@ -386,7 +396,8 @@ namespace
                                                     .second);
         importOldFormFileExtractValidProperties(possibleProperties,
                                                 ScrollablePanelProperties()
-                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("ScrollablePanel")())
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("ScrollablePane"
+                                                                                                              "l")())
                                                     .second);
         importOldFormFileExtractValidProperties(possibleProperties,
                                                 ScrollbarProperties()
@@ -401,7 +412,9 @@ namespace
                                                     .initProperties(tgui::WidgetFactory::getConstructFunction("SpinButton")())
                                                     .second);
         importOldFormFileExtractValidProperties(possibleProperties,
-                                                TabsProperties().initProperties(tgui::WidgetFactory::getConstructFunction("Tabs")()).second);
+                                                TabsProperties()
+                                                    .initProperties(tgui::WidgetFactory::getConstructFunction("Tabs")())
+                                                    .second);
         importOldFormFileExtractValidProperties(possibleProperties,
                                                 TextAreaProperties()
                                                     .initProperties(tgui::WidgetFactory::getConstructFunction("TextArea")())
@@ -768,7 +781,8 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
     {
         if ((keyEvent.code == tgui::Event::KeyboardKey::Left) || (keyEvent.code == tgui::Event::KeyboardKey::Right))
         {
-            const float originalLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+            const float originalLeft = selectedWidget->getPosition().x
+                                       - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
 
             m_guiBuilder->saveUndoState(GuiBuilder::UndoType::Resize);
             if (keyEvent.code == tgui::Event::KeyboardKey::Left)
@@ -777,7 +791,8 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
                 selectedWidget->setSize({selectedWidget->getSize().x + 1, selectedWidget->getSizeLayout().y});
 
             const float updatedLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
-            selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPositionLayout().y});
+            selectedWidget->setPosition(
+                {selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPositionLayout().y});
         }
         else if ((keyEvent.code == tgui::Event::KeyboardKey::Up) || (keyEvent.code == tgui::Event::KeyboardKey::Down))
         {
@@ -790,7 +805,8 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
                 selectedWidget->setSize({selectedWidget->getSizeLayout().x, selectedWidget->getSize().y + 1});
 
             const float updatedTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalTop - updatedTop)});
+            selectedWidget->setPosition(
+                {selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalTop - updatedTop)});
         }
 
         setChanged(true);
@@ -828,12 +844,14 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
     {
         tgui::Vector2f selectedWidgetPoint;
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
-            selectedWidgetPoint = {selectedWidget->getPosition().x, selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
+            selectedWidgetPoint = {selectedWidget->getPosition().x,
+                                   selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
         else if (keyEvent.code == tgui::Event::KeyboardKey::Right)
             selectedWidgetPoint = {selectedWidget->getPosition().x + selectedWidget->getSize().x,
                                    selectedWidget->getPosition().y + (selectedWidget->getSize().y / 2.f)};
         else if (keyEvent.code == tgui::Event::KeyboardKey::Up)
-            selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f), selectedWidget->getPosition().y};
+            selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f),
+                                   selectedWidget->getPosition().y};
         else if (keyEvent.code == tgui::Event::KeyboardKey::Down)
             selectedWidgetPoint = {selectedWidget->getPosition().x + (selectedWidget->getSize().x / 2.f),
                                    selectedWidget->getPosition().y + selectedWidget->getSize().y};
@@ -1113,7 +1131,8 @@ tgui::Widget::Ptr Form::getWidgetBelowMouse(const tgui::Container::Ptr& parent, 
             {
                 const tgui::Container::Ptr container = std::static_pointer_cast<tgui::Container>(widget);
                 const tgui::Widget::Ptr child = getWidgetBelowMouse(container,
-                                                                    pos - container->getPosition() - container->getChildWidgetsOffset());
+                                                                    pos - container->getPosition()
+                                                                        - container->getChildWidgetsOffset());
                 if (child)
                     return child;
             }
@@ -1224,7 +1243,7 @@ void Form::onDrag(tgui::Vector2i mousePos)
         if (m_draggingSelectionSquare == m_selectionSquares[1]) // Top
         {
             const float originalBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
-                - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                                         - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
 
             while (pos.y - m_draggingPos.y >= MOVE_STEP)
             {
@@ -1241,12 +1260,14 @@ void Form::onDrag(tgui::Vector2i mousePos)
             }
 
             const float updatedBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
-                - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
+                                        - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+            selectedWidget->setPosition(
+                {selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
         }
         else if (m_draggingSelectionSquare == m_selectionSquares[3]) // Right
         {
-            const float originalLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+            const float originalLeft = selectedWidget->getPosition().x
+                                       - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
 
             while (pos.x - m_draggingPos.x >= MOVE_STEP)
             {
@@ -1263,7 +1284,8 @@ void Form::onDrag(tgui::Vector2i mousePos)
             }
 
             const float updatedLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
-            selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPositionLayout().y});
+            selectedWidget->setPosition(
+                {selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPositionLayout().y});
         }
         else if (m_draggingSelectionSquare == m_selectionSquares[2]) // Bottom
         {
@@ -1284,12 +1306,13 @@ void Form::onDrag(tgui::Vector2i mousePos)
             }
 
             const float updatedTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalTop - updatedTop)});
+            selectedWidget->setPosition(
+                {selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + (originalTop - updatedTop)});
         }
         else if (m_draggingSelectionSquare == m_selectionSquares[0]) // Left
         {
             const float originalRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
-                - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                                        - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
 
             while (pos.x - m_draggingPos.x >= MOVE_STEP)
             {
@@ -1308,8 +1331,9 @@ void Form::onDrag(tgui::Vector2i mousePos)
             }
 
             const float updatedRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
-                - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
-            selectedWidget->setPosition({selectedWidget->getPosition().x + (originalRight - updatedRight), selectedWidget->getPositionLayout().y});
+                                       - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+            selectedWidget->setPosition(
+                {selectedWidget->getPosition().x + (originalRight - updatedRight), selectedWidget->getPositionLayout().y});
         }
         else // Corner
         {
@@ -1328,13 +1352,14 @@ void Form::onDrag(tgui::Vector2i mousePos)
             if (m_draggingSelectionSquare == m_selectionSquares[4]) // Top left
             {
                 const float originalRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
-                    - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                                            - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
                 const float originalBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
-                    - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                                             - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
 
                 while ((pos.x - m_draggingPos.x >= change.x) && (pos.y - m_draggingPos.y >= change.y))
                 {
-                    selectedWidget->setPosition({selectedWidget->getPosition().x + change.x, selectedWidget->getPosition().y + change.y});
+                    selectedWidget->setPosition(
+                        {selectedWidget->getPosition().x + change.x, selectedWidget->getPosition().y + change.y});
                     selectedWidget->setSize({selectedWidget->getSize().x - change.x, selectedWidget->getSize().y - change.y});
                     m_draggingPos.x += change.x;
                     m_draggingPos.y += change.y;
@@ -1343,7 +1368,8 @@ void Form::onDrag(tgui::Vector2i mousePos)
 
                 while ((m_draggingPos.x - pos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
-                    selectedWidget->setPosition({selectedWidget->getPosition().x - change.x, selectedWidget->getPosition().y - change.y});
+                    selectedWidget->setPosition(
+                        {selectedWidget->getPosition().x - change.x, selectedWidget->getPosition().y - change.y});
                     selectedWidget->setSize({selectedWidget->getSize().x + change.x, selectedWidget->getSize().y + change.y});
                     m_draggingPos.x -= change.x;
                     m_draggingPos.y -= change.y;
@@ -1351,16 +1377,18 @@ void Form::onDrag(tgui::Vector2i mousePos)
                 }
 
                 const float updatedRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
-                    - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                                           - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
                 const float updatedBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
-                    - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
-                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalRight - updatedRight), selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
+                                            - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalRight - updatedRight),
+                                             selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
             }
             else if (m_draggingSelectionSquare == m_selectionSquares[6]) // Top right
             {
-                const float originalLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float originalLeft = selectedWidget->getPosition().x
+                                           - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
                 const float originalBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
-                    - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                                             - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
 
                 while ((m_draggingPos.x - pos.x >= change.x) && (pos.y - m_draggingPos.y >= change.y))
                 {
@@ -1380,15 +1408,19 @@ void Form::onDrag(tgui::Vector2i mousePos)
                     updated = true;
                 }
 
-                const float updatedLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float updatedLeft = selectedWidget->getPosition().x
+                                          - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
                 const float updatedBottom = selectedWidget->getPosition().y + selectedWidget->getSize().y
-                    - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
-                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
+                                            - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft),
+                                             selectedWidget->getPosition().y + (originalBottom - updatedBottom)});
             }
             else if (m_draggingSelectionSquare == m_selectionSquares[7]) // Bottom right
             {
-                const float originalLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
-                const float originalTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                const float originalLeft = selectedWidget->getPosition().x
+                                           - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float originalTop = selectedWidget->getPosition().y
+                                          - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
 
                 while ((m_draggingPos.x - pos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
@@ -1406,15 +1438,19 @@ void Form::onDrag(tgui::Vector2i mousePos)
                     updated = true;
                 }
 
-                const float updatedLeft = selectedWidget->getPosition().x - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
-                const float updatedTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
-                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft), selectedWidget->getPosition().y + (originalTop - updatedTop)});
+                const float updatedLeft = selectedWidget->getPosition().x
+                                          - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                const float updatedTop = selectedWidget->getPosition().y
+                                         - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalLeft - updatedLeft),
+                                             selectedWidget->getPosition().y + (originalTop - updatedTop)});
             }
             else if (m_draggingSelectionSquare == m_selectionSquares[5]) // Bottom left
             {
-                const float originalTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                const float originalTop = selectedWidget->getPosition().y
+                                          - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
                 const float originalRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
-                    - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                                            - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
 
                 while ((pos.x - m_draggingPos.x >= change.x) && (m_draggingPos.y - pos.y >= change.y))
                 {
@@ -1434,10 +1470,12 @@ void Form::onDrag(tgui::Vector2i mousePos)
                     updated = true;
                 }
 
-                const float updatedTop = selectedWidget->getPosition().y - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
+                const float updatedTop = selectedWidget->getPosition().y
+                                         - (selectedWidget->getOrigin().y * selectedWidget->getSize().y);
                 const float updatedRight = selectedWidget->getPosition().x + selectedWidget->getSize().x
-                    - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
-                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalRight - updatedRight), selectedWidget->getPosition().y + (originalTop - updatedTop)});
+                                           - (selectedWidget->getOrigin().x * selectedWidget->getSize().x);
+                selectedWidget->setPosition({selectedWidget->getPosition().x + (originalRight - updatedRight),
+                                             selectedWidget->getPosition().y + (originalTop - updatedTop)});
             }
         }
     }

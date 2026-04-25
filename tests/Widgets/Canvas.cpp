@@ -65,8 +65,8 @@ namespace sf // Anonymous namespace didn't work for Clang on macOS
 {
     bool operator==(const sf::View& left, const sf::View& right)
     {
-        return left.getCenter() == right.getCenter() && left.getSize() == right.getSize() && left.getRotation() == right.getRotation()
-               && left.getViewport() == right.getViewport();
+        return left.getCenter() == right.getCenter() && left.getSize() == right.getSize()
+               && left.getRotation() == right.getRotation() && left.getViewport() == right.getViewport();
     }
 } // namespace sf
 

@@ -69,7 +69,8 @@ struct RadioButtonProperties : public WidgetProperties
         pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
         pair.second["BackgroundColorDisabled"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorDisabled())};
         pair.second["BackgroundColorChecked"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorChecked())};
-        pair.second["BackgroundColorCheckedHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorCheckedHover())};
+        pair.second["BackgroundColorCheckedHover"] = {"Color",
+                                                      tgui::Serializer::serialize(renderer->getBackgroundColorCheckedHover())};
         pair.second["BackgroundColorCheckedDisabled"] = {"Color",
                                                          tgui::Serializer::serialize(renderer->getBackgroundColorCheckedDisabled())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};

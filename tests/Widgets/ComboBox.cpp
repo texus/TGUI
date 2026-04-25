@@ -563,7 +563,8 @@ TEST_CASE("[ComboBox]")
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureBackground", tgui::Serializer::serialize(textureBackground)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureBackgroundDisabled", tgui::Serializer::serialize(textureBackgroundDisabled)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextureBackgroundDisabled", tgui::Serializer::serialize(textureBackgroundDisabled)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureArrow", tgui::Serializer::serialize(textureArrow)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureArrowHover", tgui::Serializer::serialize(textureArrowHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureArrowDisabled", tgui::Serializer::serialize(textureArrowDisabled)));
@@ -747,8 +748,8 @@ TEST_CASE("[ComboBox]")
                 {
                     comboBox->mouseMoved(mousePos);
 
-                    SECTION("No hover properties set"){TEST_DRAW("ComboBox_SelectedHoverSelected_NoHoverSet_Textured.png")} SECTION(
-                        "Hover properties set")
+                    SECTION("No hover properties set"){
+                        TEST_DRAW("ComboBox_SelectedHoverSelected_NoHoverSet_Textured.png")} SECTION("Hover properties set")
                     {
                         setHoverRenderer(true);
                         TEST_DRAW("ComboBox_SelectedHoverSelected_HoverSet_Textured.png")

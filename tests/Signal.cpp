@@ -64,7 +64,8 @@ TEST_CASE("[Signal]")
         REQUIRE(widget2->onPress([](int) {}, 5) == ++id);
         REQUIRE(widget2->onPress([](auto) {}, 10.f) == ++id);
         REQUIRE(widget2->onPress.connectEx([](const tgui::Widget::Ptr&, const tgui::String&) {}) == ++id);
-        REQUIRE(widget2->onPress.connectEx([](auto, auto, auto, const tgui::Widget::Ptr&, const tgui::String&) {}, "Hey", 15, 3.f) == ++id);
+        REQUIRE(widget2->onPress.connectEx([](auto, auto, auto, const tgui::Widget::Ptr&, const tgui::String&) {}, "Hey", 15, 3.f)
+                == ++id);
 
         struct Class
         {
@@ -122,7 +123,8 @@ TEST_CASE("[Signal]")
         REQUIRE(widget2->onPress.connect(&Class::signalHandler11, &instance, std::ref(i)) == ++id);
         REQUIRE(widget2->onPress.connect(&Class::signalHandler12, &instance, std::ref(i)) == ++id);
 
-        REQUIRE(widget2->onPress(std::function<void(tgui::String)>([](tgui::String) {})) == ++id); // NOLINT(performance-unnecessary-value-param)
+        REQUIRE(widget2->onPress(std::function<void(tgui::String)>([](tgui::String) {}))
+                == ++id); // NOLINT(performance-unnecessary-value-param)
     }
 
     SECTION("disconnect")

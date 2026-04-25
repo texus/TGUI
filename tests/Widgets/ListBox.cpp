@@ -388,7 +388,8 @@ TEST_CASE("[ListBox]")
         gui.add(container);
 
         auto mouseMoved = [container](tgui::Vector2f pos) { container->processMouseMoveEvent(pos); };
-        auto mousePressed = [container](tgui::Vector2f pos) { container->processMousePressEvent(tgui::Event::MouseButton::Left, pos); };
+        auto mousePressed = [container](tgui::Vector2f pos)
+        { container->processMousePressEvent(tgui::Event::MouseButton::Left, pos); };
         auto mouseReleased = [container](tgui::Vector2f pos)
         { container->processMouseReleaseEvent(tgui::Event::MouseButton::Left, pos); };
         auto touchBegin = [&gui](std::uintptr_t fingerId, tgui::Vector2f pos)

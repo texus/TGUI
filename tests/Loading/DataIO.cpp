@@ -88,7 +88,8 @@ TEST_CASE("[DataIO]")
 
         SECTION("Name with special characters")
         {
-            std::stringstream input("\"SpecialChars.{}=:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n = \"\\\\\\\"Value\\\"\\\\\"; }");
+            std::stringstream input(
+                "\"SpecialChars.{}=:;/*#//\\t\\\"\\\\\" { Property\r\n//txt\n = \"\\\\\\\"Value\\\"\\\\\"; }");
 
             std::unique_ptr<tgui::DataIO::Node> rootNode;
             REQUIRE_NOTHROW(rootNode = tgui::DataIO::parse(input));

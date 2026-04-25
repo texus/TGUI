@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2026 Bruno Van de Velde (vdv_b@tgui.eu)
@@ -20,17 +20,17 @@
 //
 // 3. This notice may not be removed or altered from any source distribution.
 //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Backend/Renderer/GLES2/BackendTextureGLES2.hpp>
 #include <TGUI/Backend/Renderer/OpenGL.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     BackendTextureGLES2::~BackendTextureGLES2()
     {
@@ -38,16 +38,18 @@ namespace tgui
             TGUI_GL_CHECK(glDeleteTextures(1, &m_textureId));
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool BackendTextureGLES2::loadTextureOnly(Vector2u size, const std::uint8_t* pixels, bool smooth)
     {
         TGUI_ASSERT(isBackendSet(),
                     "BackendTextureGLES2 can't be created when there is no system backend initialized (was a gui created yet?)");
         TGUI_ASSERT(getBackend()->getRenderer(),
-                    "BackendTextureGLES2 can't be created when there is no backend renderer (was a gui attached to a window yet?)");
+                    "BackendTextureGLES2 can't be created when there is no backend renderer (was a gui attached to a window "
+                    "yet?)");
 
-        const bool reuseTexture = ((m_textureId != 0) && (size.x == m_imageSize.x) && (size.y == m_imageSize.y) && (smooth == m_isSmooth));
+        const bool reuseTexture = ((m_textureId != 0) && (size.x == m_imageSize.x) && (size.y == m_imageSize.y)
+                                   && (smooth == m_isSmooth));
 
         BackendTexture::loadTextureOnly(size, pixels, smooth);
 
@@ -84,13 +86,29 @@ namespace tgui
                 TGUI_GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y)));
                 if (pixels)
                     TGUI_GL_CHECK(
-                        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), GL_RGBA, GL_UNSIGNED_BYTE, pixels));
+                        glTexSubImage2D(GL_TEXTURE_2D,
+                                        0,
+                                        0,
+                                        0,
+                                        static_cast<GLsizei>(size.x),
+                                        static_cast<GLsizei>(size.y),
+                                        GL_RGBA,
+                                        GL_UNSIGNED_BYTE,
+                                        pixels));
             }
             else
             {
                 // GLES 2.0 doesn't support GL_RGBA8
                 TGUI_GL_CHECK(
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, static_cast<GLsizei>(size.x), static_cast<GLsizei>(size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
+                    glTexImage2D(GL_TEXTURE_2D,
+                                 0,
+                                 GL_RGBA,
+                                 static_cast<GLsizei>(size.x),
+                                 static_cast<GLsizei>(size.y),
+                                 0,
+                                 GL_RGBA,
+                                 GL_UNSIGNED_BYTE,
+                                 pixels));
             }
         }
 
@@ -99,7 +117,7 @@ namespace tgui
         return true;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void BackendTextureGLES2::setSmooth(bool smooth)
     {
@@ -122,14 +140,14 @@ namespace tgui
         TGUI_GL_CHECK(glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(oldBoundTexture)));
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     unsigned int BackendTextureGLES2::getInternalTexture() const
     {
         return m_textureId;
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 } // namespace tgui
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

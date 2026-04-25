@@ -116,7 +116,8 @@ namespace
                     }
 
                     const tgui::String absoluteFilename1 = (tgui::getResourcePath()
-                                                            / tgui::Filesystem::Path(widgetPropertyValuePairs[property].getTexture().getId()))
+                                                            / tgui::Filesystem::Path(
+                                                                widgetPropertyValuePairs[property].getTexture().getId()))
                                                                .asString();
                     const tgui::String
                         absoluteFilename2 = (tgui::getResourcePath() / tgui::Filesystem::Path(value.getTexture().getId())).asString();
@@ -388,10 +389,12 @@ void GuiBuilder::mainLoop()
                         auto hoveredItem = m_widgetHierarchyTree->getHoveredItem();
                         if (!hoveredItem.empty())
                         {
-                            const tgui::Widget::Ptr widgetToMove = m_selectedForm->getWidgetByName(m_draggedHierarchyTreeItem.back())->ptr;
-                            const tgui::Widget::Ptr widgetAtDropLocation = hoveredItem.size() >= 2
-                                                                               ? m_selectedForm->getWidgetByName(hoveredItem.back())->ptr
-                                                                               : m_selectedForm->getRootWidgetsGroup();
+                            const tgui::Widget::Ptr
+                                widgetToMove = m_selectedForm->getWidgetByName(m_draggedHierarchyTreeItem.back())->ptr;
+                            const tgui::Widget::Ptr
+                                widgetAtDropLocation = hoveredItem.size() >= 2
+                                                           ? m_selectedForm->getWidgetByName(hoveredItem.back())->ptr
+                                                           : m_selectedForm->getRootWidgetsGroup();
 
                             if (widgetToMove != widgetAtDropLocation)
                             {
@@ -646,7 +649,8 @@ bool GuiBuilder::loadGuiBuilderState()
 
     if (node->propertyValuePairs["DefaultPath"])
     {
-        m_defaultPath = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, node->propertyValuePairs["DefaultPath"]->value)
+        m_defaultPath = tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String,
+                                                        node->propertyValuePairs["DefaultPath"]->value)
                             .getString();
         if (!m_defaultPath.empty() && (m_defaultPath[m_defaultPath.length() - 1] != '/')
             && (m_defaultPath[m_defaultPath.length() - 1] != '\\'))
@@ -810,14 +814,16 @@ void GuiBuilder::reloadProperties()
         auto rendererComboBox = m_propertiesContainer->get<tgui::ComboBox>("RendererSelectorComboBox");
         rendererComboBox->setPosition({0, topPosition});
 
-        if (static_cast<std::size_t>(rendererComboBox->getSelectedItemIndex()) + 1 == rendererComboBox->getItemCount()) // If "Custom" is selected
+        if (static_cast<std::size_t>(rendererComboBox->getSelectedItemIndex()) + 1
+            == rendererComboBox->getItemCount()) // If "Custom" is selected
         {
             topPosition += rendererComboBox->getSize().y + 10;
             for (const auto& property : m_propertyValuePairs.second)
             {
                 addPropertyValueWidgets(topPosition,
                                         property,
-                                        [this, propertyName = property.first, widgetPtr = selectedWidget->ptr.get()](const tgui::String& value)
+                                        [this, propertyName = property.first, widgetPtr = selectedWidget->ptr.get()](
+                                            const tgui::String& value)
                                         {
                                             saveUndoState(GuiBuilder::UndoType::PropertyEdit);
 
@@ -921,7 +927,9 @@ void GuiBuilder::closeForm(Form* form)
     panel->getRenderer()->setBackgroundColor({0, 0, 0, 175});
     m_gui->add(panel);
 
-    auto messageBox = tgui::MessageBox::create("Saving form", "The form was changed, do you want to save the changes?", {"Yes", "No"});
+    auto messageBox = tgui::MessageBox::create("Saving form",
+                                               "The form was changed, do you want to save the changes?",
+                                               {"Yes", "No"});
     messageBox->setPosition("(&.size - size) / 2");
     m_gui->add(messageBox);
 
@@ -1058,7 +1066,8 @@ void GuiBuilder::loadStartScreen()
                 {
                     m_recentFiles.erase(std::remove_if(m_recentFiles.begin(),
                                                        m_recentFiles.end(),
-                                                       [filename](const tgui::String& recentFile) { return filename == recentFile; }),
+                                                       [filename](const tgui::String& recentFile)
+                                                       { return filename == recentFile; }),
                                         m_recentFiles.end());
                     saveGuiBuilderState();
                     loadStartScreen();
@@ -1083,7 +1092,8 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
 
     m_selectedWidgetComboBox->addItem(filename, "form");
     m_selectedWidgetComboBox->setSelectedItemById("form");
-    m_selectedWidgetComboBox->onItemSelect([this](const tgui::String&, const tgui::String& id) { m_selectedForm->selectWidgetById(id); });
+    m_selectedWidgetComboBox->onItemSelect(
+        [this](const tgui::String&, const tgui::String& id) { m_selectedForm->selectWidgetById(id); });
 
     m_menuBar = m_gui->get<tgui::MenuBar>("MenuBar");
     m_menuBar->onMouseEnter([menuBar = m_menuBar.get()] { menuBar->moveToFront(); });
@@ -1117,7 +1127,9 @@ void GuiBuilder::loadEditingScreen(const tgui::String& filename)
         m_menuBar->addMenuItem({"File", "Recent", recentFile});
         m_menuBar->connectMenuItem({"File", "Recent", recentFile},
                                    [this, recentFile]
-                                   { tgui::Timer::scheduleCallback([this, recentFile] { menuBarCallbackLoadRecent(recentFile); }); });
+                                   {
+                                       tgui::Timer::scheduleCallback([this, recentFile] { menuBarCallbackLoadRecent(recentFile); });
+                                   });
     }
     m_menuBar->setMenuItemEnabled({"File", "Recent"}, addedRecentFile);
 
@@ -2002,7 +2014,10 @@ void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition)
+void GuiBuilder::addPropertyValueTextStyle(const tgui::String& property,
+                                           const tgui::String& value,
+                                           const OnValueChangeFunc& onChange,
+                                           float topPosition)
 {
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
@@ -2125,7 +2140,10 @@ void GuiBuilder::addPropertyValueMultilineString(const tgui::String& property,
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::addPropertyValueStringList(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition)
+void GuiBuilder::addPropertyValueStringList(const tgui::String& property,
+                                            const tgui::String& value,
+                                            const OnValueChangeFunc& onChange,
+                                            float topPosition)
 {
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
@@ -2379,7 +2397,8 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
                         lines.emplace_back(tgui::Vector2f{static_cast<float>(middleRect.left), 0} * scaling.getValue(),
                                            tgui::Vector2f{static_cast<float>(middleRect.left), static_cast<float>(imageSize.y)}
                                                * scaling.getValue());
-                        lines.emplace_back(tgui::Vector2f{static_cast<float>(middleRect.left + middleRect.width), 0} * scaling.getValue(),
+                        lines.emplace_back(tgui::Vector2f{static_cast<float>(middleRect.left + middleRect.width), 0}
+                                               * scaling.getValue(),
                                            tgui::Vector2f{static_cast<float>(middleRect.left + middleRect.width),
                                                           static_cast<float>(imageSize.y)}
                                                * scaling.getValue());
@@ -2389,7 +2408,8 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
                         lines.emplace_back(tgui::Vector2f{0, static_cast<float>(middleRect.top)} * scaling.getValue(),
                                            tgui::Vector2f{static_cast<float>(imageSize.x), static_cast<float>(middleRect.top)}
                                                * scaling.getValue());
-                        lines.emplace_back(tgui::Vector2f{0, static_cast<float>(middleRect.top + middleRect.height)} * scaling.getValue(),
+                        lines.emplace_back(tgui::Vector2f{0, static_cast<float>(middleRect.top + middleRect.height)}
+                                               * scaling.getValue(),
                                            tgui::Vector2f{static_cast<float>(imageSize.x),
                                                           static_cast<float>(middleRect.top + middleRect.height)}
                                                * scaling.getValue());
@@ -2410,7 +2430,13 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
             editBoxPartRect->onTextChange(
                 [=, btnSel = buttonSelectFile.get(), ebPart = editBoxPartRect.get(), cbSmooth = checkBoxSmooth.get()]
                 {
-                    updateForm(btnSel->getUserData<tgui::String>(), deserializeRect(ebPart->getText()), {}, cbSmooth->isChecked(), false, true, false);
+                    updateForm(btnSel->getUserData<tgui::String>(),
+                               deserializeRect(ebPart->getText()),
+                               {},
+                               cbSmooth->isChecked(),
+                               false,
+                               true,
+                               false);
                 });
             editBoxMiddleRect->onTextChange(
                 [=,
@@ -2476,7 +2502,10 @@ void GuiBuilder::addPropertyValueTexture(const tgui::String& property, const tgu
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const tgui::String& value, const OnValueChangeFunc& onChange, float topPosition)
+void GuiBuilder::addPropertyListViewColumns(const tgui::String& property,
+                                            const tgui::String& value,
+                                            const OnValueChangeFunc& onChange,
+                                            float topPosition)
 {
     addPropertyValueEditBox(property, value, onChange, topPosition, EDIT_BOX_HEIGHT - 1);
 
@@ -2596,8 +2625,8 @@ void GuiBuilder::addPropertyListViewColumns(const tgui::String& property, const 
                 for (std::size_t i = 0; i < lv->getItemCount(); ++i)
                 {
                     const std::vector<tgui::String> item = lv->getItemRow(i);
-                    newSerializedColumns.emplace_back('(' + tgui::Serializer::serialize(item[0]) + ',' + item[1] + ',' + item[2] + ','
-                                                      + item[3] + ',' + item[4] + ')');
+                    newSerializedColumns.emplace_back('(' + tgui::Serializer::serialize(item[0]) + ',' + item[1] + ',' + item[2]
+                                                      + ',' + item[3] + ',' + item[4] + ')');
                 }
                 onChange(WidgetProperties::serializeList(newSerializedColumns));
             };

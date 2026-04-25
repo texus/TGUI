@@ -72,7 +72,8 @@ struct TextAreaProperties : public WidgetProperties
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
         pair.second["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
-        pair.second["SelectedTextBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextBackgroundColor())};
+        pair.second["SelectedTextBackgroundColor"] = {"Color",
+                                                      tgui::Serializer::serialize(renderer->getSelectedTextBackgroundColor())};
         pair.second["BorderColor"] = {"Color", tgui::Serializer::serialize(renderer->getBorderColor())};
         pair.second["CaretColor"] = {"Color", tgui::Serializer::serialize(renderer->getCaretColor())};
         pair.second["CaretWidth"] = {"Float", tgui::String::fromNumber(renderer->getCaretWidth())};

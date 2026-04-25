@@ -39,11 +39,11 @@ struct ScrollablePanelProperties : public PanelProperties
         else if (property == "HorizontalScrollbarPolicy")
             panel->getHorizontalScrollbar()->setPolicy(deserializeScrollbarPolicy(value));
         else if (property == "ContentWidth")
-            panel->setContentSize(
-                {tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(), panel->getContentSize().y});
+            panel->setContentSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(),
+                                   panel->getContentSize().y});
         else if (property == "ContentHeight")
-            panel->setContentSize(
-                {panel->getContentSize().x, tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
+            panel->setContentSize({panel->getContentSize().x,
+                                   tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
         else
             WidgetProperties::updateProperty(widget, property, value);
     }

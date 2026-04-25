@@ -1167,29 +1167,37 @@ TEST_CASE("[Backend events]")
                     tgui::Event eventTGUI;
                     eventSdlMod = SDL_KMOD_NUM;
                     eventSdlKey = SDLK_KP_0;
-                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Numpad0));
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Numpad0));
 
                     eventSdlMod = SDL_KMOD_NONE;
                     eventSdlKey = SDLK_KP_0;
-                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Insert));
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Insert));
                     eventSdlKey = SDLK_KP_1;
                     REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::End));
                     eventSdlKey = SDLK_KP_2;
-                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Down));
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Down));
                     eventSdlKey = SDLK_KP_3;
-                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageDown));
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::PageDown));
                     eventSdlKey = SDLK_KP_4;
-                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Left));
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Left));
                     eventSdlKey = SDLK_KP_5;
                     REQUIRE(!backendGuiSDL->convertEvent(eventSDL, eventTGUI));
                     eventSdlKey = SDLK_KP_6;
-                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Right));
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Right));
                     eventSdlKey = SDLK_KP_7;
-                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Home));
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Home));
                     eventSdlKey = SDLK_KP_8;
                     REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Up));
                     eventSdlKey = SDLK_KP_9;
-                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageUp));
+                    REQUIRE((backendGuiSDL->convertEvent(eventSDL, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::PageUp));
                 }
     #endif
             }
@@ -1813,17 +1821,25 @@ TEST_CASE("[Backend events]")
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_0, 0, GLFW_PRESS, GLFW_MOD_NUM_LOCK)->key.code
                             == tgui::Event::KeyboardKey::Numpad0);
 
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_0, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Insert);
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_1, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::End);
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_2, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Down);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_0, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::Insert);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_1, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::End);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_2, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::Down);
                     REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_3, 0, GLFW_PRESS, 0)->key.code
                             == tgui::Event::KeyboardKey::PageDown);
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_4, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Left);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_4, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::Left);
                     REQUIRE(!backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_5, 0, GLFW_PRESS, 0));
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_6, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Right);
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_7, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Home);
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_8, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::Up);
-                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_9, 0, GLFW_PRESS, 0)->key.code == tgui::Event::KeyboardKey::PageUp);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_6, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::Right);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_7, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::Home);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_8, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::Up);
+                    REQUIRE(backendGuiGLFW->convertKeyEvent(GLFW_KEY_KP_9, 0, GLFW_PRESS, 0)->key.code
+                            == tgui::Event::KeyboardKey::PageUp);
                 }
     #endif
             }
@@ -2162,8 +2178,8 @@ TEST_CASE("[Backend events]")
                     {
                         bool requiresHandling = true;
                         if ((pair.first == KEY_LEFT_ALT) || (pair.first == KEY_RIGHT_ALT) || (pair.first == KEY_LEFT_CONTROL)
-                            || (pair.first == KEY_RIGHT_CONTROL) || (pair.first == KEY_LEFT_SHIFT) || (pair.first == KEY_RIGHT_SHIFT)
-                            || (pair.first == KEY_LEFT_SUPER) || (pair.first == KEY_RIGHT_SUPER))
+                            || (pair.first == KEY_RIGHT_CONTROL) || (pair.first == KEY_LEFT_SHIFT)
+                            || (pair.first == KEY_RIGHT_SHIFT) || (pair.first == KEY_LEFT_SUPER) || (pair.first == KEY_RIGHT_SUPER))
                         {
                             requiresHandling = false;
                         }

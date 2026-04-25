@@ -229,14 +229,15 @@ TEST_CASE("[ToggleButton]")
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDownHover",
                                                       tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextStyleDisabled", tgui::TextStyle::StrikeThrough));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDownDisabled",
+                                                      tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Bold)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextStyleFocused",
+                                                      tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough)));
                 REQUIRE_NOTHROW(
-                    renderer->setProperty("TextStyleDownDisabled", tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Bold)));
-                REQUIRE_NOTHROW(
-                    renderer->setProperty("TextStyleFocused", tgui::TextStyles(tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextStyleDownFocused",
-                                                      tgui::TextStyles(tgui::TextStyle::Bold
-                                                                       | tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined
-                                                                                          | tgui::TextStyle::StrikeThrough))));
+                    renderer->setProperty("TextStyleDownFocused",
+                                          tgui::TextStyles(tgui::TextStyle::Bold
+                                                           | tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined
+                                                                              | tgui::TextStyle::StrikeThrough))));
                 REQUIRE_NOTHROW(renderer->setProperty("Borders", tgui::Borders{1, 2, 3, 4}));
             }
 
@@ -313,8 +314,10 @@ TEST_CASE("[ToggleButton]")
             REQUIRE(renderer->getProperty("TextStyleDownHover").getTextStyle()
                     == (tgui::TextStyle::Italic | tgui::TextStyle::StrikeThrough));
             REQUIRE(renderer->getProperty("TextStyleDisabled").getTextStyle() == tgui::TextStyle::StrikeThrough);
-            REQUIRE(renderer->getProperty("TextStyleDownDisabled").getTextStyle() == (tgui::TextStyle::Italic | tgui::TextStyle::Bold));
-            REQUIRE(renderer->getProperty("TextStyleFocused").getTextStyle() == (tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough));
+            REQUIRE(renderer->getProperty("TextStyleDownDisabled").getTextStyle()
+                    == (tgui::TextStyle::Italic | tgui::TextStyle::Bold));
+            REQUIRE(renderer->getProperty("TextStyleFocused").getTextStyle()
+                    == (tgui::TextStyle::Bold | tgui::TextStyle::StrikeThrough));
             REQUIRE(renderer->getProperty("TextStyleDownFocused").getTextStyle()
                     == (tgui::TextStyle::Bold
                         | tgui::TextStyles(tgui::TextStyle::Italic | tgui::TextStyle::Underlined | tgui::TextStyle::StrikeThrough)));

@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // TGUI - Texus' Graphical User Interface
 // Copyright (C) 2012-2026 Bruno Van de Velde (vdv_b@tgui.eu)
@@ -20,7 +20,7 @@
 //
 // 3. This notice may not be removed or altered from any source distribution.
 //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Backend/Window/BackendGui.hpp>
 
@@ -59,7 +59,7 @@
     #include <TGUI/Backend/raylib.hpp>
 #endif
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
@@ -78,7 +78,14 @@ namespace tgui
     #endif
 
     #if SFML_VERSION_MAJOR >= 3
-            m_window.create(sf::VideoMode{{ width, height }}, title.toStdString(), sf::Style::Default, sf::State::Windowed, settings);
+            m_window.create(
+                sf::VideoMode{
+                    { width,
+                      height }},
+                title.toStdString(),
+                sf::Style::Default,
+                sf::State::Windowed,
+                settings);
     #else
             m_window.create(sf::VideoMode{width, height}, title.toStdString(), sf::Style::Default, settings);
     #endif
@@ -181,7 +188,9 @@ namespace tgui
     #endif
 
     #if TGUI_HAS_BACKEND_SDL_GPU
-            m_device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL, false, nullptr);
+            m_device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL,
+                                           false,
+                                           nullptr);
     #elif TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
@@ -415,7 +424,8 @@ namespace tgui
                                            [](GLFWwindow* window, int fbWidth, int fbHeight)
                                            {
                                                auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                                               const auto event = static_cast<Gui*>(backendWindow->getGui())->convertSizeEvent(fbWidth, fbHeight);
+                                               const auto event = static_cast<Gui*>(backendWindow->getGui())
+                                                                      ->convertSizeEvent(fbWidth, fbHeight);
                                                if (event)
                                                    backendWindow->pushEvent(*event);
                                            });
@@ -431,7 +441,8 @@ namespace tgui
                                [](GLFWwindow* window, int key, int scancode, int action, int mods)
                                {
                                    auto backendWindow = static_cast<BackendWindowGLFW*>(glfwGetWindowUserPointer(window));
-                                   const auto event = static_cast<Gui*>(backendWindow->getGui())->convertKeyEvent(key, scancode, action, mods);
+                                   const auto event = static_cast<Gui*>(backendWindow->getGui())
+                                                          ->convertKeyEvent(key, scancode, action, mods);
                                    if (event)
                                        backendWindow->pushEvent(*event);
                                });
@@ -681,7 +692,7 @@ namespace tgui
 
 #endif
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::shared_ptr<DefaultBackendWindow> DefaultBackendWindow::create(unsigned int width, unsigned int height, const String& title)
     {

@@ -56,7 +56,9 @@ int main(int, char**)
 {
     SDL_Init(SDL_INIT_VIDEO);
 
-    SDL_GPUDevice* device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL, false, nullptr);
+    SDL_GPUDevice* device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV | SDL_GPU_SHADERFORMAT_DXIL | SDL_GPU_SHADERFORMAT_MSL,
+                                                false,
+                                                nullptr);
     SDL_Window* window = SDL_CreateWindow("TGUI example (SDL-GPU)", 800, 600, SDL_WINDOW_RESIZABLE);
     SDL_ClaimWindowForGPUDevice(device, window);
 

@@ -964,8 +964,8 @@ TEST_CASE("[TreeView]")
                 {
                     treeView->mouseMoved(mousePos1);
 
-                    SECTION("No hover properties set"){TEST_DRAW("TreeView_SelectedHoverSelected_NoHoverSet_Texture.png")} SECTION(
-                        "Hover properties set")
+                    SECTION("No hover properties set"){
+                        TEST_DRAW("TreeView_SelectedHoverSelected_NoHoverSet_Texture.png")} SECTION("Hover properties set")
                     {
                         setHoverRenderer();
                         TEST_DRAW("TreeView_SelectedHoverSelected_HoverSet_Texture.png")

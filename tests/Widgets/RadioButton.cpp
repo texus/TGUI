@@ -400,8 +400,10 @@ TEST_CASE("[RadioButton]")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureUnchecked", tgui::Serializer::serialize(textureUncheckedNormal)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedHover", tgui::Serializer::serialize(textureUncheckedHover)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedDisabled", tgui::Serializer::serialize(textureUncheckedDisabled)));
-                REQUIRE_NOTHROW(renderer->setProperty("TextureUncheckedFocused", tgui::Serializer::serialize(textureUncheckedFocused)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextureUncheckedDisabled", tgui::Serializer::serialize(textureUncheckedDisabled)));
+                REQUIRE_NOTHROW(
+                    renderer->setProperty("TextureUncheckedFocused", tgui::Serializer::serialize(textureUncheckedFocused)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureChecked", tgui::Serializer::serialize(textureCheckedNormal)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureCheckedHover", tgui::Serializer::serialize(textureCheckedHover)));
                 REQUIRE_NOTHROW(renderer->setProperty("TextureCheckedDisabled", tgui::Serializer::serialize(textureCheckedDisabled)));

@@ -300,7 +300,8 @@ TEST_CASE("[TextArea]")
         textArea->setSize(200, 100);
         textArea->setTextSize(18);
         textArea->setText(
-            "Cupcake ipsum dolor sit amet cotton candy. Ice cream chocolate cake soufflé lollipop marzipan sesame snaps. Marzipan "
+            "Cupcake ipsum dolor sit amet cotton candy. Ice cream chocolate cake soufflé lollipop marzipan sesame snaps. "
+            "Marzipan "
             "bear claw halvah tiramisu pie.");
         testScrollbarAccess(textArea->getVerticalScrollbar());
 
@@ -713,8 +714,10 @@ TEST_CASE("[TextArea]")
         textArea->setTextSize(16);
         textArea->setText(
             "Cupcake ipsum dolor sit.\nAmet candy canes sesame snaps cupcake apple pie lemon drops jelly apple pie candy "
-            "canes.\nPowder donut sugar plum croissant gingerbread sesame snaps pie.\nCaramels cupcake icing.\nBear claw lemon drops "
-            "carrot cake chocolate ice cream jelly beans gummi bears.\nMuffin ice cream cupcake chocolate cake.\nTopping oat cake "
+            "canes.\nPowder donut sugar plum croissant gingerbread sesame snaps pie.\nCaramels cupcake icing.\nBear claw lemon "
+            "drops "
+            "carrot cake chocolate ice cream jelly beans gummi bears.\nMuffin ice cream cupcake chocolate cake.\nTopping oat "
+            "cake "
             "bonbon.");
 
         tgui::TextAreaRenderer renderer = tgui::RendererData::create();

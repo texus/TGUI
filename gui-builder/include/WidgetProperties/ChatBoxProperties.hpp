@@ -62,7 +62,8 @@ struct ChatBoxProperties : public WidgetProperties
         pair.first["LineLimit"] = {"UInt", tgui::String::fromNumber(chatBox->getLineLimit())};
         pair.first["LinesStartFromTop"] = {"Bool", tgui::Serializer::serialize(chatBox->getLinesStartFromTop())};
         pair.first["NewLinesBelowOthers"] = {"Bool", tgui::Serializer::serialize(chatBox->getNewLinesBelowOthers())};
-        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}", serializeScrollbarPolicy(chatBox->getScrollbar()->getPolicy())};
+        pair.first["ScrollbarPolicy"] = {"Enum{Automatic,Always,Never}",
+                                         serializeScrollbarPolicy(chatBox->getScrollbar()->getPolicy())};
 
         const auto* const renderer = chatBox->getSharedRenderer();
         pair.second["Borders"] = {"Outline", tgui::Serializer::serialize(renderer->getBorders())};

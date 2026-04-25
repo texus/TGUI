@@ -337,8 +337,8 @@ TEST_CASE("[ContextMenu]")
             SECTION("set serialized property")
             {
                 REQUIRE_NOTHROW(renderer->setProperty("TextureItemBackground", tgui::Serializer::serialize(textureItemBackground)));
-                REQUIRE_NOTHROW(
-                    renderer->setProperty("TextureSelectedItemBackground", tgui::Serializer::serialize(textureSelectedItemBackground)));
+                REQUIRE_NOTHROW(renderer->setProperty("TextureSelectedItemBackground",
+                                                      tgui::Serializer::serialize(textureSelectedItemBackground)));
             }
 
             SECTION("set object property")

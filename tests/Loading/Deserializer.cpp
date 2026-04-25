@@ -154,7 +154,8 @@ TEST_CASE("[Deserializer]")
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(10, 10, 30, 30));
         REQUIRE(!texture.isSmooth());
 
-        texture = tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20)")
+        texture = tgui::Deserializer::deserialize(Type::Texture,
+                                                  "\"resources/image.png\" Part(0, 0, 40, 40) Middle(10, 10, 20, 20)")
                       .getTexture();
         REQUIRE(texture.getData() != nullptr);
         REQUIRE(texture.getPartRect() == tgui::UIntRect(0, 0, 40, 40));
@@ -176,7 +177,8 @@ TEST_CASE("[Deserializer]")
         REQUIRE(texture.getMiddleRect() == tgui::UIntRect(7, 4, 36, 42));
 
         texture = tgui::Deserializer::deserialize(Type::Texture,
-                                                  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4/"
+                                                  "data:image/"
+                                                  "png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4/"
                                                   "/8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==")
                       .getTexture();
         REQUIRE(texture.getData() != nullptr);
@@ -204,7 +206,8 @@ TEST_CASE("[Deserializer]")
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Part(0,1)"), tgui::Exception);
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(0,1,2)"), tgui::Exception);
-        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 20"), tgui::Exception);
+        REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "\"resources/image.png\" Middle(10, 10, 20, 20"),
+                          tgui::Exception);
 
         REQUIRE_THROWS_AS(tgui::Deserializer::deserialize(Type::Texture, "NonExistentFile"), tgui::Exception);
     }

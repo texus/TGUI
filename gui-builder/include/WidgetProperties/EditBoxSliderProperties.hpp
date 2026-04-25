@@ -71,10 +71,12 @@ struct EditBoxSliderProperties : public WidgetProperties
             {"Color", tgui::Serializer::serialize(editBoxRenderer->getSelectedTextBackgroundColor())};
         pair.second["EditBox.DefaultTextColor"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getDefaultTextColor())};
         pair.second["EditBox.BackgroundColor"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getBackgroundColor())};
-        pair.second["EditBox.BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getBackgroundColorHover())};
+        pair.second["EditBox.BackgroundColorHover"] = {"Color",
+                                                       tgui::Serializer::serialize(editBoxRenderer->getBackgroundColorHover())};
         pair.second["EditBox.BackgroundColorDisabled"] = {"Color",
                                                           tgui::Serializer::serialize(editBoxRenderer->getBackgroundColorDisabled())};
-        pair.second["EditBox.BackgroundColorFocused"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getBackgroundColorFocused())};
+        pair.second["EditBox.BackgroundColorFocused"] = {"Color",
+                                                         tgui::Serializer::serialize(editBoxRenderer->getBackgroundColorFocused())};
         pair.second["EditBox.CaretColor"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getCaretColor())};
         pair.second["EditBox.CaretColorHover"] = {"Color", tgui::Serializer::serialize(editBoxRenderer->getCaretColorHover())};
         TGUI_IGNORE_DEPRECATED_WARNINGS_START

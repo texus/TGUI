@@ -130,7 +130,8 @@ struct ListViewProperties : public WidgetProperties
         pair.second["BackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColor())};
         pair.second["BackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getBackgroundColorHover())};
         pair.second["SelectedBackgroundColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBackgroundColor())};
-        pair.second["SelectedBackgroundColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedBackgroundColorHover())};
+        pair.second["SelectedBackgroundColorHover"] = {"Color",
+                                                       tgui::Serializer::serialize(renderer->getSelectedBackgroundColorHover())};
         pair.second["TextColor"] = {"Color", tgui::Serializer::serialize(renderer->getTextColor())};
         pair.second["TextColorHover"] = {"Color", tgui::Serializer::serialize(renderer->getTextColorHover())};
         pair.second["SelectedTextColor"] = {"Color", tgui::Serializer::serialize(renderer->getSelectedTextColor())};
@@ -156,9 +157,10 @@ struct ListViewProperties : public WidgetProperties
             const tgui::HorizontalAlignment alignment = listView->getColumnAlignment(i);
             const bool autoResize = listView->getColumnAutoResize(i);
             const bool expanded = listView->getColumnExpanded(i);
-            serializedColumns.emplace_back('(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width) + ','
-                                           + serializeHorizontalAlignment(alignment) + ',' + tgui::Serializer::serialize(autoResize)
-                                           + ',' + tgui::Serializer::serialize(expanded) + ')');
+            serializedColumns.emplace_back(
+                '(' + tgui::Serializer::serialize(caption) + ',' + tgui::Serializer::serialize(width) + ','
+                + serializeHorizontalAlignment(alignment) + ',' + tgui::Serializer::serialize(autoResize) + ','
+                + tgui::Serializer::serialize(expanded) + ')');
         }
 
         return serializeList(serializedColumns);

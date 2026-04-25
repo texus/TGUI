@@ -76,8 +76,10 @@ TEST_CASE("[Duration]")
 
     SECTION("Arithmetic operators")
     {
-        REQUIRE(tgui::Duration(std::chrono::microseconds(20000)) + tgui::Duration(30) == tgui::Duration(std::chrono::milliseconds(50)));
-        REQUIRE(tgui::Duration(std::chrono::microseconds(20000)) - tgui::Duration(5) == tgui::Duration(std::chrono::milliseconds(15)));
+        REQUIRE(tgui::Duration(std::chrono::microseconds(20000)) + tgui::Duration(30)
+                == tgui::Duration(std::chrono::milliseconds(50)));
+        REQUIRE(tgui::Duration(std::chrono::microseconds(20000)) - tgui::Duration(5)
+                == tgui::Duration(std::chrono::milliseconds(15)));
         REQUIRE(tgui::Duration(30) * 20 == tgui::Duration(std::chrono::milliseconds(600)));
         REQUIRE(10.0 * tgui::Duration(30) == tgui::Duration(std::chrono::milliseconds(300)));
         REQUIRE(tgui::Duration(30) / 2.f == tgui::Duration(std::chrono::milliseconds(15)));
