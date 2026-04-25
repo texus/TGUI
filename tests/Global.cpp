@@ -45,6 +45,35 @@ TEST_CASE("[Global]")
         REQUIRE(tgui::clamp(7, 6, 6) == 6);
     }
 
+    SECTION("TextInputUsesTextCursorByDefault")
+    {
+        REQUIRE(!tgui::getTextInputUsesTextCursorByDefault());
+        auto button1 = tgui::Button::create();
+        auto editBox1 = tgui::EditBox::create();
+        auto textArea1 = tgui::TextArea::create();
+        REQUIRE(button1->getMouseCursor() == tgui::Cursor::Type::Arrow);
+        REQUIRE(editBox1->getMouseCursor() == tgui::Cursor::Type::Arrow);
+        REQUIRE(textArea1->getMouseCursor() == tgui::Cursor::Type::Arrow);
+
+        tgui::setTextInputUsesTextCursorByDefault(true);
+        REQUIRE(tgui::getTextInputUsesTextCursorByDefault());
+        auto button2 = tgui::Button::create();
+        auto editBox2 = tgui::EditBox::create();
+        auto textArea2 = tgui::TextArea::create();
+        REQUIRE(button2->getMouseCursor() == tgui::Cursor::Type::Arrow);
+        REQUIRE(editBox2->getMouseCursor() == tgui::Cursor::Type::Text);
+        REQUIRE(textArea2->getMouseCursor() == tgui::Cursor::Type::Text);
+
+        tgui::setTextInputUsesTextCursorByDefault(false);
+        REQUIRE(!tgui::getTextInputUsesTextCursorByDefault());
+        auto button3 = tgui::Button::create();
+        auto editBox3 = tgui::EditBox::create();
+        auto textArea3 = tgui::TextArea::create();
+        REQUIRE(button3->getMouseCursor() == tgui::Cursor::Type::Arrow);
+        REQUIRE(editBox3->getMouseCursor() == tgui::Cursor::Type::Arrow);
+        REQUIRE(textArea3->getMouseCursor() == tgui::Cursor::Type::Arrow);
+    }
+
     SECTION("Text size")
     {
         REQUIRE(tgui::getGlobalTextSize() == 13);
