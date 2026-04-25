@@ -109,6 +109,9 @@ namespace tgui
 
     bool BackendFont::loadFromMemory(const void* data, std::size_t sizeInBytes)
     {
+        if (!data || (sizeInBytes == 0))
+            return false;
+
         auto copiedData = MakeUniqueForOverwrite<std::uint8_t[]>(sizeInBytes);
         std::memcpy(copiedData.get(), data, sizeInBytes);
         return loadFromMemory(std::move(copiedData), sizeInBytes);
