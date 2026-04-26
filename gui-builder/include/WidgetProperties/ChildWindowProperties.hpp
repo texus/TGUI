@@ -53,11 +53,9 @@ struct ChildWindowProperties : public WidgetProperties
             childWindow->setMinimumSize({childWindow->getMinimumSize().x,
                                          tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
         else if (property == "MaximumWidth")
-            childWindow->setMaximumSize({tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber(),
-                                         childWindow->getMaximumSize().y});
+            childWindow->setMaximumSize({deserializeMaxSize(value), childWindow->getMaximumSize().y});
         else if (property == "MaximumHeight")
-            childWindow->setMaximumSize({childWindow->getMaximumSize().x,
-                                         tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber()});
+            childWindow->setMaximumSize({childWindow->getMaximumSize().x, deserializeMaxSize(value)});
         else
             WidgetProperties::updateProperty(widget, property, value);
     }
@@ -75,8 +73,8 @@ struct ChildWindowProperties : public WidgetProperties
         pair.first["PositionLocked"] = {"Bool", tgui::Serializer::serialize(childWindow->isPositionLocked())};
         pair.first["MinimumWidth"] = {"Float", tgui::String::fromNumber(childWindow->getMinimumSize().x)};
         pair.first["MinimumHeight"] = {"Float", tgui::String::fromNumber(childWindow->getMinimumSize().y)};
-        pair.first["MaximumWidth"] = {"Float", tgui::String::fromNumber(childWindow->getMaximumSize().x)};
-        pair.first["MaximumHeight"] = {"Float", tgui::String::fromNumber(childWindow->getMaximumSize().y)};
+        pair.first["MaximumWidth"] = {"Float", serializeMaxSize(childWindow->getMaximumSize().x)};
+        pair.first["MaximumHeight"] = {"Float", serializeMaxSize(childWindow->getMaximumSize().y)};
 
         const auto* const renderer = childWindow->getSharedRenderer();
         pair.second["Borders"] = {"Outline", renderer->getBorders().toString()};
@@ -151,6 +149,22 @@ private:
         if (behavior == tgui::ChildWindow::CloseBehavior::Hide)
             return "Hide";
         return "Remove";
+    }
+
+    TGUI_NODISCARD static float deserializeMaxSize(tgui::String value)
+    {
+        if (value.empty())
+            return std::numeric_limits<float>::infinity();
+        else
+            return tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber();
+    }
+
+    TGUI_NODISCARD static tgui::String serializeMaxSize(float maxSize)
+    {
+        if (maxSize != std::numeric_limits<float>::infinity())
+            return tgui::String::fromNumber(maxSize);
+        else
+            return "";
     }
 };
 
