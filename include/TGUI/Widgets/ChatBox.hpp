@@ -403,7 +403,7 @@ namespace tgui
 
     protected:
         Color m_textColor = Color::Black;
-        TextStyles m_textStyle = Regular;
+        TextStyles m_textStyle = TextStyle::Regular;
 
         std::size_t m_maxLines = 0;
 

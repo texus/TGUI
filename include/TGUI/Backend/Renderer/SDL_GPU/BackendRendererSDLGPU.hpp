@@ -71,6 +71,8 @@ namespace tgui
         /// @brief Returns the texture format of the swapchain
         ///
         /// @return Texture format of the swapchain that was passed to the constructor of this object
+        ///
+        /// @since TGUI 1.13
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD SDL_GPUTextureFormat getSwapchainTextureFormat() const;
 

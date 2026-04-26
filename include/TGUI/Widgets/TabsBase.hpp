@@ -124,6 +124,8 @@ namespace tgui
         /// @param text  The new text of the tab that will be drawn on top of it
         ///
         /// @return True when text was successfully changed, false when no tab with the given id was found
+        ///
+        /// @since TGUI 1.13
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool changeTextById(const String& id, const String& text);
 
@@ -132,6 +134,8 @@ namespace tgui
         ///
         /// @param index  The index of the tab
         /// @param id     Unique identifier
+        ///
+        /// @since TGUI 1.13
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setTabId(std::size_t index, const String& id);
 
@@ -141,6 +145,8 @@ namespace tgui
         /// @param index  The index of the tab
         ///
         /// @return The identifier that was set with setTabId, or an empty string if no id was explicitly set
+        ///
+        /// @since TGUI 1.13
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD String getTabId(std::size_t index) const;
 
@@ -150,6 +156,8 @@ namespace tgui
         /// @param id  The identifier that was set with setTabId
         ///
         /// @return Index of the tab if a tab with the given id was found, -1 if no such tab exists
+        ///
+        /// @since TGUI 1.13
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD int getIndexById(const String& id) const;
 
@@ -183,6 +191,8 @@ namespace tgui
         ///
         /// If there are multiple tabs with the same id then the first one will be selected.
         /// When false is returned, the selected tab will still be deselected.
+        ///
+        /// @since TGUI 1.13
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool selectById(const String& id);
 
@@ -211,6 +221,8 @@ namespace tgui
         /// @brief Removes a tab with a given id
         /// @param id  The id of the tab that was set with setTabId
         /// @return Whether a tab was removed, false is returned when the id didn't match any tab
+        ///
+        /// @since TGUI 1.13
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool removeById(const String& id);
 
@@ -240,6 +252,8 @@ namespace tgui
         ///
         /// @return The id of the tab.
         ///         When no tab is selected then this function returns an empty string
+        ///
+        /// @since TGUI 1.13
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_NODISCARD String getSelectedId() const;
 
