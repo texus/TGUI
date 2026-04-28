@@ -1909,6 +1909,30 @@ TEST_CASE("[String]")
 
     SECTION("isDigit")
     {
+        REQUIRE(!tgui::isDigit(' '));
+        REQUIRE(!tgui::isDigit('!'));
+        REQUIRE(!tgui::isDigit('#'));
+        REQUIRE(!tgui::isDigit('*'));
+        REQUIRE(!tgui::isDigit(','));
+        REQUIRE(!tgui::isDigit('-'));
+        REQUIRE(!tgui::isDigit('.'));
+        REQUIRE(!tgui::isDigit('/'));
+        REQUIRE(!tgui::isDigit('@'));
+        REQUIRE(!tgui::isDigit('A'));
+        REQUIRE(!tgui::isDigit('Z'));
+        REQUIRE(!tgui::isDigit('\''));
+        REQUIRE(!tgui::isDigit('\0'));
+        REQUIRE(!tgui::isDigit('\\'));
+        REQUIRE(!tgui::isDigit('\a'));
+        REQUIRE(!tgui::isDigit('\f'));
+        REQUIRE(!tgui::isDigit('\n'));
+        REQUIRE(!tgui::isDigit('\r'));
+        REQUIRE(!tgui::isDigit('\t'));
+        REQUIRE(!tgui::isDigit('\v'));
+        REQUIRE(!tgui::isDigit('_'));
+        REQUIRE(!tgui::isDigit('a'));
+        REQUIRE(!tgui::isDigit('z'));
+        REQUIRE(!tgui::isDigit('|'));
         REQUIRE(tgui::isDigit('0'));
         REQUIRE(tgui::isDigit('1'));
         REQUIRE(tgui::isDigit('2'));
@@ -1919,25 +1943,6 @@ TEST_CASE("[String]")
         REQUIRE(tgui::isDigit('7'));
         REQUIRE(tgui::isDigit('8'));
         REQUIRE(tgui::isDigit('9'));
-        REQUIRE(!tgui::isDigit(' '));
-        REQUIRE(!tgui::isDigit('a'));
-        REQUIRE(!tgui::isDigit('A'));
-        REQUIRE(!tgui::isDigit('z'));
-        REQUIRE(!tgui::isDigit('Z'));
-        REQUIRE(!tgui::isDigit('!'));
-        REQUIRE(!tgui::isDigit('/'));
-        REQUIRE(!tgui::isDigit('\\'));
-        REQUIRE(!tgui::isDigit('@'));
-        REQUIRE(!tgui::isDigit('|'));
-        REQUIRE(!tgui::isDigit('_'));
-        REQUIRE(!tgui::isDigit('-'));
-        REQUIRE(!tgui::isDigit(','));
-        REQUIRE(!tgui::isDigit('.'));
-        REQUIRE(!tgui::isDigit('\t'));
-        REQUIRE(!tgui::isDigit('\r'));
-        REQUIRE(!tgui::isDigit('\n'));
-        REQUIRE(!tgui::isDigit('*'));
-        REQUIRE(!tgui::isDigit('#'));
     }
 
     SECTION("isWhitespace")
