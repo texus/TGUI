@@ -1947,17 +1947,25 @@ TEST_CASE("[String]")
 
     SECTION("isWhitespace")
     {
-        REQUIRE(tgui::isWhitespace(' '));
-        REQUIRE(tgui::isWhitespace('\t'));
-        REQUIRE(tgui::isWhitespace('\r'));
-        REQUIRE(tgui::isWhitespace('\n'));
+        REQUIRE(!tgui::isWhitespace('\a'));
+        REQUIRE(!tgui::isWhitespace('\b'));
         REQUIRE(!tgui::isWhitespace('x'));
+        REQUIRE(tgui::isWhitespace(' '));
+        REQUIRE(tgui::isWhitespace('\f'));
+        REQUIRE(tgui::isWhitespace('\n'));
+        REQUIRE(tgui::isWhitespace('\r'));
+        REQUIRE(tgui::isWhitespace('\t'));
+        REQUIRE(tgui::isWhitespace('\v'));
 
-        REQUIRE(tgui::isWhitespace(U' '));
-        REQUIRE(tgui::isWhitespace(U'\t'));
-        REQUIRE(tgui::isWhitespace(U'\r'));
-        REQUIRE(tgui::isWhitespace(U'\n'));
+        REQUIRE(!tgui::isWhitespace(U'\a'));
+        REQUIRE(!tgui::isWhitespace(U'\b'));
         REQUIRE(!tgui::isWhitespace(U'x'));
+        REQUIRE(tgui::isWhitespace(U' '));
+        REQUIRE(tgui::isWhitespace(U'\f'));
+        REQUIRE(tgui::isWhitespace(U'\n'));
+        REQUIRE(tgui::isWhitespace(U'\r'));
+        REQUIRE(tgui::isWhitespace(U'\t'));
+        REQUIRE(tgui::isWhitespace(U'\v'));
     }
 
     SECTION("Invalid characters")
