@@ -155,16 +155,14 @@ private:
     {
         if (value.empty())
             return std::numeric_limits<float>::infinity();
-        else
-            return tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber();
+        return tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber();
     }
 
     TGUI_NODISCARD static tgui::String serializeMaxSize(float maxSize)
     {
         if (maxSize != std::numeric_limits<float>::infinity())
             return tgui::String::fromNumber(maxSize);
-        else
-            return "";
+        return "";
     }
 };
 
