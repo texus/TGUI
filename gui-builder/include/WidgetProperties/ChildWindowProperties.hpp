@@ -151,7 +151,7 @@ private:
         return "Remove";
     }
 
-    TGUI_NODISCARD static float deserializeMaxSize(tgui::String value)
+    TGUI_NODISCARD static float deserializeMaxSize(const tgui::String& value)
     {
         if (value.empty())
             return std::numeric_limits<float>::infinity();
