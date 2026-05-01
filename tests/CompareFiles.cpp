@@ -69,8 +69,8 @@ bool compareFiles(const tgui::String& leftFileName, const tgui::String& rightFil
 {
     std::size_t fileSize1;
     std::size_t fileSize2;
-    auto fileContents1 = tgui::readFileToMemory(leftFileName, fileSize1);
-    auto fileContents2 = tgui::readFileToMemory(rightFileName, fileSize2);
+    const auto fileContents1 = tgui::readFileToMemory(leftFileName, fileSize1);
+    const auto fileContents2 = tgui::readFileToMemory(rightFileName, fileSize2);
     if (!fileContents1 || !fileContents2)
         return false;
 
