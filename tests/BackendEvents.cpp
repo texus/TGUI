@@ -612,7 +612,7 @@ TEST_CASE("[Backend events]")
                 eventMouseReleased.position.y = 110;
                 backendGuiSFML->handleEvent({eventMouseReleased});
 
-                // Resize the child window using touch events  (decrease height with 10px)
+                // Resize the child window using touch events (decrease height with 10px)
                 // Note that the resizing ignores the position of the touch ended event
                 sf::Event::TouchBegan eventTouchBegan;
                 eventTouchBegan.finger = 0;
@@ -924,7 +924,7 @@ TEST_CASE("[Backend events]")
                 eventSFML.mouseButton.y = 110;
                 backendGuiSFML->handleEvent(eventSFML);
 
-                // Resize the child window using touch events  (decrease height with 10px)
+                // Resize the child window using touch events (decrease height with 10px)
                 // Note that the resizing ignores the position of the touch ended event
                 eventSFML.type = sf::Event::TouchBegan;
                 eventSFML.touch.finger = 0;
@@ -1639,7 +1639,7 @@ TEST_CASE("[Backend events]")
                 eventSDL.button.windowID = 0;
                 backendGuiSDL->handleEvent(eventSDL);
 
-                // Resize the child window using touch events  (decrease height with 10px)
+                // Resize the child window using touch events (decrease height with 10px)
                 // Note that the resizing ignores the position of the touch ended event
                 const tgui::Vector2f windowSize = backendGuiSDL->getViewport().getSize();
                 eventSDL.type = SDL_EVENT_FINGER_DOWN;
