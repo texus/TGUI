@@ -84,7 +84,7 @@ if(TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
     endif()
 
     set_target_properties(gui-builder PROPERTIES
-                          INSTALL_RPATH "$ORIGIN/${rel_lib_dir}"  # RPATH will contain relative path to where we installed our own library
+                          INSTALL_RPATH "\$ORIGIN/${rel_lib_dir}" # RPATH will contain relative path to where we installed our own library
                           INSTALL_RPATH_USE_LINK_PATH TRUE)       # RPATH will contain paths to our dependencies
 endif()
 
