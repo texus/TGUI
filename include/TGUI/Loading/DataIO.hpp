@@ -65,6 +65,7 @@ namespace tgui
                 propertyValuePairs{},
                 name{other.name}
             {
+                children.reserve(other.children.size());
                 for (const auto& child : other.children)
                     children.push_back(std::make_unique<Node>(*child));
                 for (const auto& pair : other.propertyValuePairs)
