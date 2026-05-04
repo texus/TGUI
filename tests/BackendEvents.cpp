@@ -205,7 +205,7 @@ TEST_CASE("[Backend events]")
                          {sf::Keyboard::Key::F14, tgui::Event::KeyboardKey::F14},
                          {sf::Keyboard::Key::F15, tgui::Event::KeyboardKey::F15},
                          {sf::Keyboard::Key::Pause, tgui::Event::KeyboardKey::Pause}}};
-                    for (auto pair : keys)
+                    for (const auto& pair : keys)
                     {
     #if SFML_VERSION_MAJOR >= 3
                         eventKeyPressed.code = pair.first;
@@ -1114,7 +1114,7 @@ TEST_CASE("[Backend events]")
                        {SDLK_F14, tgui::Event::KeyboardKey::F14},
                        {SDLK_F15, tgui::Event::KeyboardKey::F15},
                        {SDLK_PAUSE, tgui::Event::KeyboardKey::Pause}} };
-                    for (auto pair : keys)
+                    for (const auto& pair : keys)
                     {
                         eventSdlKey = pair.first;
 
@@ -1785,7 +1785,7 @@ TEST_CASE("[Backend events]")
                          {GLFW_KEY_F14, tgui::Event::KeyboardKey::F14},
                          {GLFW_KEY_F15, tgui::Event::KeyboardKey::F15},
                          {GLFW_KEY_PAUSE, tgui::Event::KeyboardKey::Pause}}};
-                    for (auto pair : keys)
+                    for (const auto& pair : keys)
                     {
                         auto eventTGUI = backendGuiGLFW->convertKeyEvent(pair.first, 0, GLFW_PRESS, GLFW_MOD_NUM_LOCK);
                         REQUIRE(eventTGUI);
@@ -2174,7 +2174,7 @@ TEST_CASE("[Backend events]")
                          {KEY_PAUSE, tgui::Event::KeyboardKey::Pause}}};
 
                     unsigned int nrKeysRequiredHandling = 0;
-                    for (auto pair : keys)
+                    for (const auto& pair : keys)
                     {
                         bool requiresHandling = true;
                         if ((pair.first == KEY_LEFT_ALT) || (pair.first == KEY_RIGHT_ALT) || (pair.first == KEY_LEFT_CONTROL)

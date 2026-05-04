@@ -59,7 +59,7 @@ TEST_CASE("[Mouse cursors]")
             customCursors = true;
 
             unsigned int index = 0;
-            for (auto cursor : cursors)
+            for (const auto& cursor : cursors)
             {
                 tgui::Vector2u size;
                 auto pixels = tgui::ImageLoader::loadFromFile("resources/Texture" + tgui::String((index % 8) + 1) + ".png", size);
@@ -71,7 +71,7 @@ TEST_CASE("[Mouse cursors]")
         }
 
         // Change the mouse cursor to each cursor type
-        for (auto cursor : cursors)
+        for (const auto& cursor : cursors)
         {
             REQUIRE_NOTHROW(globalGui->setOverrideMouseCursor(cursor));
             REQUIRE_NOTHROW(globalGui->restoreOverrideMouseCursor());
@@ -80,7 +80,7 @@ TEST_CASE("[Mouse cursors]")
         // If custom images were loaded then restore the system cursors
         if (customCursors)
         {
-            for (auto cursor : cursors)
+            for (const auto& cursor : cursors)
             {
                 REQUIRE_NOTHROW(tgui::Cursor::resetStyle(cursor));
             }
