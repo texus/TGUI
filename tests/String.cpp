@@ -1907,6 +1907,34 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(U"a\nb\nc\u20AC\nx\ny\nz").count(U'a', 40) == 0);
     }
 
+    SECTION("isAlpha")
+    {
+        REQUIRE(!tgui::isAlpha(' '));
+        REQUIRE(!tgui::isAlpha('#'));
+        REQUIRE(!tgui::isAlpha('0'));
+        REQUIRE(!tgui::isAlpha('1'));
+        REQUIRE(!tgui::isAlpha('2'));
+        REQUIRE(!tgui::isAlpha('3'));
+        REQUIRE(!tgui::isAlpha('4'));
+        REQUIRE(!tgui::isAlpha('5'));
+        REQUIRE(!tgui::isAlpha('6'));
+        REQUIRE(!tgui::isAlpha('7'));
+        REQUIRE(!tgui::isAlpha('8'));
+        REQUIRE(!tgui::isAlpha('9'));
+        REQUIRE(!tgui::isAlpha('\0'));
+        REQUIRE(!tgui::isAlpha('\a'));
+        REQUIRE(!tgui::isAlpha('\f'));
+        REQUIRE(!tgui::isAlpha('\n'));
+        REQUIRE(!tgui::isAlpha('\r'));
+        REQUIRE(!tgui::isAlpha('\t'));
+        REQUIRE(!tgui::isAlpha('\v'));
+        REQUIRE(!tgui::isAlpha(0));
+        REQUIRE(tgui::isAlpha('A'));
+        REQUIRE(tgui::isAlpha('Z'));
+        REQUIRE(tgui::isAlpha('a'));
+        REQUIRE(tgui::isAlpha('z'));
+    }
+
     SECTION("isDigit")
     {
         REQUIRE(!tgui::isDigit(' '));
