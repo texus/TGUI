@@ -1996,6 +1996,32 @@ TEST_CASE("[String]")
         REQUIRE(tgui::isWhitespace(U'\v'));
     }
 
+    SECTION("startsWithIgnoreCase")
+    {
+        const tgui::String emptyStr("");
+        const tgui::String helloStr("Hello world");
+        REQUIRE(!emptyStr.startsWithIgnoreCase(' '));
+        REQUIRE(!emptyStr.startsWithIgnoreCase('\0'));
+        REQUIRE(!emptyStr.startsWithIgnoreCase('\n'));
+        REQUIRE(!helloStr.startsWithIgnoreCase("String longer than Hello World"));
+        REQUIRE(!helloStr.startsWithIgnoreCase("XString longer than Hello World"));
+        REQUIRE(!helloStr.startsWithIgnoreCase("string longer than Hello World"));
+        REQUIRE(!helloStr.startsWithIgnoreCase("xString longer than Hello World"));
+        REQUIRE(!helloStr.startsWithIgnoreCase(' '));
+        REQUIRE(!helloStr.startsWithIgnoreCase('A'));
+        REQUIRE(!helloStr.startsWithIgnoreCase('\0'));
+        REQUIRE(!helloStr.startsWithIgnoreCase('\n'));
+        REQUIRE(!helloStr.startsWithIgnoreCase('a'));
+        REQUIRE(emptyStr.startsWithIgnoreCase(""));
+        REQUIRE(helloStr.startsWithIgnoreCase(""));
+        REQUIRE(helloStr.startsWithIgnoreCase("HELLO"));
+        REQUIRE(helloStr.startsWithIgnoreCase("HeLlO"));
+        REQUIRE(helloStr.startsWithIgnoreCase("Hello world"));
+        REQUIRE(helloStr.startsWithIgnoreCase("hello"));
+        REQUIRE(helloStr.startsWithIgnoreCase('H'));
+        REQUIRE(helloStr.startsWithIgnoreCase('h'));
+    }
+
     SECTION("endsWithIgnoreCase")
     {
         const tgui::String emptyStr("");
