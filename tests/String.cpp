@@ -1996,6 +1996,32 @@ TEST_CASE("[String]")
         REQUIRE(tgui::isWhitespace(U'\v'));
     }
 
+    SECTION("endsWithIgnoreCase")
+    {
+        const tgui::String emptyStr("");
+        const tgui::String helloStr("Hello world");
+        REQUIRE(!emptyStr.endsWithIgnoreCase(' '));
+        REQUIRE(!emptyStr.endsWithIgnoreCase('\0'));
+        REQUIRE(!emptyStr.endsWithIgnoreCase('\n'));
+        REQUIRE(!helloStr.endsWithIgnoreCase("String longer than Hello WorlD"));
+        REQUIRE(!helloStr.endsWithIgnoreCase("String longer than Hello World"));
+        REQUIRE(!helloStr.endsWithIgnoreCase("String longer than Hello WorldX"));
+        REQUIRE(!helloStr.endsWithIgnoreCase("String longer than Hello Worldx"));
+        REQUIRE(!helloStr.endsWithIgnoreCase(' '));
+        REQUIRE(!helloStr.endsWithIgnoreCase('A'));
+        REQUIRE(!helloStr.endsWithIgnoreCase('\0'));
+        REQUIRE(!helloStr.endsWithIgnoreCase('\n'));
+        REQUIRE(!helloStr.endsWithIgnoreCase('a'));
+        REQUIRE(emptyStr.endsWithIgnoreCase(""));
+        REQUIRE(helloStr.endsWithIgnoreCase(""));
+        REQUIRE(helloStr.endsWithIgnoreCase("Hello world"));
+        REQUIRE(helloStr.endsWithIgnoreCase("WORLD"));
+        REQUIRE(helloStr.endsWithIgnoreCase("WoRlD"));
+        REQUIRE(helloStr.endsWithIgnoreCase("world"));
+        REQUIRE(helloStr.endsWithIgnoreCase('D'));
+        REQUIRE(helloStr.endsWithIgnoreCase('d'));
+    }
+
     SECTION("Invalid characters")
     {
         REQUIRE(tgui::String(U"\x200000").toUtf16().empty());
