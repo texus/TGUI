@@ -386,7 +386,7 @@ jobs:
           -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
           -Draylib_USE_STATIC_LIBS=OFF
           -DBUILD_SHARED_LIBS=ON
-          -DTGUI_CXX_STANDARD=14
+          -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -416,7 +416,7 @@ jobs:
           -Draylib_ROOT="$GITHUB_WORKSPACE/RAYLIB_INSTALL/"
           -Draylib_USE_STATIC_LIBS=OFF
           -DBUILD_SHARED_LIBS=ON
-          -DTGUI_CXX_STANDARD=14
+          -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=OFF
           -DTGUI_BUILD_GUI_BUILDER=OFF
@@ -470,7 +470,7 @@ jobs:
           cmake -B TGUI-build-SFML_GRAPHICS -GNinja
           -DBUILD_SHARED_LIBS=OFF
           -DSFML_STATIC_LIBRARIES=OFF
-          -DTGUI_CXX_STANDARD=14
+          -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -488,7 +488,7 @@ jobs:
         run: >
           cmake -B TGUI-build-SDL_RENDERER -GNinja
           -DBUILD_SHARED_LIBS=OFF
-          -DTGUI_CXX_STANDARD=17
+          -DTGUI_CXX_STANDARD=20
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -506,7 +506,7 @@ jobs:
         run: >
           cmake -B TGUI-build-SDL_TTF_GLES2 -GNinja
           -DBUILD_SHARED_LIBS=ON
-          -DTGUI_CXX_STANDARD=20
+          -DTGUI_CXX_STANDARD=23
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -542,7 +542,7 @@ jobs:
         run: >
           cmake -B TGUI-build-GLFW_OPENGL3 -GNinja
           -DBUILD_SHARED_LIBS=ON
-          -DTGUI_CXX_STANDARD=17
+          -DTGUI_CXX_STANDARD=20
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -560,7 +560,7 @@ jobs:
         run: >
           cmake -B TGUI-build-RAYLIB -GNinja
           -DBUILD_SHARED_LIBS=ON
-          -DTGUI_CXX_STANDARD=14
+          -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -688,7 +688,7 @@ jobs:
           -DCMAKE_INSTALL_PREFIX=TGUI-build/install
           -DCMAKE_UNITY_BUILD=ON
           -DBUILD_SHARED_LIBS=ON
-          -DTGUI_CXX_STANDARD=14
+          -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=ON
           -DTGUI_BUILD_GUI_BUILDER=ON
@@ -871,7 +871,7 @@ jobs:
           -DCMAKE_UNITY_BUILD=ON
           -DBUILD_SHARED_LIBS=ON
           -DTGUI_BUILD_FRAMEWORK=OFF
-          -DTGUI_CXX_STANDARD=14
+          -DTGUI_CXX_STANDARD=20
           -DTGUI_USE_SDL3=OFF
           -DTGUI_WARNINGS_AS_ERRORS=ON
           -DTGUI_BUILD_EXAMPLES=OFF
@@ -1038,7 +1038,7 @@ jobs:
           -DBUILD_SHARED_LIBS=ON
           -DCMAKE_BUILD_TYPE=Debug
           -DTGUI_BACKEND=SFML_GRAPHICS
-          -DTGUI_CXX_STANDARD=14
+          -DTGUI_CXX_STANDARD=17
           -DTGUI_WARNINGS_AS_ERRORS=ON
 
           make -C TGUI-build -j$(nproc) install
