@@ -280,7 +280,7 @@ jobs:
       RAYLIB_VERSION: '4.2.0'
       CMAKE_VERSION: '3.16'
       CMAKE_VERSION_PATCH: 0
-      GCC_VERSION: 7
+      GCC_VERSION: 8
       CLANG_VERSION: '6.0'
 
     container:
