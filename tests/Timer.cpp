@@ -103,9 +103,10 @@ TEST_CASE("[Timer]")
             const auto otherCallback = [&otherCount] { ++otherCount; };
 
             auto timer = tgui::Timer::create(callback, 250);
-            timer->setCallback(otherCallback);
+            REQUIRE(timer);
+            REQUIRE_NOTHROW(timer->setCallback(otherCallback));
 
-            tgui::Timer::updateTime(std::chrono::milliseconds(300));
+            REQUIRE_NOTHROW(tgui::Timer::updateTime(std::chrono::milliseconds(300)));
             REQUIRE(count == 0);
             REQUIRE(otherCount == 1);
 
