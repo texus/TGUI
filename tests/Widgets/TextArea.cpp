@@ -790,6 +790,12 @@ TEST_CASE("[TextArea]")
                 textArea->setHorizontalScrollbarPolicy(tgui::Scrollbar::Policy::Always);
                 TEST_DRAW("TextArea_ForcedScrollbars.png")
             }
+
+            SECTION("Monospaced font optimization")
+            {
+                REQUIRE_NOTHROW(textArea->enableMonospacedFontOptimization(true));
+                REQUIRE_NOTHROW(textArea->enableMonospacedFontOptimization(false));
+            }
         }
     }
 
