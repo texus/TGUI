@@ -86,7 +86,7 @@ TEST_CASE("[Backend events]")
                 eventKeyPressed.control = false;
                 eventKeyPressed.shift = false;
                 eventKeyPressed.system = false;
-        #if 0
+        #if (SFML_VERSION_MAJOR > 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR >= 2)
                 eventKeyPressed.numLock = true;
         #endif
 
@@ -258,7 +258,7 @@ TEST_CASE("[Backend events]")
                     REQUIRE(!backendGuiSFML->convertEvent(eventSFML, eventTGUI));
                 }
 
-        #if 0 // When enabling this, don't forget the eventKeyPressed.numLock line earlier in this file
+        #if (SFML_VERSION_MAJOR > 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR >= 2)
                 SECTION("Numpad keys with NumLock off")
                 {
                     tgui::Event eventTGUI;

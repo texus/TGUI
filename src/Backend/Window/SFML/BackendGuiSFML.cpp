@@ -452,9 +452,8 @@ namespace tgui
             eventTGUI.key.shift = eventKeyPressed->shift;
             eventTGUI.key.system = eventKeyPressed->system;
 
+#if (SFML_VERSION_MAJOR > 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR >= 2)
             // If the NumLock is off then we will translate keypad key events to key events for text cursor navigation.
-            // This functionality is not yet part of SFML, but is available in PR #3238 (https://github.com/SFML/SFML/pull/3238)
-    #if 0
             static_assert(static_cast<int>(Event::KeyboardKey::Numpad0) + 9 == static_cast<int>(Event::KeyboardKey::Numpad9), "Numpad0 to Numpad9 need continous ids in KeyboardKey");
             if (!eventKeyPressed->numLock
              && (static_cast<int>(eventTGUI.key.code) >= static_cast<int>(Event::KeyboardKey::Numpad0))
@@ -464,7 +463,7 @@ namespace tgui
                 if (eventTGUI.key.code == Event::KeyboardKey::Unknown) // Numpad5 was pressed which has no function
                     return false; // We didn't handle this key press
             }
-    #endif
+#endif
             return true;
         }
 
