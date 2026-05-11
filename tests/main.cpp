@@ -81,7 +81,7 @@ tgui::BackendGui* globalGui = nullptr; // Declared as extern in Tests.hpp
 struct TestsWindowBase
 {
     virtual ~TestsWindowBase() = default;
-    TGUI_NODISCARD virtual tgui::BackendGui* getGui() const
+    [[nodiscard]] virtual tgui::BackendGui* getGui() const
     {
         return gui.get();
     }
@@ -93,7 +93,7 @@ protected:
 
 struct TestsWindowDefault : public TestsWindowBase
 {
-    TGUI_NODISCARD tgui::BackendGui* getGui() const override
+    [[nodiscard]] tgui::BackendGui* getGui() const override
     {
         return window->getGui();
     }

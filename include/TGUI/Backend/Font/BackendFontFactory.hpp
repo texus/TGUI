@@ -48,7 +48,7 @@ namespace tgui
         /// @brief Creates a new empty font object
         /// @return Shared pointer to a new font object
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::shared_ptr<BackendFont> createFont() = 0;
+        [[nodiscard]] virtual std::shared_ptr<BackendFont> createFont() = 0;
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ namespace tgui
         /// @brief Creates a new empty font object
         /// @return Shared pointer to a new font object
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendFont> createFont() override
+        [[nodiscard]] std::shared_ptr<BackendFont> createFont() override
         {
             return std::make_shared<FontType>();
         }

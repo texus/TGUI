@@ -35,7 +35,7 @@
 
 namespace
 {
-    TGUI_NODISCARD inline bool compareCharIgnoreCase(char32_t char1, char32_t char2)
+    [[nodiscard]] inline bool compareCharIgnoreCase(char32_t char1, char32_t char2)
     {
         if (char1 == char2)
             return true;

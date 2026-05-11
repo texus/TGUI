@@ -96,7 +96,7 @@ namespace tgui
         ///
         /// By default the viewport will fill the entire screen.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD RelFloatRect getViewport() const;
+        [[nodiscard]] RelFloatRect getViewport() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the part of the gui that will be used to fill the viewport in pixels
@@ -133,7 +133,7 @@ namespace tgui
         ///
         /// By default the view will have the same size as the viewport.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD RelFloatRect getView() const;
+        [[nodiscard]] RelFloatRect getView() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Passes the event to the widgets
@@ -153,7 +153,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the tab key usage is enabled (if so, pressing tab will focus another widget)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isTabKeyUsageEnabled() const;
+        [[nodiscard]] bool isTabKeyUsageEnabled() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws all the widgets that were added to the gui
@@ -170,14 +170,14 @@ namespace tgui
         ///
         /// @return Reference to the internal Container class
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD RootContainer::Ptr getContainer() const;
+        [[nodiscard]] RootContainer::Ptr getContainer() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the backend render target that is assigned to the gui
         ///
         /// @return Render target that was created when a window was passed to the gui, or nullptr if it hasn't been created yet
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendRenderTarget> getBackendRenderTarget() const;
+        [[nodiscard]] std::shared_ptr<BackendRenderTarget> getBackendRenderTarget() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the global font
@@ -191,14 +191,14 @@ namespace tgui
         ///
         /// @return Font for widgets in the gui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Font getFont() const;
+        [[nodiscard]] Font getFont() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a list of all the widgets
         ///
         /// @return Vector of all widget pointers
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::vector<Widget::Ptr>& getWidgets() const;
+        [[nodiscard]] const std::vector<Widget::Ptr>& getWidgets() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a widget to the container
@@ -225,7 +225,7 @@ namespace tgui
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr get(const String& widgetName) const;
+        [[nodiscard]] Widget::Ptr get(const String& widgetName) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a pointer to an earlier created widget
@@ -241,7 +241,7 @@ namespace tgui
         /// @warning This function will return nullptr when an unknown widget name was passed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class WidgetType>
-        TGUI_NODISCARD typename WidgetType::Ptr get(const String& widgetName) const
+        [[nodiscard]] typename WidgetType::Ptr get(const String& widgetName) const
         {
             return m_container->get<WidgetType>(widgetName);
         }
@@ -266,7 +266,7 @@ namespace tgui
         /// If the focused widget is a container then a pointer to that container is returned. If you want to know which widget
         /// is focused inside that container (recursively) then you should use the getFocusedLeaf() function.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getFocusedChild() const;
+        [[nodiscard]] Widget::Ptr getFocusedChild() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the leaf child widget that is focused inside this container
@@ -276,7 +276,7 @@ namespace tgui
         /// If the focused widget is a container then the getFocusedLeaf() is recursively called on that container. If you want
         /// to limit the search to only direct children of this container then you should use the getFocusedChild() function.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getFocusedLeaf() const;
+        [[nodiscard]] Widget::Ptr getFocusedLeaf() const;
 
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +289,7 @@ namespace tgui
         /// @deprecated Replaced by getWidgetAtPos in TGUI 1.2
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getWidgetAtPos(pos, true) instead")
-        TGUI_NODISCARD Widget::Ptr getWidgetAtPosition(Vector2f pos) const;
+        [[nodiscard]] Widget::Ptr getWidgetAtPosition(Vector2f pos) const;
 #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,7 +306,7 @@ namespace tgui
         ///
         /// @since TGUI 1.2
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getWidgetAtPos(Vector2f pos, bool recursive) const;
+        [[nodiscard]] Widget::Ptr getWidgetAtPos(Vector2f pos, bool recursive) const;
 
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,7 +319,7 @@ namespace tgui
         /// @deprecated Replaced by getWidgetBelowMouseCursor overload with additional recursive parameter in TGUI 1.2
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getWidgetBelowMouseCursor(mousePos, true) instead")
-        TGUI_NODISCARD Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos) const;
+        [[nodiscard]] Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos) const;
 #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,7 +336,7 @@ namespace tgui
         ///
         /// @since TGUI 1.2
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos, bool recursive) const;
+        [[nodiscard]] Widget::Ptr getWidgetBelowMouseCursor(Vector2i mousePos, bool recursive) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the mouse position of the last mouse event that was handled by the gui
@@ -348,7 +348,7 @@ namespace tgui
         ///
         /// @since TGUI 1.8
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2i getLastMousePosition() const;
+        [[nodiscard]] Vector2i getLastMousePosition() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Focuses the next widget in the gui
@@ -430,7 +430,7 @@ namespace tgui
         ///
         /// @return Index of the widget, or -1 if the widget wasn't found in this container
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD int getWidgetIndex(const Widget::Ptr& widget) const;
+        [[nodiscard]] int getWidgetIndex(const Widget::Ptr& widget) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the opacity of all widgets
@@ -444,7 +444,7 @@ namespace tgui
         ///
         /// @return The opacity of the widgets. 0 means completely transparent, while 1 (default) means fully opaque
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getOpacity() const;
+        [[nodiscard]] float getOpacity() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the character size of all existing and future child widgets.
@@ -461,7 +461,7 @@ namespace tgui
         ///
         /// @return The current text size or 0 when no size was explicitly set in this gui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getTextSize() const;
+        [[nodiscard]] unsigned int getTextSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the child widgets from a text file
@@ -600,14 +600,14 @@ namespace tgui
         /// @param pixel  coordinate on the window
         /// @return Transformed coordinate within the coordinate system that is used by the widgets
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f mapPixelToCoords(Vector2i pixel) const;
+        [[nodiscard]] Vector2f mapPixelToCoords(Vector2i pixel) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts a position within the view to the corresponding pixel coordinate
         /// @param coord  position within the coordinate system that is used by the widgets
         /// @return Pixel coordinate where the point would end up on the screen
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f mapCoordsToPixel(Vector2f coord) const;
+        [[nodiscard]] Vector2f mapCoordsToPixel(Vector2f coord) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Give the gui control over the main loop
@@ -650,7 +650,7 @@ namespace tgui
         ///
         /// @return Whether queries modifier key is being pressed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const; // TGUI_NEXT: Pure virtual
+        [[nodiscard]] virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const; // TGUI_NEXT: Pure virtual
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether using the arrow keys can be used to navigate between widgets
@@ -676,7 +676,7 @@ namespace tgui
         ///
         /// @since TGUI 1.1
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isKeyboardNavigationEnabled() const;
+        [[nodiscard]] bool isKeyboardNavigationEnabled() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

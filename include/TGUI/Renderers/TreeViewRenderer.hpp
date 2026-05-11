@@ -46,7 +46,7 @@ namespace tgui
         /// @brief Returns the size of the borders
         /// @return border size
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Borders getBorders() const;
+        [[nodiscard]] Borders getBorders() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the padding of the tree view
@@ -58,7 +58,7 @@ namespace tgui
         /// @brief Returns the size of the padding
         /// @return padding size
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Padding getPadding() const;
+        [[nodiscard]] Padding getPadding() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color of the tree view
@@ -70,7 +70,7 @@ namespace tgui
         /// @brief Returns the background color
         /// @return Background color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getBackgroundColor() const;
+        [[nodiscard]] Color getBackgroundColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of the borders
@@ -82,7 +82,7 @@ namespace tgui
         /// @brief Returns the color of the borders
         /// @return Border color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getBorderColor() const;
+        [[nodiscard]] Color getBorderColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of the text
@@ -94,7 +94,7 @@ namespace tgui
         /// @brief Returns the color of the text
         /// @return Text color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getTextColor() const;
+        [[nodiscard]] Color getTextColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of the text of the item below the mouse
@@ -106,7 +106,7 @@ namespace tgui
         /// @brief Returns the color of the text of the item below the mouse
         /// @return Hover text color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getTextColorHover() const;
+        [[nodiscard]] Color getTextColorHover() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of the text from the selected item
@@ -118,7 +118,7 @@ namespace tgui
         /// @brief Returns the color of the text from the selected item
         /// @return Selected text color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSelectedTextColor() const;
+        [[nodiscard]] Color getSelectedTextColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of the text of the selected item when it is below the mouse
@@ -130,7 +130,7 @@ namespace tgui
         /// @brief Returns the color of the text of the selected item when it is below the mouse
         /// @return Hover text color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSelectedTextColorHover() const;
+        [[nodiscard]] Color getSelectedTextColorHover() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color of the selected item
@@ -142,7 +142,7 @@ namespace tgui
         /// @brief Returns the background color of the selected item
         /// @return Selected item background color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSelectedBackgroundColor() const;
+        [[nodiscard]] Color getSelectedBackgroundColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color used for the item below the mouse
@@ -154,7 +154,7 @@ namespace tgui
         /// @brief Returns the background color used for the item below the mouse
         /// @return Background color of hovered item
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getBackgroundColorHover() const;
+        [[nodiscard]] Color getBackgroundColorHover() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color used for the selected item when the mouse hovers over it
@@ -166,7 +166,7 @@ namespace tgui
         /// @brief Returns the background color used for the selected item when the mouse hovers over it
         /// @return Background color of selected item in hover state
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSelectedBackgroundColorHover() const;
+        [[nodiscard]] Color getSelectedBackgroundColorHover() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the scrollbar
@@ -178,7 +178,7 @@ namespace tgui
         /// @brief Returns the renderer data of the scrollbar
         /// @return Data about how the scrollbar looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getScrollbar() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getScrollbar() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the wanted width of the scrollbar
@@ -190,7 +190,7 @@ namespace tgui
         /// @brief Returns the wanted width of the scrollbar
         /// @return Requested scrollbar width or 0 if no width was set (texture width or default value will be used)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getScrollbarWidth() const;
+        [[nodiscard]] float getScrollbarWidth() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background image of the tree view
@@ -206,7 +206,7 @@ namespace tgui
         ///
         /// @return Background texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture& getTextureBackground() const;
+        [[nodiscard]] const Texture& getTextureBackground() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the image used in front of an expanded item
@@ -223,7 +223,7 @@ namespace tgui
         /// @brief Returns the image used in front of an expanded item
         /// @return The expanded branch texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture& getTextureBranchExpanded() const;
+        [[nodiscard]] const Texture& getTextureBranchExpanded() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the image used in front of a collapsed item
@@ -240,7 +240,7 @@ namespace tgui
         /// @brief Returns the image used in front of a collapsed item
         /// @return The collapsed branch texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture& getTextureBranchCollapsed() const;
+        [[nodiscard]] const Texture& getTextureBranchCollapsed() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the image used in front of a lead item
@@ -255,7 +255,7 @@ namespace tgui
         /// @brief Returns the image used in front of a leaf item
         /// @return The lead item texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture& getTextureLeaf() const;
+        [[nodiscard]] const Texture& getTextureLeaf() const;
     };
 } // namespace tgui
 

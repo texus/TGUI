@@ -74,7 +74,7 @@ namespace tgui
         /// @brief Returns a pointer to the internal SDL_Texture
         /// @return Pointer to internal texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SDL_Texture* getInternalTexture() const;
+        [[nodiscard]] SDL_Texture* getInternalTexture() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Replaces the internal texture by a different one

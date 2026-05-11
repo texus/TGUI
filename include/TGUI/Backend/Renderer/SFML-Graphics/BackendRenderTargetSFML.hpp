@@ -52,7 +52,7 @@ namespace tgui
         ///
         /// @return The SFML render target that is used by the gui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD sf::RenderTarget* getTarget() const;
+        [[nodiscard]] sf::RenderTarget* getTarget() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Select the color that will be used by clearScreen
@@ -113,8 +113,8 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Converts tgui::RenderStates to sf::RenderStates
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static sf::RenderStates convertRenderStates(const RenderStates& states,
-                                                                   const std::shared_ptr<BackendTexture>& texture);
+        [[nodiscard]] static sf::RenderStates convertRenderStates(const RenderStates& states,
+                                                                  const std::shared_ptr<BackendTexture>& texture);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

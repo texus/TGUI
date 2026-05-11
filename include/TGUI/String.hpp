@@ -53,28 +53,28 @@ namespace tgui
     /// @param character  Character to be examined
     /// @return True if the character is a whitespace character, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD TGUI_API bool isWhitespace(char character);
+    [[nodiscard]] TGUI_API bool isWhitespace(char character);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Checks if a character is a whitespace character (e.g. space, tab, carriage return, line feed, ...)
     /// @param character  Character to be examined
     /// @return True if the character is a whitespace character, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD TGUI_API bool isWhitespace(char32_t character);
+    [[nodiscard]] TGUI_API bool isWhitespace(char32_t character);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Checks whether a character is an alphabetic character
     /// @param character  Character to be examined
     /// @return True if the character is an alphabetic character, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD TGUI_API bool isAlpha(char32_t character);
+    [[nodiscard]] TGUI_API bool isAlpha(char32_t character);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Checks whether a character is digit (only 0 to 9 are considered digits, no unicode characters are)
     /// @param character  Character to be examined
     /// @return True if the character is a digit , false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD TGUI_API bool isDigit(char32_t character);
+    [[nodiscard]] TGUI_API bool isDigit(char32_t character);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Wrapper class to store strings
@@ -140,7 +140,7 @@ namespace tgui
         ///
         /// @return Returns whether the string was valid and a value has been placed into the reference parameter.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool attemptToInt(int& result) const;
+        [[nodiscard]] bool attemptToInt(int& result) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the string to an unsigned int
@@ -149,7 +149,7 @@ namespace tgui
         ///
         /// @return Returns whether the string was valid and a value has been placed into the reference parameter.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool attemptToUInt(unsigned int& result) const;
+        [[nodiscard]] bool attemptToUInt(unsigned int& result) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the string to a float
@@ -158,7 +158,7 @@ namespace tgui
         ///
         /// @return Returns whether the string was valid and a value has been placed into the reference parameter.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool attemptToFloat(float& result) const;
+        [[nodiscard]] bool attemptToFloat(float& result) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the string to an integer
@@ -167,7 +167,7 @@ namespace tgui
         ///
         /// @return Returns the integer value or defaultValue if the string didn't contain a base 10 integer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD int toInt(int defaultValue = 0) const;
+        [[nodiscard]] int toInt(int defaultValue = 0) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the string to an unsigned int
@@ -176,7 +176,7 @@ namespace tgui
         ///
         /// @return Returns the unsigned integer value or defaultValue if the string didn't contain a base 10 unsigned integer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int toUInt(unsigned int defaultValue = 0) const;
+        [[nodiscard]] unsigned int toUInt(unsigned int defaultValue = 0) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the string to a float
@@ -185,28 +185,28 @@ namespace tgui
         ///
         /// @return Returns the float value or defaultValue if the string didn't contain an float
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float toFloat(float defaultValue = 0) const;
+        [[nodiscard]] float toFloat(float defaultValue = 0) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a string with the whitespace at the start and end of this string removed
         ///
         /// @return Trimmed string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD String trim() const;
+        [[nodiscard]] String trim() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the ASCII characters in the string to lowercase
         ///
         /// @return Lowercase string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD String toLower() const;
+        [[nodiscard]] String toLower() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Converts the ASCII characters in the string to uppercase
         ///
         /// @return Uppercase string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD String toUpper() const;
+        [[nodiscard]] String toUpper() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Compares this string to another and checks if they are equal if ASCII letters would have been lowercase
@@ -215,7 +215,7 @@ namespace tgui
         ///
         /// @return Are the strings equal except for the case of ASCII letters?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool equalIgnoreCase(const String& other) const;
+        [[nodiscard]] bool equalIgnoreCase(const String& other) const;
 
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,7 +227,7 @@ namespace tgui
         ///
         /// @deprecated Replaced by starts_with in TGUI 1.0
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use starts_with instead") TGUI_NODISCARD bool startsWith(const String& substring) const;
+        TGUI_DEPRECATED("Use starts_with instead") [[nodiscard]] bool startsWith(const String& substring) const;
 #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +237,7 @@ namespace tgui
         ///
         /// @return Does the first part of the string match the given substring if we ignore the case?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool startsWithIgnoreCase(const String& substring) const;
+        [[nodiscard]] bool startsWithIgnoreCase(const String& substring) const;
 
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +249,7 @@ namespace tgui
         ///
         /// @deprecated Replaced by ends_with in TGUI 1.0
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use ends_with instead") TGUI_NODISCARD bool endsWith(const String& substring) const;
+        TGUI_DEPRECATED("Use ends_with instead") [[nodiscard]] bool endsWith(const String& substring) const;
 #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,7 +259,7 @@ namespace tgui
         ///
         /// @return Does the back of the string match the given substring if we ignore the case?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool endsWithIgnoreCase(const String& substring) const;
+        [[nodiscard]] bool endsWithIgnoreCase(const String& substring) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Replaces all occurrences of a substring with a replacement string
@@ -284,7 +284,7 @@ namespace tgui
         /// @param delimiter  String that separates the substrings
         /// @param trim       Should whitespace be removed at the start and end of each part?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::vector<String> split(const String& delimiter, bool trim = false) const;
+        [[nodiscard]] std::vector<String> split(const String& delimiter, bool trim = false) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Joins multiple string segments into a single string
@@ -292,7 +292,7 @@ namespace tgui
         /// @param segments   Substrings that need to concatenated behind each other (with optional separators inbetween)
         /// @param separator  Character that separates the substrings
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static String join(const std::vector<String>& segments, const String& separator);
+        [[nodiscard]] static String join(const std::vector<String>& segments, const String& separator);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Construct the string from a number
@@ -302,7 +302,7 @@ namespace tgui
         /// @return String representing given number
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        TGUI_NODISCARD static String fromNumber(T value)
+        [[nodiscard]] static String fromNumber(T value)
         {
             // If the value is a floating point then we can't use std::to_string because its result depends on the locale.
             // If the value is an 8-bit type (e.g. uint8_t and int8_t) then using std::ostringstream results in the wrong result,
@@ -329,7 +329,7 @@ namespace tgui
         /// @return String representing given number, rounded to the given decimals
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        TGUI_NODISCARD static String fromNumberRounded(T value, unsigned int decimals)
+        [[nodiscard]] static String fromNumberRounded(T value, unsigned int decimals)
         {
             // Precision is ignored by std::ostringstream for integers, so we use std::to_string for integers instead.
             // If the value is an 8-bit type (e.g. uint8_t and int8_t) then using std::ostringstream results in the wrong result,
@@ -478,10 +478,10 @@ namespace tgui
 #endif
         }
 
-        TGUI_NODISCARD std::string toStdString() const;
-        TGUI_NODISCARD std::wstring toWideString() const;
-        TGUI_NODISCARD std::u16string toUtf16() const;
-        TGUI_NODISCARD const std::u32string& toUtf32() const
+        [[nodiscard]] std::string toStdString() const;
+        [[nodiscard]] std::wstring toWideString() const;
+        [[nodiscard]] std::u16string toUtf16() const;
+        [[nodiscard]] const std::u32string& toUtf32() const
         {
             return m_string;
         }
@@ -527,24 +527,24 @@ namespace tgui
             return *this;
         }
 
-        TGUI_NODISCARD reference at(std::size_t pos);
-        TGUI_NODISCARD const_reference at(std::size_t pos) const;
+        [[nodiscard]] reference at(std::size_t pos);
+        [[nodiscard]] const_reference at(std::size_t pos) const;
 
-        TGUI_NODISCARD const_reference operator[](std::size_t index) const;
-        TGUI_NODISCARD reference operator[](std::size_t index);
+        [[nodiscard]] const_reference operator[](std::size_t index) const;
+        [[nodiscard]] reference operator[](std::size_t index);
 
-        TGUI_NODISCARD reference front();
-        TGUI_NODISCARD const_reference front() const;
+        [[nodiscard]] reference front();
+        [[nodiscard]] const_reference front() const;
 
-        TGUI_NODISCARD reference back();
-        TGUI_NODISCARD const_reference back() const;
+        [[nodiscard]] reference back();
+        [[nodiscard]] const_reference back() const;
 
-        TGUI_NODISCARD const char32_t* data() const noexcept
+        [[nodiscard]] const char32_t* data() const noexcept
         {
             return m_string.data();
         }
 
-        TGUI_NODISCARD char32_t* data() noexcept
+        [[nodiscard]] char32_t* data() noexcept
         {
 #if __cplusplus >= 201703L
             return m_string.data();
@@ -553,46 +553,46 @@ namespace tgui
 #endif
         }
 
-        TGUI_NODISCARD const char32_t* c_str() const noexcept
+        [[nodiscard]] const char32_t* c_str() const noexcept
         {
             return m_string.c_str();
         }
 
-        TGUI_NODISCARD iterator begin() noexcept;
-        TGUI_NODISCARD const_iterator begin() const noexcept;
-        TGUI_NODISCARD const_iterator cbegin() const noexcept;
+        [[nodiscard]] iterator begin() noexcept;
+        [[nodiscard]] const_iterator begin() const noexcept;
+        [[nodiscard]] const_iterator cbegin() const noexcept;
 
-        TGUI_NODISCARD iterator end() noexcept;
-        TGUI_NODISCARD const_iterator end() const noexcept;
-        TGUI_NODISCARD const_iterator cend() const noexcept;
+        [[nodiscard]] iterator end() noexcept;
+        [[nodiscard]] const_iterator end() const noexcept;
+        [[nodiscard]] const_iterator cend() const noexcept;
 
-        TGUI_NODISCARD reverse_iterator rbegin() noexcept;
-        TGUI_NODISCARD const_reverse_iterator rbegin() const noexcept;
-        TGUI_NODISCARD const_reverse_iterator crbegin() const noexcept;
+        [[nodiscard]] reverse_iterator rbegin() noexcept;
+        [[nodiscard]] const_reverse_iterator rbegin() const noexcept;
+        [[nodiscard]] const_reverse_iterator crbegin() const noexcept;
 
-        TGUI_NODISCARD reverse_iterator rend() noexcept;
-        TGUI_NODISCARD const_reverse_iterator rend() const noexcept;
-        TGUI_NODISCARD const_reverse_iterator crend() const noexcept;
+        [[nodiscard]] reverse_iterator rend() noexcept;
+        [[nodiscard]] const_reverse_iterator rend() const noexcept;
+        [[nodiscard]] const_reverse_iterator crend() const noexcept;
 
-        TGUI_NODISCARD bool empty() const noexcept
+        [[nodiscard]] bool empty() const noexcept
         {
             return m_string.empty();
         }
 
-        TGUI_NODISCARD std::size_t size() const noexcept
+        [[nodiscard]] std::size_t size() const noexcept
         {
             return m_string.size();
         }
 
-        TGUI_NODISCARD std::size_t length() const noexcept
+        [[nodiscard]] std::size_t length() const noexcept
         {
             return m_string.length();
         }
 
-        TGUI_NODISCARD std::size_t max_size() const noexcept;
+        [[nodiscard]] std::size_t max_size() const noexcept;
 
         void reserve(std::size_t newCap);
-        TGUI_NODISCARD std::size_t capacity() const noexcept;
+        [[nodiscard]] std::size_t capacity() const noexcept;
         void shrink_to_fit();
 
         void clear() noexcept;
@@ -697,43 +697,43 @@ namespace tgui
 
         String& operator+=(const String& str);
 
-        TGUI_NODISCARD int compare(StringView sv) const noexcept;
-        TGUI_NODISCARD int compare(const char32_t* s) const;
-        TGUI_NODISCARD int compare(const std::u32string& str) const noexcept;
-        TGUI_NODISCARD int compare(const String& str) const noexcept;
+        [[nodiscard]] int compare(StringView sv) const noexcept;
+        [[nodiscard]] int compare(const char32_t* s) const;
+        [[nodiscard]] int compare(const std::u32string& str) const noexcept;
+        [[nodiscard]] int compare(const String& str) const noexcept;
 
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, StringView sv) const;
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, const char32_t* s) const;
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, const std::u32string& str) const;
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, const String& str) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, StringView sv) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, const char32_t* s) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, const std::u32string& str) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, const String& str) const;
 
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, StringView sv, std::size_t pos2, std::size_t count2 = npos) const;
-        TGUI_NODISCARD int compare(std::size_t pos1,
-                                   std::size_t count1,
-                                   const std::string& str,
-                                   std::size_t pos2,
-                                   std::size_t count2 = npos) const;
-        TGUI_NODISCARD int compare(std::size_t pos1,
-                                   std::size_t count1,
-                                   const std::wstring& str,
-                                   std::size_t pos2,
-                                   std::size_t count2 = npos) const;
-        TGUI_NODISCARD int compare(std::size_t pos1,
-                                   std::size_t count1,
-                                   const std::u16string& str,
-                                   std::size_t pos2,
-                                   std::size_t count2 = npos) const;
-        TGUI_NODISCARD int compare(std::size_t pos1,
-                                   std::size_t count1,
-                                   const std::u32string& str,
-                                   std::size_t pos2,
-                                   std::size_t count2 = npos) const;
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, const String& str, std::size_t pos2, std::size_t count2 = npos) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, StringView sv, std::size_t pos2, std::size_t count2 = npos) const;
+        [[nodiscard]] int compare(std::size_t pos1,
+                                  std::size_t count1,
+                                  const std::string& str,
+                                  std::size_t pos2,
+                                  std::size_t count2 = npos) const;
+        [[nodiscard]] int compare(std::size_t pos1,
+                                  std::size_t count1,
+                                  const std::wstring& str,
+                                  std::size_t pos2,
+                                  std::size_t count2 = npos) const;
+        [[nodiscard]] int compare(std::size_t pos1,
+                                  std::size_t count1,
+                                  const std::u16string& str,
+                                  std::size_t pos2,
+                                  std::size_t count2 = npos) const;
+        [[nodiscard]] int compare(std::size_t pos1,
+                                  std::size_t count1,
+                                  const std::u32string& str,
+                                  std::size_t pos2,
+                                  std::size_t count2 = npos) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, const String& str, std::size_t pos2, std::size_t count2 = npos) const;
 
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, const char* s, std::size_t count2) const;
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, const wchar_t* s, std::size_t count2) const;
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, const char16_t* s, std::size_t count2) const;
-        TGUI_NODISCARD int compare(std::size_t pos1, std::size_t count1, const char32_t* s, std::size_t count2) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, const char* s, std::size_t count2) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, const wchar_t* s, std::size_t count2) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, const char16_t* s, std::size_t count2) const;
+        [[nodiscard]] int compare(std::size_t pos1, std::size_t count1, const char32_t* s, std::size_t count2) const;
 
         String& replace(std::size_t pos, std::size_t count, StringView sv);
         String& replace(std::size_t pos, std::size_t count, const char32_t* cstr);
@@ -791,7 +791,7 @@ namespace tgui
         String& replace(const_iterator first, const_iterator last, std::initializer_list<char16_t> chars);
         String& replace(const_iterator first, const_iterator last, std::initializer_list<char32_t> chars);
 
-        TGUI_NODISCARD String substr(std::size_t pos = 0, std::size_t count = npos) const;
+        [[nodiscard]] String substr(std::size_t pos = 0, std::size_t count = npos) const;
 
         std::size_t copy(char32_t* dest, std::size_t count, std::size_t pos = 0) const;
 
@@ -803,130 +803,130 @@ namespace tgui
 
         void swap(String& other) noexcept;
 
-        TGUI_NODISCARD bool contains(char c) const noexcept;
-        TGUI_NODISCARD bool contains(wchar_t c) const noexcept;
-        TGUI_NODISCARD bool contains(char16_t c) const noexcept;
-        TGUI_NODISCARD bool contains(char32_t c) const noexcept;
+        [[nodiscard]] bool contains(char c) const noexcept;
+        [[nodiscard]] bool contains(wchar_t c) const noexcept;
+        [[nodiscard]] bool contains(char16_t c) const noexcept;
+        [[nodiscard]] bool contains(char32_t c) const noexcept;
 
-        TGUI_NODISCARD bool contains(StringView sv) const noexcept;
-        TGUI_NODISCARD bool contains(const char32_t* s) const;
-        TGUI_NODISCARD bool contains(const std::u32string& s) const;
-        TGUI_NODISCARD bool contains(const String& s) const;
+        [[nodiscard]] bool contains(StringView sv) const noexcept;
+        [[nodiscard]] bool contains(const char32_t* s) const;
+        [[nodiscard]] bool contains(const std::u32string& s) const;
+        [[nodiscard]] bool contains(const String& s) const;
 
-        TGUI_NODISCARD std::size_t find(StringView sv, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find(const char32_t* s, std::size_t pos = 0) const;
-        TGUI_NODISCARD std::size_t find(const std::u32string& str, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find(const String& str, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find(StringView sv, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find(const char32_t* s, std::size_t pos = 0) const;
+        [[nodiscard]] std::size_t find(const std::u32string& str, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find(const String& str, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD std::size_t find(const char* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find(const wchar_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find(const char16_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find(const char32_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find(const char* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find(const wchar_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find(const char16_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        TGUI_NODISCARD std::size_t find(char ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find(wchar_t ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find(char16_t ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find(char32_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find(char ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find(wchar_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find(char16_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find(char32_t ch, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD std::size_t find_first_of(StringView sv, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_of(const char32_t* s, std::size_t pos = 0) const;
-        TGUI_NODISCARD std::size_t find_first_of(const std::u32string& str, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_of(const String& str, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_of(StringView sv, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_of(const char32_t* s, std::size_t pos = 0) const;
+        [[nodiscard]] std::size_t find_first_of(const std::u32string& str, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_of(const String& str, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD std::size_t find_first_of(const char* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_first_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_first_of(const char16_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_first_of(const char32_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_first_of(const char* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_first_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_first_of(const char16_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_first_of(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        TGUI_NODISCARD std::size_t find_first_of(char ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_of(wchar_t ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_of(char16_t ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_of(char32_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_of(char ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_of(wchar_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_of(char16_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_of(char32_t ch, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD std::size_t find_first_not_of(StringView sv, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_not_of(const char32_t* s, std::size_t pos = 0) const;
-        TGUI_NODISCARD std::size_t find_first_not_of(const std::u32string& str, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_not_of(const String& str, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_not_of(StringView sv, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_not_of(const char32_t* s, std::size_t pos = 0) const;
+        [[nodiscard]] std::size_t find_first_not_of(const std::u32string& str, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_not_of(const String& str, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD std::size_t find_first_not_of(const char* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_first_not_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_first_not_of(const char16_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_first_not_of(const char32_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_first_not_of(const char* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_first_not_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_first_not_of(const char16_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_first_not_of(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        TGUI_NODISCARD std::size_t find_first_not_of(char ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_not_of(wchar_t ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_not_of(char16_t ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t find_first_not_of(char32_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_not_of(char ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_not_of(wchar_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_not_of(char16_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t find_first_not_of(char32_t ch, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD std::size_t rfind(StringView sv, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t rfind(const char32_t* s, std::size_t pos = npos) const;
-        TGUI_NODISCARD std::size_t rfind(const std::u32string& str, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t rfind(const String& str, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t rfind(StringView sv, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t rfind(const char32_t* s, std::size_t pos = npos) const;
+        [[nodiscard]] std::size_t rfind(const std::u32string& str, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t rfind(const String& str, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD std::size_t rfind(const char* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t rfind(const wchar_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t rfind(const char16_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t rfind(const char32_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t rfind(const char* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t rfind(const wchar_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t rfind(const char16_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t rfind(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        TGUI_NODISCARD std::size_t rfind(char ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t rfind(wchar_t ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t rfind(char16_t ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t rfind(char32_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t rfind(char ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t rfind(wchar_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t rfind(char16_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t rfind(char32_t ch, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD std::size_t find_last_of(StringView sv, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_of(const char32_t* s, std::size_t pos = npos) const;
-        TGUI_NODISCARD std::size_t find_last_of(const std::u32string& str, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_of(const String& str, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_of(StringView sv, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_of(const char32_t* s, std::size_t pos = npos) const;
+        [[nodiscard]] std::size_t find_last_of(const std::u32string& str, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_of(const String& str, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD std::size_t find_last_of(const char* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_last_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_last_of(const char16_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_last_of(const char32_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_last_of(const char* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_last_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_last_of(const char16_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_last_of(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        TGUI_NODISCARD std::size_t find_last_of(char ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_of(wchar_t ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_of(char16_t ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_of(char32_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_of(char ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_of(wchar_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_of(char16_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_of(char32_t ch, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD std::size_t find_last_not_of(StringView sv, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_not_of(const char32_t* s, std::size_t pos = npos) const;
-        TGUI_NODISCARD std::size_t find_last_not_of(const std::u32string& str, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_not_of(const String& str, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_not_of(StringView sv, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_not_of(const char32_t* s, std::size_t pos = npos) const;
+        [[nodiscard]] std::size_t find_last_not_of(const std::u32string& str, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_not_of(const String& str, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD std::size_t find_last_not_of(const char* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_last_not_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_last_not_of(const char16_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD std::size_t find_last_not_of(const char32_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_last_not_of(const char* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_last_not_of(const wchar_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_last_not_of(const char16_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] std::size_t find_last_not_of(const char32_t* s, std::size_t pos, std::size_t count) const;
 
-        TGUI_NODISCARD std::size_t find_last_not_of(char ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_not_of(wchar_t ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_not_of(char16_t ch, std::size_t pos = npos) const noexcept;
-        TGUI_NODISCARD std::size_t find_last_not_of(char32_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_not_of(char ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_not_of(wchar_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_not_of(char16_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] std::size_t find_last_not_of(char32_t ch, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD inline bool starts_with(StringView sv) const noexcept;
-        TGUI_NODISCARD inline bool starts_with(const char32_t* s) const;
-        TGUI_NODISCARD inline bool starts_with(const std::u32string& s) const;
-        TGUI_NODISCARD inline bool starts_with(const String& s) const;
+        [[nodiscard]] inline bool starts_with(StringView sv) const noexcept;
+        [[nodiscard]] inline bool starts_with(const char32_t* s) const;
+        [[nodiscard]] inline bool starts_with(const std::u32string& s) const;
+        [[nodiscard]] inline bool starts_with(const String& s) const;
 
-        TGUI_NODISCARD inline bool starts_with(char ch) const noexcept;
-        TGUI_NODISCARD inline bool starts_with(wchar_t ch) const noexcept;
-        TGUI_NODISCARD inline bool starts_with(char16_t ch) const noexcept;
-        TGUI_NODISCARD inline bool starts_with(char32_t ch) const noexcept;
+        [[nodiscard]] inline bool starts_with(char ch) const noexcept;
+        [[nodiscard]] inline bool starts_with(wchar_t ch) const noexcept;
+        [[nodiscard]] inline bool starts_with(char16_t ch) const noexcept;
+        [[nodiscard]] inline bool starts_with(char32_t ch) const noexcept;
 
-        TGUI_NODISCARD inline bool ends_with(StringView sv) const noexcept;
-        TGUI_NODISCARD inline bool ends_with(const char32_t* s) const;
-        TGUI_NODISCARD inline bool ends_with(const std::u32string& s) const;
-        TGUI_NODISCARD inline bool ends_with(const String& s) const;
+        [[nodiscard]] inline bool ends_with(StringView sv) const noexcept;
+        [[nodiscard]] inline bool ends_with(const char32_t* s) const;
+        [[nodiscard]] inline bool ends_with(const std::u32string& s) const;
+        [[nodiscard]] inline bool ends_with(const String& s) const;
 
-        TGUI_NODISCARD inline bool ends_with(char ch) const noexcept;
-        TGUI_NODISCARD inline bool ends_with(wchar_t ch) const noexcept;
-        TGUI_NODISCARD inline bool ends_with(char16_t ch) const noexcept;
-        TGUI_NODISCARD inline bool ends_with(char32_t ch) const noexcept;
+        [[nodiscard]] inline bool ends_with(char ch) const noexcept;
+        [[nodiscard]] inline bool ends_with(wchar_t ch) const noexcept;
+        [[nodiscard]] inline bool ends_with(char16_t ch) const noexcept;
+        [[nodiscard]] inline bool ends_with(char32_t ch) const noexcept;
 
-        TGUI_NODISCARD std::size_t count(char ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t count(wchar_t ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t count(char16_t ch, std::size_t pos = 0) const noexcept;
-        TGUI_NODISCARD std::size_t count(char32_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t count(char ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t count(wchar_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t count(char16_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] std::size_t count(char32_t ch, std::size_t pos = 0) const noexcept;
 
         inline friend bool operator==(const String& left, StringView right);
         inline friend bool operator==(const String& left, const char32_t* right);
@@ -976,7 +976,7 @@ namespace tgui
 
         inline explicit operator std::u8string() const;
 
-        TGUI_NODISCARD inline std::u8string toUtf8() const;
+        [[nodiscard]] inline std::u8string toUtf8() const;
 
         inline String& assign(std::size_t count, char8_t ch);
         inline String& assign(const std::u8string& str, std::size_t pos, std::size_t count = npos);
@@ -998,12 +998,12 @@ namespace tgui
         inline String& append(std::initializer_list<char8_t> chars);
         inline String& append(std::u8string::const_iterator first, std::u8string::const_iterator last);
 
-        TGUI_NODISCARD inline int compare(std::size_t pos1,
-                                          std::size_t count1,
-                                          const std::u8string& str,
-                                          std::size_t pos2,
-                                          std::size_t count2 = npos) const;
-        TGUI_NODISCARD inline int compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const;
+        [[nodiscard]] inline int compare(std::size_t pos1,
+                                         std::size_t count1,
+                                         const std::u8string& str,
+                                         std::size_t pos2,
+                                         std::size_t count2 = npos) const;
+        [[nodiscard]] inline int compare(std::size_t pos1, std::size_t count1, const char8_t* s, std::size_t count2) const;
 
         inline String& replace(std::size_t pos, std::size_t count, const std::u8string& str, std::size_t pos2, std::size_t count2 = npos);
         inline String& replace(const_iterator first,
@@ -1018,28 +1018,28 @@ namespace tgui
 
         inline void resize(std::size_t count, char8_t ch);
 
-        TGUI_NODISCARD inline bool contains(char8_t c) const noexcept;
+        [[nodiscard]] inline bool contains(char8_t c) const noexcept;
 
-        TGUI_NODISCARD inline std::size_t find(const char8_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD inline std::size_t find(char8_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] inline std::size_t find(const char8_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] inline std::size_t find(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD inline std::size_t find_first_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD inline std::size_t find_first_of(char8_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] inline std::size_t find_first_of(const char8_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] inline std::size_t find_first_of(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD inline std::size_t find_first_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD inline std::size_t find_first_not_of(char8_t ch, std::size_t pos = 0) const noexcept;
+        [[nodiscard]] inline std::size_t find_first_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] inline std::size_t find_first_not_of(char8_t ch, std::size_t pos = 0) const noexcept;
 
-        TGUI_NODISCARD inline std::size_t rfind(const char8_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD inline std::size_t rfind(char8_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] inline std::size_t rfind(const char8_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] inline std::size_t rfind(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD inline std::size_t find_last_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD inline std::size_t find_last_of(char8_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] inline std::size_t find_last_of(const char8_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] inline std::size_t find_last_of(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD inline std::size_t find_last_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
-        TGUI_NODISCARD inline std::size_t find_last_not_of(char8_t ch, std::size_t pos = npos) const noexcept;
+        [[nodiscard]] inline std::size_t find_last_not_of(const char8_t* s, std::size_t pos, std::size_t count) const;
+        [[nodiscard]] inline std::size_t find_last_not_of(char8_t ch, std::size_t pos = npos) const noexcept;
 
-        TGUI_NODISCARD inline bool starts_with(char8_t ch) const noexcept;
-        TGUI_NODISCARD inline bool ends_with(char8_t ch) const noexcept;
+        [[nodiscard]] inline bool starts_with(char8_t ch) const noexcept;
+        [[nodiscard]] inline bool ends_with(char8_t ch) const noexcept;
 #endif
     };
 
@@ -1125,139 +1125,139 @@ namespace tgui
         return viewEndsWith(StringView(m_string), ch);
     }
 
-    TGUI_NODISCARD inline bool operator==(const String& left, StringView right)
+    [[nodiscard]] inline bool operator==(const String& left, StringView right)
     {
         return StringView(left) == right;
     }
 
-    TGUI_NODISCARD inline bool operator==(const String& left, const char32_t* right)
+    [[nodiscard]] inline bool operator==(const String& left, const char32_t* right)
     {
         return StringView(left) == right;
     }
 
-    TGUI_NODISCARD inline bool operator==(const String& left, const std::u32string& right)
+    [[nodiscard]] inline bool operator==(const String& left, const std::u32string& right)
     {
         return StringView(left) == right;
     }
 
-    TGUI_NODISCARD inline bool operator==(const String& left, const String& right)
+    [[nodiscard]] inline bool operator==(const String& left, const String& right)
     {
         return left.m_string == right.m_string;
     }
 
-    TGUI_NODISCARD inline bool operator!=(const String& left, StringView right)
+    [[nodiscard]] inline bool operator!=(const String& left, StringView right)
     {
         return StringView(left) != right;
     }
 
-    TGUI_NODISCARD inline bool operator!=(const String& left, const char32_t* right)
+    [[nodiscard]] inline bool operator!=(const String& left, const char32_t* right)
     {
         return StringView(left) != right;
     }
 
-    TGUI_NODISCARD inline bool operator!=(const String& left, const std::u32string& right)
+    [[nodiscard]] inline bool operator!=(const String& left, const std::u32string& right)
     {
         return StringView(left) != right;
     }
 
-    TGUI_NODISCARD inline bool operator!=(const String& left, const String& right)
+    [[nodiscard]] inline bool operator!=(const String& left, const String& right)
     {
         return left.m_string != right.m_string;
     }
 
-    TGUI_NODISCARD inline bool operator<(const String& left, StringView right)
+    [[nodiscard]] inline bool operator<(const String& left, StringView right)
     {
         return StringView(left) < right;
     }
 
-    TGUI_NODISCARD inline bool operator<(const String& left, const char32_t* right)
+    [[nodiscard]] inline bool operator<(const String& left, const char32_t* right)
     {
         return StringView(left) < right;
     }
 
-    TGUI_NODISCARD inline bool operator<(const String& left, const std::u32string& right)
+    [[nodiscard]] inline bool operator<(const String& left, const std::u32string& right)
     {
         return StringView(left) < right;
     }
 
-    TGUI_NODISCARD inline bool operator<(const String& left, const String& right)
+    [[nodiscard]] inline bool operator<(const String& left, const String& right)
     {
         return left.m_string < right.m_string;
     }
 
-    TGUI_NODISCARD inline bool operator<=(const String& left, StringView right)
+    [[nodiscard]] inline bool operator<=(const String& left, StringView right)
     {
         return StringView(left) <= right;
     }
 
-    TGUI_NODISCARD inline bool operator<=(const String& left, const char32_t* right)
+    [[nodiscard]] inline bool operator<=(const String& left, const char32_t* right)
     {
         return StringView(left) <= right;
     }
 
-    TGUI_NODISCARD inline bool operator<=(const String& left, const std::u32string& right)
+    [[nodiscard]] inline bool operator<=(const String& left, const std::u32string& right)
     {
         return StringView(left) <= right;
     }
 
-    TGUI_NODISCARD inline bool operator<=(const String& left, const String& right)
+    [[nodiscard]] inline bool operator<=(const String& left, const String& right)
     {
         return left.m_string <= right.m_string;
     }
 
-    TGUI_NODISCARD inline bool operator>(const String& left, StringView right)
+    [[nodiscard]] inline bool operator>(const String& left, StringView right)
     {
         return StringView(left) > right;
     }
 
-    TGUI_NODISCARD inline bool operator>(const String& left, const char32_t* right)
+    [[nodiscard]] inline bool operator>(const String& left, const char32_t* right)
     {
         return StringView(left) > right;
     }
 
-    TGUI_NODISCARD inline bool operator>(const String& left, const std::u32string& right)
+    [[nodiscard]] inline bool operator>(const String& left, const std::u32string& right)
     {
         return StringView(left) > right;
     }
 
-    TGUI_NODISCARD inline bool operator>(const String& left, const String& right)
+    [[nodiscard]] inline bool operator>(const String& left, const String& right)
     {
         return left.m_string > right.m_string;
     }
 
-    TGUI_NODISCARD inline bool operator>=(const String& left, StringView right)
+    [[nodiscard]] inline bool operator>=(const String& left, StringView right)
     {
         return StringView(left) >= right;
     }
 
-    TGUI_NODISCARD inline bool operator>=(const String& left, const char32_t* right)
+    [[nodiscard]] inline bool operator>=(const String& left, const char32_t* right)
     {
         return StringView(left) >= right;
     }
 
-    TGUI_NODISCARD inline bool operator>=(const String& left, const std::u32string& right)
+    [[nodiscard]] inline bool operator>=(const String& left, const std::u32string& right)
     {
         return StringView(left) >= right;
     }
 
-    TGUI_NODISCARD inline bool operator>=(const String& left, const String& right)
+    [[nodiscard]] inline bool operator>=(const String& left, const String& right)
     {
         return left.m_string >= right.m_string;
     }
 
-    TGUI_NODISCARD inline String operator+(const String& left, const String& right)
+    [[nodiscard]] inline String operator+(const String& left, const String& right)
     {
         return {left.m_string + right.m_string};
     }
-    TGUI_NODISCARD inline String operator+(String&& left, String&& right)
+    [[nodiscard]] inline String operator+(String&& left, String&& right)
     {
         return {std::move(left.m_string) + std::move(right.m_string)};
     }
-    TGUI_NODISCARD inline String operator+(String&& left, const String& right)
+    [[nodiscard]] inline String operator+(String&& left, const String& right)
     {
         return {std::move(left.m_string) + right.m_string};
     }
-    TGUI_NODISCARD inline String operator+(const String& left, String&& right)
+    [[nodiscard]] inline String operator+(const String& left, String&& right)
     {
         return {left.m_string + std::move(right.m_string)};
     }

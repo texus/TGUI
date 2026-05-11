@@ -42,10 +42,10 @@ namespace tgui
     public:
         using SerializeFunc = std::function<String(ObjectConverter&&)>;
 
-        TGUI_NODISCARD static String serialize(ObjectConverter&& object);
+        [[nodiscard]] static String serialize(ObjectConverter&& object);
 
         static void setFunction(ObjectConverter::Type type, const SerializeFunc& serializer);
-        TGUI_NODISCARD static const SerializeFunc& getFunction(ObjectConverter::Type type);
+        [[nodiscard]] static const SerializeFunc& getFunction(ObjectConverter::Type type);
 
     private:
         static std::unordered_map<ObjectConverter::Type, SerializeFunc> m_serializers;

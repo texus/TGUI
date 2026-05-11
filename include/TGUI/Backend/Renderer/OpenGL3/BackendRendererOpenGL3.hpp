@@ -73,7 +73,7 @@ namespace tgui
         /// @brief Creates a new empty texture object
         /// @return Shared pointer to a new texture object
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendTexture> createTexture() override;
+        [[nodiscard]] std::shared_ptr<BackendTexture> createTexture() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the maximum allowed texture size
@@ -82,7 +82,7 @@ namespace tgui
         ///
         /// This maximum size is defined by the graphics driver. Most likely this will return 8192 or 16384.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
+        [[nodiscard]] unsigned int getMaximumTextureSize() override;
 
     private:
         int m_maxTextureSize = 0;

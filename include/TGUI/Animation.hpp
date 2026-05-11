@@ -79,7 +79,7 @@ namespace tgui
             Animation& operator=(Animation&&) = default;
             virtual ~Animation() = default;
 
-            TGUI_NODISCARD AnimationType getType() const;
+            [[nodiscard]] AnimationType getType() const;
 
             virtual bool update(Duration elapsedTime) = 0;
             virtual void finish();

@@ -49,7 +49,7 @@ namespace tgui
         ///
         /// @return RGBA array of pixels of loaded image (4 * imageSize.x * imageSize.y bytes), or nullptr if loading failed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::unique_ptr<std::uint8_t[]> loadFromFile(const String& filename, Vector2u& imageSize);
+        [[nodiscard]] static std::unique_ptr<std::uint8_t[]> loadFromFile(const String& filename, Vector2u& imageSize);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads an image from memory (data in memory should contain the entire file, not just the pixels)
@@ -60,9 +60,9 @@ namespace tgui
         ///
         /// @return RGBA array of pixels of loaded image (4 * imageSize.x * imageSize.y bytes), or nullptr if loading failed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::unique_ptr<std::uint8_t[]> loadFromMemory(const std::uint8_t* data,
-                                                                             std::size_t dataSize,
-                                                                             Vector2u& imageSize);
+        [[nodiscard]] static std::unique_ptr<std::uint8_t[]> loadFromMemory(const std::uint8_t* data,
+                                                                            std::size_t dataSize,
+                                                                            Vector2u& imageSize);
     };
 } // namespace tgui
 

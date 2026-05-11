@@ -37,11 +37,11 @@ public:
     Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::ChildWindow::Ptr& formWindow, tgui::Vector2f formSize);
     tgui::String addWidget(const tgui::Widget::Ptr& widget, tgui::Container* parent, bool selectNewWidget = true);
     void removeWidget(const tgui::String& id);
-    TGUI_NODISCARD std::shared_ptr<WidgetInfo> getWidget(const tgui::String& id) const;
-    TGUI_NODISCARD std::shared_ptr<WidgetInfo> getWidgetByName(const tgui::String& name) const;
-    TGUI_NODISCARD std::vector<std::shared_ptr<WidgetInfo>> getWidgets() const;
-    TGUI_NODISCARD std::shared_ptr<tgui::Group> getRootWidgetsGroup() const;
-    TGUI_NODISCARD std::shared_ptr<WidgetInfo> getSelectedWidget() const;
+    [[nodiscard]] std::shared_ptr<WidgetInfo> getWidget(const tgui::String& id) const;
+    [[nodiscard]] std::shared_ptr<WidgetInfo> getWidgetByName(const tgui::String& name) const;
+    [[nodiscard]] std::vector<std::shared_ptr<WidgetInfo>> getWidgets() const;
+    [[nodiscard]] std::shared_ptr<tgui::Group> getRootWidgetsGroup() const;
+    [[nodiscard]] std::shared_ptr<WidgetInfo> getSelectedWidget() const;
     bool setSelectedWidgetName(const tgui::String& name);
     void setSelectedWidgetRenderer(const tgui::String& renderer);
     void updateSelectionSquarePositions();
@@ -50,30 +50,30 @@ public:
     void selectParent();
     void mouseMoved(tgui::Vector2i pos);
     void mouseReleased();
-    TGUI_NODISCARD bool rightMouseClick(tgui::Vector2i pos);
+    [[nodiscard]] bool rightMouseClick(tgui::Vector2i pos);
     void arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent);
     void setFilename(const tgui::String& filename);
-    TGUI_NODISCARD tgui::String getFilename() const;
+    [[nodiscard]] tgui::String getFilename() const;
     void setSize(tgui::Vector2f size);
-    TGUI_NODISCARD tgui::Vector2f getSize() const;
+    [[nodiscard]] tgui::Vector2f getSize() const;
     void setChanged(bool changed);
-    TGUI_NODISCARD bool isChanged() const;
+    [[nodiscard]] bool isChanged() const;
     void focus();
-    TGUI_NODISCARD bool hasFocus() const;
+    [[nodiscard]] bool hasFocus() const;
     void load();
     void save();
-    TGUI_NODISCARD std::stringstream saveState();
+    [[nodiscard]] std::stringstream saveState();
     void loadState(std::stringstream& state);
     void updateAlignmentLines();
 
 private:
     void importLoadedWidgets(const tgui::Container::Ptr& parent);
     void onSelectionSquarePress(const tgui::Button::Ptr& square, tgui::Vector2f pos);
-    TGUI_NODISCARD tgui::Widget::Ptr getWidgetBelowMouse(const tgui::Container::Ptr& parent, tgui::Vector2f pos);
+    [[nodiscard]] tgui::Widget::Ptr getWidgetBelowMouse(const tgui::Container::Ptr& parent, tgui::Vector2f pos);
     void onFormMousePress(tgui::Vector2f pos);
     void onDrag(tgui::Vector2i mousePos);
     void selectWidget(const std::shared_ptr<WidgetInfo>& widget);
-    TGUI_NODISCARD std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> getAlignmentLines() const;
+    [[nodiscard]] std::vector<std::pair<tgui::Vector2f, tgui::Vector2f>> getAlignmentLines() const;
     static tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget);
 
 private:

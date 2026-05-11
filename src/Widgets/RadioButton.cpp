@@ -127,7 +127,7 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD float RadioButton::getMaxWidth() const
+    [[nodiscard]] float RadioButton::getMaxWidth() const
     {
         return m_maxWidth;
     }

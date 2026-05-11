@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return texture of the image
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture& getTexture() const;
+        [[nodiscard]] const Texture& getTexture() const;
     };
 } // namespace tgui
 

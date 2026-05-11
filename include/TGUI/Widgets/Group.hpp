@@ -62,7 +62,7 @@ namespace tgui
         ///
         /// @return The new group
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Group::Ptr create(const Layout2d& size = {"100%", "100%"});
+        [[nodiscard]] static Group::Ptr create(const Layout2d& size = {"100%", "100%"});
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another group
@@ -71,21 +71,21 @@ namespace tgui
         ///
         /// @return The new group
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Group::Ptr copy(const Group::ConstPtr& group);
+        [[nodiscard]] static Group::Ptr copy(const Group::ConstPtr& group);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD GroupRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const GroupRenderer* getSharedRenderer() const override;
+        [[nodiscard]] GroupRenderer* getSharedRenderer() override;
+        [[nodiscard]] const GroupRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD GroupRenderer* getRenderer() override;
+        [[nodiscard]] GroupRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the group
@@ -99,7 +99,7 @@ namespace tgui
         /// @brief Returns the space available for widgets inside the container
         /// @return Size without padding
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getInnerSize() const override;
+        [[nodiscard]] Vector2f getInnerSize() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position of the container and a widget that would be drawn inside
@@ -107,14 +107,14 @@ namespace tgui
         ///
         /// @return Offset of the widgets in the container
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getChildWidgetsOffset() const override;
+        [[nodiscard]] Vector2f getChildWidgetsOffset() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
+        [[nodiscard]] bool isMouseOnWidget(Vector2f pos) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the child widgets to a render target
@@ -137,7 +137,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

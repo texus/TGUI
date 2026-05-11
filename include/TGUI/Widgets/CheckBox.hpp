@@ -59,7 +59,7 @@ namespace tgui
         ///
         /// @return The new check box
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static CheckBox::Ptr create(const String& text = "");
+        [[nodiscard]] static CheckBox::Ptr create(const String& text = "");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another checkbox
@@ -68,21 +68,21 @@ namespace tgui
         ///
         /// @return The new checkbox
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static CheckBox::Ptr copy(const CheckBox::ConstPtr& checkbox);
+        [[nodiscard]] static CheckBox::Ptr copy(const CheckBox::ConstPtr& checkbox);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD CheckBoxRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const CheckBoxRenderer* getSharedRenderer() const override;
+        [[nodiscard]] CheckBoxRenderer* getSharedRenderer() override;
+        [[nodiscard]] const CheckBoxRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD CheckBoxRenderer* getRenderer() override;
+        [[nodiscard]] CheckBoxRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the full size of the radio button
@@ -92,7 +92,7 @@ namespace tgui
         /// The returned size includes the text next to the radio button.
         /// When textures are loaded, the height of the checked image is used (in case the check goes outside of the box).
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getFullSize() const override;
+        [[nodiscard]] Vector2f getFullSize() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
@@ -102,7 +102,7 @@ namespace tgui
         ///
         /// @return Offset of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getWidgetOffset() const override;
+        [[nodiscard]] Vector2f getWidgetOffset() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks or unchecks the check box
@@ -159,7 +159,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

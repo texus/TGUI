@@ -183,7 +183,7 @@ namespace tgui
         ///
         /// @return signal name
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD String getName() const
+        [[nodiscard]] String getName() const
         {
             return m_name;
         }
@@ -209,7 +209,7 @@ namespace tgui
         /// Signals are enabled by default. Temporarily disabling the signal is the better alternative to disconnecting the
         /// handler and connecting it again a few lines later.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isEnabled() const
+        [[nodiscard]] bool isEnabled() const
         {
             return m_enabled;
         }
@@ -226,7 +226,7 @@ namespace tgui
         /// @brief Turns the void* parameters back into its original type right before calling the callback function
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Type>
-        TGUI_NODISCARD static const std::decay_t<Type>& dereferenceParam(std::size_t paramIndex)
+        [[nodiscard]] static const std::decay_t<Type>& dereferenceParam(std::size_t paramIndex)
         {
             return *static_cast<const std::decay_t<Type>*>(m_parameters[paramIndex]);
         }

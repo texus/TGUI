@@ -53,7 +53,7 @@ namespace tgui
         ///
         /// @return Background texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture& getTextureBackground() const;
+        [[nodiscard]] const Texture& getTextureBackground() const;
     };
 } // namespace tgui
 

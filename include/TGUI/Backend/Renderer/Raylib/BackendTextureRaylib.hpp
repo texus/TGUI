@@ -69,7 +69,7 @@ namespace tgui
         /// @brief Returns a pointer to the internal Texture2D
         /// @return Pointer to internal texture, or nullptr when the texture was not initialized yet
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture2D& getInternalTexture() const;
+        [[nodiscard]] const Texture2D& getInternalTexture() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Replaces the internal texture by a different one

@@ -60,7 +60,7 @@ struct ComboBoxProperties : public WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    [[nodiscard]] PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto comboBox = widget->cast<tgui::ComboBox>();
@@ -100,7 +100,7 @@ struct ComboBoxProperties : public WidgetProperties
     }
 
 private:
-    TGUI_NODISCARD static tgui::ComboBox::ExpandDirection deserializeExpandDirection(tgui::String value)
+    [[nodiscard]] static tgui::ComboBox::ExpandDirection deserializeExpandDirection(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "up")
@@ -110,7 +110,7 @@ private:
         return tgui::ComboBox::ExpandDirection::Automatic;
     }
 
-    TGUI_NODISCARD static tgui::String serializeExpandDirection(tgui::ComboBox::ExpandDirection alignment)
+    [[nodiscard]] static tgui::String serializeExpandDirection(tgui::ComboBox::ExpandDirection alignment)
     {
         if (alignment == tgui::ComboBox::ExpandDirection::Up)
             return "Up";

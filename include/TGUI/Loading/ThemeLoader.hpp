@@ -65,7 +65,7 @@ namespace tgui
         ///
         /// @return Map of property-value pairs
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::map<String, String> getGlobalProperties(const String& primary);
+        [[nodiscard]] virtual std::map<String, String> getGlobalProperties(const String& primary);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the property-value pairs from the theme
@@ -77,7 +77,7 @@ namespace tgui
         ///
         /// @return Map of property-value pairs
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual const std::map<String, String>& load(const String& primary, const String& secondary) = 0;
+        [[nodiscard]] virtual const std::map<String, String>& load(const String& primary, const String& secondary) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Check if the requested property-value pairs are available
@@ -89,7 +89,7 @@ namespace tgui
         ///
         /// @return Whether a map op property-value pairs is available
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool canLoad(const String& primary, const String& secondary) = 0;
+        [[nodiscard]] virtual bool canLoad(const String& primary, const String& secondary) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -136,7 +136,7 @@ namespace tgui
         ///
         /// @return Map of property-value pairs
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::map<String, String> getGlobalProperties(const String& filename) override;
+        [[nodiscard]] std::map<String, String> getGlobalProperties(const String& filename) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the property-value pairs from the theme file
@@ -149,7 +149,7 @@ namespace tgui
         /// @exception Exception when finding syntax errors in the file
         /// @exception Exception when file did not contain requested class name
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::map<String, String>& load(const String& filename, const String& section) override;
+        [[nodiscard]] const std::map<String, String>& load(const String& filename, const String& section) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Check if the requested property-value pairs are available
@@ -159,7 +159,7 @@ namespace tgui
         ///
         /// @return Whether a map op property-value pairs is available
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool canLoad(const String& filename, const String& section) override;
+        [[nodiscard]] bool canLoad(const String& filename, const String& section) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Empties the caches and force files to be reloaded.
@@ -182,7 +182,7 @@ namespace tgui
         ///
         /// @return Root node of the parsed file, obtained by calling DataIO::parse(fileContents)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::unique_ptr<DataIO::Node> readFile(const String& filename) const;
+        [[nodiscard]] virtual std::unique_ptr<DataIO::Node> readFile(const String& filename) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

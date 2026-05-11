@@ -72,7 +72,7 @@ struct WidgetProperties
             widget->getRenderer()->setProperty(property, value);
     }
 
-    TGUI_NODISCARD virtual PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const
+    [[nodiscard]] virtual PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const
     {
         PropertyValueMap pairs;
         pairs["Left"] = {"Layout", widget->getPositionLayout().x.toString()};
@@ -110,7 +110,7 @@ struct WidgetProperties
         return {pairs, rendererPairs};
     }
 
-    TGUI_NODISCARD static bool parseBoolean(tgui::String str, bool defaultValue)
+    [[nodiscard]] static bool parseBoolean(tgui::String str, bool defaultValue)
     {
         str = str.trim().toLower();
         if (str == "true" || str == "yes" || str == "on" || str == "y" || str == "t" || str == "1")
@@ -120,7 +120,7 @@ struct WidgetProperties
         return defaultValue;
     }
 
-    TGUI_NODISCARD static std::vector<tgui::String> deserializeList(const tgui::String& listStr)
+    [[nodiscard]] static std::vector<tgui::String> deserializeList(const tgui::String& listStr)
     {
         try
         {
@@ -144,7 +144,7 @@ struct WidgetProperties
         return {};
     }
 
-    TGUI_NODISCARD static tgui::String serializeList(const std::vector<tgui::String>& list)
+    [[nodiscard]] static tgui::String serializeList(const std::vector<tgui::String>& list)
     {
         if (list.empty())
             return "[]";
@@ -157,7 +157,7 @@ struct WidgetProperties
         return itemList;
     }
 
-    TGUI_NODISCARD static tgui::Scrollbar::Policy deserializeScrollbarPolicy(tgui::String value)
+    [[nodiscard]] static tgui::Scrollbar::Policy deserializeScrollbarPolicy(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "always")
@@ -167,7 +167,7 @@ struct WidgetProperties
         return tgui::Scrollbar::Policy::Automatic;
     }
 
-    TGUI_NODISCARD static tgui::String serializeScrollbarPolicy(tgui::Scrollbar::Policy policy)
+    [[nodiscard]] static tgui::String serializeScrollbarPolicy(tgui::Scrollbar::Policy policy)
     {
         if (policy == tgui::Scrollbar::Policy::Always)
             return "Always";
@@ -176,7 +176,7 @@ struct WidgetProperties
         return "Automatic";
     }
 
-    TGUI_NODISCARD static tgui::Cursor::Type deserializeMouseCursor(tgui::String value)
+    [[nodiscard]] static tgui::Cursor::Type deserializeMouseCursor(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "text")
@@ -210,7 +210,7 @@ struct WidgetProperties
         return tgui::Cursor::Type::Arrow;
     }
 
-    TGUI_NODISCARD static tgui::String serializeMouseCursor(tgui::Cursor::Type cursor)
+    [[nodiscard]] static tgui::String serializeMouseCursor(tgui::Cursor::Type cursor)
     {
         switch (cursor)
         {
@@ -247,7 +247,7 @@ struct WidgetProperties
         }
     }
 
-    TGUI_NODISCARD static tgui::HorizontalAlignment deserializeHorizontalAlignment(tgui::String value)
+    [[nodiscard]] static tgui::HorizontalAlignment deserializeHorizontalAlignment(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "right")
@@ -257,7 +257,7 @@ struct WidgetProperties
         return tgui::HorizontalAlignment::Left;
     }
 
-    TGUI_NODISCARD static tgui::VerticalAlignment deserializeVerticalAlignment(tgui::String value)
+    [[nodiscard]] static tgui::VerticalAlignment deserializeVerticalAlignment(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "bottom")
@@ -267,7 +267,7 @@ struct WidgetProperties
         return tgui::VerticalAlignment::Top;
     }
 
-    TGUI_NODISCARD static tgui::String serializeHorizontalAlignment(tgui::HorizontalAlignment alignment)
+    [[nodiscard]] static tgui::String serializeHorizontalAlignment(tgui::HorizontalAlignment alignment)
     {
         if (alignment == tgui::HorizontalAlignment::Center)
             return "Center";
@@ -276,7 +276,7 @@ struct WidgetProperties
         return "Left";
     }
 
-    TGUI_NODISCARD static tgui::String serializeVerticalAlignment(tgui::VerticalAlignment alignment)
+    [[nodiscard]] static tgui::String serializeVerticalAlignment(tgui::VerticalAlignment alignment)
     {
         if (alignment == tgui::VerticalAlignment::Center)
             return "Center";
@@ -285,14 +285,14 @@ struct WidgetProperties
         return "Top";
     }
 
-    TGUI_NODISCARD static tgui::String serializeOrientation(tgui::Orientation orientation)
+    [[nodiscard]] static tgui::String serializeOrientation(tgui::Orientation orientation)
     {
         if (orientation == tgui::Orientation::Horizontal)
             return "Horizontal";
         return "Vertical";
     }
 
-    TGUI_NODISCARD static tgui::Orientation deserializeOrientation(tgui::String value)
+    [[nodiscard]] static tgui::Orientation deserializeOrientation(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "horizontal")

@@ -64,7 +64,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD Layout2d parseLayout(String str)
+        [[nodiscard]] Layout2d parseLayout(String str)
         {
             if (str.empty())
                 throw Exception{U"Failed to parse layout. String was empty."};
@@ -114,7 +114,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD Vector2f parseVector2f(String str)
+        [[nodiscard]] Vector2f parseVector2f(String str)
         {
             if (str.empty())
                 throw Exception{U"Failed to parse Vector2f string. String was empty."};

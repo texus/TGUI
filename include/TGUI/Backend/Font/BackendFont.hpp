@@ -81,7 +81,7 @@ namespace tgui
         ///
         /// @return True if the font was loaded successfully, false otherwise
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool loadFromFile(const String& filename);
+        [[nodiscard]] virtual bool loadFromFile(const String& filename);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a font from memory
@@ -91,7 +91,7 @@ namespace tgui
         ///
         /// @return True if the font was loaded successfully, false otherwise
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) = 0;
+        [[nodiscard]] virtual bool loadFromMemory(std::unique_ptr<std::uint8_t[]> data, std::size_t sizeInBytes) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads a font from memory
@@ -103,7 +103,7 @@ namespace tgui
         ///
         /// This function makes a copy of the data. Use the overload with a unique_ptr when possible to move instead of copy.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool loadFromMemory(const void* data, std::size_t sizeInBytes);
+        [[nodiscard]] bool loadFromMemory(const void* data, std::size_t sizeInBytes);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether a font contains a certain glyph
@@ -112,7 +112,7 @@ namespace tgui
         ///
         /// @return Does the font contain this character?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool hasGlyph(char32_t codePoint) const = 0;
+        [[nodiscard]] virtual bool hasGlyph(char32_t codePoint) const = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieve a glyph of the font
@@ -127,7 +127,7 @@ namespace tgui
         ///
         /// @return The glyph corresponding to codePoint and characterSize
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual FontGlyph getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) = 0;
+        [[nodiscard]] virtual FontGlyph getGlyph(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness = 0) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the kerning offset of two glyphs
@@ -143,7 +143,7 @@ namespace tgui
         ///
         /// @return Kerning value for first and second, in pixels
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold) = 0;
+        [[nodiscard]] virtual float getKerning(char32_t first, char32_t second, unsigned int characterSize, bool bold) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the line spacing
@@ -154,7 +154,7 @@ namespace tgui
         ///
         /// @return Line spacing, in pixels
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getLineSpacing(unsigned int characterSize) = 0;
+        [[nodiscard]] virtual float getLineSpacing(unsigned int characterSize) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the height required to render a line of text
@@ -163,7 +163,7 @@ namespace tgui
         ///
         /// @return Sum of font ascent and descent
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getFontHeight(unsigned int characterSize) = 0;
+        [[nodiscard]] virtual float getFontHeight(unsigned int characterSize) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum height of a glyph above the baseline
@@ -172,7 +172,7 @@ namespace tgui
         ///
         /// @return Ascent of the font
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getAscent(unsigned int characterSize) = 0;
+        [[nodiscard]] virtual float getAscent(unsigned int characterSize) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum height of a glyph below the baseline as a negative value
@@ -181,7 +181,7 @@ namespace tgui
         ///
         /// @return Descent of the font
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getDescent(unsigned int characterSize) = 0;
+        [[nodiscard]] virtual float getDescent(unsigned int characterSize) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the position of the underline
@@ -192,7 +192,7 @@ namespace tgui
         ///
         /// @return Underline position, in pixels
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getUnderlinePosition(unsigned int characterSize) = 0;
+        [[nodiscard]] virtual float getUnderlinePosition(unsigned int characterSize) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the thickness of the underline
@@ -203,7 +203,7 @@ namespace tgui
         ///
         /// @return Underline thickness, in pixels
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getUnderlineThickness(unsigned int characterSize) = 0;
+        [[nodiscard]] virtual float getUnderlineThickness(unsigned int characterSize) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the texture that is used to store glyphs of the given character size
@@ -213,7 +213,7 @@ namespace tgui
         ///
         /// @return Texture to render text glyphs with
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::shared_ptr<BackendTexture> getTexture(unsigned int characterSize, unsigned int& textureVersion) = 0;
+        [[nodiscard]] virtual std::shared_ptr<BackendTexture> getTexture(unsigned int characterSize, unsigned int& textureVersion) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the size of the texture that is used to store glyphs of the given character size
@@ -222,7 +222,7 @@ namespace tgui
         ///
         /// @return Size of the texture that holds the glyphs
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Vector2u getTextureSize(unsigned int characterSize) = 0;
+        [[nodiscard]] virtual Vector2u getTextureSize(unsigned int characterSize) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Enable or disable the smooth filter
@@ -242,7 +242,7 @@ namespace tgui
         ///
         /// @see setSmooth
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isSmooth() const;
+        [[nodiscard]] bool isSmooth() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -259,7 +259,7 @@ namespace tgui
         /// Text may be rendered blurry if the font scale doesn't match the ratio between the window size and gui view.
         /// Default scaling is 1. If the scale is set to 1.5 then a font with text size 20 would be internally rendered at 30px.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getFontScale() const;
+        [[nodiscard]] float getFontScale() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -276,7 +276,7 @@ namespace tgui
         ///
         /// Calling this function with the same parameters results in the same id, while other parameters result in another id.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::uint64_t constructGlyphKey(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness);
+        [[nodiscard]] static std::uint64_t constructGlyphKey(char32_t codePoint, unsigned int characterSize, bool bold, float outlineThickness);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

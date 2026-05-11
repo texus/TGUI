@@ -63,12 +63,12 @@ namespace tgui
         FileDialogIconLoaderLinux();
         ~FileDialogIconLoaderLinux() override;
 
-        TGUI_NODISCARD bool update() override;
-        TGUI_NODISCARD bool supportsSystemIcons() const override;
-        TGUI_NODISCARD bool hasGenericIcons() const override;
-        TGUI_NODISCARD Texture getGenericFileIcon(const Filesystem::FileInfo& file) override;
+        [[nodiscard]] bool update() override;
+        [[nodiscard]] bool supportsSystemIcons() const override;
+        [[nodiscard]] bool hasGenericIcons() const override;
+        [[nodiscard]] Texture getGenericFileIcon(const Filesystem::FileInfo& file) override;
         void requestFileIcons(const std::vector<Filesystem::FileInfo>& files) override;
-        TGUI_NODISCARD std::vector<Texture> retrieveFileIcons() override;
+        [[nodiscard]] std::vector<Texture> retrieveFileIcons() override;
 
     private:
         void initMagic();

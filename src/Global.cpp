@@ -48,7 +48,7 @@ namespace
     {
         // We can't return string_view because the string has to outlive the view,
         // but the returned string will be implicitly converted to a string_view later.
-        TGUI_NODISCARD static std::string convert(const StreamType& stream)
+        [[nodiscard]] static std::string convert(const StreamType& stream)
         {
             return stream.str();
         }
@@ -58,7 +58,7 @@ namespace
     template <typename StreamType>
     struct StreamToStringViewConverter<StreamType, std::void_t<decltype(&StreamType::view)>>
     {
-        TGUI_NODISCARD static std::string_view convert(const StreamType& stream)
+        [[nodiscard]] static std::string_view convert(const StreamType& stream)
         {
             return stream.view();
         }

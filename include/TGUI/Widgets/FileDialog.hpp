@@ -84,9 +84,9 @@ namespace tgui
         ///
         /// @return The new file dialog
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static FileDialog::Ptr create(const String& title = "Open file",
-                                                     const String& confirmButtonText = "Open",
-                                                     bool allowCreateFolder = false);
+        [[nodiscard]] static FileDialog::Ptr create(const String& title = "Open file",
+                                                    const String& confirmButtonText = "Open",
+                                                    bool allowCreateFolder = false);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor
@@ -115,21 +115,21 @@ namespace tgui
         ///
         /// @return The new file dialog
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static FileDialog::Ptr copy(const FileDialog::ConstPtr& dialog);
+        [[nodiscard]] static FileDialog::Ptr copy(const FileDialog::ConstPtr& dialog);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD FileDialogRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const FileDialogRenderer* getSharedRenderer() const override;
+        [[nodiscard]] FileDialogRenderer* getSharedRenderer() override;
+        [[nodiscard]] const FileDialogRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD FileDialogRenderer* getRenderer() override;
+        [[nodiscard]] FileDialogRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the selected files/directories
@@ -148,7 +148,7 @@ namespace tgui
         ///
         /// If the file dialog is closed or the cancel button is pressed then the selected paths will be an empty list.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::vector<Filesystem::Path>& getSelectedPaths() const;
+        [[nodiscard]] const std::vector<Filesystem::Path>& getSelectedPaths() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the directory for which the files are to be displayed
@@ -173,7 +173,7 @@ namespace tgui
         ///
         /// @return Path to displayed directory
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Filesystem::Path& getPath() const;
+        [[nodiscard]] const Filesystem::Path& getPath() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the filename that is shown at the bottom of the file dialog
@@ -191,7 +191,7 @@ namespace tgui
         /// the dialog is open. Although this function does provide the filename of the currently selected file, the intended
         /// function to get the selected file when the dialog closes is getSelectedFile().
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getFilename() const;
+        [[nodiscard]] const String& getFilename() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the file filters which the user can select to only show files of a certain type
@@ -226,7 +226,7 @@ namespace tgui
         ///
         /// @see setFileTypeFilters
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::vector<std::pair<String, std::vector<String>>>& getFileTypeFilters() const;
+        [[nodiscard]] const std::vector<std::pair<String, std::vector<String>>>& getFileTypeFilters() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the index of the currently selected file filter
@@ -235,7 +235,7 @@ namespace tgui
         ///
         /// @see setFileTypeFilters
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::size_t getFileTypeFiltersIndex() const;
+        [[nodiscard]] std::size_t getFileTypeFiltersIndex() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text of the open/save button
@@ -249,7 +249,7 @@ namespace tgui
         ///
         /// @return Current caption of the open/save button
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getConfirmButtonText() const;
+        [[nodiscard]] const String& getConfirmButtonText() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text of the cancel button (e.g. to display it in a different language)
@@ -263,7 +263,7 @@ namespace tgui
         ///
         /// @return Current caption of the cancel button
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getCancelButtonText() const;
+        [[nodiscard]] const String& getCancelButtonText() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text of the create folder button
@@ -277,7 +277,7 @@ namespace tgui
         ///
         /// @return Current caption of the create folder button
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getCreateFolderButtonText() const;
+        [[nodiscard]] const String& getCreateFolderButtonText() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds or removes the create folder button
@@ -291,7 +291,7 @@ namespace tgui
         ///
         /// @return Boolean value of m_allowCreateFolder
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getAllowCreateFolder() const;
+        [[nodiscard]] bool getAllowCreateFolder() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text of the filename label (e.g. to display it in a different language)
@@ -305,7 +305,7 @@ namespace tgui
         ///
         /// @return Current caption of the filename label
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getFilenameLabelText() const;
+        [[nodiscard]] const String& getFilenameLabelText() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the names of the list view columns (e.g. to display them in a different language)
@@ -325,7 +325,7 @@ namespace tgui
         ///
         /// @see setListViewColumnCaptions
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::tuple<String, String, String> getListViewColumnCaptions() const;
+        [[nodiscard]] std::tuple<String, String, String> getListViewColumnCaptions() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the file should exist or whether the filename can be a non-existent file
@@ -341,7 +341,7 @@ namespace tgui
         ///
         /// @return Should the open/save button be disabled when the filename doesn't exist?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getFileMustExist() const;
+        [[nodiscard]] bool getFileMustExist() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the file dialog is used for selecting a file or for selecting a directory
@@ -358,7 +358,7 @@ namespace tgui
         ///
         /// @return Is the dialog for selecting a directory instead of for selecting a file?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getSelectingDirectory() const;
+        [[nodiscard]] bool getSelectingDirectory() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether multiple files can be selected
@@ -372,7 +372,7 @@ namespace tgui
         ///
         /// @return Can we select multiple files?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getMultiSelect() const;
+        [[nodiscard]] bool getMultiSelect() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets a custom icon loader
@@ -390,7 +390,7 @@ namespace tgui
         ///
         /// @return Current icon loader
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<FileDialogIconLoader> getIconLoader() const;
+        [[nodiscard]] std::shared_ptr<FileDialogIconLoader> getIconLoader() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -425,7 +425,7 @@ namespace tgui
         ///
         /// @throw Exception when the name does not match any signal
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Signal& getSignal(String signalName) override;
+        [[nodiscard]] Signal& getSignal(String signalName) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
@@ -437,7 +437,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes
@@ -452,7 +452,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -510,7 +510,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Check if the name of a new folder is valid
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static bool isValidFolderName(const String& name);
+        [[nodiscard]] static bool isValidFolderName(const String& name);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Initializes the widget pointers after copying or loading the dialog

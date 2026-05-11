@@ -80,7 +80,7 @@ namespace tgui
         /// @brief Returns the size of the entire image
         /// @return Texture size
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2u getSize() const;
+        [[nodiscard]] Vector2u getSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the smooth filter is enabled or not
@@ -94,7 +94,7 @@ namespace tgui
         ///
         /// @return True if smoothing is enabled, false if it is disabled
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isSmooth() const
+        [[nodiscard]] bool isSmooth() const
         {
             return m_isSmooth;
         }
@@ -106,14 +106,14 @@ namespace tgui
         ///
         /// @return True when the pixel is transparent, false when it is not
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isTransparentPixel(Vector2u pixel) const;
+        [[nodiscard]] bool isTransparentPixel(Vector2u pixel) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a pointer to the pixels (read-only)
         ///
         /// @return Pointer to getSize().x * getSize().y * 4 bytes of RGBA pixels, or nullptr if the pixel data isn't stored.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::uint8_t* getPixels() const;
+        [[nodiscard]] const std::uint8_t* getPixels() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

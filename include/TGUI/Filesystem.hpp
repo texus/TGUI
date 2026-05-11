@@ -86,7 +86,7 @@ namespace tgui
             ///
             /// @return True when default-constructed or when set to an empty string, false otherwise
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD bool isEmpty() const;
+            [[nodiscard]] bool isEmpty() const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Checks whether the path is absolute.
@@ -96,7 +96,7 @@ namespace tgui
             ///
             /// @return True for absolute paths, false for relative paths
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD bool isAbsolute() const;
+            [[nodiscard]] bool isAbsolute() const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Checks whether the path is relative.
@@ -106,7 +106,7 @@ namespace tgui
             ///
             /// @return True for relative paths, false for absolute paths
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD bool isRelative() const;
+            [[nodiscard]] bool isRelative() const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Returns the path as a string
@@ -115,7 +115,7 @@ namespace tgui
             ///
             /// Slashes are always used as separator on any OS so that relative paths are portable.
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD String asString() const;
+            [[nodiscard]] String asString() const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Returns to path to the parent directory.
@@ -124,21 +124,21 @@ namespace tgui
             ///
             /// If the path has a filename then the parent directory is the directory containing that file.
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD Path getParentPath() const;
+            [[nodiscard]] Path getParentPath() const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Returns to filename component of the path (where the path consists of getParentPath() / getFilename())
             ///
             /// @return Filename component of the path
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD String getFilename() const;
+            [[nodiscard]] String getFilename() const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Returns the lexically normal form of the path (path with '.' and '..' resolved)
             ///
             /// @return Normal form of the path, based on the text representation (no filesystem access is done)
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD Path getNormalForm() const;
+            [[nodiscard]] Path getNormalForm() const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Returns the path as a string, but with a string type and contents that depends on the OS
@@ -149,9 +149,9 @@ namespace tgui
             /// On other platforms, a UTF-8 encoded std::string is returned with slashes as separator.
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef TGUI_SYSTEM_WINDOWS
-            TGUI_NODISCARD std::wstring asNativeString() const;
+            [[nodiscard]] std::wstring asNativeString() const;
 #else
-            TGUI_NODISCARD std::string asNativeString() const;
+            [[nodiscard]] std::string asNativeString() const;
 #endif
 
 #ifdef TGUI_USE_STD_FILESYSTEM
@@ -171,7 +171,7 @@ namespace tgui
             ///
             /// @return The joined paths
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD Path operator/(const Path& path) const;
+            [[nodiscard]] Path operator/(const Path& path) const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Returns a new path that consists of this object joined with another path
@@ -180,7 +180,7 @@ namespace tgui
             ///
             /// @return The joined paths
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD Path operator/(const String& path) const
+            [[nodiscard]] Path operator/(const String& path) const
             {
                 return *this / Path(path);
             }
@@ -213,7 +213,7 @@ namespace tgui
             ///
             /// This function only checks whether the path strings are identical or not.
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD bool operator==(const Path& other) const;
+            [[nodiscard]] bool operator==(const Path& other) const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /// @brief Checks whether the paths are not equal
@@ -222,7 +222,7 @@ namespace tgui
             ///
             /// This function only checks whether the path strings are identical or not.
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            TGUI_NODISCARD bool operator!=(const Path& other) const;
+            [[nodiscard]] bool operator!=(const Path& other) const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -255,7 +255,7 @@ namespace tgui
         ///
         /// @return True if the directory exists, false otherwise
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static bool directoryExists(const Path& path);
+        [[nodiscard]] static bool directoryExists(const Path& path);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks if a directory exists
@@ -264,7 +264,7 @@ namespace tgui
         ///
         /// @return True if the directory exists, false otherwise
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static bool directoryExists(const String& path)
+        [[nodiscard]] static bool directoryExists(const String& path)
         {
             return directoryExists(Path{path});
         }
@@ -276,7 +276,7 @@ namespace tgui
         ///
         /// @return True if the file exists, false otherwise
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static bool fileExists(const Path& path);
+        [[nodiscard]] static bool fileExists(const Path& path);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks if a file exists
@@ -285,7 +285,7 @@ namespace tgui
         ///
         /// @return True if the file exists, false otherwise
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static bool fileExists(const String& path)
+        [[nodiscard]] static bool fileExists(const String& path)
         {
             return fileExists(Path{path});
         }
@@ -320,14 +320,14 @@ namespace tgui
         ///
         /// @return Path to the home directory
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Path getHomeDirectory();
+        [[nodiscard]] static Path getHomeDirectory();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the current working directory
         ///
         /// @return Path to the current working directory
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Path getCurrentWorkingDirectory();
+        [[nodiscard]] static Path getCurrentWorkingDirectory();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the directory to store application data
@@ -338,7 +338,7 @@ namespace tgui
         /// On macOS, this returns $HOME/Library/Application Support
         /// On Linux and other platforms, this returns $HOME/.local/share
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Path getLocalDataDirectory();
+        [[nodiscard]] static Path getLocalDataDirectory();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a list of all files and folders inside a given directory
@@ -347,7 +347,7 @@ namespace tgui
         ///
         /// @return List of files (including directories) that are found within the given path
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::vector<FileInfo> listFilesInDirectory(const Path& path);
+        [[nodiscard]] static std::vector<FileInfo> listFilesInDirectory(const Path& path);
     };
 } // namespace tgui
 

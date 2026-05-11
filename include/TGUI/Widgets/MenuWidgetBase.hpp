@@ -76,15 +76,15 @@ namespace tgui
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD MenuWidgetBaseRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const MenuWidgetBaseRenderer* getSharedRenderer() const override;
+        [[nodiscard]] MenuWidgetBaseRenderer* getSharedRenderer() override;
+        [[nodiscard]] const MenuWidgetBaseRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD MenuWidgetBaseRenderer* getRenderer() override;
+        [[nodiscard]] MenuWidgetBaseRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Closes the menu if it was open
@@ -121,7 +121,7 @@ namespace tgui
         ///
         /// @throw Exception when the name does not match any signal
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Signal& getSignal(String signalName) override;
+        [[nodiscard]] Signal& getSignal(String signalName) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
@@ -137,25 +137,25 @@ namespace tgui
         /// @internal
         /// Recursively search for the menu containing the menu item specified in the hierarchy, creating the hierarchy if requested.
         /// The initial call to this function must pass "parentIndex = 0".
-        TGUI_NODISCARD Menu* findMenuItemParent(const std::vector<String>& hierarchy,
-                                                unsigned int parentIndex,
-                                                std::vector<Menu>& menus,
-                                                bool createParents);
+        [[nodiscard]] Menu* findMenuItemParent(const std::vector<String>& hierarchy,
+                                               unsigned int parentIndex,
+                                               std::vector<Menu>& menus,
+                                               bool createParents);
 
         /// @internal
         /// Recursively search for the menu containing the menu item specified in the hierarchy.
         /// The initial call to this function must pass "parentIndex = 0".
-        TGUI_NODISCARD const Menu* findMenuItemParent(const std::vector<String>& hierarchy,
-                                                      unsigned int parentIndex,
-                                                      const std::vector<Menu>& menus) const;
+        [[nodiscard]] const Menu* findMenuItemParent(const std::vector<String>& hierarchy,
+                                                     unsigned int parentIndex,
+                                                     const std::vector<Menu>& menus) const;
 
         /// @internal
         /// Search for the menu item specified in the hierarchy and return a pointer to it.
-        TGUI_NODISCARD Menu* findMenuItem(const std::vector<String>& hierarchy, std::vector<Menu>& menus);
+        [[nodiscard]] Menu* findMenuItem(const std::vector<String>& hierarchy, std::vector<Menu>& menus);
 
         /// @internal
         /// Search for the menu item specified in the hierarchy and return a read-only pointer to it.
-        TGUI_NODISCARD const Menu* findMenuItem(const std::vector<String>& hierarchy, const std::vector<Menu>& menus) const;
+        [[nodiscard]] const Menu* findMenuItem(const std::vector<String>& hierarchy, const std::vector<Menu>& menus) const;
 
         /// @internal
         /// Helper function to load the menus when the menu bar is being loaded from a text file
@@ -179,26 +179,29 @@ namespace tgui
 
         /// @internal
         /// Calculate the width that is needed for the menu to fit all menu items
-        TGUI_NODISCARD float calculateMenuWidth(const Menu& menu) const;
+        [[nodiscard]] float calculateMenuWidth(const Menu& menu) const;
 
         /// @internal
         /// Returns the height of the menu item or the separator
-        TGUI_NODISCARD float getMenuItemHeight(const Menu& menuItem) const;
+        [[nodiscard]] float getMenuItemHeight(const Menu& menuItem) const;
 
         /// @internal
         /// Calculates the height of all menu items and separators in a menu
-        TGUI_NODISCARD float calculateOpenMenuHeight(const std::vector<Menu>& menuItems) const;
+        [[nodiscard]] float calculateOpenMenuHeight(const std::vector<Menu>& menuItems) const;
 
         /// @internal
-        TGUI_NODISCARD Vector2f
-            calculateSubmenuOffset(const Menu& menu, float globalLeftPos, float menuWidth, float subMenuWidth, bool& openSubMenuToRight) const;
+        [[nodiscard]] Vector2f calculateSubmenuOffset(
+            const Menu& menu,
+            float globalLeftPos,
+            float menuWidth,
+            float subMenuWidth,
+            bool& openSubMenuToRight) const;
 
         /// @internal
-        TGUI_NODISCARD bool isMouseOnTopOfMenu(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, const Menu& menu, float menuWidth)
-            const;
+        [[nodiscard]] bool isMouseOnTopOfMenu(Vector2f menuPos, Vector2f mousePos, bool openSubMenuToRight, const Menu& menu, float menuWidth) const;
 
         /// @internal
-        TGUI_NODISCARD bool findMenuItemBelowMouse(
+        [[nodiscard]] bool findMenuItemBelowMouse(
             Vector2f menuPos,
             Vector2f mousePos,
             bool openSubMenuToRight,
@@ -262,7 +265,7 @@ namespace tgui
         /// @internal
         /// @brief Returns the height of a normal menu item (i.e. not a separator)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual float getDefaultMenuItemHeight() const = 0;
+        [[nodiscard]] virtual float getDefaultMenuItemHeight() const = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -276,7 +279,7 @@ namespace tgui
         /// @param pos  Mouse position
         /// @return True if mouse on menu, false otherwise.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool isMouseOnOpenMenu(Vector2f pos) const = 0;
+        [[nodiscard]] virtual bool isMouseOnOpenMenu(Vector2f pos) const = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -359,7 +362,7 @@ namespace tgui
         ///
         /// This OpenMenuPlaceholder widget will try to fit the entire screen to absorb all mouse events.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getFullSize() const override;
+        [[nodiscard]] Vector2f getFullSize() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
@@ -368,13 +371,13 @@ namespace tgui
         ///
         /// The offset equals -getPosition() for OpenMenuPlaceholder because it tries to fill the entire screen.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getWidgetOffset() const override;
+        [[nodiscard]] Vector2f getWidgetOffset() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of an open menu
         /// @return Is the mouse on top of an open menu from the menu bar?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
+        [[nodiscard]] bool isMouseOnWidget(Vector2f pos) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
@@ -407,7 +410,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

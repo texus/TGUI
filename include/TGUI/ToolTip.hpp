@@ -52,7 +52,7 @@ namespace tgui
         ///
         /// @return Time before displaying tooltip
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Duration getInitialDelay();
+        [[nodiscard]] static Duration getInitialDelay();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the default distance between the mouse position and the tool tip
@@ -66,7 +66,7 @@ namespace tgui
         ///
         /// @return Distance between mouse and tool tip
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Vector2f getDistanceToMouse();
+        [[nodiscard]] static Vector2f getDistanceToMouse();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets whether the tool tip is shown even when the widget is disabled
@@ -82,7 +82,7 @@ namespace tgui
         ///
         /// @return Would the tool tip be displayed when the mouse is on top of a disabled widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static bool getShowOnDisabledWidget();
+        [[nodiscard]] static bool getShowOnDisabledWidget();
 
     private:
         static Duration m_initialDelay;

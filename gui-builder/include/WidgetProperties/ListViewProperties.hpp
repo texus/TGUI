@@ -97,7 +97,7 @@ struct ListViewProperties : public WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    [[nodiscard]] PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto listView = widget->cast<tgui::ListView>();
@@ -147,7 +147,7 @@ struct ListViewProperties : public WidgetProperties
         return pair;
     }
 
-    TGUI_NODISCARD static tgui::String serializeColumns(const tgui::ListView::Ptr& listView)
+    [[nodiscard]] static tgui::String serializeColumns(const tgui::ListView::Ptr& listView)
     {
         std::vector<tgui::String> serializedColumns;
         for (std::size_t i = 0; i < listView->getColumnCount(); ++i)
@@ -166,7 +166,7 @@ struct ListViewProperties : public WidgetProperties
         return serializeList(serializedColumns);
     }
 
-    TGUI_NODISCARD static bool deserializeColumn(
+    [[nodiscard]] static bool deserializeColumn(
         tgui::String serializedColumn,
         tgui::String& text,
         float& width,

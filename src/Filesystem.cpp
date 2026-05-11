@@ -49,7 +49,7 @@ namespace tgui
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if defined(TGUI_SYSTEM_WINDOWS) && !defined(TGUI_USE_STD_FILESYSTEM_FILE_TIME)
-    TGUI_NODISCARD static std::time_t FileTimeToUnixTime(FILETIME const& FileTime)
+    [[nodiscard]] static std::time_t FileTimeToUnixTime(FILETIME const& FileTime)
     {
         const auto WINDOWS_TICK = 10000000ULL;
         const auto SEC_TO_UNIX_EPOCH = 11644473600ULL;

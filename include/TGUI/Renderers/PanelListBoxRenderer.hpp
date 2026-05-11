@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return Background color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getItemsBackgroundColor() const;
+        [[nodiscard]] Color getItemsBackgroundColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color used for the item below the mouse
@@ -62,7 +62,7 @@ namespace tgui
         ///
         /// @return Background color of hovered item
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getItemsBackgroundColorHover() const;
+        [[nodiscard]] Color getItemsBackgroundColorHover() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color of the selected item
@@ -76,7 +76,7 @@ namespace tgui
         ///
         /// @return Selected item background color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSelectedItemsBackgroundColor() const;
+        [[nodiscard]] Color getSelectedItemsBackgroundColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the background color used for the selected item when the mouse hovers over it
@@ -90,7 +90,7 @@ namespace tgui
         ///
         /// @return Background color of selected item in hover state
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSelectedItemsBackgroundColorHover() const;
+        [[nodiscard]] Color getSelectedItemsBackgroundColorHover() const;
     };
 } // namespace tgui
 

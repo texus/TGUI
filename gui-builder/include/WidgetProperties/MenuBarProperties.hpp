@@ -58,7 +58,7 @@ struct ListBoxProperties : public WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    [[nodiscard]] PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto listBox = widget->cast<tgui::ListBox>();
@@ -91,7 +91,7 @@ struct ListBoxProperties : public WidgetProperties
     }
 
 private:
-    TGUI_NODISCARD static tgui::ListBox::TextAlignment deserializeAlignment(tgui::String value)
+    [[nodiscard]] static tgui::ListBox::TextAlignment deserializeAlignment(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "right")
@@ -102,7 +102,7 @@ private:
             return tgui::ListBox::TextAlignment::Left;
     }
 
-    TGUI_NODISCARD static tgui::String serializeAlignment(tgui::ListBox::TextAlignment alignment)
+    [[nodiscard]] static tgui::String serializeAlignment(tgui::ListBox::TextAlignment alignment)
     {
         if (alignment == tgui::ListBox::TextAlignment::Center)
             return "Center";

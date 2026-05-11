@@ -85,7 +85,7 @@ namespace tgui
         ///
         /// @return 4x4 transform matrix
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::array<float, 16>& getMatrix() const;
+        [[nodiscard]] const std::array<float, 16>& getMatrix() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Return the inverse of the transform
@@ -94,7 +94,7 @@ namespace tgui
         ///
         /// If the inverse cannot be computed, an identity transform is returned.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Transform getInverse() const;
+        [[nodiscard]] Transform getInverse() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Transform a 2D point
@@ -103,7 +103,7 @@ namespace tgui
         ///
         /// @return Transformed point
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f transformPoint(const Vector2f& point) const
+        [[nodiscard]] Vector2f transformPoint(const Vector2f& point) const
         {
             return {(m_matrix[0] * point.x) + (m_matrix[4] * point.y) + m_matrix[12],
                     (m_matrix[1] * point.x) + (m_matrix[5] * point.y) + m_matrix[13]};
@@ -118,7 +118,7 @@ namespace tgui
         ///
         /// @return Transformed rectangle
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD FloatRect transformRect(const FloatRect& rectangle) const;
+        [[nodiscard]] FloatRect transformRect(const FloatRect& rectangle) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Combine the current transform with another one
@@ -174,9 +174,9 @@ namespace tgui
         ///
         /// @see combine
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Transform operator*(const Transform& right) const;
+        [[nodiscard]] Transform operator*(const Transform& right) const;
         Transform& operator*=(const Transform& right);
-        TGUI_NODISCARD Vector2f operator*(const Vector2f& right) const;
+        [[nodiscard]] Vector2f operator*(const Vector2f& right) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Rounds the position stored in the transform to the nearest pixel

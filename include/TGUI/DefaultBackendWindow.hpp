@@ -66,7 +66,7 @@ namespace tgui
         /// @warning If TGUI contains multiple backends, an arbitrary one will be used
         /// @warning This function will assert when TGUI was built without a backend
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::shared_ptr<DefaultBackendWindow> create(unsigned int width, unsigned int height, const String& title);
+        [[nodiscard]] static std::shared_ptr<DefaultBackendWindow> create(unsigned int width, unsigned int height, const String& title);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the gui object that is created and destroyed by this class
@@ -75,7 +75,7 @@ namespace tgui
         ///
         /// @warning You can't access the gui after this backend window is destroyed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual BackendGui* getGui() const = 0;
+        [[nodiscard]] virtual BackendGui* getGui() const = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the window is still open
@@ -85,7 +85,7 @@ namespace tgui
         /// @warning You must call close() on this object to close the window, it does NOT happen automatically when the user presses
         ///          the close button of the window (in which case you receive an event of type Event::Type::Closed from pollEvent).
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool isOpen() const = 0;
+        [[nodiscard]] virtual bool isOpen() const = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Closes the window
@@ -100,7 +100,7 @@ namespace tgui
         ///
         /// @return True if the window had an unprocessed event. If false is returned, the event parameter is untouched.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool pollEvent(Event& event) = 0;
+        [[nodiscard]] virtual bool pollEvent(Event& event) = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws the gui to the window

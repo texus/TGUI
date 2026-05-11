@@ -49,7 +49,7 @@ namespace tgui
         ///
         /// @return Splitter color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSplitterColor() const;
+        [[nodiscard]] Color getSplitterColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of the splitter in the hover state (mouse on top of the splitter)
@@ -63,7 +63,7 @@ namespace tgui
         ///
         /// @return Splitter color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSplitterColorHover() const;
+        [[nodiscard]] Color getSplitterColorHover() const;
     };
 } // namespace tgui
 

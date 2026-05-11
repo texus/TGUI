@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return Data about how the buttons looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getButton() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getButton() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the labels which the color picker uses
@@ -62,7 +62,7 @@ namespace tgui
         ///
         /// @return Data about how the labels looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getLabel() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getLabel() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the sliders which the color picker uses
@@ -76,7 +76,7 @@ namespace tgui
         ///
         /// @return Data about how the sliders looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getSlider() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getSlider() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the edit boxes which the color picker uses
@@ -94,7 +94,7 @@ namespace tgui
         ///
         /// @since TGUI 1.6.1
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getEditBox() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getEditBox() const;
     };
 } // namespace tgui
 

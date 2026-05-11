@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return Amount of space between the widgets
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getSpaceBetweenWidgets() const;
+        [[nodiscard]] float getSpaceBetweenWidgets() const;
     };
 } // namespace tgui
 

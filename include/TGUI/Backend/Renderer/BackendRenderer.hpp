@@ -49,7 +49,7 @@ namespace tgui
         /// @brief Creates a new empty text object
         /// @return Shared pointer to a new text object
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::shared_ptr<BackendText> createText()
+        [[nodiscard]] virtual std::shared_ptr<BackendText> createText()
         {
             return std::make_shared<BackendText>();
         }
@@ -58,7 +58,7 @@ namespace tgui
         /// @brief Creates a new empty texture object
         /// @return Shared pointer to a new texture object
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::shared_ptr<BackendTexture> createTexture() = 0;
+        [[nodiscard]] virtual std::shared_ptr<BackendTexture> createTexture() = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the maximum allowed texture size
@@ -67,7 +67,7 @@ namespace tgui
         ///
         /// This maximum size is defined by the graphics driver. Most likely this will return 8192 or 16384.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual unsigned int getMaximumTextureSize() = 0;
+        [[nodiscard]] virtual unsigned int getMaximumTextureSize() = 0;
     };
 } // namespace tgui
 

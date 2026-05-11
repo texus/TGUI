@@ -38,7 +38,7 @@ namespace tgui
 {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD static GLuint createShaderProgram()
+    [[nodiscard]] static GLuint createShaderProgram()
     {
         // Select the vertex and fragment shaders based on which GLES version is available.
         // The version for both shaders should be the same (at least with some mesa drivers).

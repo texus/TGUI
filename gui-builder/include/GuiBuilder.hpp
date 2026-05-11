@@ -73,7 +73,7 @@ public:
     void formSaved(const tgui::String& filename);
     void closeForm(Form* form);
     void saveUndoState(UndoType type);
-    TGUI_NODISCARD bool isEnabledDragBeforeSelect() const;
+    [[nodiscard]] bool isEnabledDragBeforeSelect() const;
 
 private:
     using PropertyValuePair = std::pair<tgui::String, std::pair<tgui::String, tgui::String>>;
@@ -87,7 +87,7 @@ private:
         std::vector<CopiedWidget> childWidgets;
     };
 
-    TGUI_NODISCARD bool loadGuiBuilderState();
+    [[nodiscard]] bool loadGuiBuilderState();
     void saveGuiBuilderState();
     void loadStartScreen();
     void loadEditingScreen(const tgui::String& filename);
@@ -109,7 +109,7 @@ private:
     bool loadForm(tgui::String filename, bool loadingFromFile = true);
     void displayErrorMessage(const tgui::String& error);
     tgui::ChildWindow::Ptr openWindowWithFocus(tgui::ChildWindow::Ptr window = tgui::ChildWindow::create());
-    TGUI_NODISCARD static tgui::String getDefaultFilename();
+    [[nodiscard]] static tgui::String getDefaultFilename();
     static tgui::String widgetPtrToStrId(const tgui::Widget::Ptr& widget);
 
     void copyWidgetRecursive(std::vector<CopiedWidget>& copiedWidgetList, const std::shared_ptr<WidgetInfo>& widgetInfo);
@@ -121,7 +121,7 @@ private:
     void widgetHierarchyChanged();
     void updateSelectedWidgetHierarchy();
     void fillWidgetHierarchyTreeRecursively(std::vector<tgui::String>& hierarchy, const std::shared_ptr<tgui::Widget>& parentWidget);
-    TGUI_NODISCARD bool fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui::Widget* widget);
+    [[nodiscard]] bool fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui::Widget* widget);
 
     tgui::EditBox::Ptr addPropertyValueEditBox(const tgui::String& property,
                                                const tgui::String& value,

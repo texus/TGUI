@@ -38,7 +38,7 @@ struct VerticalTabsProperties : public TabsBaseProperties
             TabsBaseProperties::updateProperty(widget, property, value);
     }
 
-    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    [[nodiscard]] PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = TabsBaseProperties::initProperties(widget);
         auto tabs = widget->cast<tgui::VerticalTabs>();

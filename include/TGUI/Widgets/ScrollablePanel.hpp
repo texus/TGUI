@@ -85,7 +85,7 @@ namespace tgui
         ///
         /// @return The new scrollable panel
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static ScrollablePanel::Ptr create(const Layout2d& size = {"100%", "100%"}, Vector2f contentSize = {0, 0});
+        [[nodiscard]] static ScrollablePanel::Ptr create(const Layout2d& size = {"100%", "100%"}, Vector2f contentSize = {0, 0});
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another scrollable panel
@@ -94,21 +94,21 @@ namespace tgui
         ///
         /// @return The new scrollable panel
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static ScrollablePanel::Ptr copy(const ScrollablePanel::ConstPtr& panel);
+        [[nodiscard]] static ScrollablePanel::Ptr copy(const ScrollablePanel::ConstPtr& panel);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD ScrollablePanelRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const ScrollablePanelRenderer* getSharedRenderer() const override;
+        [[nodiscard]] ScrollablePanelRenderer* getSharedRenderer() override;
+        [[nodiscard]] const ScrollablePanelRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD ScrollablePanelRenderer* getRenderer() override;
+        [[nodiscard]] ScrollablePanelRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the panel
@@ -122,13 +122,13 @@ namespace tgui
         /// @brief Returns the space available for widgets inside the container
         /// @return Size without borders and padding, and without scrollbars if their policy is to always be visible
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getInnerSize() const override;
+        [[nodiscard]] Vector2f getInnerSize() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @warning This function does not return the absolute position of the ScrollablePanel. It is implemented in a way
         ///          that allows calling getAbsolutePosition() on a child widget of the ScrollablePanel to work.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getAbsolutePosition(Vector2f offset) const override;
+        [[nodiscard]] Vector2f getAbsolutePosition(Vector2f offset) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a widget at the end of the layout
@@ -175,21 +175,21 @@ namespace tgui
         ///
         /// If the content size is larger than the size of the panel then scrollbars will be displayed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getContentSize() const;
+        [[nodiscard]] Vector2f getContentSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the amount of pixels the child widgets have been shifted to be displayed by the scrollable panel
         ///
         /// @return Value of the scrollbars
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getContentOffset() const;
+        [[nodiscard]] Vector2f getContentOffset() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the width of the scrollbars
         /// @return Scrollbar width
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getVerticalScrollbar()->getWidth() or getHorizontalScrollbar()->getWidth() instead")
-        TGUI_NODISCARD float getScrollbarWidth() const;
+        [[nodiscard]] float getScrollbarWidth() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the vertical scrollbar should be displayed
@@ -203,7 +203,7 @@ namespace tgui
         /// @return The policy for displaying the vertical scrollbar
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getVerticalScrollbar()->getPolicy() instead")
-        TGUI_NODISCARD Scrollbar::Policy getVerticalScrollbarPolicy() const;
+        [[nodiscard]] Scrollbar::Policy getVerticalScrollbarPolicy() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the horizontal scrollbar should be displayed
@@ -217,7 +217,7 @@ namespace tgui
         /// @return The policy for displaying the horizontal scrollbar
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getHorizontalScrollbar()->getPolicy() instead")
-        TGUI_NODISCARD Scrollbar::Policy getHorizontalScrollbarPolicy() const;
+        [[nodiscard]] Scrollbar::Policy getHorizontalScrollbarPolicy() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes how much the value changes when scrolling or pressing one of the arrows of the vertical scrollbar
@@ -233,7 +233,7 @@ namespace tgui
         /// @return How far should the vertical scrollbar scroll when an arrow is clicked?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getVerticalScrollbar()->getScrollAmount() instead")
-        TGUI_NODISCARD unsigned int getVerticalScrollAmount() const;
+        [[nodiscard]] unsigned int getVerticalScrollAmount() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes how much the value changes when scrolling or pressing one of the arrows of the horizontal scrollbar
@@ -249,7 +249,7 @@ namespace tgui
         /// @return How far should the horizontal scrollbar scroll when an arrow is clicked?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getHorizontalScrollbar()->getScrollAmount() instead")
-        TGUI_NODISCARD unsigned int getHorizontalScrollAmount() const;
+        [[nodiscard]] unsigned int getHorizontalScrollAmount() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the vertical scrollbar
@@ -264,7 +264,7 @@ namespace tgui
         /// @return Value of the vertical scrollbar
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead")
-        TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
+        [[nodiscard]] unsigned int getVerticalScrollbarValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the vertical scrollbar
@@ -274,7 +274,7 @@ namespace tgui
         /// @since TGUI 1.4
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead")
-        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        [[nodiscard]] unsigned int getVerticalScrollbarMaxValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
@@ -290,7 +290,7 @@ namespace tgui
         /// @return Value of the horizontal scrollbar
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead")
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        [[nodiscard]] unsigned int getHorizontalScrollbarValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -300,21 +300,21 @@ namespace tgui
         /// @since TGUI 1.4
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead")
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        [[nodiscard]] unsigned int getHorizontalScrollbarMaxValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the vertical scrollbar is currently visible.
         ///
         /// @return Is the scrollbar visible?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getVerticalScrollbar()->isShown() instead") TGUI_NODISCARD bool isVerticalScrollbarShown() const;
+        TGUI_DEPRECATED("Use getVerticalScrollbar()->isShown() instead") [[nodiscard]] bool isVerticalScrollbarShown() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the horizontal scrollbar is currently visible.
         ///
         /// @return Is the scrollbar visible?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getHorizontalScrollbar()->isShown() instead") TGUI_NODISCARD bool isHorizontalScrollbarShown() const;
+        TGUI_DEPRECATED("Use getHorizontalScrollbar()->isShown() instead") [[nodiscard]] bool isHorizontalScrollbarShown() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the widget that is located at the given position
@@ -328,7 +328,7 @@ namespace tgui
         ///
         /// @since TGUI 1.2
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getWidgetAtPos(Vector2f pos, bool recursive) const override;
+        [[nodiscard]] Widget::Ptr getWidgetAtPos(Vector2f pos, bool recursive) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -376,7 +376,7 @@ namespace tgui
         // Returns its tool tip or the tool tip from a child widget if the mouse is on top of the widget.
         // A nullptr is returned when the mouse is not on top of the widget or when the tool tip is empty.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr askToolTip(Vector2f mousePos) override;
+        [[nodiscard]] Widget::Ptr askToolTip(Vector2f mousePos) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
@@ -399,7 +399,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes
@@ -425,7 +425,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
