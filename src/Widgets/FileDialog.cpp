@@ -1364,7 +1364,7 @@ namespace tgui
         {
             for (const auto& filter : m_fileTypeFilters)
             {
-                TGUI_EMPLACE_BACK(filterNode, node->children)
+                auto& filterNode = node->children.emplace_back();
                 filterNode = std::make_unique<DataIO::Node>();
                 filterNode->name = "FileTypeFilter";
 

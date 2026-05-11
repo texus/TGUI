@@ -636,7 +636,7 @@ namespace tgui
 
         for (const auto& menu : menus)
         {
-            TGUI_EMPLACE_BACK(element, menuElements)
+            auto& element = menuElements.emplace_back();
             element.text = menu.text.getString();
             element.enabled = menu.enabled;
             if (!menu.menuItems.empty())
