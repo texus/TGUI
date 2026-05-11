@@ -38,12 +38,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char ListView::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     ListView::ListView(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {

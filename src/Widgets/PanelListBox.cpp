@@ -35,10 +35,6 @@ namespace tgui
         const float defaultPanelHeight = 40;
     } // namespace
 
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char PanelListBox::StaticWidgetType[];
-#endif
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     PanelListBox::PanelListBox(const char* typeName, const bool initRenderer) :

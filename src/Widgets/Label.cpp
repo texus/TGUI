@@ -31,12 +31,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char Label::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Label::Label(const char* typeName, bool initRenderer) :
         ClickableWidget{typeName, false}
     {

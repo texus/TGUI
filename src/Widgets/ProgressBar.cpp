@@ -31,12 +31,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char ProgressBar::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     ProgressBar::ProgressBar(const char* typeName, bool initRenderer) :
         ClickableWidget{typeName, false}
     {

@@ -33,10 +33,6 @@ namespace tgui
     static constexpr std::array<std::pair<StringView, char32_t>, 4> symbolNamesMap{
         {{U"lt"sv, U'<'}, {U"gt"sv, U'>'}, {U"amp"sv, U'&'}}};
 
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char RichTextLabel::StaticWidgetType[];
-#endif
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     RichTextLabel::RichTextLabel(const char* typeName, bool initRenderer) :

@@ -95,18 +95,16 @@ namespace tgui
     private:
         std::u32string m_string;
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         // Helper to check if template parameter is a string_view
         template <typename StringViewType>
         using IsStringViewType = std::enable_if_t<
             std::is_same_v<StringViewType, std::string_view>
-    #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
+#if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
                 || std::is_same_v<StringViewType, std::u8string_view>
-    #endif
+#endif
                 || std::is_same_v<StringViewType, std::wstring_view> || std::is_same_v<StringViewType, std::u16string_view>
                 || std::is_same_v<StringViewType, std::u32string_view>,
             void>;
-#endif
 
         // Helper to check if iterator is either from std::u32string or std::u32string_view.
         // When compiling with Emscipten (which used Clang 23), those iterators are the same
@@ -117,11 +115,7 @@ namespace tgui
                                                void>;
 
     public:
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         static constexpr auto npos = std::u32string_view::npos;
-#else
-        static const decltype(std::u32string::npos) npos;
-#endif
 
         using iterator = std::u32string::iterator;
         using const_iterator = std::u32string::const_iterator;
@@ -415,7 +409,6 @@ namespace tgui
         explicit String(std::u16string::const_iterator first, std::u16string::const_iterator last);
         explicit String(std::u32string::const_iterator first, std::u32string::const_iterator last);
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         template <typename StringViewType, typename = IsStringViewType<StringViewType>>
         explicit String(const StringViewType& stringView) :
             String(stringView.data(), stringView.size())
@@ -427,19 +420,6 @@ namespace tgui
             String(stringView.data() + pos, count)
         {
         }
-#else
-        template <typename CharType>
-        explicit String(StringViewImpl<CharType> stringView) :
-            String(stringView.data(), stringView.size())
-        {
-        }
-
-        template <typename CharType>
-        explicit String(StringViewImpl<CharType> stringView, std::size_t pos, std::size_t count) :
-            String(stringView.data() + pos, count)
-        {
-        }
-#endif
 
 #if TGUI_HAS_WINDOW_BACKEND_SFML
         // This constructor has to be explicit or it will cause MSVC to no longer compile code that performs sf::String + std::string
@@ -452,8 +432,8 @@ namespace tgui
         {
         }
 
-    #if (TGUI_COMPILED_WITH_CPP_VER < 17) || (SFML_VERSION_MAJOR < 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR < 1)
-        // When compiling with c++17, the conversion to sf::String is done with the StringView operator for SFML 3.1 or higher
+    #if (SFML_VERSION_MAJOR < 3) || (SFML_VERSION_MAJOR == 3 && SFML_VERSION_MINOR < 1)
+        // When compiling with C++17, the conversion to sf::String is done with the StringView operator for SFML 3.1 or higher
         explicit operator sf::String() const
         {
             return sf::String::fromUtf32(m_string.cbegin(), m_string.cend());
@@ -471,11 +451,7 @@ namespace tgui
 
         operator StringView() const noexcept
         {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
             return m_string;
-#else
-            return StringView(m_string.data(), m_string.length());
-#endif
         }
 
         [[nodiscard]] std::string toStdString() const;

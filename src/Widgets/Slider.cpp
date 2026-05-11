@@ -31,12 +31,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char Slider::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Slider::Slider(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {

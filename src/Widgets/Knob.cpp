@@ -45,12 +45,6 @@ namespace
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char Knob::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Knob::Knob(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {

@@ -32,12 +32,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char SplitContainer::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     SplitContainer::SplitContainer(const char* typeName, bool initRenderer) :
         Group{typeName, false}
     {

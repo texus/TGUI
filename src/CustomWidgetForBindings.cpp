@@ -30,12 +30,6 @@
 
 namespace tgui
 {
-    #if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char CustomWidgetForBindings::StaticWidgetType[];
-    #endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     CustomWidgetForBindings::CustomWidgetForBindings(const char* typeName, bool initRenderer) :
         Widget{typeName, initRenderer}
     {

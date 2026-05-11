@@ -30,12 +30,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char HorizontalLayout::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     HorizontalLayout::HorizontalLayout(const char* typeName, bool initRenderer) :
         BoxLayoutRatios{typeName, false}
     {

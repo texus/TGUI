@@ -38,12 +38,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char FileDialog::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     FileDialog::FileDialog(const char* typeName, bool initRenderer) :
         ChildWindow{typeName, false},
         m_iconLoader(FileDialogIconLoader::createInstance())

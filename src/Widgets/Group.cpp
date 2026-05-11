@@ -28,12 +28,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char Group::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Group::Group(const char* typeName, bool initRenderer) :
         Container{typeName, false}
     {
