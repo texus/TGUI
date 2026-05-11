@@ -57,6 +57,13 @@ namespace tgui
     }
 #endif
 
+    template <typename T>
+    TGUI_DEPRECATED("Use std::clamp instead")
+    [[nodiscard]] constexpr const T& clamp(const T& v, const T& lo, const T& hi)
+    {
+        return std::clamp(v, lo, hi);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Changes the default mouse cursor of EditBox and TextArea widgets from an arrow to the I-beam cursor.
     /// @param useIBeam  True to use the I-beam cursor, false to set the default behavior of using a normal arrow

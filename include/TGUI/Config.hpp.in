@@ -161,6 +161,8 @@
         auto&(object) = (vector).back();
 #endif
 
+#define TGUI_NODISCARD [[nodiscard]]  // TGUI_NEXT: Remove TGUI_NODISCARD define, it should no longer be used
+
 #ifndef TGUI_NO_DEPRECATED_WARNINGS
     #define TGUI_DEPRECATED(msg) [[deprecated(msg)]]
 #else
