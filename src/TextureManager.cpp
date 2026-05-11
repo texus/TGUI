@@ -68,7 +68,7 @@ namespace tgui
         }
 
         // Add new data to the list
-        TGUI_EMPLACE_BACK(dataHolder, imageIt->second)
+        auto& dataHolder = imageIt->second.emplace_back();
         dataHolder.filename = filename;
         dataHolder.users = 1;
         dataHolder.smooth = smooth;

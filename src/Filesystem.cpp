@@ -474,7 +474,7 @@ namespace tgui
         for (const auto& entry :
              std::filesystem::directory_iterator(path, std::filesystem::directory_options::skip_permission_denied, errorCode))
         {
-            TGUI_EMPLACE_BACK(fileInfo, fileList)
+            auto& fileInfo = fileList.emplace_back();
             fileInfo.filename = entry.path().filename().generic_u32string();
             fileInfo.path = Path(entry.path());
             fileInfo.directory = entry.is_directory(errorCode);
@@ -495,7 +495,7 @@ namespace tgui
             if ((filename == U".") || (filename == U".."))
                 continue;
 
-            TGUI_EMPLACE_BACK(fileInfo, fileList)
+            auto& fileInfo = fileList.emplace_back();
             fileInfo.filename = filename;
             fileInfo.path = path / filename;
             fileInfo.directory = (entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
@@ -529,7 +529,7 @@ namespace tgui
             if (statFileInfo.st_size < 0)
                 continue;
 
-            TGUI_EMPLACE_BACK(fileInfo, fileList)
+            auto& fileInfo = fileList.emplace_back();
             fileInfo.filename = filename;
             fileInfo.path = filePath;
             fileInfo.directory = (statFileInfo.st_mode & S_IFDIR);

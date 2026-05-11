@@ -209,7 +209,7 @@ namespace tgui
         {
             const std::size_t imageIndexBeforeLine = imageIndex;
 
-            TGUI_EMPLACE_BACK(line, m_lines)
+            auto& line = m_lines.emplace_back();
 
             float lineWidth = 0;
             float maxLineHeight = 0;
@@ -229,7 +229,7 @@ namespace tgui
                 }
                 else // Normal piece of text instead of an image
                 {
-                    TGUI_EMPLACE_BACK(textPiece, line)
+                    auto& textPiece = line.emplace_back();
                     textPiece.setCharacterSize(textPiecesLine[j].characterSize);
                     textPiece.setFont(m_fontCached);
                     textPiece.setStyle(textPiecesLine[j].style);
@@ -669,7 +669,7 @@ namespace tgui
                                     images.push_back(texture);
 
                                     auto& line = textPiecesLines.back();
-                                    TGUI_EMPLACE_BACK(gapPiece, line)
+                                    auto& gapPiece = line.emplace_back();
                                     gapPiece.gapSize = texture.getImageSize();
                                     gapPiece.link = currentUrl;
                                 }

@@ -608,7 +608,7 @@ namespace tgui
                 {
                     const auto& inputPiece = inputLine[oldPieceIndex];
 
-                    TGUI_EMPLACE_BACK(outputPiece, result.back())
+                    auto& outputPiece = result.back().emplace_back();
                     outputPiece.characterSize = inputPiece.characterSize;
                     outputPiece.style = inputPiece.style;
                     outputPiece.color = inputPiece.color;
@@ -633,7 +633,7 @@ namespace tgui
                 {
                     const auto& inputPiece = inputLine[pieceIndex];
 
-                    TGUI_EMPLACE_BACK(outputPiece, result.back())
+                    auto& outputPiece = result.back().emplace_back();
                     outputPiece.characterSize = inputPiece.characterSize;
                     outputPiece.style = inputPiece.style;
                     outputPiece.color = inputPiece.color;

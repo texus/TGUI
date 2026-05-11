@@ -394,7 +394,7 @@ namespace tgui
         const bool focused = IsWindowFocused();
         if (focused != m_windowFocused)
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             if (focused)
                 event.type = Event::Type::GainedFocus;
             else
@@ -403,7 +403,7 @@ namespace tgui
 
         if (IsWindowResized())
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::Resized;
             event.size.width = static_cast<unsigned int>(GetRenderWidth());
             event.size.height = static_cast<unsigned int>(GetRenderHeight());
@@ -412,7 +412,7 @@ namespace tgui
         const bool mouseOnWindow = IsCursorOnScreen();
         if (mouseOnWindow != m_mouseOnWindow)
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             if (mouseOnWindow)
                 event.type = Event::Type::MouseEntered;
             else
@@ -425,7 +425,7 @@ namespace tgui
         const int mouseY = GetMouseY();
         if ((mouseX != m_lastMousePos.x) || (mouseY != m_lastMousePos.y))
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::MouseMoved;
             event.mouseMove.x = mouseX;
             event.mouseMove.y = mouseY;
@@ -433,7 +433,7 @@ namespace tgui
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::MouseButtonPressed;
             event.mouseButton.button = Event::MouseButton::Left;
             event.mouseButton.x = mouseX;
@@ -441,7 +441,7 @@ namespace tgui
         }
         if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE))
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::MouseButtonPressed;
             event.mouseButton.button = Event::MouseButton::Middle;
             event.mouseButton.x = mouseX;
@@ -449,7 +449,7 @@ namespace tgui
         }
         if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::MouseButtonPressed;
             event.mouseButton.button = Event::MouseButton::Right;
             event.mouseButton.x = mouseX;
@@ -458,7 +458,7 @@ namespace tgui
 
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::MouseButtonReleased;
             event.mouseButton.button = Event::MouseButton::Left;
             event.mouseButton.x = mouseX;
@@ -466,7 +466,7 @@ namespace tgui
         }
         if (IsMouseButtonReleased(MOUSE_BUTTON_MIDDLE))
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::MouseButtonReleased;
             event.mouseButton.button = Event::MouseButton::Middle;
             event.mouseButton.x = mouseX;
@@ -474,7 +474,7 @@ namespace tgui
         }
         if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT))
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::MouseButtonReleased;
             event.mouseButton.button = Event::MouseButton::Right;
             event.mouseButton.x = mouseX;
@@ -484,7 +484,7 @@ namespace tgui
         const float mouseWheelDelta = GetMouseWheelMoveV().y;
         if (mouseWheelDelta != 0)
         {
-            TGUI_EMPLACE_BACK(event, events)
+            auto& event = events.emplace_back();
             event.type = Event::Type::MouseWheelScrolled;
             event.mouseWheel.delta = mouseWheelDelta;
             event.mouseWheel.x = mouseX;
@@ -496,7 +496,7 @@ namespace tgui
             int pressedChar = GetCharPressed();
             while (pressedChar > 0)
             {
-                TGUI_EMPLACE_BACK(event, events)
+                auto& event = events.emplace_back();
                 event.type = Event::Type::TextEntered;
                 event.text.unicode = static_cast<char32_t>(pressedChar);
 
@@ -521,7 +521,7 @@ namespace tgui
                     continue;
                 }
 
-                TGUI_EMPLACE_BACK(event, events)
+                auto& event = events.emplace_back();
                 event.type = Event::Type::KeyPressed;
                 event.key.code = code;
                 event.key.alt = IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
@@ -537,7 +537,7 @@ namespace tgui
                 pressedChar = m_getLastSoftKeyUnicodeFunction();
                 if (pressedChar > 0)
                 {
-                    TGUI_EMPLACE_BACK(event, events)
+                    auto& event = events.emplace_back();
                     event.type = Event::Type::TextEntered;
                     event.text.unicode = static_cast<char32_t>(pressedChar);
 

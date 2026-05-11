@@ -278,10 +278,10 @@ namespace tgui
 
         for (const auto& iconData : m_threadData.icons)
         {
-            TGUI_EMPLACE_BACK(texture, icons);
+            // The texture is always added, even if loadFromPixelData fails
+            auto& texture = icons.emplace_back();
             if (iconData.pixels)
-                texture.loadFromPixelData({iconData.width, iconData.height},
-                                          iconData.pixels.get()); // Don't care if this fails or succeeds, we add the texture either way
+                texture.loadFromPixelData({iconData.width, iconData.height}, iconData.pixels.get());
         }
 
         m_threadStarted = false;

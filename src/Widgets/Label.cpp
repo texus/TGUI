@@ -660,8 +660,8 @@ namespace tgui
         {
             newLinePos = stringPtr->find('\n', searchPosStart);
 
-            TGUI_EMPLACE_BACK(line, m_lines)
-            TGUI_EMPLACE_BACK(textPiece, line)
+            auto& line = m_lines.emplace_back();
+            auto& textPiece = line.emplace_back();
             textPiece.setCharacterSize(getTextSize());
             textPiece.setFont(m_fontCached);
             textPiece.setStyle(m_textStyleCached);

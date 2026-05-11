@@ -347,7 +347,7 @@ namespace tgui
 
     std::size_t ListView::addItem(const String& text)
     {
-        TGUI_EMPLACE_BACK(item, m_items)
+        auto& item = m_items.emplace_back();
         item.texts.push_back(createText(text));
         item.icon.setOpacity(m_opacityCached);
 
@@ -367,7 +367,7 @@ namespace tgui
 
     std::size_t ListView::addItem(const std::vector<String>& itemTexts)
     {
-        TGUI_EMPLACE_BACK(item, m_items)
+        auto& item = m_items.emplace_back();
         item.texts.reserve(itemTexts.size());
         for (const auto& text : itemTexts)
             item.texts.push_back(createText(text));
@@ -393,7 +393,7 @@ namespace tgui
         bool columnWidthChanged = false;
         for (const auto& itemToInsert : items)
         {
-            TGUI_EMPLACE_BACK(item, m_items)
+            auto& item = m_items.emplace_back();
             item.texts.reserve(itemToInsert.size());
             for (const auto& text : itemToInsert)
                 item.texts.push_back(createText(text));
