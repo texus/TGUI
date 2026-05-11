@@ -467,9 +467,9 @@ namespace tgui
         const Vector2f innerSize = getInnerSize();
         const float availableSize = (m_orientation == Orientation::Horizontal) ? innerSize.x : innerSize.y;
         const float maxAvailableOffset = std::max(0.f, availableSize - m_splitterWidth);
-        const float minOffset = clamp(m_splitterMinOffset.getValue(), 0.f, maxAvailableOffset);
-        const float maxOffset = clamp(m_splitterMaxOffset.getValue(), 0.f, maxAvailableOffset);
-        m_currentSplitterOffset = std::floor(clamp(m_splitterOffset.getValue(), minOffset, maxOffset));
+        const float minOffset = std::clamp(m_splitterMinOffset.getValue(), 0.f, maxAvailableOffset);
+        const float maxOffset = std::clamp(m_splitterMaxOffset.getValue(), 0.f, maxAvailableOffset);
+        m_currentSplitterOffset = std::floor(std::clamp(m_splitterOffset.getValue(), minOffset, maxOffset));
 
         if (m_widgets.empty())
             return;

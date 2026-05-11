@@ -42,15 +42,15 @@ namespace
         /// {
         ///     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
         ///     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-        ///     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+        ///     return c.z * mix(K.xxx, st6d::clamp(p - K.xxx, 0.0, 1.0), c.y);
         /// }
 
         const auto fract = [](float x) { return x - std::floor(x); };
         const auto mix = [](float x, float y, float a) { return (x * (1.0f - a)) + (y * a); };
 
-        h = tgui::clamp(h, 0.f, 1.f);
-        s = tgui::clamp(s, 0.f, 1.f);
-        v = tgui::clamp(v, 0.f, 1.f);
+        h = std::clamp(h, 0.f, 1.f);
+        s = std::clamp(s, 0.f, 1.f);
+        v = std::clamp(v, 0.f, 1.f);
 
         const float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
 
@@ -58,13 +58,13 @@ namespace
                            std::abs((fract(h + K[1]) * 6.0f) - K[3]),
                            std::abs((fract(h + K[2]) * 6.0f) - K[3])};
 
-        const float C[] = {v * mix(K[0], tgui::clamp(p[0] - K[0], 0.f, 1.f), s),
-                           v * mix(K[0], tgui::clamp(p[1] - K[0], 0.f, 1.f), s),
-                           v * mix(K[0], tgui::clamp(p[2] - K[0], 0.f, 1.f), s)};
+        const float C[] = {v * mix(K[0], std::clamp(p[0] - K[0], 0.f, 1.f), s),
+                           v * mix(K[0], std::clamp(p[1] - K[0], 0.f, 1.f), s),
+                           v * mix(K[0], std::clamp(p[2] - K[0], 0.f, 1.f), s)};
 
-        return {static_cast<std::uint8_t>(tgui::clamp(255.f * C[0], 0.f, 255.f)),
-                static_cast<std::uint8_t>(tgui::clamp(255.f * C[1], 0.f, 255.f)),
-                static_cast<std::uint8_t>(tgui::clamp(255.f * C[2], 0.f, 255.f))};
+        return {static_cast<std::uint8_t>(std::clamp(255.f * C[0], 0.f, 255.f)),
+                static_cast<std::uint8_t>(std::clamp(255.f * C[1], 0.f, 255.f)),
+                static_cast<std::uint8_t>(std::clamp(255.f * C[2], 0.f, 255.f))};
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

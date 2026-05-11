@@ -35,22 +35,6 @@
 
 namespace tgui
 {
-    namespace
-    {
-        float clamp(float value, float lower, float upper)
-        {
-            if (value < lower)
-                return lower;
-
-            if (value > upper)
-                return upper;
-
-            return value;
-        }
-    } // namespace
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 #if TGUI_COMPILED_WITH_CPP_VER < 17
     constexpr char ChildWindow::StaticWidgetType[];
 #endif
@@ -916,30 +900,34 @@ namespace tgui
 
             if ((m_resizeDirection & ResizeLeft) != 0)
             {
-                const float diff = clamp(m_draggingPosition.x - pos.x,
-                                         std::max(minimumWidth, m_minimumSize.x) - getSize().x,
-                                         m_maximumSize.x - getSize().x);
+                const float diff = std::clamp(m_draggingPosition.x - pos.x,
+                                              std::max(minimumWidth, m_minimumSize.x) - getSize().x,
+                                              m_maximumSize.x - getSize().x);
                 setPosition(getPosition().x - diff, getPosition().y);
                 setSize(getSize().x + diff, getSize().y);
             }
             else if ((m_resizeDirection & ResizeRight) != 0)
             {
-                const float diff = clamp(pos.x - m_draggingPosition.x,
-                                         std::max(minimumWidth, m_minimumSize.x) - getSize().x,
-                                         m_maximumSize.x - getSize().x);
+                const float diff = std::clamp(pos.x - m_draggingPosition.x,
+                                              std::max(minimumWidth, m_minimumSize.x) - getSize().x,
+                                              m_maximumSize.x - getSize().x);
                 setSize(getSize().x + diff, getSize().y);
                 m_draggingPosition.x += diff;
             }
 
             if ((m_resizeDirection & ResizeTop) != 0)
             {
-                const float diff = clamp(m_draggingPosition.y - pos.y, m_minimumSize.y - getSize().y, m_maximumSize.y - getSize().y);
+                const float diff = std::clamp(m_draggingPosition.y - pos.y,
+                                              m_minimumSize.y - getSize().y,
+                                              m_maximumSize.y - getSize().y);
                 setPosition(getPosition().x, getPosition().y - diff);
                 setSize(getSize().x, getSize().y + diff);
             }
             else if ((m_resizeDirection & ResizeBottom) != 0)
             {
-                const float diff = clamp(pos.y - m_draggingPosition.y, m_minimumSize.y - getSize().y, m_maximumSize.y - getSize().y);
+                const float diff = std::clamp(pos.y - m_draggingPosition.y,
+                                              m_minimumSize.y - getSize().y,
+                                              m_maximumSize.y - getSize().y);
                 setSize(getSize().x, getSize().y + diff);
                 m_draggingPosition.y += diff;
             }

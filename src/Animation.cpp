@@ -124,8 +124,8 @@ namespace tgui
 
         FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, Duration duration, std::function<void()> finishedCallback) :
             Animation{AnimationType::Opacity, std::move(widget), duration, std::move(finishedCallback)},
-            m_startOpacity{clamp(start, 0.f, 1.f)},
-            m_endOpacity{clamp(end, 0.f, 1.f)}
+            m_startOpacity{std::clamp(start, 0.f, 1.f)},
+            m_endOpacity{std::clamp(end, 0.f, 1.f)}
         {
         }
 

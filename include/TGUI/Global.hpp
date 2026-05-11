@@ -58,16 +58,6 @@ namespace tgui
 #endif
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @brief Clamps a value between two boundries. This function exists because std::clamp was only added with C++17
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    template <typename T>
-    TGUI_NODISCARD constexpr const T& clamp(const T& v, const T& lo, const T& hi)
-    {
-        TGUI_ASSERT(!(hi < lo), "The highest value must not be less than the lowest value");
-        return (v < lo) ? lo : (hi < v) ? hi : v;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Changes the default mouse cursor of EditBox and TextArea widgets from an arrow to the I-beam cursor.
     /// @param useIBeam  True to use the I-beam cursor, false to set the default behavior of using a normal arrow
     ///
