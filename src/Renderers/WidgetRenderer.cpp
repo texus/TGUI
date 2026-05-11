@@ -99,7 +99,7 @@ namespace tgui
 
     void WidgetRenderer::setOpacity(float opacity)
     {
-        setProperty("Opacity", ObjectConverter{clamp(opacity, 0.f, 1.f)});
+        setProperty("Opacity", ObjectConverter{std::clamp(opacity, 0.f, 1.f)});
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ namespace tgui
     void WidgetRenderer::setOpacityDisabled(float opacity)
     {
         if (opacity != -1.f)
-            setProperty("OpacityDisabled", ObjectConverter{clamp(opacity, 0.f, 1.f)});
+            setProperty("OpacityDisabled", ObjectConverter{std::clamp(opacity, 0.f, 1.f)});
         else
             setProperty("OpacityDisabled", ObjectConverter{-1.f});
     }
