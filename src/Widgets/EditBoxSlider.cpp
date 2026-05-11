@@ -27,12 +27,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char EditBoxSlider::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     EditBoxSlider::EditBoxSlider(const char* typeName, bool initRenderer) :
         SubwidgetContainer{typeName, initRenderer}
     {

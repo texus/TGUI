@@ -30,12 +30,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char BitmapButton::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     BitmapButton::BitmapButton(const char* typeName, bool initRenderer) :
         Button{typeName, initRenderer},
         m_imageComponent{std::make_shared<priv::dev::ImageComponent>(&icon)}

@@ -26,68 +26,18 @@
 #define TGUI_VARIANT_HPP
 
 #include <TGUI/Config.hpp>
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <variant>
-#else
-    #include <TGUI/Any.hpp>
-    #include <TGUI/Exception.hpp>
-#endif
+
+#include <variant>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-    /*
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    namespace priv
-    {
-        template<typename... NoTypesLeft>
-        struct IndexInEmulatedVariantHelper
-        {
-            static std::size_t findIndex(const Any&, std::size_t)
-            {
-                // We should never pass here, it means that the Any object didn't hold anything.
-                throw Exception("tgui::Variant::index() called on uninitialized variant!");
-            }
-
-            static int getByIndex(const Any& any, std::size_t wantedIndex, std::size_t index)
-            {
-                throw Exception("tgui::Variant::get() called with too high index!");
-            }
-        };
-
-        template<typename FirstType, typename... OtherTypes>
-        struct IndexInEmulatedVariantHelper<FirstType, OtherTypes...>
-        {
-            static std::size_t findIndex(const Any& any, std::size_t index)
-            {
-                if (any.is<FirstType>())
-                    return index;
-                else
-                    return IndexInEmulatedVariantHelper<OtherTypes...>::findIndex(any, index + 1);
-            }
-
-            static decltype(auto) getByIndex(const Any& any, std::size_t wantedIndex, std::size_t index)
-            {
-                if (index == wantedIndex)
-                    return any.as<FirstType>();
-                else
-                    return IndexInEmulatedVariantHelper<OtherTypes...>::getByIndex(any, wantedIndex, index + 1);
-            }
-        };
-    }
-#endif
-*/
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @internal
     /// @brief Wrapper around std::variant which will fall back to a custom Any class in C++14 mode
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
     template <typename... Types>
-#else
-    template <typename FirstType, typename... OtherTypes>
-#endif
     class Variant
     {
     public:
@@ -95,13 +45,7 @@ namespace tgui
         /// @brief Default constructor
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Variant() :
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-            m_variant
-        {
-        }
-#else
-            m_any{FirstType{}}
-#endif
+            m_variant{}
         {
         }
 
@@ -112,11 +56,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
         Variant(T&& value) : // NOLINT(bugprone-forwarding-reference-overload)
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
             m_variant{std::forward<T>(value)}
-#else
-            m_any{std::forward<T>(value)}
-#endif
         {
         }
 
@@ -128,11 +68,7 @@ namespace tgui
         template <typename T>
         [[nodiscard]] T& get()
         {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
             return std::get<T>(m_variant);
-#else
-            return m_any.as<T>();
-#endif
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,11 +79,7 @@ namespace tgui
         template <typename T>
         [[nodiscard]] const T& get() const
         {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
             return std::get<T>(m_variant);
-#else
-            return m_any.as<T>();
-#endif
         }
 
         /*
@@ -159,11 +91,7 @@ namespace tgui
         template <std::size_t Index>
         auto& get()
         {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
             return std::get<Index>(m_variant);
-#else
-            return priv::IndexInEmulatedVariantHelper<FirstType, OtherTypes...>::getByIndex(m_any, Index, 0);
-#endif
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,11 +102,7 @@ namespace tgui
         template <std::size_t Index>
         const auto& get() const
         {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
             return std::get<Index>(m_variant);
-#else
-            return priv::IndexInEmulatedVariantHelper<FirstType, OtherTypes...>::getByIndex(m_any, Index, 0);
-#endif
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,22 +110,14 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         std::size_t index() const
         {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
             return m_variant.index();
-#else
-            return priv::IndexInEmulatedVariantHelper<FirstType, OtherTypes...>::findIndex(m_any, 0);
-#endif
         }
-*/
+        */
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private:
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         std::variant<Types...> m_variant;
-#else
-        Any m_any;
-#endif
     };
 } // namespace tgui
 

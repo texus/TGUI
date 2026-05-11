@@ -29,31 +29,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    const Color Color::Black{0, 0, 0};
-    const Color Color::White{255, 255, 255};
-    const Color Color::Red{255, 0, 0};
-    const Color Color::Green{0, 255, 0};
-    const Color Color::Blue{0, 0, 255};
-    const Color Color::Yellow{255, 255, 0};
-    const Color Color::Magenta{255, 0, 255};
-    const Color Color::Cyan{0, 255, 255};
-    const Color Color::Transparent{0, 0, 0, 0};
-
-    const std::array<std::pair<StringView, Color>, 9> Color::colorNamesMap{
-        {{U"black"sv, Color::Black},
-         {U"white"sv, Color::White},
-         {U"red"sv, Color::Red},
-         {U"yellow"sv, Color::Yellow},
-         {U"green"sv, Color::Green},
-         {U"cyan"sv, Color::Cyan},
-         {U"blue"sv, Color::Blue},
-         {U"magenta"sv, Color::Magenta},
-         {U"transparent"sv, Color::Transparent}}};
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     namespace priv
     {
         TGUI_API Color constructColorFromString(const String& string)

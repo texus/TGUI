@@ -31,12 +31,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char RangeSlider::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     RangeSlider::RangeSlider(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {

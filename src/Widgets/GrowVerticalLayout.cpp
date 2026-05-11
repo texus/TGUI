@@ -28,12 +28,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char GrowVerticalLayout::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     GrowVerticalLayout::GrowVerticalLayout(const char* typeName, bool initRenderer) :
         BoxLayout{typeName, false}
     {

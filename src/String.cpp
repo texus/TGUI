@@ -26,12 +26,9 @@
 
 #include <algorithm>
 #include <cctype>   // tolower, toupper, isspace
+#include <charconv> // from_chars
 #include <cwctype>  // iswspace, iswalpha
 #include <iterator> // distance
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <charconv> // from_chars
-#endif
 
 namespace
 {
@@ -49,12 +46,6 @@ namespace
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    const decltype(std::u32string::npos) String::npos = std::u32string::npos;
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     bool isWhitespace(char character)
     {
         return std::isspace(static_cast<unsigned char>(character));
@@ -101,7 +92,7 @@ namespace tgui
     {
         const std::string& ansiStr = trim().toStdString();
 
-#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
 #else
         try
@@ -122,7 +113,7 @@ namespace tgui
     {
         const std::string ansiStr = trim().toStdString();
 
-#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
 #else
         try
@@ -143,7 +134,7 @@ namespace tgui
     {
         const std::string ansiStr = trim().toStdString();
 
-#if (TGUI_COMPILED_WITH_CPP_VER >= 17) && defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
+#if defined(__cpp_lib_to_chars) && (__cpp_lib_to_chars >= 201611L)
         return std::from_chars(ansiStr.data(), ansiStr.data() + ansiStr.length(), result).ec == std::errc{};
 #else
         // We can't use std::stof because it always depends on the global locale
@@ -642,11 +633,7 @@ namespace tgui
 
     String& String::assign(StringView sv)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.assign(sv);
-#else
-        m_string.assign(sv.data(), sv.length());
-#endif
         return *this;
     }
 
@@ -670,16 +657,7 @@ namespace tgui
 
     String& String::assign(StringView sv, std::size_t pos, std::size_t count)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.assign(sv, pos, count);
-#else
-        if (count != npos)
-            m_string.assign(sv.data() + pos, count);
-        else if (pos <= sv.length())
-            m_string.assign(sv.data() + pos, sv.length() - pos);
-        else
-            throw std::out_of_range("Invalid arguments for String::assign");
-#endif
         return *this;
     }
 
@@ -966,11 +944,7 @@ namespace tgui
 
     String& String::insert(std::size_t index, StringView sv)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.insert(index, sv);
-#else
-        m_string.insert(index, sv.data(), sv.length());
-#endif
         return *this;
     }
 
@@ -994,19 +968,7 @@ namespace tgui
 
     String& String::insert(std::size_t index, StringView sv, std::size_t pos, std::size_t count)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.insert(index, sv, pos, count);
-#else
-        if (index > length())
-            throw std::out_of_range("Invalid arguments for String::insert");
-
-        if (count != npos)
-            m_string.insert(index, sv.data() + pos, count);
-        else if (pos <= sv.length())
-            m_string.insert(index, sv.data() + pos, sv.length() - pos);
-        else
-            throw std::out_of_range("Invalid arguments for String::insert");
-#endif
         return *this;
     }
 
@@ -1222,11 +1184,7 @@ namespace tgui
 
     String& String::append(StringView sv)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.append(sv);
-#else
-        m_string.append(sv.data(), sv.length());
-#endif
         return *this;
     }
 
@@ -1250,16 +1208,7 @@ namespace tgui
 
     String& String::append(StringView sv, std::size_t pos, std::size_t count)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.append(sv, pos, count);
-#else
-        if (count != npos)
-            m_string.append(sv.data() + pos, count);
-        else if (pos < sv.length())
-            m_string.append(sv.data() + pos, sv.length() - pos);
-        else
-            throw std::out_of_range("Invalid arguments for String::append");
-#endif
         return *this;
     }
 
@@ -1371,11 +1320,7 @@ namespace tgui
 
     int String::compare(StringView sv) const noexcept
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.compare(sv);
-#else
-        return m_string.compare(0, length(), sv.data(), sv.length());
-#endif
     }
 
     int String::compare(const char32_t* s) const
@@ -1395,11 +1340,7 @@ namespace tgui
 
     int String::compare(std::size_t pos1, std::size_t count1, StringView sv) const
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.compare(pos1, count1, sv);
-#else
-        return m_string.compare(pos1, count1, sv.data(), sv.length());
-#endif
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const char32_t* s) const
@@ -1419,11 +1360,7 @@ namespace tgui
 
     int String::compare(std::size_t pos1, std::size_t count1, StringView sv, std::size_t pos2, std::size_t count2) const
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.compare(pos1, count1, sv, pos2, count2);
-#else
-        return m_string.compare(pos1, count1, sv.data() + pos2, count2);
-#endif
     }
 
     int String::compare(std::size_t pos1, std::size_t count1, const std::string& str, std::size_t pos2, std::size_t count2) const
@@ -1475,11 +1412,7 @@ namespace tgui
 
     String& String::replace(std::size_t pos, std::size_t count, StringView sv)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.replace(pos, count, sv);
-#else
-        m_string.replace(pos, count, sv.data(), sv.length());
-#endif
         return *this;
     }
 
@@ -1503,11 +1436,7 @@ namespace tgui
 
     String& String::replace(const_iterator first, const_iterator last, StringView sv)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.replace(first, last, sv);
-#else
-        m_string.replace(first, last, sv.data(), sv.length());
-#endif
         return *this;
     }
 
@@ -1531,16 +1460,7 @@ namespace tgui
 
     String& String::replace(std::size_t pos, std::size_t count, StringView sv, std::size_t pos2, std::size_t count2)
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         m_string.replace(pos, count, sv, pos2, count2);
-#else
-        if ((count2 != npos) && (pos2 + count2 <= sv.length()))
-            m_string.replace(pos, count, sv.data() + pos2, count2);
-        else if (pos2 <= sv.length())
-            m_string.replace(pos, count, sv.data() + pos2, sv.length() - pos2);
-        else
-            throw std::out_of_range("Invalid arguments for String::replace");
-#endif
         return *this;
     }
 
@@ -1780,7 +1700,7 @@ namespace tgui
         return contains(static_cast<char32_t>(c));
     }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
+#if defined(__cpp_lib_string_contains) && (__cpp_lib_string_contains >= 202011L)
     bool String::contains(char32_t c) const noexcept
     {
         return m_string.contains(c);
@@ -1836,11 +1756,7 @@ namespace tgui
 
     std::size_t String::find(StringView sv, std::size_t pos) const noexcept
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.find(sv, pos);
-#else
-        return m_string.find(sv.data(), pos, sv.length());
-#endif
     }
 
     std::size_t String::find(const char32_t* s, std::size_t pos) const
@@ -1902,11 +1818,7 @@ namespace tgui
 
     std::size_t String::find_first_of(StringView sv, std::size_t pos) const noexcept
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.find_first_of(sv, pos);
-#else
-        return m_string.find_first_of(sv.data(), pos, sv.length());
-#endif
     }
 
     std::size_t String::find_first_of(const char32_t* s, std::size_t pos) const
@@ -1968,11 +1880,7 @@ namespace tgui
 
     std::size_t String::find_first_not_of(StringView sv, std::size_t pos) const noexcept
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.find_first_not_of(sv, pos);
-#else
-        return m_string.find_first_not_of(sv.data(), pos, sv.length());
-#endif
     }
 
     std::size_t String::find_first_not_of(const char32_t* s, std::size_t pos) const
@@ -2034,11 +1942,7 @@ namespace tgui
 
     std::size_t String::rfind(StringView sv, std::size_t pos) const noexcept
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.rfind(sv, pos);
-#else
-        return m_string.rfind(sv.data(), pos, sv.length());
-#endif
     }
 
     std::size_t String::rfind(const char32_t* s, std::size_t pos) const
@@ -2100,11 +2004,7 @@ namespace tgui
 
     std::size_t String::find_last_of(StringView sv, std::size_t pos) const noexcept
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.find_last_of(sv, pos);
-#else
-        return m_string.find_last_of(sv.data(), pos, sv.length());
-#endif
     }
 
     std::size_t String::find_last_of(const char32_t* s, std::size_t pos) const
@@ -2166,11 +2066,7 @@ namespace tgui
 
     std::size_t String::find_last_not_of(StringView sv, std::size_t pos) const noexcept
     {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         return m_string.find_last_not_of(sv, pos);
-#else
-        return m_string.find_last_not_of(sv.data(), pos, sv.length());
-#endif
     }
 
     std::size_t String::find_last_not_of(const char32_t* s, std::size_t pos) const

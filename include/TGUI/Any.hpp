@@ -29,17 +29,10 @@
 
 #include <TGUI/Config.hpp>
 
-#include <type_traits>
-#include <typeinfo>
-#include <utility>
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <any>
-#endif
+#include <any>
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
     using Any = std::any;
 
     template <typename T>
@@ -47,145 +40,6 @@ namespace tgui
     {
         return std::any_cast<T>(obj);
     }
-#else
-    struct Any
-    {
-        template <class T>
-        using StorageType = std::decay_t<T>;
-
-        [[nodiscard]] bool is_null() const
-        {
-            return ptr == nullptr;
-        }
-
-        [[nodiscard]] bool not_null() const
-        {
-            return ptr != nullptr;
-        }
-
-        template <typename U>
-        Any(U&& value) // NOLINT(bugprone-forwarding-reference-overload)
-            :
-            ptr{new Derived<StorageType<U>>(std::forward<U>(value))}
-        {
-        }
-
-        [[nodiscard]] bool has_value() const noexcept
-        {
-            return ptr != nullptr;
-        }
-
-        template <class U>
-        [[nodiscard]] bool is() const
-        {
-            using T = StorageType<U>;
-            return dynamic_cast<Derived<T>*>(ptr) != nullptr;
-        }
-
-        template <class U>
-        StorageType<U>& as() const
-        {
-            using T = StorageType<U>;
-            auto derived = dynamic_cast<Derived<T>*>(ptr);
-            if (!derived)
-                throw std::bad_cast();
-
-            return derived->value;
-        }
-
-        template <class U>
-        operator U()
-        {
-            return as<StorageType<U>>();
-        }
-
-        Any() :
-            ptr(nullptr)
-        {
-        }
-
-        Any(const Any& that) :
-            ptr(that.clone())
-        {
-        }
-
-        Any(Any&& that) noexcept :
-            ptr(that.ptr)
-        {
-            that.ptr = nullptr;
-        }
-
-        Any& operator=(const Any& a)
-        {
-            if ((this == &a) || (ptr == a.ptr))
-                return *this;
-
-            auto old_ptr = ptr;
-
-            ptr = a.clone();
-
-            if (old_ptr)
-                delete old_ptr;
-
-            return *this;
-        }
-
-        Any& operator=(Any&& a) noexcept
-        {
-            if ((this == &a) || (ptr == a.ptr))
-                return *this;
-
-            std::swap(ptr, a.ptr);
-
-            return *this;
-        }
-
-        ~Any()
-        {
-            delete ptr;
-        }
-
-    private:
-        struct Base
-        {
-            virtual ~Base() = default;
-            [[nodiscard]] virtual Base* clone() const = 0;
-        };
-
-        template <typename T>
-        struct Derived : Base
-        {
-            template <typename U>
-            Derived(U&& val) : // NOLINT(bugprone-forwarding-reference-overload)
-                value(std::forward<U>(val))
-            {
-            }
-
-            Base* clone() const override
-            {
-                return new Derived<T>(value);
-            }
-
-            T value;
-        };
-
-        [[nodiscard]] Base* clone() const
-        {
-            if (ptr)
-                return ptr->clone();
-            else
-                return nullptr;
-        }
-
-        Base* ptr;
-    };
-
-    template <typename T>
-    [[nodiscard]] T AnyCast(const Any& obj)
-    {
-        return obj.as<T>();
-    }
-#endif
 } // namespace tgui
 
 #endif // TGUI_ANY_HPP

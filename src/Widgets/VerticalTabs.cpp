@@ -31,12 +31,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char VerticalTabs::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     VerticalTabs::VerticalTabs(const char* typeName, bool initRenderer) :
         TabsBase{typeName, false}
     {

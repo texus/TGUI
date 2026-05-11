@@ -30,16 +30,12 @@
 #include <algorithm> // equal, min
 #include <cctype>    // tolower
 #include <string>
-
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
-    #include <string_view>
-#endif
+#include <string_view>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
     inline namespace literals
     {
         inline namespace string_view_literals
@@ -52,251 +48,6 @@ namespace tgui
 
     using StringView = std::u32string_view;
     using CharStringView = std::string_view;
-#else
-    template <typename Type>
-    struct TypeIdentity
-    {
-        using type = Type;
-    };
-
-    template <typename Type>
-    using TypeIdentity_t = typename TypeIdentity<Type>::type;
-
-    template <typename CharType>
-    class StringViewImpl
-    {
-    public:
-        using const_iterator = const CharType*;
-
-        constexpr StringViewImpl() = default;
-        constexpr StringViewImpl(const StringViewImpl& other) = default;
-
-        constexpr StringViewImpl(const CharType* str, std::size_t strLength) :
-            m_string(str),
-            m_length(strLength)
-        {
-        }
-
-        constexpr StringViewImpl(const CharType* str) :
-            m_string(str),
-            m_length(std::char_traits<CharType>::length(str))
-        {
-        }
-
-        constexpr StringViewImpl(const std::basic_string<CharType>& str) :
-            m_string(str.data()),
-            m_length(str.length())
-        {
-        }
-
-        [[nodiscard]] constexpr const_iterator begin() const noexcept
-        {
-            return m_string;
-        }
-        [[nodiscard]] constexpr const_iterator cbegin() const noexcept
-        {
-            return m_string;
-        }
-
-        [[nodiscard]] constexpr const_iterator end() const noexcept
-        {
-            return m_string + static_cast<std::ptrdiff_t>(m_length);
-        }
-        [[nodiscard]] constexpr const_iterator cend() const noexcept
-        {
-            return m_string + static_cast<std::ptrdiff_t>(m_length);
-        }
-
-        [[nodiscard]] constexpr const CharType& operator[](std::size_t index) const
-        {
-            return m_string[index];
-        }
-
-        [[nodiscard]] constexpr const CharType& front() const
-        {
-            return m_string[0];
-        }
-
-        [[nodiscard]] constexpr const CharType& back() const
-        {
-            return m_string[m_length - 1];
-        }
-
-        [[nodiscard]] constexpr const CharType* data() const noexcept
-        {
-            return m_string;
-        }
-
-        [[nodiscard]] constexpr std::size_t size() const noexcept
-        {
-            return m_length;
-        }
-        [[nodiscard]] constexpr std::size_t length() const noexcept
-        {
-            return m_length;
-        }
-
-        [[nodiscard]] constexpr bool empty() const noexcept
-        {
-            return m_length == 0;
-        }
-
-        [[nodiscard]] constexpr StringViewImpl substr(std::size_t pos = 0, std::size_t count = std::u32string::npos) const
-        {
-            if (count != std::u32string::npos)
-                return StringViewImpl(&m_string[pos], count);
-            else
-                return StringViewImpl(&m_string[pos], m_length - pos);
-        }
-
-        [[nodiscard]] constexpr int compare(StringViewImpl strView) const noexcept
-        {
-            const std::size_t rlen = std::min(length(), strView.length());
-            const int ret = std::char_traits<CharType>::compare(data(), strView.data(), rlen);
-            if (ret != 0)
-                return ret;
-
-            if (length() < strView.length())
-                return -1;
-            else if (length() > strView.length())
-                return 1;
-            else
-                return 0;
-        }
-
-        [[nodiscard]] constexpr std::size_t find(StringViewImpl strView, std::size_t pos = 0) const noexcept
-        {
-            if (empty() || (strView.length() > m_length))
-                return std::u32string::npos;
-
-            if (strView.empty())
-                return pos;
-
-            for (std::size_t i = pos; i <= m_length - strView.length(); ++i)
-            {
-                if (m_string[i] != strView[0])
-                    continue;
-
-                bool found = true;
-                for (std::size_t j = 1; j < strView.length(); ++j)
-                {
-                    if (m_string[i + j] != strView[j])
-                    {
-                        found = false;
-                        break;
-                    }
-                }
-
-                if (found)
-                    return i;
-            }
-
-            return std::u32string::npos;
-        }
-
-        [[nodiscard]] constexpr std::size_t find(CharType ch, std::size_t pos = 0) const noexcept
-        {
-            return find(StringViewImpl(&ch, 1), pos);
-        }
-        [[nodiscard]] constexpr std::size_t find(const CharType* str, std::size_t pos, std::size_t count) const
-        {
-            return find(StringViewImpl(str, count), pos);
-        }
-        [[nodiscard]] constexpr std::size_t find(const CharType* str, std::size_t pos = 0) const
-        {
-            return find(StringViewImpl(str), pos);
-        }
-
-    private:
-        const CharType* m_string = nullptr;
-        std::size_t m_length = 0;
-    };
-
-    template <typename CharType>
-    [[nodiscard]] constexpr bool operator==(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
-    {
-        return lhs.compare(rhs) == 0;
-    }
-
-    template <typename CharType>
-    [[nodiscard]] constexpr bool operator!=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
-    {
-        return lhs.compare(rhs) != 0;
-    }
-
-    template <typename CharType>
-    [[nodiscard]] constexpr bool operator<(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
-    {
-        return lhs.compare(rhs) < 0;
-    }
-
-    template <typename CharType>
-    [[nodiscard]] constexpr bool operator<=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
-    {
-        return lhs.compare(rhs) <= 0;
-    }
-
-    template <typename CharType>
-    [[nodiscard]] constexpr bool operator>(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
-    {
-        return lhs.compare(rhs) > 0;
-    }
-
-    template <typename CharType>
-    [[nodiscard]] constexpr bool operator>=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
-    {
-        return lhs.compare(rhs) >= 0;
-    }
-
-    using StringView = StringViewImpl<char32_t>;
-    using CharStringView = StringViewImpl<char>;
-
-        // Allow using operator ""sv
-        // Note that this only affects code placed inside the tgui namespace.
-    #if defined(__clang__)
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wuser-defined-literals"
-    #elif defined(__GNUC__)
-        #pragma GCC diagnostic push
-        #pragma GCC diagnostic ignored "-Wliteral-suffix"
-    #elif defined(_MSC_VER)
-        #pragma warning(push)
-        #pragma warning(disable : 4455) // literal suffix identifiers that do not start with an underscore are reserved
-    #endif
-    inline namespace literals
-    {
-        inline namespace string_view_literals
-        {
-            inline constexpr StringViewImpl<char> operator""sv(const char* str, size_t len) noexcept
-            {
-                return StringViewImpl<char>{str, len};
-            }
-
-            inline constexpr StringViewImpl<wchar_t> operator""sv(const wchar_t* str, size_t len) noexcept
-            {
-                return StringViewImpl<wchar_t>{str, len};
-            }
-
-            inline constexpr StringViewImpl<char16_t> operator""sv(const char16_t* str, size_t len) noexcept
-            {
-                return StringViewImpl<char16_t>{str, len};
-            }
-
-            inline constexpr StringViewImpl<char32_t> operator""sv(const char32_t* str, size_t len) noexcept
-            {
-                return StringViewImpl<char32_t>{str, len};
-            }
-        } // namespace string_view_literals
-    } // namespace literals
-    #if defined(__clang__)
-        #pragma clang diagnostic pop
-    #elif defined(__GNUC__)
-        #pragma GCC diagnostic pop
-    #elif defined(_MSC_VER)
-        #pragma warning(pop)
-    #endif
-
-#endif // TGUI_COMPILED_WITH_CPP_VER
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Returns whether two view are equal if letters would have been lowercase
@@ -346,7 +97,7 @@ namespace tgui
                           });
     }
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17 && defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
+#if defined(__cpp_lib_starts_ends_with) && (__cpp_lib_starts_ends_with >= 201711L)
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @brief Checks whether the view starts with the given substring
     ///

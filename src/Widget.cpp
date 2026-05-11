@@ -1773,7 +1773,6 @@ namespace tgui
                 node->propertyValuePairs[U"RotationOrigin"] = std::make_unique<DataIO::ValueNode>(
                     "(" + String::fromNumber(m_rotationOrigin->x) + "," + String::fromNumber(m_rotationOrigin->y) + ")");
         }
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
         if (m_userData.has_value())
         {
             if (m_userData.type() == typeid(String))
@@ -1792,26 +1791,6 @@ namespace tgui
                 node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(string));
             }
         }
-#else
-        if (m_userData.not_null())
-        {
-            if (m_userData.is<String>())
-            {
-                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(
-                    Serializer::serialize(m_userData.as<String>()));
-            }
-            else if (m_userData.is<std::string>())
-            {
-                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(
-                    Serializer::serialize(String(m_userData.as<std::string>())));
-            }
-            else if (m_userData.is<const char*>())
-            {
-                node->propertyValuePairs[U"UserData"] = std::make_unique<DataIO::ValueNode>(
-                    Serializer::serialize(m_userData.as<const char*>()));
-            }
-        }
-#endif
         if (m_textSize != 0)
             node->propertyValuePairs[U"TextSize"] = std::make_unique<DataIO::ValueNode>(String::fromNumber(m_textSize));
         if (m_ignoreMouseEvents)
@@ -1969,13 +1948,8 @@ namespace tgui
         }
         if (node->propertyValuePairs[U"UserData"])
         {
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
             m_userData = std::make_any<String>(
                 Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
-#else
-            m_userData = Any(
-                Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"UserData"]->value).getString());
-#endif
         }
         if (node->propertyValuePairs[U"TextSize"])
             setTextSize(node->propertyValuePairs[U"TextSize"]->value.toUInt());

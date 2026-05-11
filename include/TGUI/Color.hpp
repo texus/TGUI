@@ -53,7 +53,7 @@ namespace tgui
     ///   even a serialized string as argument.
     /// - Storing no color at all. Some colors may be optionally set and can thus remain unspecified.
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(TGUI_SYSTEM_WINDOWS) && TGUI_COMPILED_WITH_CPP_VER >= 17
+#if defined(TGUI_SYSTEM_WINDOWS)
     // dllimport doesn't work for the static members when they are defined as inline constexpr outside the class,
     // so we aren't allowed to put TGUI_API here on Windows.
     class Color
@@ -265,7 +265,6 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
     inline constexpr Color Color::Black{0, 0, 0};
     inline constexpr Color Color::White{255, 255, 255};
     inline constexpr Color Color::Red{255, 0, 0};
@@ -286,7 +285,6 @@ namespace tgui
          {U"blue"sv, Color::Blue},
          {U"magenta"sv, Color::Magenta},
          {U"transparent"sv, Color::Transparent}}};
-#endif
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

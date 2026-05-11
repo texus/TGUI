@@ -31,12 +31,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char MessageBox::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     MessageBox::MessageBox(const char* typeName, bool initRenderer) :
         ChildWindow{typeName, false}
     {

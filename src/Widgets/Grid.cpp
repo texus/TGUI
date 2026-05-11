@@ -30,12 +30,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char Grid::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     Grid::Grid(const char* typeName, bool initRenderer) :
         Container{typeName, initRenderer}
     {

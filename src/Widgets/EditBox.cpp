@@ -32,16 +32,10 @@
 
 namespace tgui
 {
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     const char32_t* EditBox::Validator::All = U".*";
     const char32_t* EditBox::Validator::Int = U"[+-]?[0-9]*";
     const char32_t* EditBox::Validator::UInt = U"[0-9]*";
     const char32_t* EditBox::Validator::Float = U"[+-]?[0-9]*\\.?[0-9]*";
-
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr char EditBox::StaticWidgetType[];
-#endif
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
