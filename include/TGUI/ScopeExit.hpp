@@ -81,7 +81,7 @@ namespace tgui
     /// @brief Helper to create a ScopeExit without naming the lambda's type
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template <typename F>
-    TGUI_NODISCARD ScopeExit<typename std::decay<F>::type> makeScopeExit(F&& func)
+    [[nodiscard]] ScopeExit<typename std::decay<F>::type> makeScopeExit(F&& func)
     {
         return ScopeExit<typename std::decay<F>::type>(std::forward<F>(func));
     }

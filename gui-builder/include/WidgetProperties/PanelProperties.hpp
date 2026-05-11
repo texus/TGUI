@@ -29,7 +29,7 @@
 
 struct PanelProperties : public GroupProperties
 {
-    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    [[nodiscard]] PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = GroupProperties::initProperties(widget);
         auto panel = widget->cast<tgui::Panel>();

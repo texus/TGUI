@@ -60,7 +60,7 @@ struct ChildWindowProperties : public WidgetProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    [[nodiscard]] PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = WidgetProperties::initProperties(widget);
         auto childWindow = widget->cast<tgui::ChildWindow>();
@@ -96,7 +96,7 @@ struct ChildWindowProperties : public WidgetProperties
     }
 
 private:
-    TGUI_NODISCARD static unsigned int deserializeTitleButtons(const tgui::String& value)
+    [[nodiscard]] static unsigned int deserializeTitleButtons(const tgui::String& value)
     {
         unsigned int decodedTitleButtons = tgui::ChildWindow::TitleButton::None;
         const std::vector<tgui::String> titleButtons = tgui::Deserializer::split(value, '|');
@@ -114,7 +114,7 @@ private:
         return decodedTitleButtons;
     }
 
-    TGUI_NODISCARD static tgui::String serializeTitleButtons(unsigned int titleButtons)
+    [[nodiscard]] static tgui::String serializeTitleButtons(unsigned int titleButtons)
     {
         tgui::String serializedTitleButtons;
         if (titleButtons & tgui::ChildWindow::TitleButton::Minimize)
@@ -132,7 +132,7 @@ private:
         return serializedTitleButtons;
     }
 
-    TGUI_NODISCARD static tgui::ChildWindow::CloseBehavior deserializeCloseBehavior(tgui::String value)
+    [[nodiscard]] static tgui::ChildWindow::CloseBehavior deserializeCloseBehavior(tgui::String value)
     {
         value = value.trim().toLower();
         if (value == "none")
@@ -142,7 +142,7 @@ private:
         return tgui::ChildWindow::CloseBehavior::Remove;
     }
 
-    TGUI_NODISCARD static tgui::String serializeCloseBehavior(tgui::ChildWindow::CloseBehavior behavior)
+    [[nodiscard]] static tgui::String serializeCloseBehavior(tgui::ChildWindow::CloseBehavior behavior)
     {
         if (behavior == tgui::ChildWindow::CloseBehavior::None)
             return "None";
@@ -151,14 +151,14 @@ private:
         return "Remove";
     }
 
-    TGUI_NODISCARD static float deserializeMaxSize(const tgui::String& value)
+    [[nodiscard]] static float deserializeMaxSize(const tgui::String& value)
     {
         if (value.empty())
             return std::numeric_limits<float>::infinity();
         return tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::Number, value).getNumber();
     }
 
-    TGUI_NODISCARD static tgui::String serializeMaxSize(float maxSize)
+    [[nodiscard]] static tgui::String serializeMaxSize(float maxSize)
     {
         if (maxSize != std::numeric_limits<float>::infinity())
             return tgui::String::fromNumber(maxSize);

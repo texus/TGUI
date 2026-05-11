@@ -68,7 +68,7 @@ namespace tgui
         /// @brief Returns a pointer to the internal SDL_GPUTexture
         /// @return Pointer to internal texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SDL_GPUTexture* getInternalTexture() const
+        [[nodiscard]] SDL_GPUTexture* getInternalTexture() const
         {
             return m_texture;
         }

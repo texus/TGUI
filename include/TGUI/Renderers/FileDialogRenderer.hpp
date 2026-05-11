@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return Data about how the list view looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getListView() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getListView() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the path and filename edit boxes
@@ -62,7 +62,7 @@ namespace tgui
         ///
         /// @return Data about how the edit boxes looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getEditBox() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getEditBox() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the filename label
@@ -76,7 +76,7 @@ namespace tgui
         ///
         /// @return Data about how the filename label looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getFilenameLabel() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getFilenameLabel() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the file type combo box
@@ -90,7 +90,7 @@ namespace tgui
         ///
         /// @return Data about how the file type combo box looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getFileTypeComboBox() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getFileTypeComboBox() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the cancel and confirm buttons
@@ -108,7 +108,7 @@ namespace tgui
         ///
         /// When BackButton, ForwardButton or UpButton are set to nullptr (default), then this property is also used for them
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getButton() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getButton() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the back button
@@ -126,7 +126,7 @@ namespace tgui
         ///
         /// When this returns a nullptr (default), then the Button property is used as renderer data for the back button.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getBackButton() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getBackButton() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the forward button
@@ -144,7 +144,7 @@ namespace tgui
         ///
         /// When this returns a nullptr (default), then the Button property is used as renderer data for the forward button.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getForwardButton() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getForwardButton() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the up button
@@ -162,7 +162,7 @@ namespace tgui
         ///
         /// When this returns a nullptr (default), then the Button property is used as renderer data for the up button.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getUpButton() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getUpButton() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the arrows are shown on the back, forward and up buttons
@@ -181,7 +181,7 @@ namespace tgui
         ///
         /// @see setArrowsOnNavigationButtonsVisible
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getArrowsOnNavigationButtonsVisible() const;
+        [[nodiscard]] bool getArrowsOnNavigationButtonsVisible() const;
     };
 } // namespace tgui
 

@@ -33,7 +33,7 @@
 
 namespace
 {
-    TGUI_NODISCARD std::pair<tgui::String, tgui::String> parseMinMaxExpresssion(const tgui::String& expression)
+    [[nodiscard]] std::pair<tgui::String, tgui::String> parseMinMaxExpresssion(const tgui::String& expression)
     {
         unsigned int bracketCount = 0;
         auto commaOrBracketPos = expression.find_first_of(",()");

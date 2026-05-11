@@ -52,7 +52,7 @@ namespace tgui
         /// @brief Creates a new empty texture object
         /// @return Shared pointer to a new texture object
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendTexture> createTexture() override;
+        [[nodiscard]] std::shared_ptr<BackendTexture> createTexture() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the maximum allowed texture size
@@ -61,7 +61,7 @@ namespace tgui
         ///
         /// @warning Raylib provides no method to query the limit. This function always returns 16384.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
+        [[nodiscard]] unsigned int getMaximumTextureSize() override;
     };
 } // namespace tgui
 

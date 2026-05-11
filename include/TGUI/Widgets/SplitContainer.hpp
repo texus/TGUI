@@ -64,7 +64,7 @@ namespace tgui
         ///
         /// @return The new split container
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static SplitContainer::Ptr create(const Layout2d& size = {"100%", "100%"});
+        [[nodiscard]] static SplitContainer::Ptr create(const Layout2d& size = {"100%", "100%"});
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another split container
@@ -73,21 +73,21 @@ namespace tgui
         ///
         /// @return The new split container
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static SplitContainer::Ptr copy(const SplitContainer::ConstPtr& splitContainer);
+        [[nodiscard]] static SplitContainer::Ptr copy(const SplitContainer::ConstPtr& splitContainer);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SplitContainerRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const SplitContainerRenderer* getSharedRenderer() const override;
+        [[nodiscard]] SplitContainerRenderer* getSharedRenderer() override;
+        [[nodiscard]] const SplitContainerRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SplitContainerRenderer* getRenderer() override;
+        [[nodiscard]] SplitContainerRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the split container
@@ -140,7 +140,7 @@ namespace tgui
         ///
         /// @return Horizontal if widgets are placed beside each other, vertical if widgets are placed below each other
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Orientation getOrientation() const;
+        [[nodiscard]] Orientation getOrientation() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the minimum value for the splitter, effectively providing a minimum size for the top/left widget
@@ -160,7 +160,7 @@ namespace tgui
         ///
         /// @return Current minimum splitter offset
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getMinValidSplitterOffset() const;
+        [[nodiscard]] float getMinValidSplitterOffset() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the maximum value for the splitter, effectively providing a minimum size for the bottom/right widget
@@ -180,7 +180,7 @@ namespace tgui
         ///
         /// @return Current maximum splitter offset
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getMaxValidSplitterOffset() const;
+        [[nodiscard]] float getMaxValidSplitterOffset() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the position of the splitter from the left or top position (depending on orientation)
@@ -200,7 +200,7 @@ namespace tgui
         ///
         /// @return Splitter position, which equals the size of the left or top widget (depending on orientation)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getSplitterOffset() const;
+        [[nodiscard]] float getSplitterOffset() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the width of the draggable splitter line that separates the two widgets in the container
@@ -214,7 +214,7 @@ namespace tgui
         ///
         /// @return Thickness of the splitter line
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getSplitterWidth() const;
+        [[nodiscard]] float getSplitterWidth() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the minimum width of the area where the splitter can be dragged
@@ -234,14 +234,14 @@ namespace tgui
         /// If this value is less or equal to SplitterWidth then the splitter can be grabbed when the mouse is on top of it.
         /// If the value is larger than SplitterWidth then there is a margin around the splitter where you can also grab it.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getMinimumGrabWidth() const;
+        [[nodiscard]] float getMinimumGrabWidth() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
+        [[nodiscard]] bool isMouseOnWidget(Vector2f pos) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -279,7 +279,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes
@@ -299,7 +299,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates the splitter offset if it is defined as a relative value, and then calls updateChildren()
@@ -314,7 +314,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the area occupied by the splitter, with a marin around it if m_minimumGrabWidth > m_splitterWidth
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD FloatRect getSplitterInteractRect() const;
+        [[nodiscard]] FloatRect getSplitterInteractRect() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

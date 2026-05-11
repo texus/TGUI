@@ -102,7 +102,7 @@ namespace tgui
         ///
         /// @return Left outline width
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr float getLeft() const
+        [[nodiscard]] constexpr float getLeft() const
         {
             return m_left.getValue();
         }
@@ -112,7 +112,7 @@ namespace tgui
         ///
         /// @return Top outline height
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr float getTop() const
+        [[nodiscard]] constexpr float getTop() const
         {
             return m_top.getValue();
         }
@@ -122,7 +122,7 @@ namespace tgui
         ///
         /// @return Right outline width
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr float getRight() const
+        [[nodiscard]] constexpr float getRight() const
         {
             return m_right.getValue();
         }
@@ -132,7 +132,7 @@ namespace tgui
         ///
         /// @return Bottom outline height
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr float getBottom() const
+        [[nodiscard]] constexpr float getBottom() const
         {
             return m_bottom.getValue();
         }
@@ -141,7 +141,7 @@ namespace tgui
         /// @brief Returnes the width of the left and top outlines
         /// @return Left and top outlines
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr Vector2f getOffset() const
+        [[nodiscard]] constexpr Vector2f getOffset() const
         {
             return {getLeft(), getTop()};
         }
@@ -151,7 +151,7 @@ namespace tgui
         /// @return Left + right outlines
         /// @since TGUI 1.11
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr float getLeftPlusRight() const
+        [[nodiscard]] constexpr float getLeftPlusRight() const
         {
             return getLeft() + getRight();
         }
@@ -161,7 +161,7 @@ namespace tgui
         /// @return Top + bottom outlines
         /// @since TGUI 1.11
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr float getTopPlusBottom() const
+        [[nodiscard]] constexpr float getTopPlusBottom() const
         {
             return getTop() + getBottom();
         }
@@ -173,7 +173,7 @@ namespace tgui
         ///
         /// @return Whether the outlines are equal or not
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr bool operator==(const Outline& outline) const
+        [[nodiscard]] constexpr bool operator==(const Outline& outline) const
         {
             return (getLeft() == outline.getLeft()) && (getTop() == outline.getTop()) && (getRight() == outline.getRight())
                    && (getBottom() == outline.getBottom());
@@ -186,7 +186,7 @@ namespace tgui
         ///
         /// @return Whether the outlines are equal or not
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr bool operator!=(const Outline& outline) const
+        [[nodiscard]] constexpr bool operator!=(const Outline& outline) const
         {
             return !(*this == outline);
         }
@@ -196,7 +196,7 @@ namespace tgui
         ///
         /// @param other  The outline to add together with this instance
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr Outline operator+(const Outline& other) const
+        [[nodiscard]] constexpr Outline operator+(const Outline& other) const
         {
             return {getLeft() + other.getLeft(),
                     getTop() + other.getTop(),
@@ -209,7 +209,7 @@ namespace tgui
         ///
         /// @param other  The outline to subtract from this instance
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr Outline operator-(const Outline& other) const
+        [[nodiscard]] constexpr Outline operator-(const Outline& other) const
         {
             return {getLeft() - other.getLeft(),
                     getTop() - other.getTop(),
@@ -265,7 +265,7 @@ namespace tgui
         ///
         /// @return String representation of outline
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD String toString() const
+        [[nodiscard]] String toString() const
         {
             return U"(" + m_left.toString() + U", " + m_top.toString() + U", " + m_right.toString() + U", " + m_bottom.toString()
                    + U")";

@@ -95,28 +95,28 @@ namespace tgui
         /// @brief Creates a new tree view widget
         /// @return The new tree view
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static TreeView::Ptr create();
+        [[nodiscard]] static TreeView::Ptr create();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another tree view
         /// @param treeView  The other tree view
         /// @return The new tree view
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static TreeView::Ptr copy(const TreeView::ConstPtr& treeView);
+        [[nodiscard]] static TreeView::Ptr copy(const TreeView::ConstPtr& treeView);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD TreeViewRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const TreeViewRenderer* getSharedRenderer() const override;
+        [[nodiscard]] TreeViewRenderer* getSharedRenderer() override;
+        [[nodiscard]] const TreeViewRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD TreeViewRenderer* getRenderer() override;
+        [[nodiscard]] TreeViewRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the tree view
@@ -219,14 +219,14 @@ namespace tgui
         /// @brief Returns the selected item
         /// @return Hierarchy of items, identifying the selected node, or an empty list when no item was selected
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::vector<String> getSelectedItem() const;
+        [[nodiscard]] std::vector<String> getSelectedItem() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the item currently below the mouse cursor
         /// @return Hierarchy of items, identifying the node below the mouse, or an empty list when the mouse isn't on any item
         /// @since TGUI 1.5
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::vector<String> getHoveredItem() const;
+        [[nodiscard]] std::vector<String> getHoveredItem() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the index of an item, based on the items that share the same parent
@@ -310,13 +310,13 @@ namespace tgui
         ///
         /// @since TGUI 1.2
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD ConstNode getNode(const std::vector<String>& hierarchy) const;
+        [[nodiscard]] ConstNode getNode(const std::vector<String>& hierarchy) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the nodes in the tree view
         /// @return List of nodes
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::vector<ConstNode> getNodes() const;
+        [[nodiscard]] std::vector<ConstNode> getNodes() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the height of the items in the tree view
@@ -328,7 +328,7 @@ namespace tgui
         /// @brief Returns the height of the items in the tree view
         /// @return The item height
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getItemHeight() const;
+        [[nodiscard]] unsigned int getItemHeight() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the vertical scrollbar
@@ -343,7 +343,7 @@ namespace tgui
         /// @return Value of the vertical scrollbar
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getVerticalScrollbar()->getValue() instead")
-        TGUI_NODISCARD unsigned int getVerticalScrollbarValue() const;
+        [[nodiscard]] unsigned int getVerticalScrollbarValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the vertical scrollbar
@@ -353,7 +353,7 @@ namespace tgui
         /// @since TGUI 1.4
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getVerticalScrollbar()->getMaxValue() instead")
-        TGUI_NODISCARD unsigned int getVerticalScrollbarMaxValue() const;
+        [[nodiscard]] unsigned int getVerticalScrollbarMaxValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the horizontal scrollbar
@@ -369,7 +369,7 @@ namespace tgui
         /// @return Value of the horizontal scrollbar
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getHorizontalScrollbar()->getValue() instead")
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarValue() const;
+        [[nodiscard]] unsigned int getHorizontalScrollbarValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the horizontal scrollbar
@@ -379,14 +379,14 @@ namespace tgui
         /// @since TGUI 1.4
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use getHorizontalScrollbar()->getMaxValue() instead")
-        TGUI_NODISCARD unsigned int getHorizontalScrollbarMaxValue() const;
+        [[nodiscard]] unsigned int getHorizontalScrollbarMaxValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         ///
         /// @return Is the mouse on top of the widget?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
+        [[nodiscard]] bool isMouseOnWidget(Vector2f pos) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -464,7 +464,7 @@ namespace tgui
         ///
         /// @throw Exception when the name does not match any signal
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Signal& getSignal(String signalName) override;
+        [[nodiscard]] Signal& getSignal(String signalName) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
@@ -476,7 +476,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes
@@ -499,7 +499,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Returns the size without the borders
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getInnerSize() const;
+        [[nodiscard]] Vector2f getInnerSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Updates the bounds of the icons
@@ -514,7 +514,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -529,11 +529,11 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Node* findParentNode(const std::vector<String>& hierarchy,
-                                            unsigned int parentIndex,
-                                            std::vector<std::shared_ptr<Node>>& nodes,
-                                            Node* parent,
-                                            bool createParents);
+        [[nodiscard]] Node* findParentNode(const std::vector<String>& hierarchy,
+                                           unsigned int parentIndex,
+                                           std::vector<std::shared_ptr<Node>>& nodes,
+                                           Node* parent,
+                                           bool createParents);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Expands or collapses one of the visible items

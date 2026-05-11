@@ -135,15 +135,15 @@ namespace tgui
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual WidgetRenderer* getSharedRenderer();
-        TGUI_NODISCARD virtual const WidgetRenderer* getSharedRenderer() const;
+        [[nodiscard]] virtual WidgetRenderer* getSharedRenderer();
+        [[nodiscard]] virtual const WidgetRenderer* getSharedRenderer() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual WidgetRenderer* getRenderer();
+        [[nodiscard]] virtual WidgetRenderer* getRenderer();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief sets the position of the widget
@@ -196,7 +196,7 @@ namespace tgui
         ///
         /// @return Current position
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getPosition() const
+        [[nodiscard]] Vector2f getPosition() const
         {
             return m_position.getValue();
         }
@@ -264,7 +264,7 @@ namespace tgui
         ///
         /// @return Size of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getSize() const
+        [[nodiscard]] Vector2f getSize() const
         {
             return m_size.getValue();
         }
@@ -277,7 +277,7 @@ namespace tgui
         ///
         /// @return Full size of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Vector2f getFullSize() const;
+        [[nodiscard]] virtual Vector2f getFullSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the absolute position of the widget instead of the relative position to its parent
@@ -286,7 +286,7 @@ namespace tgui
         ///
         /// @return Absolute position of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Vector2f getAbsolutePosition(Vector2f offset = {}) const;
+        [[nodiscard]] virtual Vector2f getAbsolutePosition(Vector2f offset = {}) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position where the widget is drawn and where the widget is placed
@@ -295,7 +295,7 @@ namespace tgui
         ///
         /// @return Offset of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Vector2f getWidgetOffset() const;
+        [[nodiscard]] virtual Vector2f getWidgetOffset() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets how the position is determined compared to the other widgets in the parent
@@ -313,7 +313,7 @@ namespace tgui
         ///
         /// The default value is Manual which means the position and size are manually set and are unrelated to other widgets.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD AutoLayout getAutoLayout() const;
+        [[nodiscard]] AutoLayout getAutoLayout() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the origin point on which the position, scale and rotation is based
@@ -345,7 +345,7 @@ namespace tgui
         /// @brief Returns the relative origin point on which the position, scale and rotation is based
         /// @return Relative origin point of the widget (0 for left/top, 1 for right/bottom)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getOrigin() const
+        [[nodiscard]] Vector2f getOrigin() const
         {
             return m_origin;
         }
@@ -413,7 +413,7 @@ namespace tgui
         /// @return How many times the widget is enlarged (or shrunk if scale factor is smaller than 1)
         /// @see setScaling
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getScale() const
+        [[nodiscard]] Vector2f getScale() const
         {
             return m_scaleFactors;
         }
@@ -423,7 +423,7 @@ namespace tgui
         /// @return Origin from where the widget is scaled
         /// @see setScale
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getScaleOrigin() const;
+        [[nodiscard]] Vector2f getScaleOrigin() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the rotation to be applied to the widget
@@ -454,7 +454,7 @@ namespace tgui
         /// @return How many degrees the widget is rotated clockwise
         /// @see setRotation
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getRotation() const
+        [[nodiscard]] float getRotation() const
         {
             return m_rotationDeg;
         }
@@ -464,7 +464,7 @@ namespace tgui
         /// @return Origin around which the rotation occurs
         /// @see setRotation
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Vector2f getRotationOrigin() const;
+        [[nodiscard]] Vector2f getRotationOrigin() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Shows the widget by introducing it with an animation
@@ -557,7 +557,7 @@ namespace tgui
         /// If this function returns false then the widget is hidden, which means that it won't receive events (and thus won't
         /// send callbacks) and it won't be drawn. All widgets are visible by default.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isVisible() const
+        [[nodiscard]] bool isVisible() const
         {
             return m_visible;
         }
@@ -579,7 +579,7 @@ namespace tgui
         /// If this function returns false then the widget is disabled and will longer receive events and it will thus no longer send callbacks.
         /// All widgets are enabled by default.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isEnabled() const
+        [[nodiscard]] bool isEnabled() const
         {
             return m_enabled;
         }
@@ -599,7 +599,7 @@ namespace tgui
         ///
         /// @return Is the widget focused?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isFocused() const
+        [[nodiscard]] bool isFocused() const
         {
             return m_focused;
         }
@@ -609,14 +609,14 @@ namespace tgui
         ///
         /// @return Type of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getWidgetType() const;
+        [[nodiscard]] const String& getWidgetType() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a pointer to the parent widget
         ///
         /// @return Pointer to the parent
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Container* getParent() const
+        [[nodiscard]] Container* getParent() const
         {
             return m_parent;
         }
@@ -626,7 +626,7 @@ namespace tgui
         ///
         /// @return Pointer to the gui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD BackendGui* getParentGui() const
+        [[nodiscard]] BackendGui* getParentGui() const
         {
             return m_parentGui;
         }
@@ -636,7 +636,7 @@ namespace tgui
         ///
         /// @return Is an animation that shows or hides the widget playing?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isAnimationPlaying() const;
+        [[nodiscard]] bool isAnimationPlaying() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Places the widget before all other widgets
@@ -673,7 +673,7 @@ namespace tgui
         /// @throw std::bad_cast if the template type does not match the type inside the std::any variable passed in setUserData.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename DataType>
-        TGUI_NODISCARD DataType getUserData() const
+        [[nodiscard]] DataType getUserData() const
         {
             return AnyCast<DataType>(m_userData);
         }
@@ -682,7 +682,7 @@ namespace tgui
         /// @brief Returns whether data stored in the widget
         /// @return True if data was set via setUserData before, false if setUserData wasn't called or passed an empty object.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool hasUserData() const
+        [[nodiscard]] bool hasUserData() const
         {
             return m_userData.has_value();
         }
@@ -702,7 +702,7 @@ namespace tgui
         ///
         /// @return Font of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Font& getInheritedFont() const;
+        [[nodiscard]] const Font& getInheritedFont() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the opacity of the widget that will be multiplied with the opacity set in the renderer
@@ -719,7 +719,7 @@ namespace tgui
         ///
         /// @return Opacity of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getInheritedOpacity() const;
+        [[nodiscard]] float getInheritedOpacity() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the character size of text in this widget if it uses text
@@ -738,7 +738,7 @@ namespace tgui
         /// @warning This returns the actual text size. If the renderer specifies a text size then the value returned by this
         ///          function will be the one from the renderer and not the one provided when calling setTextSize.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getTextSize() const;
+        [[nodiscard]] unsigned int getTextSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the tool tip that should be displayed when hovering over the widget
@@ -752,7 +752,7 @@ namespace tgui
         ///
         /// @return The widget that is used as tool tip or nullptr when no tool tip has been set
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getToolTip() const;
+        [[nodiscard]] Widget::Ptr getToolTip() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the name of a widget
@@ -773,7 +773,7 @@ namespace tgui
         ///
         /// @return Name of the widget or an empty string when wasn't given a name
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD String getWidgetName() const;
+        [[nodiscard]] String getWidgetName() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes which mouse cursor is shown when hovering over the widget
@@ -789,7 +789,7 @@ namespace tgui
         ///
         /// @return The cursor to show when the mouse is on top of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Cursor::Type getMouseCursor() const;
+        [[nodiscard]] Cursor::Type getMouseCursor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether a widget could be focused
@@ -807,7 +807,7 @@ namespace tgui
         ///
         /// By default all widgets are focusable.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isFocusable() const;
+        [[nodiscard]] bool isFocusable() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes which widget should become focused when navigating upwards from this widget
@@ -827,7 +827,7 @@ namespace tgui
         ///
         /// @since TGUI 1.1
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getNavigationUp() const;
+        [[nodiscard]] Widget::Ptr getNavigationUp() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes which widget should become focused when navigating downwards from this widget
@@ -847,7 +847,7 @@ namespace tgui
         ///
         /// @since TGUI 1.1
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getNavigationDown() const;
+        [[nodiscard]] Widget::Ptr getNavigationDown() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes which widget should become focused when navigating to the left from this widget
@@ -867,7 +867,7 @@ namespace tgui
         ///
         /// @since TGUI 1.1
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getNavigationLeft() const;
+        [[nodiscard]] Widget::Ptr getNavigationLeft() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes which widget should become focused when navigating to the right from this widget
@@ -887,7 +887,7 @@ namespace tgui
         ///
         /// @since TGUI 1.1
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getNavigationRight() const;
+        [[nodiscard]] Widget::Ptr getNavigationRight() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets whether the widget should completely ignore mouse events and let them pass to the widgets behind it
@@ -910,7 +910,7 @@ namespace tgui
         ///
         /// @since TGUI 1.3
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getIgnoreMouseEvents() const;
+        [[nodiscard]] bool getIgnoreMouseEvents() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes all animations of the widget finish immediately
@@ -923,19 +923,19 @@ namespace tgui
         ///
         /// A widget has to be visible, enabled and focusable for this function to return true.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool canGainFocus() const;
+        [[nodiscard]] virtual bool canGainFocus() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the widget is a container widget or not
         /// @return Does the widget inherit from the Container class, giving it the ability to have child widgets?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isContainer() const;
+        [[nodiscard]] bool isContainer() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the left mouse button has been pressed on top of the widget
         /// @return Is the left mouse button being pressed on top of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isMouseDown() const;
+        [[nodiscard]] bool isMouseDown() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Retrieves a signal based on its name
@@ -946,7 +946,7 @@ namespace tgui
         ///
         /// @throw Exception when the name does not match any signal
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Signal& getSignal(String signalName);
+        [[nodiscard]] virtual Signal& getSignal(String signalName);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -971,7 +971,7 @@ namespace tgui
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         /// @return Is the mouse on top of the widget?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool isMouseOnWidget(Vector2f pos) const = 0;
+        [[nodiscard]] virtual bool isMouseOnWidget(Vector2f pos) const = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called by the parent when the left mouse button goes down on top of the widget
@@ -1060,13 +1060,13 @@ namespace tgui
         // Returns its tool tip or the tool tip from a child widget if the mouse is on top of the widget.
         // A nullptr is returned when the mouse is not on top of the widget or when the tool tip is empty.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Widget::Ptr askToolTip(Vector2f mousePos);
+        [[nodiscard]] virtual Widget::Ptr askToolTip(Vector2f mousePos);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
         /// @brief Returns the layout object that is being used for the position
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Layout2d& getPositionLayout() const
+        [[nodiscard]] const Layout2d& getPositionLayout() const
         {
             return m_position;
         }
@@ -1075,7 +1075,7 @@ namespace tgui
         /// @internal
         /// @brief Returns the layout object that is being used for the size
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Layout2d& getSizeLayout() const
+        [[nodiscard]] const Layout2d& getSizeLayout() const
         {
             return m_size;
         }
@@ -1118,7 +1118,7 @@ namespace tgui
         /// @brief Downcast const widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename WidgetType>
-        TGUI_NODISCARD std::shared_ptr<const WidgetType> cast() const
+        [[nodiscard]] std::shared_ptr<const WidgetType> cast() const
         {
             return std::dynamic_pointer_cast<const WidgetType>(shared_from_this());
         }
@@ -1127,7 +1127,7 @@ namespace tgui
         /// @brief Downcast widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename WidgetType>
-        TGUI_NODISCARD std::shared_ptr<WidgetType> cast()
+        [[nodiscard]] std::shared_ptr<WidgetType> cast()
         {
             return std::dynamic_pointer_cast<WidgetType>(shared_from_this());
         }
@@ -1140,7 +1140,7 @@ namespace tgui
         ///
         /// @return Copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Widget::Ptr clone() const = 0;
+        [[nodiscard]] virtual Widget::Ptr clone() const = 0;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -1170,7 +1170,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const;
+        [[nodiscard]] virtual std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes

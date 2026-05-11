@@ -65,7 +65,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the color with its alpha channel multiplied with the alpha parameter
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static constexpr Color applyOpacity(const Color& color, float alpha)
+        [[nodiscard]] static constexpr Color applyOpacity(const Color& color, float alpha)
         {
             return {color.getRed(), color.getGreen(), color.getBlue(), static_cast<std::uint8_t>(color.getAlpha() * alpha)};
         }
@@ -154,7 +154,7 @@ namespace tgui
         ///
         /// @return True if a color was passed to the constructor, false when the default constructor was used
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr bool isSet() const
+        [[nodiscard]] constexpr bool isSet() const
         {
             return m_isSet;
         }
@@ -186,7 +186,7 @@ namespace tgui
         ///
         /// @return Red component of the stored color or the one from the default color is no color was set
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr std::uint8_t getRed() const
+        [[nodiscard]] constexpr std::uint8_t getRed() const
         {
             return m_red;
         }
@@ -196,7 +196,7 @@ namespace tgui
         ///
         /// @return Green component of the stored color or the one from the default color is no color was set
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr std::uint8_t getGreen() const
+        [[nodiscard]] constexpr std::uint8_t getGreen() const
         {
             return m_green;
         }
@@ -206,7 +206,7 @@ namespace tgui
         ///
         /// @return Blue component of the stored color or the one from the default color is no color was set
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr std::uint8_t getBlue() const
+        [[nodiscard]] constexpr std::uint8_t getBlue() const
         {
             return m_blue;
         }
@@ -216,7 +216,7 @@ namespace tgui
         ///
         /// @return Alpha component of the stored color or the one from the default color is no color was set
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr std::uint8_t getAlpha() const
+        [[nodiscard]] constexpr std::uint8_t getAlpha() const
         {
             return m_alpha;
         }
@@ -224,7 +224,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Compares the color with another one
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr bool operator==(const Color& rhs) const
+        [[nodiscard]] constexpr bool operator==(const Color& rhs) const
         {
             return (m_isSet == rhs.m_isSet) && (m_red == rhs.m_red) && (m_green == rhs.m_green) && (m_blue == rhs.m_blue)
                    && (m_alpha == rhs.m_alpha);
@@ -233,7 +233,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Compares the color with another one
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD constexpr bool operator!=(const Color& right) const
+        [[nodiscard]] constexpr bool operator!=(const Color& right) const
         {
             return !(*this == right);
         }
@@ -306,7 +306,7 @@ namespace tgui
         /// Note that having this function allows keeping the Color class outside of a DLL, which allows the color constants
         /// to be defined as "inline constexpr".
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD TGUI_API Color constructColorFromString(const String& string);
+        [[nodiscard]] TGUI_API Color constructColorFromString(const String& string);
     } // namespace priv
 } // namespace tgui
 

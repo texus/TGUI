@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return Data about how the scrollbars looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getScrollbar() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getScrollbar() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the wanted width of the scrollbar
@@ -60,7 +60,7 @@ namespace tgui
         /// @brief Returns the wanted width of the scrollbar
         /// @return Requested scrollbar width or 0 if no width was set (texture width or default value will be used)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getScrollbarWidth() const;
+        [[nodiscard]] float getScrollbarWidth() const;
     };
 } // namespace tgui
 

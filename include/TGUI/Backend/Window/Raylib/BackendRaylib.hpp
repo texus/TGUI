@@ -82,7 +82,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @return Whether queries modifier key is being pressed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead")
-        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
+        [[nodiscard]] bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the contents of the clipboard
@@ -96,7 +96,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         ///
         /// @return Clipboard contents
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD String getClipboard() const override;
+        [[nodiscard]] String getClipboard() const override;
 
 #ifdef TGUI_SYSTEM_ANDROID
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,8 +107,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         ///
         /// @return File contents if the file was successfully read, or a nullptr on failure or if platform isn't Android.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<std::uint8_t[]> readFileFromAndroidAssets(const String& filename,
-                                                                                 std::size_t& fileSize) const override;
+        [[nodiscard]] std::unique_ptr<std::uint8_t[]> readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const override;
 #endif
     };
 

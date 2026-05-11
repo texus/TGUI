@@ -104,7 +104,7 @@ namespace tgui
         ///
         /// You typically don't need this function as you can call handleEvent directly with an SDL_Event.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool convertEvent(const SDL_Event& eventSDL, Event& eventTGUI);
+        [[nodiscard]] bool convertEvent(const SDL_Event& eventSDL, Event& eventTGUI);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the window that was provided to the gui
@@ -143,7 +143,7 @@ namespace tgui
         ///
         /// @return Whether queries modifier key is being pressed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const override;
+        [[nodiscard]] bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

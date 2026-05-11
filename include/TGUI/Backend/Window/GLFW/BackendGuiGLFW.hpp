@@ -152,7 +152,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @param focused  GLFW_TRUE if the window was given input focus, or GLFW_FALSE if it lost it
         /// @see windowFocusCallback
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Optional<Event> convertWindowFocusEvent(int focused);
+        [[nodiscard]] Optional<Event> convertWindowFocusEvent(int focused);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -161,7 +161,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @param height The new height, in pixels, of the framebuffer
         /// @see sizeCallback
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Optional<Event> convertSizeEvent(int width, int height);
+        [[nodiscard]] Optional<Event> convertSizeEvent(int width, int height);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -169,7 +169,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @param codepoint  The Unicode code point of the character
         /// @see charCallback
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Optional<Event> convertCharEvent(unsigned int codepoint);
+        [[nodiscard]] Optional<Event> convertCharEvent(unsigned int codepoint);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -180,7 +180,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @param mods     Bit field describing which modifier keys were held down
         /// @see keyCallback
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Optional<Event> convertKeyEvent(int key, int scancode, int action, int mods);
+        [[nodiscard]] Optional<Event> convertKeyEvent(int key, int scancode, int action, int mods);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -189,7 +189,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @param yoffset  The scroll offset along the y-axis
         /// @see scrollCallback
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Optional<Event> convertScrollEvent(double xoffset, double yoffset);
+        [[nodiscard]] Optional<Event> convertScrollEvent(double xoffset, double yoffset);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -198,7 +198,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @param ypos  The new cursor y-coordinate, relative to the top edge of the content area
         /// @see cursorPosCallback
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Optional<Event> convertCursorPosEvent(double xpos, double ypos);
+        [[nodiscard]] Optional<Event> convertCursorPosEvent(double xpos, double ypos);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -208,7 +208,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @param mods    Bit field describing which modifier keys were held down
         /// @see mouseButtonCallback
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Optional<Event> convertMouseButtonEvent(int button, int action, int mods);
+        [[nodiscard]] Optional<Event> convertMouseButtonEvent(int button, int action, int mods);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -216,7 +216,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @param entered  Indicates whether the mouse has entered or left the content area of the window
         /// @see cursorEnterCallback
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Optional<Event> convertCursorEnterEvent(int entered);
+        [[nodiscard]] Optional<Event> convertCursorEnterEvent(int entered);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the window that was provided to the gui
@@ -243,7 +243,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         ///
         /// @return Whether queries modifier key is being pressed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const override;
+        [[nodiscard]] bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

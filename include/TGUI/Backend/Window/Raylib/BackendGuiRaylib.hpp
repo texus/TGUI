@@ -156,7 +156,7 @@ namespace tgui
         ///
         /// @return Whether queries modifier key is being pressed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const override;
+        [[nodiscard]] bool isKeyboardModifierPressed(Event::KeyModifier modifierKey) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Breaks out of the main loop that is implemented inside the mainLoop function

@@ -264,29 +264,39 @@ TEST_CASE("[Backend events]")
                     tgui::Event eventTGUI;
                     eventKeyPressed.numLock = true;
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad0;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Numpad0));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Numpad0));
 
                     eventKeyPressed.numLock = false;
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad0;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Insert));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Insert));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad1;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::End));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::End));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad2;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Down));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Down));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad3;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageDown));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::PageDown));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad4;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Left));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Left));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad5;
                     REQUIRE(!backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad6;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Right));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Right));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad7;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Home));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Home));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad8;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::Up));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::Up));
                     eventKeyPressed.code = sf::Keyboard::Key::Numpad9;
-                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI) && eventTGUI.key.code == tgui::Event::KeyboardKey::PageUp));
+                    REQUIRE((backendGuiSFML->convertEvent(eventKeyPressed, eventTGUI)
+                             && eventTGUI.key.code == tgui::Event::KeyboardKey::PageUp));
                 }
         #endif
     #else

@@ -70,9 +70,9 @@ namespace tgui
         ///
         /// @return The new message box
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static MessageBox::Ptr create(const String& title = "",
-                                                     const String& text = "",
-                                                     const std::vector<String>& buttons = {});
+        [[nodiscard]] static MessageBox::Ptr create(const String& title = "",
+                                                    const String& text = "",
+                                                    const std::vector<String>& buttons = {});
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Copy constructor
@@ -101,21 +101,21 @@ namespace tgui
         ///
         /// @return The new message box
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static MessageBox::Ptr copy(const MessageBox::ConstPtr& messageBox);
+        [[nodiscard]] static MessageBox::Ptr copy(const MessageBox::ConstPtr& messageBox);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD MessageBoxRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const MessageBoxRenderer* getSharedRenderer() const override;
+        [[nodiscard]] MessageBoxRenderer* getSharedRenderer() override;
+        [[nodiscard]] const MessageBoxRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD MessageBoxRenderer* getRenderer() override;
+        [[nodiscard]] MessageBoxRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the message box
@@ -158,7 +158,7 @@ namespace tgui
         ///
         /// @return Text that is being displayed inside the message box
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getText() const;
+        [[nodiscard]] const String& getText() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Adds a button to the message box
@@ -193,7 +193,7 @@ namespace tgui
         ///
         /// @return Button texts
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::vector<String> getButtons() const;
+        [[nodiscard]] std::vector<String> getButtons() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes where the label is located inside the window (left side, centered or right side)
@@ -211,7 +211,7 @@ namespace tgui
         ///
         /// The label is left aligned by default.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD HorizontalAlignment getLabelAlignment() const;
+        [[nodiscard]] HorizontalAlignment getLabelAlignment() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes where the buttons are located inside the window (left side, centered or right side)
@@ -229,7 +229,7 @@ namespace tgui
         ///
         /// Buttons are centered by default.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD HorizontalAlignment getButtonAlignment() const;
+        [[nodiscard]] HorizontalAlignment getButtonAlignment() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -248,7 +248,7 @@ namespace tgui
         ///
         /// @throw Exception when the name does not match any signal
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Signal& getSignal(String signalName) override;
+        [[nodiscard]] Signal& getSignal(String signalName) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
@@ -260,7 +260,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes
@@ -275,7 +275,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

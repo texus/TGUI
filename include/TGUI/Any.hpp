@@ -53,12 +53,12 @@ namespace tgui
         template <class T>
         using StorageType = std::decay_t<T>;
 
-        TGUI_NODISCARD bool is_null() const
+        [[nodiscard]] bool is_null() const
         {
             return ptr == nullptr;
         }
 
-        TGUI_NODISCARD bool not_null() const
+        [[nodiscard]] bool not_null() const
         {
             return ptr != nullptr;
         }
@@ -70,13 +70,13 @@ namespace tgui
         {
         }
 
-        TGUI_NODISCARD bool has_value() const noexcept
+        [[nodiscard]] bool has_value() const noexcept
         {
             return ptr != nullptr;
         }
 
         template <class U>
-        TGUI_NODISCARD bool is() const
+        [[nodiscard]] bool is() const
         {
             using T = StorageType<U>;
             return dynamic_cast<Derived<T>*>(ptr) != nullptr;
@@ -149,7 +149,7 @@ namespace tgui
         struct Base
         {
             virtual ~Base() = default;
-            TGUI_NODISCARD virtual Base* clone() const = 0;
+            [[nodiscard]] virtual Base* clone() const = 0;
         };
 
         template <typename T>
@@ -169,7 +169,7 @@ namespace tgui
             T value;
         };
 
-        TGUI_NODISCARD Base* clone() const
+        [[nodiscard]] Base* clone() const
         {
             if (ptr)
                 return ptr->clone();
@@ -181,7 +181,7 @@ namespace tgui
     };
 
     template <typename T>
-    TGUI_NODISCARD T AnyCast(const Any& obj)
+    [[nodiscard]] T AnyCast(const Any& obj)
     {
         return obj.as<T>();
     }

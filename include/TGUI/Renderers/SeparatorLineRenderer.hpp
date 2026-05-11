@@ -46,7 +46,7 @@ namespace tgui
         /// @brief Returns the color of the line
         /// @return Line color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getColor() const;
+        [[nodiscard]] Color getColor() const;
     };
 } // namespace tgui
 

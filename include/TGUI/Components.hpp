@@ -98,11 +98,11 @@ namespace tgui
             class TGUI_API MessageBroker
             {
             public:
-                TGUI_NODISCARD static std::uint64_t createTopic();
+                [[nodiscard]] static std::uint64_t createTopic();
 
                 static void destroyTopic(std::uint64_t topicId);
 
-                TGUI_NODISCARD static std::uint64_t subscribe(std::uint64_t topicId, std::function<void()> func);
+                [[nodiscard]] static std::uint64_t subscribe(std::uint64_t topicId, std::function<void()> func);
 
                 static void unsubscribe(std::uint64_t callbackId);
 
@@ -245,7 +245,7 @@ namespace tgui
                     MessageBroker::sendEvent(m_messageTopicId);
                 }
 
-                TGUI_NODISCARD const ValueType& getValue(ComponentState state = ComponentState::Normal) const
+                [[nodiscard]] const ValueType& getValue(ComponentState state = ComponentState::Normal) const
                 {
                     const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
                     const auto storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
@@ -313,7 +313,7 @@ namespace tgui
                     return m_defaultValue;
                 }
 
-                TGUI_NODISCARD std::uint64_t connectCallback(std::function<void()> func)
+                [[nodiscard]] std::uint64_t connectCallback(std::function<void()> func)
                 {
                     return MessageBroker::subscribe(m_messageTopicId, std::move(func));
                 }
@@ -404,15 +404,15 @@ namespace tgui
 
                 void setPosition(Vector2f position);
 
-                TGUI_NODISCARD Vector2f getPosition() const;
+                [[nodiscard]] Vector2f getPosition() const;
 
-                TGUI_NODISCARD Vector2f getSize() const;
+                [[nodiscard]] Vector2f getSize() const;
 
                 void setPositionAlignment(PositionAlignment alignment);
 
                 void setVisible(bool visible);
 
-                TGUI_NODISCARD bool isVisible() const;
+                [[nodiscard]] bool isVisible() const;
 
                 void setParent(GroupComponent* parent);
 
@@ -420,7 +420,7 @@ namespace tgui
 
                 virtual void updateLayout();
 
-                TGUI_NODISCARD virtual std::shared_ptr<Component> clone() const = 0;
+                [[nodiscard]] virtual std::shared_ptr<Component> clone() const = 0;
 
             protected:
                 friend void swap(Component& first, Component& second) noexcept;
@@ -444,17 +444,17 @@ namespace tgui
                 GroupComponent(GroupComponent&&) = default;
                 GroupComponent& operator=(GroupComponent&&) = default;
 
-                TGUI_NODISCARD Vector2f getClientSize() const;
+                [[nodiscard]] Vector2f getClientSize() const;
 
                 void addComponent(const std::shared_ptr<Component>& component);
 
-                TGUI_NODISCARD const std::vector<std::shared_ptr<Component>>& getComponents() const;
+                [[nodiscard]] const std::vector<std::shared_ptr<Component>>& getComponents() const;
 
                 void draw(BackendRenderTarget& target, RenderStates states) const override;
 
                 void updateLayout() override;
 
-                TGUI_NODISCARD std::shared_ptr<Component> clone() const override;
+                [[nodiscard]] std::shared_ptr<Component> clone() const override;
 
                 friend void swap(GroupComponent& first, GroupComponent& second) noexcept;
 
@@ -484,25 +484,25 @@ namespace tgui
 
                 void setBorders(const Outline& border);
 
-                TGUI_NODISCARD const Outline& getBorders() const;
+                [[nodiscard]] const Outline& getBorders() const;
 
                 void setPadding(const Outline& padding);
 
-                TGUI_NODISCARD const Outline& getPadding() const;
+                [[nodiscard]] const Outline& getPadding() const;
 
                 void setOpacity(float opacity);
 
                 void setComponentState(ComponentState state);
 
-                TGUI_NODISCARD bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
+                [[nodiscard]] bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
 
                 void draw(BackendRenderTarget& target, RenderStates states) const override;
 
-                TGUI_NODISCARD Vector2f getSizeWithoutBorders() const;
+                [[nodiscard]] Vector2f getSizeWithoutBorders() const;
 
                 void updateLayout() override;
 
-                TGUI_NODISCARD std::shared_ptr<Component> clone() const override;
+                [[nodiscard]] std::shared_ptr<Component> clone() const override;
 
             private:
                 struct ColorRect
@@ -542,25 +542,25 @@ namespace tgui
 
                 void setString(const String& caption);
 
-                TGUI_NODISCARD const String& getString() const;
+                [[nodiscard]] const String& getString() const;
 
                 void setCharacterSize(unsigned int size);
 
-                TGUI_NODISCARD unsigned int getCharacterSize() const;
+                [[nodiscard]] unsigned int getCharacterSize() const;
 
                 void setFont(const Font& font);
 
-                TGUI_NODISCARD Font getFont() const;
+                [[nodiscard]] Font getFont() const;
 
                 void setOutlineColor(Color color);
 
-                TGUI_NODISCARD Color getOutlineColor() const;
+                [[nodiscard]] Color getOutlineColor() const;
 
                 void setOutlineThickness(float thickness);
 
-                TGUI_NODISCARD float getOutlineThickness() const;
+                [[nodiscard]] float getOutlineThickness() const;
 
-                TGUI_NODISCARD float getLineHeight() const;
+                [[nodiscard]] float getLineHeight() const;
 
                 void setOpacity(float opacity);
 
@@ -570,7 +570,7 @@ namespace tgui
 
                 void draw(BackendRenderTarget& target, RenderStates states) const override;
 
-                TGUI_NODISCARD std::shared_ptr<Component> clone() const override;
+                [[nodiscard]] std::shared_ptr<Component> clone() const override;
 
             private:
                 Text m_text;
@@ -603,11 +603,11 @@ namespace tgui
 
                 void setComponentState(ComponentState state);
 
-                TGUI_NODISCARD bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
+                [[nodiscard]] bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
 
                 void draw(BackendRenderTarget& target, RenderStates states) const override;
 
-                TGUI_NODISCARD std::shared_ptr<Component> clone() const override;
+                [[nodiscard]] std::shared_ptr<Component> clone() const override;
 
             private:
                 StyleProperty<Texture>* m_textureStyle;
@@ -618,7 +618,7 @@ namespace tgui
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            TGUI_NODISCARD inline ComponentState getStateFromFlags(bool hover, bool active, bool focused = false, bool enabled = true)
+            [[nodiscard]] inline ComponentState getStateFromFlags(bool hover, bool active, bool focused = false, bool enabled = true)
             {
                 if (!enabled)
                 {

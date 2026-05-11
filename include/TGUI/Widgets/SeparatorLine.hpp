@@ -65,7 +65,7 @@ namespace tgui
         ///
         /// @return The new separator
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static SeparatorLine::Ptr create(const Layout2d& size = {"100%", 1});
+        [[nodiscard]] static SeparatorLine::Ptr create(const Layout2d& size = {"100%", 1});
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another separator
@@ -74,21 +74,21 @@ namespace tgui
         ///
         /// @return The new separator
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static SeparatorLine::Ptr copy(const SeparatorLine::ConstPtr& separator);
+        [[nodiscard]] static SeparatorLine::Ptr copy(const SeparatorLine::ConstPtr& separator);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SeparatorLineRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const SeparatorLineRenderer* getSharedRenderer() const override;
+        [[nodiscard]] SeparatorLineRenderer* getSharedRenderer() override;
+        [[nodiscard]] const SeparatorLineRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SeparatorLineRenderer* getRenderer() override;
+        [[nodiscard]] SeparatorLineRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draw the widget to a render target
@@ -111,7 +111,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

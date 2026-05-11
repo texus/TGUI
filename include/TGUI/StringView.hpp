@@ -89,59 +89,59 @@ namespace tgui
         {
         }
 
-        TGUI_NODISCARD constexpr const_iterator begin() const noexcept
+        [[nodiscard]] constexpr const_iterator begin() const noexcept
         {
             return m_string;
         }
-        TGUI_NODISCARD constexpr const_iterator cbegin() const noexcept
+        [[nodiscard]] constexpr const_iterator cbegin() const noexcept
         {
             return m_string;
         }
 
-        TGUI_NODISCARD constexpr const_iterator end() const noexcept
+        [[nodiscard]] constexpr const_iterator end() const noexcept
         {
             return m_string + static_cast<std::ptrdiff_t>(m_length);
         }
-        TGUI_NODISCARD constexpr const_iterator cend() const noexcept
+        [[nodiscard]] constexpr const_iterator cend() const noexcept
         {
             return m_string + static_cast<std::ptrdiff_t>(m_length);
         }
 
-        TGUI_NODISCARD constexpr const CharType& operator[](std::size_t index) const
+        [[nodiscard]] constexpr const CharType& operator[](std::size_t index) const
         {
             return m_string[index];
         }
 
-        TGUI_NODISCARD constexpr const CharType& front() const
+        [[nodiscard]] constexpr const CharType& front() const
         {
             return m_string[0];
         }
 
-        TGUI_NODISCARD constexpr const CharType& back() const
+        [[nodiscard]] constexpr const CharType& back() const
         {
             return m_string[m_length - 1];
         }
 
-        TGUI_NODISCARD constexpr const CharType* data() const noexcept
+        [[nodiscard]] constexpr const CharType* data() const noexcept
         {
             return m_string;
         }
 
-        TGUI_NODISCARD constexpr std::size_t size() const noexcept
+        [[nodiscard]] constexpr std::size_t size() const noexcept
         {
             return m_length;
         }
-        TGUI_NODISCARD constexpr std::size_t length() const noexcept
+        [[nodiscard]] constexpr std::size_t length() const noexcept
         {
             return m_length;
         }
 
-        TGUI_NODISCARD constexpr bool empty() const noexcept
+        [[nodiscard]] constexpr bool empty() const noexcept
         {
             return m_length == 0;
         }
 
-        TGUI_NODISCARD constexpr StringViewImpl substr(std::size_t pos = 0, std::size_t count = std::u32string::npos) const
+        [[nodiscard]] constexpr StringViewImpl substr(std::size_t pos = 0, std::size_t count = std::u32string::npos) const
         {
             if (count != std::u32string::npos)
                 return StringViewImpl(&m_string[pos], count);
@@ -149,7 +149,7 @@ namespace tgui
                 return StringViewImpl(&m_string[pos], m_length - pos);
         }
 
-        TGUI_NODISCARD constexpr int compare(StringViewImpl strView) const noexcept
+        [[nodiscard]] constexpr int compare(StringViewImpl strView) const noexcept
         {
             const std::size_t rlen = std::min(length(), strView.length());
             const int ret = std::char_traits<CharType>::compare(data(), strView.data(), rlen);
@@ -164,7 +164,7 @@ namespace tgui
                 return 0;
         }
 
-        TGUI_NODISCARD constexpr std::size_t find(StringViewImpl strView, std::size_t pos = 0) const noexcept
+        [[nodiscard]] constexpr std::size_t find(StringViewImpl strView, std::size_t pos = 0) const noexcept
         {
             if (empty() || (strView.length() > m_length))
                 return std::u32string::npos;
@@ -194,15 +194,15 @@ namespace tgui
             return std::u32string::npos;
         }
 
-        TGUI_NODISCARD constexpr std::size_t find(CharType ch, std::size_t pos = 0) const noexcept
+        [[nodiscard]] constexpr std::size_t find(CharType ch, std::size_t pos = 0) const noexcept
         {
             return find(StringViewImpl(&ch, 1), pos);
         }
-        TGUI_NODISCARD constexpr std::size_t find(const CharType* str, std::size_t pos, std::size_t count) const
+        [[nodiscard]] constexpr std::size_t find(const CharType* str, std::size_t pos, std::size_t count) const
         {
             return find(StringViewImpl(str, count), pos);
         }
-        TGUI_NODISCARD constexpr std::size_t find(const CharType* str, std::size_t pos = 0) const
+        [[nodiscard]] constexpr std::size_t find(const CharType* str, std::size_t pos = 0) const
         {
             return find(StringViewImpl(str), pos);
         }
@@ -213,37 +213,37 @@ namespace tgui
     };
 
     template <typename CharType>
-    TGUI_NODISCARD constexpr bool operator==(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    [[nodiscard]] constexpr bool operator==(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
         return lhs.compare(rhs) == 0;
     }
 
     template <typename CharType>
-    TGUI_NODISCARD constexpr bool operator!=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    [[nodiscard]] constexpr bool operator!=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
         return lhs.compare(rhs) != 0;
     }
 
     template <typename CharType>
-    TGUI_NODISCARD constexpr bool operator<(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    [[nodiscard]] constexpr bool operator<(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
         return lhs.compare(rhs) < 0;
     }
 
     template <typename CharType>
-    TGUI_NODISCARD constexpr bool operator<=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    [[nodiscard]] constexpr bool operator<=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
         return lhs.compare(rhs) <= 0;
     }
 
     template <typename CharType>
-    TGUI_NODISCARD constexpr bool operator>(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    [[nodiscard]] constexpr bool operator>(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
         return lhs.compare(rhs) > 0;
     }
 
     template <typename CharType>
-    TGUI_NODISCARD constexpr bool operator>=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
+    [[nodiscard]] constexpr bool operator>=(StringViewImpl<CharType> lhs, TypeIdentity_t<StringViewImpl<CharType>> rhs) noexcept
     {
         return lhs.compare(rhs) >= 0;
     }
@@ -306,7 +306,7 @@ namespace tgui
     ///
     /// @return Are the views equal except for the case of letters?
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEqualIgnoreCase(CharStringView view1, CharStringView view2)
+    [[nodiscard]] inline bool viewEqualIgnoreCase(CharStringView view1, CharStringView view2)
     {
         return std::equal(view1.begin(),
                           view1.end(),
@@ -329,7 +329,7 @@ namespace tgui
     ///
     /// @return Are the views equal except for the case of ASCII letters?
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEqualIgnoreCase(StringView view1, StringView view2)
+    [[nodiscard]] inline bool viewEqualIgnoreCase(StringView view1, StringView view2)
     {
         return std::equal(view1.begin(),
                           view1.end(),
@@ -355,7 +355,7 @@ namespace tgui
     ///
     /// @return True if the view starts with the substring, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewStartsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
+    [[nodiscard]] inline bool viewStartsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
     {
         return viewToLookInto.starts_with(viewToLookFor);
     }
@@ -368,7 +368,7 @@ namespace tgui
     ///
     /// @return True if the view starts with the character, false if the view starts with a different character or is empty
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewStartsWith(CharStringView viewToLookInto, char charToLookFor)
+    [[nodiscard]] inline bool viewStartsWith(CharStringView viewToLookInto, char charToLookFor)
     {
         return viewToLookInto.starts_with(charToLookFor);
     }
@@ -381,7 +381,7 @@ namespace tgui
     ///
     /// @return True if the view ends with the substring, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEndsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
+    [[nodiscard]] inline bool viewEndsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
     {
         return viewToLookInto.ends_with(viewToLookFor);
     }
@@ -394,7 +394,7 @@ namespace tgui
     ///
     /// @return True if the view ends with the character, false if the view ends with a different character or is empty
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEndsWith(CharStringView viewToLookInto, char charToLookFor)
+    [[nodiscard]] inline bool viewEndsWith(CharStringView viewToLookInto, char charToLookFor)
     {
         return viewToLookInto.ends_with(charToLookFor);
     }
@@ -407,7 +407,7 @@ namespace tgui
     ///
     /// @return True if the view starts with the substring, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
+    [[nodiscard]] inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         return viewToLookInto.starts_with(viewToLookFor);
     }
@@ -420,7 +420,7 @@ namespace tgui
     ///
     /// @return True if the view starts with the character, false if the view starts with a different character or is empty
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
+    [[nodiscard]] inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return viewToLookInto.starts_with(charToLookFor);
     }
@@ -433,7 +433,7 @@ namespace tgui
     ///
     /// @return True if the view ends with the substring, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
+    [[nodiscard]] inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         return viewToLookInto.ends_with(viewToLookFor);
     }
@@ -446,7 +446,7 @@ namespace tgui
     ///
     /// @return True if the view ends with the character, false if the view ends with a different character or is empty
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
+    [[nodiscard]] inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return viewToLookInto.ends_with(charToLookFor);
     }
@@ -459,7 +459,7 @@ namespace tgui
     ///
     /// @return True if the view starts with the substring, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewStartsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
+    [[nodiscard]] inline bool viewStartsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
     {
         if (viewToLookFor.length() > viewToLookInto.length())
             return false;
@@ -475,7 +475,7 @@ namespace tgui
     ///
     /// @return True if the view starts with the character, false if the view starts with a different character or is empty
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewStartsWith(CharStringView viewToLookInto, char charToLookFor)
+    [[nodiscard]] inline bool viewStartsWith(CharStringView viewToLookInto, char charToLookFor)
     {
         return !viewToLookInto.empty() && (viewToLookInto.front() == charToLookFor);
     }
@@ -488,7 +488,7 @@ namespace tgui
     ///
     /// @return True if the view ends with the substring, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEndsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
+    [[nodiscard]] inline bool viewEndsWith(CharStringView viewToLookInto, CharStringView viewToLookFor)
     {
         if (viewToLookFor.length() > viewToLookInto.length())
             return false;
@@ -506,7 +506,7 @@ namespace tgui
     ///
     /// @return True if the view ends with the character, false if the view ends with a different character or is empty
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEndsWith(CharStringView viewToLookInto, char charToLookFor)
+    [[nodiscard]] inline bool viewEndsWith(CharStringView viewToLookInto, char charToLookFor)
     {
         return !viewToLookInto.empty() && (viewToLookInto.back() == charToLookFor);
     }
@@ -519,7 +519,7 @@ namespace tgui
     ///
     /// @return True if the view starts with the substring, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
+    [[nodiscard]] inline bool viewStartsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         if (viewToLookFor.length() > viewToLookInto.length())
             return false;
@@ -535,7 +535,7 @@ namespace tgui
     ///
     /// @return True if the view starts with the character, false if the view starts with a different character or is empty
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
+    [[nodiscard]] inline bool viewStartsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return !viewToLookInto.empty() && (viewToLookInto.front() == charToLookFor);
     }
@@ -548,7 +548,7 @@ namespace tgui
     ///
     /// @return True if the view ends with the substring, false otherwise
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
+    [[nodiscard]] inline bool viewEndsWith(StringView viewToLookInto, StringView viewToLookFor)
     {
         if (viewToLookFor.length() > viewToLookInto.length())
             return false;
@@ -566,7 +566,7 @@ namespace tgui
     ///
     /// @return True if the view ends with the character, false if the view ends with a different character or is empty
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    TGUI_NODISCARD inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
+    [[nodiscard]] inline bool viewEndsWith(StringView viewToLookInto, char32_t charToLookFor)
     {
         return !viewToLookInto.empty() && (viewToLookInto.back() == charToLookFor);
     }

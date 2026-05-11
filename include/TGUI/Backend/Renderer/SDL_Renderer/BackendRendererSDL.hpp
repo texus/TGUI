@@ -55,7 +55,7 @@ namespace tgui
         /// @brief Creates a new empty texture object
         /// @return Shared pointer to a new texture object
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendTexture> createTexture() override;
+        [[nodiscard]] std::shared_ptr<BackendTexture> createTexture() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Get the maximum allowed texture size
@@ -64,14 +64,14 @@ namespace tgui
         ///
         /// This maximum size is defined by the graphics driver. Most likely this will return 8192 or 16384.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getMaximumTextureSize() override;
+        [[nodiscard]] unsigned int getMaximumTextureSize() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a pointer to the SDL_Renderer object stored in this backend renderer
         ///
         /// @return SDL_Renderer pointer that was passed to the constructor of this object or in a call to setActiveRenderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SDL_Renderer* getInternalRenderer() const;
+        [[nodiscard]] SDL_Renderer* getInternalRenderer() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the SDL_Renderer object that is used to create textures

@@ -66,7 +66,7 @@ namespace tgui
         /// @brief Returns the id of the OpenGL texture
         /// @return Texture id
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getInternalTexture() const;
+        [[nodiscard]] unsigned int getInternalTexture() const;
 
     protected:
         unsigned int m_textureId = 0;

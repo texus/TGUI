@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return Selected track color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSelectedTrackColor() const;
+        [[nodiscard]] Color getSelectedTrackColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the color of the track between the selection start and selection end in hover state (when the mouse
@@ -64,7 +64,7 @@ namespace tgui
         ///
         /// @return Hover selected track color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getSelectedTrackColorHover() const;
+        [[nodiscard]] Color getSelectedTrackColorHover() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the image of the track between the selection start and selection end
@@ -82,7 +82,7 @@ namespace tgui
         ///
         /// @return Selected track texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture& getTextureSelectedTrack() const;
+        [[nodiscard]] const Texture& getTextureSelectedTrack() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the image of the track between the selection start and selection end in hover state
@@ -98,7 +98,7 @@ namespace tgui
         ///
         /// @return Selected hovered track texture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const Texture& getTextureSelectedTrackHover() const;
+        [[nodiscard]] const Texture& getTextureSelectedTrackHover() const;
     };
 } // namespace tgui
 

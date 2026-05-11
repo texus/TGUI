@@ -86,7 +86,7 @@ namespace tgui
             return m_WidgetPtr.get();
         }
 
-        TGUI_NODISCARD WidgetType* get() const noexcept
+        [[nodiscard]] WidgetType* get() const noexcept
         {
             return m_WidgetPtr.get();
         }

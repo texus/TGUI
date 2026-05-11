@@ -84,7 +84,7 @@ namespace tgui
         ///
         /// @return The new spin control
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static SpinControl::Ptr create(
+        [[nodiscard]] static SpinControl::Ptr create(
             float min = 0.0f,
             float max = 10.0f,
             float value = 0.0f,
@@ -98,35 +98,35 @@ namespace tgui
         ///
         /// @return The new spin control
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static SpinControl::Ptr copy(const SpinControl::ConstPtr& SpinCtrl);
+        [[nodiscard]] static SpinControl::Ptr copy(const SpinControl::ConstPtr& SpinCtrl);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer of spin buttons part of widget
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SpinButtonRenderer* getSpinButtonSharedRenderer();
-        TGUI_NODISCARD const SpinButtonRenderer* getSpinButtonSharedRenderer() const;
+        [[nodiscard]] SpinButtonRenderer* getSpinButtonSharedRenderer();
+        [[nodiscard]] const SpinButtonRenderer* getSpinButtonSharedRenderer() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer of spin buttons part of widget
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD SpinButtonRenderer* getSpinButtonRenderer();
+        [[nodiscard]] SpinButtonRenderer* getSpinButtonRenderer();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer of edit box part of widget
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD EditBoxRenderer* getSpinTextSharedRenderer();
-        TGUI_NODISCARD const EditBoxRenderer* getSpinTextSharedRenderer() const;
+        [[nodiscard]] EditBoxRenderer* getSpinTextSharedRenderer();
+        [[nodiscard]] const EditBoxRenderer* getSpinTextSharedRenderer() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer of edit box part of widget
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD EditBoxRenderer* getSpinTextRenderer();
+        [[nodiscard]] EditBoxRenderer* getSpinTextRenderer();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the size of the spin control
@@ -153,7 +153,7 @@ namespace tgui
         ///
         /// The default minimum value 0.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getMinimum() const;
+        [[nodiscard]] float getMinimum() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets a maximum value
@@ -172,7 +172,7 @@ namespace tgui
         ///
         /// The default maximum value 10.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getMaximum() const;
+        [[nodiscard]] float getMaximum() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the current value
@@ -204,7 +204,7 @@ namespace tgui
         ///
         /// The default value is 0.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getValue() const;
+        [[nodiscard]] float getValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes how much the value changes on each arrow press
@@ -226,7 +226,7 @@ namespace tgui
         ///
         /// The default value is 1.0.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getStep() const;
+        [[nodiscard]] float getStep() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the number of decimal places to display
@@ -243,7 +243,7 @@ namespace tgui
         ///
         /// The default value is 0, which means that the value has to be an integer.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getDecimalPlaces() const;
+        [[nodiscard]] unsigned int getDecimalPlaces() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the spin button width equals the heigh or the widget or only half of the height (default)
@@ -256,7 +256,7 @@ namespace tgui
         /// @brief Returns whether the spin button width equals the heigh or the widget or only half of the height (default)
         /// @return Does the width of the spin button equal its height instead of half the height?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getSpinButtonWidth() instead") TGUI_NODISCARD bool getUseWideArrows() const;
+        TGUI_DEPRECATED("Use getSpinButtonWidth() instead") [[nodiscard]] bool getUseWideArrows() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the width of the spin button (i.e. width of the arrows that are shown next to the edit box)
@@ -274,7 +274,7 @@ namespace tgui
         /// @return Width of the spin button
         /// @since TGUI 1.6
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getSpinButtonWidth() const;
+        [[nodiscard]] float getSpinButtonWidth() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -288,17 +288,17 @@ namespace tgui
         ///
         /// @throw Exception when the name does not match any signal
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Signal& getSignal(String signalName) override;
+        [[nodiscard]] Signal& getSignal(String signalName) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes

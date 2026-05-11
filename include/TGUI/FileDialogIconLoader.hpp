@@ -56,21 +56,21 @@ namespace tgui
         /// and call decrementReferenceCount() when it no longer needs the icon loader. The caller can call this function
         /// multiple times inbetween the incrementReferenceCount and decrementReferenceCount calls.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::shared_ptr<FileDialogIconLoader> createInstance();
+        [[nodiscard]] static std::shared_ptr<FileDialogIconLoader> createInstance();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Called every frame to check if the background thread has finished
         ///
         /// @return Whether icons are available and retrieveFileIcons can be called
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool update();
+        [[nodiscard]] virtual bool update();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether this icon loader does something or whether its functions are no-ops
         ///
         /// @return True if the platform supports loading icons
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool supportsSystemIcons() const;
+        [[nodiscard]] virtual bool supportsSystemIcons() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether generic icons (one folder and one file icon) are available
@@ -79,7 +79,7 @@ namespace tgui
         ///
         /// Generic icons can be shows while waiting for the per-file icons to finish loading
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual bool hasGenericIcons() const;
+        [[nodiscard]] virtual bool hasGenericIcons() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the generic file/folder icon, which is used until the file-specific icons are finished loading
@@ -88,7 +88,7 @@ namespace tgui
         ///
         /// @return File or folder icon
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Texture getGenericFileIcon(const Filesystem::FileInfo& file);
+        [[nodiscard]] virtual Texture getGenericFileIcon(const Filesystem::FileInfo& file);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Starts a thread to load the icons for all given files
@@ -105,7 +105,7 @@ namespace tgui
         ///
         /// @return Loaded icons for all files passed to requestFileIcons
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::vector<Texture> retrieveFileIcons();
+        [[nodiscard]] virtual std::vector<Texture> retrieveFileIcons();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

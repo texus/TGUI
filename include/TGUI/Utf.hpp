@@ -147,7 +147,7 @@ namespace tgui
         /// @param strUtf32  Input UTF-32 string
         /// @return Output UTF-8 string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD inline std::u8string convertUtf32toUtf8(const std::u32string& strUtf32)
+        [[nodiscard]] inline std::u8string convertUtf32toUtf8(const std::u32string& strUtf32)
         {
             std::u8string outStrUtf8;
             outStrUtf8.reserve(strUtf32.length() + 1);
@@ -165,7 +165,7 @@ namespace tgui
         /// @return Output UTF-32 string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename CharIt>
-        TGUI_NODISCARD std::u32string convertUtf8toUtf32(CharIt inputBegin, CharIt inputEnd)
+        [[nodiscard]] std::u32string convertUtf8toUtf32(CharIt inputBegin, CharIt inputEnd)
         {
             std::u32string outStrUtf32;
             outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
@@ -184,7 +184,7 @@ namespace tgui
         /// @return Output UTF-32 string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename U16CharIt>
-        TGUI_NODISCARD std::u32string convertUtf16toUtf32(U16CharIt inputBegin, U16CharIt inputEnd)
+        [[nodiscard]] std::u32string convertUtf16toUtf32(U16CharIt inputBegin, U16CharIt inputEnd)
         {
             std::u32string outStrUtf32;
             outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
@@ -220,7 +220,7 @@ namespace tgui
         /// @return Output UTF-32 string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename WCharIt>
-        TGUI_NODISCARD std::u32string convertWidetoUtf32(WCharIt inputBegin, WCharIt inputEnd)
+        [[nodiscard]] std::u32string convertWidetoUtf32(WCharIt inputBegin, WCharIt inputEnd)
         {
             std::u32string outStrUtf32;
             outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
@@ -237,7 +237,7 @@ namespace tgui
         /// @param strUtf32  Input UTF-32 string
         /// @return Output UTF-8 string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD inline std::string convertUtf32toStdStringUtf8(const std::u32string& strUtf32)
+        [[nodiscard]] inline std::string convertUtf32toStdStringUtf8(const std::u32string& strUtf32)
         {
             std::string outStrUtf8;
             outStrUtf8.reserve(strUtf32.length() + 1);
@@ -252,7 +252,7 @@ namespace tgui
         /// @param strUtf32  Input UTF-32 string
         /// @return Output wstring
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD inline std::wstring convertUtf32toWide(const std::u32string& strUtf32)
+        [[nodiscard]] inline std::wstring convertUtf32toWide(const std::u32string& strUtf32)
         {
             std::wstring outStr;
             outStr.reserve(strUtf32.length() + 1);
@@ -281,7 +281,7 @@ namespace tgui
         /// @param strUtf32  Input UTF-32 string
         /// @return Output UTF-16 string
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD inline std::u16string convertUtf32toUtf16(const std::u32string& strUtf32)
+        [[nodiscard]] inline std::u16string convertUtf32toUtf16(const std::u32string& strUtf32)
         {
             std::u16string outStrUtf16;
             outStrUtf16.reserve(strUtf32.length() + 1);

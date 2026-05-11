@@ -93,7 +93,7 @@ namespace tgui
         ///
         /// @return Vector of all widget pointers
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::vector<Widget::Ptr>& getWidgets() const
+        [[nodiscard]] const std::vector<Widget::Ptr>& getWidgets() const
         {
             return m_widgets;
         }
@@ -135,7 +135,7 @@ namespace tgui
         ///
         /// @warning This function will return nullptr when an unknown widget name was passed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr get(const String& widgetName) const;
+        [[nodiscard]] Widget::Ptr get(const String& widgetName) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns a pointer to a widget that was added earlier
@@ -151,7 +151,7 @@ namespace tgui
         /// @warning This function will return nullptr when an unknown widget name was passed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <class WidgetType>
-        TGUI_NODISCARD typename WidgetType::Ptr get(const String& widgetName) const
+        [[nodiscard]] typename WidgetType::Ptr get(const String& widgetName) const
         {
             return std::dynamic_pointer_cast<WidgetType>(get(widgetName));
         }
@@ -174,7 +174,7 @@ namespace tgui
         /// @brief Returns the space available for widgets inside the container
         /// @return Size of the container
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Vector2f getInnerSize() const;
+        [[nodiscard]] virtual Vector2f getInnerSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the distance between the position of the container and a widget that would be drawn inside
@@ -182,7 +182,7 @@ namespace tgui
         ///
         /// @return Offset of the widgets in the container
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Vector2f getChildWidgetsOffset() const
+        [[nodiscard]] virtual Vector2f getChildWidgetsOffset() const
         {
             return Vector2f{0, 0};
         }
@@ -285,7 +285,7 @@ namespace tgui
         /// @see saveWidgetsToFile
         /// @see saveWidgetsToStream
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> saveWidgetsToNodeTree(const String& rootDirectory = "") const;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> saveWidgetsToNodeTree(const String& rootDirectory = "") const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Places a widget before all other widgets, to the front of the z-order
@@ -346,7 +346,7 @@ namespace tgui
         ///
         /// @return Index of the widget, or -1 if the widget wasn't found in this container
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD int getWidgetIndex(const Widget::Ptr& widget) const;
+        [[nodiscard]] int getWidgetIndex(const Widget::Ptr& widget) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the child widget that is focused inside this container
@@ -356,7 +356,7 @@ namespace tgui
         /// If the focused widget is a container then a pointer to that container is returned. If you want to know which widget
         /// is focused inside that container (recursively) then you should use the getFocusedLeaf() function.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getFocusedChild() const;
+        [[nodiscard]] Widget::Ptr getFocusedChild() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the leaf child widget that is focused inside this container
@@ -366,7 +366,7 @@ namespace tgui
         /// If the focused widget is a container then the getFocusedLeaf() is recursively called on that container. If you want
         /// to limit the search to only direct children of this container then you should use the getFocusedChild() function.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getFocusedLeaf() const;
+        [[nodiscard]] Widget::Ptr getFocusedLeaf() const;
 
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -378,7 +378,7 @@ namespace tgui
         ///
         /// @deprecated Replaced by getWidgetAtPos in TGUI 1.2
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getWidgetAtPos instead") TGUI_NODISCARD virtual Widget::Ptr getWidgetAtPosition(Vector2f pos) const;
+        TGUI_DEPRECATED("Use getWidgetAtPos instead") [[nodiscard]] virtual Widget::Ptr getWidgetAtPosition(Vector2f pos) const;
 #endif
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the widget that is located at the given position
@@ -392,7 +392,7 @@ namespace tgui
         ///
         /// @since TGUI 1.2
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Widget::Ptr getWidgetAtPos(Vector2f pos, bool recursive) const;
+        [[nodiscard]] virtual Widget::Ptr getWidgetAtPos(Vector2f pos, bool recursive) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Focuses the next widget in this container
@@ -548,7 +548,7 @@ namespace tgui
         // Returns its tool tip or the tool tip from a child widget if the mouse is on top of the widget.
         // A nullptr is returned when the mouse is not on top of the widget or when the tool tip is empty.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr askToolTip(Vector2f mousePos) override;
+        [[nodiscard]] Widget::Ptr askToolTip(Vector2f mousePos) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -596,7 +596,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes
@@ -613,7 +613,7 @@ namespace tgui
         // Checks above which widget the mouse is standing.
         // If there is no widget below the mouse then this function will return a null pointer.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr getWidgetBelowMouse(Vector2f mousePos) const;
+        [[nodiscard]] Widget::Ptr getWidgetBelowMouse(Vector2f mousePos) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Checks which widget is below the mouse and updates the cached value.
@@ -624,7 +624,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Find out what the index of the focused widget is. Returns 0 when no widget is focused and index+1 otherwise.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::size_t getFocusedWidgetIndex() const;
+        [[nodiscard]] std::size_t getFocusedWidgetIndex() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Try to focus the given child widget
@@ -634,7 +634,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Transform the mouse position for the child widget based its origin, rotation and scaling.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Vector2f transformMousePos(const Widget::Ptr& widget, Vector2f mousePos);
+        [[nodiscard]] static Vector2f transformMousePos(const Widget::Ptr& widget, Vector2f mousePos);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Finishes adding a widget to the container
@@ -716,7 +716,7 @@ namespace tgui
         ///
         /// This function always returns true.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
+        [[nodiscard]] bool isMouseOnWidget(Vector2f pos) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal

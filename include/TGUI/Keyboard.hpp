@@ -107,14 +107,14 @@ namespace tgui
 #endif
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isShiftPressed(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isShiftPressed(const Event::KeyEvent& event)
         {
             return event.shift;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
-        TGUI_DEPRECATED("Use isShiftPressed(gui) instead") TGUI_NODISCARD inline bool isShiftPressed()
+        TGUI_DEPRECATED("Use isShiftPressed(gui) instead") [[nodiscard]] inline bool isShiftPressed()
         {
             TGUI_IGNORE_DEPRECATED_WARNINGS_START
             return getBackend()->isKeyboardModifierPressed(Event::KeyModifier::Shift);
@@ -123,7 +123,7 @@ namespace tgui
 #endif
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isShiftPressed(const BackendGui* gui)
+        [[nodiscard]] inline bool isShiftPressed(const BackendGui* gui)
         {
             return gui->isKeyboardModifierPressed(Event::KeyModifier::Shift);
         }
@@ -139,7 +139,7 @@ namespace tgui
 #endif
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isMultiselectModifierPressed(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isMultiselectModifierPressed(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return event.system;
@@ -150,7 +150,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
-        TGUI_DEPRECATED("Use isMultiselectModifierPressed(gui) instead") TGUI_NODISCARD inline bool isMultiselectModifierPressed()
+        TGUI_DEPRECATED("Use isMultiselectModifierPressed(gui) instead") [[nodiscard]] inline bool isMultiselectModifierPressed()
         {
             TGUI_IGNORE_DEPRECATED_WARNINGS_START
     #ifdef TGUI_SYSTEM_MACOS
@@ -163,7 +163,7 @@ namespace tgui
 #endif
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isMultiselectModifierPressed(const BackendGui* gui)
+        [[nodiscard]] inline bool isMultiselectModifierPressed(const BackendGui* gui)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return gui->isKeyboardModifierPressed(Event::KeyModifier::System);
@@ -174,7 +174,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressCopy(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressCopy(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return (event.code == Event::KeyboardKey::C) && !event.control && !event.alt && !event.shift && event.system;
@@ -185,7 +185,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressCut(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressCut(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return (event.code == Event::KeyboardKey::X) && !event.control && !event.alt && !event.shift && event.system;
@@ -196,7 +196,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressPaste(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressPaste(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return (event.code == Event::KeyboardKey::V) && !event.control && !event.alt && !event.shift && event.system;
@@ -207,7 +207,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressSelectAll(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressSelectAll(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return (event.code == Event::KeyboardKey::A) && !event.control && !event.alt && !event.shift && event.system;
@@ -218,21 +218,21 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretLeft(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretLeft(const Event::KeyEvent& event)
         {
             return (event.code == Event::KeyboardKey::Left) && !event.control && !event.alt && !event.system;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretRight(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretRight(const Event::KeyEvent& event)
         {
             return (event.code == Event::KeyboardKey::Right) && !event.control && !event.alt && !event.system;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretWordBegin(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretWordBegin(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return (event.code == Event::KeyboardKey::Left) && !event.control && event.alt && !event.system;
@@ -243,7 +243,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretWordEnd(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretWordEnd(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return (event.code == Event::KeyboardKey::Right) && !event.control && event.alt && !event.system;
@@ -254,7 +254,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretUp(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretUp(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             // Option+UpArrow should actually move to the beginning of the paragraph (or the previous one), but we don't support this
@@ -266,7 +266,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretDown(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretDown(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             // Option+DownArrow should actually move to the end of the paragraph (or the next one), but we don't support this
@@ -278,7 +278,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretLineStart(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretLineStart(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             if ((event.code == Event::KeyboardKey::Left) && !event.control && !event.alt && event.system)
@@ -289,7 +289,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretLineEnd(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretLineEnd(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             if ((event.code == Event::KeyboardKey::Right) && !event.control && !event.alt && event.system)
@@ -300,7 +300,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretDocumentBegin(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretDocumentBegin(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return ((event.code == Event::KeyboardKey::Up) && !event.control && !event.alt && event.system)
@@ -312,7 +312,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressMoveCaretDocumentEnd(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressMoveCaretDocumentEnd(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return ((event.code == Event::KeyboardKey::Down) && !event.control && !event.alt && event.system)
@@ -324,7 +324,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressDeleteWordLeft(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressDeleteWordLeft(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return (event.code == Event::KeyboardKey::Backspace) && !event.control && event.alt && !event.system;
@@ -335,7 +335,7 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        TGUI_NODISCARD inline bool isKeyPressDeleteWordRight(const Event::KeyEvent& event)
+        [[nodiscard]] inline bool isKeyPressDeleteWordRight(const Event::KeyEvent& event)
         {
 #ifdef TGUI_SYSTEM_MACOS
             return (event.code == Event::KeyboardKey::Delete) && !event.control && event.alt && !event.system;

@@ -1266,7 +1266,7 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD unsigned int ScrollbarAccessor::getValue() const
+    [[nodiscard]] unsigned int ScrollbarAccessor::getValue() const
     {
         return m_scrollbar->getValue();
     }
@@ -1284,7 +1284,7 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD unsigned int ScrollbarAccessor::getScrollAmount() const
+    [[nodiscard]] unsigned int ScrollbarAccessor::getScrollAmount() const
     {
         return m_scrollbar->getScrollAmount();
     }
@@ -1299,35 +1299,35 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD Scrollbar::Policy ScrollbarAccessor::getPolicy() const
+    [[nodiscard]] Scrollbar::Policy ScrollbarAccessor::getPolicy() const
     {
         return m_scrollbar->getPolicy();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD unsigned int ScrollbarAccessor::getMaximum() const
+    [[nodiscard]] unsigned int ScrollbarAccessor::getMaximum() const
     {
         return m_scrollbar->getMaximum();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD unsigned int ScrollbarAccessor::getViewportSize() const
+    [[nodiscard]] unsigned int ScrollbarAccessor::getViewportSize() const
     {
         return m_scrollbar->getViewportSize();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD unsigned int ScrollbarAccessor::getMaxValue() const
+    [[nodiscard]] unsigned int ScrollbarAccessor::getMaxValue() const
     {
         return m_scrollbar->getMaxValue();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD bool ScrollbarAccessor::isShown() const
+    [[nodiscard]] bool ScrollbarAccessor::isShown() const
     {
         return m_scrollbar->isShown();
     }

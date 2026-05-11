@@ -40,7 +40,7 @@ struct BitmapButtonProperties : public ButtonProperties
             ButtonProperties::updateProperty(widget, property, value);
     }
 
-    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    [[nodiscard]] PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = ButtonProperties::initProperties(widget);
         auto button = widget->cast<tgui::BitmapButton>();

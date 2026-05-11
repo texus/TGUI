@@ -84,7 +84,7 @@ namespace tgui
         /// Unlike with widgets, it is not required to use a smart pointer for the theme. You do not have to use this function
         /// to create a theme.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Theme::Ptr create(const String& primary = "");
+        [[nodiscard]] static Theme::Ptr create(const String& primary = "");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the primary theme loader parameter
@@ -117,7 +117,7 @@ namespace tgui
         ///
         /// @throw Exception if theme loader fails to load the requested renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getRenderer(const String& id);
+        [[nodiscard]] std::shared_ptr<RendererData> getRenderer(const String& id);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Gets data for the renderers
@@ -128,7 +128,7 @@ namespace tgui
         ///
         /// Unlike getRenderer which throws an exception, this function will return nullptr when the renderer is not found
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getRendererNoThrow(const String& id);
+        [[nodiscard]] std::shared_ptr<RendererData> getRendererNoThrow(const String& id);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the value of a global property in the theme
@@ -137,7 +137,7 @@ namespace tgui
         ///
         /// @return Value of the global property, or an object with type ObjectConverter::Type::None if no such propery exists
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD ObjectConverter getGlobalProperty(const String& property);
+        [[nodiscard]] ObjectConverter getGlobalProperty(const String& property);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Manually adds a renderer data to the theme
@@ -163,7 +163,7 @@ namespace tgui
         /// @brief Returns the primary theme loader parameter
         /// @return Primary parameter for the theme loader (filename of the theme file in DefaultThemeLoader)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getPrimary() const;
+        [[nodiscard]] const String& getPrimary() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the function that will load the widget theme data
@@ -177,7 +177,7 @@ namespace tgui
         ///
         /// @return  Theme loader
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::shared_ptr<BaseThemeLoader> getThemeLoader();
+        [[nodiscard]] static std::shared_ptr<BaseThemeLoader> getThemeLoader();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the theme class that widgets use by default
@@ -211,7 +211,7 @@ namespace tgui
         /// When setDefault was not called or was given a nullptr as parameter, getDefault will create and return the default
         /// "White" theme.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::shared_ptr<Theme> getDefault();
+        [[nodiscard]] static std::shared_ptr<Theme> getDefault();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Inform the theme that a custom renderer class inherits its properties from an existing renderer
@@ -227,7 +227,7 @@ namespace tgui
         /// @return Type name of the base widget, or an empty string if the widget has no known parent.
         /// @see addRendererInheritanceParent
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static String getRendererInheritanceParent(const String& widgetType);
+        [[nodiscard]] static String getRendererInheritanceParent(const String& widgetType);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Inform the theme that a custom renderer has subwidgets that need a default value
@@ -244,7 +244,7 @@ namespace tgui
         /// @return Map containing property names as keys the corresponding renderer sections as values
         /// @see addRendererDefaultSubwidget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::map<String, String> getRendererDefaultSubwidgets(const String& widgetType);
+        [[nodiscard]] static std::map<String, String> getRendererDefaultSubwidgets(const String& widgetType);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Inform the theme that a custom renderer has properties that can use a default value from the global properties
@@ -261,7 +261,7 @@ namespace tgui
         /// @return Map containing renderer property names as keys the corresponding global property names as values
         /// @see addRendererInheritedGlobalProperty
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::map<String, String> getRendererInheritedGlobalProperties(const String& widgetType);
+        [[nodiscard]] static std::map<String, String> getRendererInheritedGlobalProperties(const String& widgetType);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

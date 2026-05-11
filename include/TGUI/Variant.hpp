@@ -126,7 +126,7 @@ namespace tgui
         /// @return Stored value
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        TGUI_NODISCARD T& get()
+        [[nodiscard]] T& get()
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
             return std::get<T>(m_variant);
@@ -141,7 +141,7 @@ namespace tgui
         /// @return Stored value
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename T>
-        TGUI_NODISCARD const T& get() const
+        [[nodiscard]] const T& get() const
         {
 #if TGUI_COMPILED_WITH_CPP_VER >= 17
             return std::get<T>(m_variant);

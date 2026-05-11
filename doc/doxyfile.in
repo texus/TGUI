@@ -96,8 +96,7 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_BACKEND_GLFW_GLES2=1 \
                          TGUI_HAS_BACKEND_RAYLIB=1 \
                          SFML_VERSION_MAJOR=3 \
-                         SDL_MAJOR_VERSION=3 \
-                         TGUI_NODISCARD=[[nodiscard]]
+                         SDL_MAJOR_VERSION=3
 
 SHOW_NAMESPACES        = NO
 HIDE_UNDOC_RELATIONS   = NO

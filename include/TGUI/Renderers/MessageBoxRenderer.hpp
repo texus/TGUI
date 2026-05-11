@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return Text color
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Color getTextColor() const;
+        [[nodiscard]] Color getTextColor() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer data of the buttons which the message box uses
@@ -62,7 +62,7 @@ namespace tgui
         ///
         /// @return Data about how the buttons looks
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getButton() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getButton() const;
     };
 } // namespace tgui
 

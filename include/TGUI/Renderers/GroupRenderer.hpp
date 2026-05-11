@@ -48,7 +48,7 @@ namespace tgui
         ///
         /// @return padding size
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Padding getPadding() const;
+        [[nodiscard]] Padding getPadding() const;
     };
 } // namespace tgui
 

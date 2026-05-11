@@ -206,7 +206,7 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD Vector2f CanvasSFML::mapCoordsToPixel(Vector2f coord) const
+    [[nodiscard]] Vector2f CanvasSFML::mapCoordsToPixel(Vector2f coord) const
     {
         const Vector2f size = getSize();
         const sf::View& view = m_renderTexture.getView();

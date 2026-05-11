@@ -71,7 +71,7 @@ namespace tgui
         ///
         /// @return The new label
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Label::Ptr create(const String& text = "");
+        [[nodiscard]] static Label::Ptr create(const String& text = "");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Makes a copy of another label
@@ -80,21 +80,21 @@ namespace tgui
         ///
         /// @return The new label
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static Label::Ptr copy(const Label::ConstPtr& label);
+        [[nodiscard]] static Label::Ptr copy(const Label::ConstPtr& label);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer that may be shared with other widgets using the same renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD LabelRenderer* getSharedRenderer() override;
-        TGUI_NODISCARD const LabelRenderer* getSharedRenderer() const override;
+        [[nodiscard]] LabelRenderer* getSharedRenderer() override;
+        [[nodiscard]] const LabelRenderer* getSharedRenderer() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer, which gives access to functions that determine how the widget is displayed
         /// @return Temporary pointer to the renderer
         /// @warning After calling this function, the widget has its own copy of the renderer and it will no longer be shared.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD LabelRenderer* getRenderer() override;
+        [[nodiscard]] LabelRenderer* getRenderer() override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the area of the text that will be drawn
@@ -129,7 +129,7 @@ namespace tgui
         ///
         /// @return Text that is currently used
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const String& getText() const;
+        [[nodiscard]] const String& getText() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the horizontal text alignment
@@ -145,7 +145,7 @@ namespace tgui
         ///
         /// @return Horizontal text alignment
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD tgui::HorizontalAlignment getHorizontalAlignment() const; // TGUI_NEXT: Remove "tgui::" prefix
+        [[nodiscard]] tgui::HorizontalAlignment getHorizontalAlignment() const; // TGUI_NEXT: Remove "tgui::" prefix
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the vertical text alignment
@@ -161,7 +161,7 @@ namespace tgui
         ///
         /// @return Vertical text alignment
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD tgui::VerticalAlignment getVerticalAlignment() const; // TGUI_NEXT: Remove "tgui::" prefix
+        [[nodiscard]] tgui::VerticalAlignment getVerticalAlignment() const; // TGUI_NEXT: Remove "tgui::" prefix
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes when the vertical scrollbar should be displayed
@@ -173,7 +173,7 @@ namespace tgui
         /// @brief Returns when the vertical scrollbar should be displayed
         /// @return The policy for displaying the vertical scrollbar
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getScrollbar()->getPolicy() instead") TGUI_NODISCARD Scrollbar::Policy getScrollbarPolicy() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getPolicy() instead") [[nodiscard]] Scrollbar::Policy getScrollbarPolicy() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the thumb position of the scrollbar
@@ -187,7 +187,7 @@ namespace tgui
         ///
         /// @return Value of the scrollbar
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getScrollbar()->getValue() instead") TGUI_NODISCARD unsigned int getScrollbarValue() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getValue() instead") [[nodiscard]] unsigned int getScrollbarValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the maximum thumb position of the scrollbar
@@ -196,7 +196,7 @@ namespace tgui
         ///
         /// @since TGUI 1.4
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getScrollbar()->getMaxValue() instead") TGUI_NODISCARD unsigned int getScrollbarMaxValue() const;
+        TGUI_DEPRECATED("Use getScrollbar()->getMaxValue() instead") [[nodiscard]] unsigned int getScrollbarMaxValue() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes whether the label is auto-sized or not
@@ -215,7 +215,7 @@ namespace tgui
         ///
         /// @return Is the size of the label changed when the text changes?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getAutoSize() const;
+        [[nodiscard]] bool getAutoSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the maximum width that the text will have when auto-sizing
@@ -238,7 +238,7 @@ namespace tgui
         ///        - The maximum text width when auto-sizing and a maximum was set.
         ///        - 0 when auto-sizing but there is no maximum width.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getMaximumTextWidth() const;
+        [[nodiscard]] float getMaximumTextWidth() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets whether the widget should completely ignore mouse events and let them pass to the widgets behind it
@@ -254,7 +254,7 @@ namespace tgui
         ///
         /// @return Are mouse events ignored by this widget?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_DEPRECATED("Use getIgnoreMouseEvents instead") TGUI_NODISCARD bool isIgnoringMouseEvents() const;
+        TGUI_DEPRECATED("Use getIgnoreMouseEvents instead") [[nodiscard]] bool isIgnoringMouseEvents() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @internal
@@ -269,13 +269,13 @@ namespace tgui
         ///
         /// This function returns false for Label widgets.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool canGainFocus() const override;
+        [[nodiscard]] bool canGainFocus() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns whether the mouse position (which is relative to the parent widget) lies on top of the widget
         /// @return Is the mouse on top of the widget?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool isMouseOnWidget(Vector2f pos) const override;
+        [[nodiscard]] bool isMouseOnWidget(Vector2f pos) const override;
 
         /// @internal
         bool leftMousePressed(Vector2f pos) override;
@@ -315,7 +315,7 @@ namespace tgui
         ///
         /// @throw Exception when the name does not match any signal
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Signal& getSignal(String signalName) override;
+        [[nodiscard]] Signal& getSignal(String signalName) override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Function called when one of the properties of the renderer is changed
@@ -327,7 +327,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Saves the widget as a tree node in order to save it to a file
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
+        [[nodiscard]] std::unique_ptr<DataIO::Node> save(SavingRenderersMap& renderers) const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Loads the widget from a tree of nodes
@@ -362,7 +362,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Makes a copy of the widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Widget::Ptr clone() const override;
+        [[nodiscard]] Widget::Ptr clone() const override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

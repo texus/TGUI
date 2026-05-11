@@ -55,7 +55,7 @@ namespace tgui
         ///
         /// @return Texture data when loaded successfully, nullptr otherwise
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::shared_ptr<TextureData> getTexture(Texture& texture, const String& filename, bool smooth);
+        [[nodiscard]] static std::shared_ptr<TextureData> getTexture(Texture& texture, const String& filename, bool smooth);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Shares the image with another texture
@@ -81,7 +81,7 @@ namespace tgui
         ///
         /// This function is used in the tests to verify that there are no textures being leaked when the tests are finished.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD static std::size_t getCachedImagesCount();
+        [[nodiscard]] static std::size_t getCachedImagesCount();
 
     protected:
         static std::map<String, std::list<TextureDataHolder>> m_imageMap;

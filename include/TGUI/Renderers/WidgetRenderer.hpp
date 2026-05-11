@@ -49,10 +49,10 @@ namespace tgui
         RendererData(const RendererData& other);
         RendererData& operator=(const RendererData& other);
 
-        TGUI_NODISCARD static std::shared_ptr<RendererData> create(const std::map<String, ObjectConverter>& init = {});
+        [[nodiscard]] static std::shared_ptr<RendererData> create(const std::map<String, ObjectConverter>& init = {});
 
         /// @internal
-        TGUI_NODISCARD static std::shared_ptr<RendererData> createFromDataIONode(const DataIO::Node* rendererNode);
+        [[nodiscard]] static std::shared_ptr<RendererData> createFromDataIONode(const DataIO::Node* rendererNode);
 
         std::map<String, ObjectConverter> propertyValuePairs;
         std::unordered_set<Widget*> observers;
@@ -100,7 +100,7 @@ namespace tgui
         ///
         /// @return The opacity of the widget. 0 means completely transparent, while 1 (default) means fully opaque
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getOpacity() const;
+        [[nodiscard]] float getOpacity() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the opacity of the widget when it is disabled
@@ -117,7 +117,7 @@ namespace tgui
         /// @return The opacity of the widget in disabled state, or -1 when using the not using a different opacity when
         ///         the widget is enabled or disabled.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getOpacityDisabled() const;
+        [[nodiscard]] float getOpacityDisabled() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the font used for the text in the widget
@@ -133,7 +133,7 @@ namespace tgui
         ///
         /// @return Font used by widget
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD Font getFont() const;
+        [[nodiscard]] Font getFont() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the text size of the widget that is specified by the renderer
@@ -152,7 +152,7 @@ namespace tgui
         ///
         /// @return Text size of the widget or 0 if the renderer doesn't specify a text size
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD unsigned int getTextSize() const;
+        [[nodiscard]] unsigned int getTextSize() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets whether mouse events should be ignored on transparent parts of the texture of the widget in normal state
@@ -171,7 +171,7 @@ namespace tgui
         /// @return Whether mouse events on transparent texture parts are ignored
         /// @see setTransparentTexture
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool getTransparentTexture() const;
+        [[nodiscard]] bool getTransparentTexture() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes a property of the renderer
@@ -192,14 +192,14 @@ namespace tgui
         /// @return The value inside a ObjectConverter object which you can extract with the correct get function or
         ///         an ObjectConverter object with type ObjectConverter::Type::None when the property did not exist.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD ObjectConverter getProperty(const String& property) const;
+        [[nodiscard]] ObjectConverter getProperty(const String& property) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Gets a map with all properties and their values
         ///
         /// @return Property-value pairs of the renderer
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD const std::map<String, ObjectConverter>& getPropertyValuePairs() const;
+        [[nodiscard]] const std::map<String, ObjectConverter>& getPropertyValuePairs() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Subscribes a callback function to changes in the renderer
@@ -230,14 +230,14 @@ namespace tgui
         ///
         /// @warning You should not make changed to this data directly. Instead, use the function from the renderer classes
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> getData() const;
+        [[nodiscard]] std::shared_ptr<RendererData> getData() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Gets a clone of the renderer data
         ///
         /// You can pass this to a widget with the setRenderer function to have a separate non-shared copy of this renderer.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<RendererData> clone() const;
+        [[nodiscard]] std::shared_ptr<RendererData> clone() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

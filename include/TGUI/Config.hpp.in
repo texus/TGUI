@@ -170,16 +170,6 @@
     #define TGUI_DEPRECATED(msg)
 #endif
 
-#if defined(__has_cpp_attribute) && (__cplusplus >= 201703L)
-    #if __has_cpp_attribute(nodiscard)
-        #define TGUI_NODISCARD [[nodiscard]]
-    #else
-        #define TGUI_NODISCARD
-    #endif
-#else
-    #define TGUI_NODISCARD
-#endif
-
 #if defined(__GNUC__)
     #define TGUI_IGNORE_DEPRECATED_WARNINGS_START \
         _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")

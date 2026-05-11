@@ -48,7 +48,7 @@ struct ScrollablePanelProperties : public PanelProperties
             WidgetProperties::updateProperty(widget, property, value);
     }
 
-    TGUI_NODISCARD PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
+    [[nodiscard]] PropertyValueMapPair initProperties(const tgui::Widget::Ptr& widget) const override
     {
         auto pair = PanelProperties::initProperties(widget);
         auto panel = widget->cast<tgui::ScrollablePanel>();

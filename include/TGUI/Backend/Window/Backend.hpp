@@ -129,25 +129,25 @@ namespace tgui
         /// @brief Creates and returns the default font for all widgets
         /// @return Default font
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual Font createDefaultFont();
+        [[nodiscard]] virtual Font createDefaultFont();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new font object
         /// @return Font that is specific to the backend
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendFont> createFont();
+        [[nodiscard]] std::shared_ptr<BackendFont> createFont();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new text object
         /// @return Text that is specific to the backend
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendText> createText();
+        [[nodiscard]] std::shared_ptr<BackendText> createText();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Creates a new texture object
         /// @return Texture that is specific to the backend
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendTexture> createTexture();
+        [[nodiscard]] std::shared_ptr<BackendTexture> createTexture();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the scale factor to render text at a higher quality, e.g. to scale for DPI awareness
@@ -168,7 +168,7 @@ namespace tgui
         ///
         /// @see setFontScale
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD float getFontScale() const;
+        [[nodiscard]] float getFontScale() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the look of a certain mouse cursor by using a bitmap
@@ -224,7 +224,7 @@ namespace tgui
         /// @return Whether queries modifier key is being pressed
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         TGUI_DEPRECATED("Use gui.isKeyboardModifierPressed(modifierKey) instead")
-        TGUI_NODISCARD virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey);
+        [[nodiscard]] virtual bool isKeyboardModifierPressed(Event::KeyModifier modifierKey);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the contents of the clipboard
@@ -238,7 +238,7 @@ namespace tgui
         ///
         /// @return Clipboard contents
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual String getClipboard() const;
+        [[nodiscard]] virtual String getClipboard() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Uses the AssetManager on Android to read a file and return its contents
@@ -248,14 +248,14 @@ namespace tgui
         ///
         /// @return File contents if the file was successfully read, or a nullptr on failure or if platform isn't Android.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD virtual std::unique_ptr<std::uint8_t[]> readFileFromAndroidAssets(const String& filename,
-                                                                                         std::size_t& fileSize) const;
+        [[nodiscard]] virtual std::unique_ptr<std::uint8_t[]> readFileFromAndroidAssets(const String& filename,
+                                                                                        std::size_t& fileSize) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Checks whether a renderer has been attached to the backend
         /// @return Has setRenderer been called with a valid backend renderer?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool hasRenderer() const;
+        [[nodiscard]] bool hasRenderer() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the renderer
@@ -265,7 +265,7 @@ namespace tgui
         /// @warning This function will assert if no renderer has been set.
         /// @see hasRenderer()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendRenderer> getRenderer() const;
+        [[nodiscard]] std::shared_ptr<BackendRenderer> getRenderer() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the renderer that the backend should use
@@ -278,7 +278,7 @@ namespace tgui
         /// @brief Checks whether a font factory has been attached to the backend
         /// @return Has setFontBackend been called with a valid font factory?
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD bool hasFontBackend() const;
+        [[nodiscard]] bool hasFontBackend() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the font factory
@@ -288,7 +288,7 @@ namespace tgui
         /// @warning This function will assert if no font factory has been set.
         /// @see hasFontBackend()
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        TGUI_NODISCARD std::shared_ptr<BackendFontFactory> getFontBackend() const;
+        [[nodiscard]] std::shared_ptr<BackendFontFactory> getFontBackend() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets the font factory that the backend should use

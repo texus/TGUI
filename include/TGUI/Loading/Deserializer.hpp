@@ -43,13 +43,13 @@ namespace tgui
     public:
         using DeserializeFunc = std::function<ObjectConverter(const String&)>;
 
-        TGUI_NODISCARD static ObjectConverter deserialize(ObjectConverter::Type type, const String& serializedString);
+        [[nodiscard]] static ObjectConverter deserialize(ObjectConverter::Type type, const String& serializedString);
 
         static void setFunction(ObjectConverter::Type type, const DeserializeFunc& deserializer);
-        TGUI_NODISCARD static const DeserializeFunc& getFunction(ObjectConverter::Type type);
+        [[nodiscard]] static const DeserializeFunc& getFunction(ObjectConverter::Type type);
 
     public:
-        TGUI_NODISCARD static std::vector<String> split(const String& str, char delim);
+        [[nodiscard]] static std::vector<String> split(const String& str, char delim);
 
     private:
         static std::unordered_map<ObjectConverter::Type, DeserializeFunc> m_deserializers;

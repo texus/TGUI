@@ -36,7 +36,7 @@
 
 namespace
 {
-    TGUI_NODISCARD tgui::Color hsv2rgb(float h, float s, float v)
+    [[nodiscard]] tgui::Color hsv2rgb(float h, float s, float v)
     {
         /// vec3 hsv2rgb(vec3 c)
         /// {
@@ -69,7 +69,7 @@ namespace
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD tgui::Color calculateColor(tgui::Vector2f position, float v, float a)
+    [[nodiscard]] tgui::Color calculateColor(tgui::Vector2f position, float v, float a)
     {
         /// vec2 position = (gl_FragCoord.xy / resolution.xy);
         /// vec2 p2 = position - vec2(0.5, 0.5);
@@ -107,7 +107,7 @@ namespace
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    TGUI_NODISCARD float logInvCurve(float x)
+    [[nodiscard]] float logInvCurve(float x)
     {
         /// 0.1  - normal curve
         /// e-1  - e curve (e^x-1)/(e-1)
@@ -160,7 +160,7 @@ namespace
         return {h, s, v};
     }
 
-    TGUI_NODISCARD Vector2f colorToPosition(tgui::Color color)
+    [[nodiscard]] Vector2f colorToPosition(tgui::Color color)
     {
     #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
         const float pi = std::numbers::pi_v<float>;
