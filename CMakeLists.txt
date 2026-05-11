@@ -78,14 +78,14 @@ endif()
 # If a compiler uses a new C++ version by default then automatically select it as the default choise to build TGUI with
 if(CMAKE_CXX_STANDARD_DEFAULT GREATER "17")
     set(TGUI_DEFAULT_CXX_STANDARD ${CMAKE_CXX_STANDARD_DEFAULT})
-else() # Use C++14 by default on all other compilers
+else() # Use C++17 by default on all other compilers
     set(TGUI_DEFAULT_CXX_STANDARD "17")
 endif()
 
 set(TGUI_CXX_STANDARD_docstring "C++ standard version to build TGUI with. Possible values: 17, 20 or 23. Projects using TGUI must use a C++ version equal or higher to this")
 tgui_set_option(TGUI_CXX_STANDARD ${TGUI_DEFAULT_CXX_STANDARD} STRING ${TGUI_CXX_STANDARD_docstring})
 
-# At least C++14 has to be used
+# At least C++17 has to be used
 if(TGUI_CXX_STANDARD LESS "17")
     message(FATAL_ERROR "TGUI_CXX_STANDARD has to be at least 17")
 endif()
