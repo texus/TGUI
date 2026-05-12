@@ -370,7 +370,7 @@ namespace tgui
         [[nodiscard]] DataType getItemData(std::size_t index) const
         {
             if (index < m_items.size())
-                return AnyCast<DataType>(m_items[index].data);
+                return std::any_cast<DataType>(m_items[index].data);
             throw std::bad_cast();
         }
 

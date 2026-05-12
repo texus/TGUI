@@ -675,7 +675,7 @@ namespace tgui
         template <typename DataType>
         [[nodiscard]] DataType getUserData() const
         {
-            return AnyCast<DataType>(m_userData);
+            return std::any_cast<DataType>(m_userData);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
