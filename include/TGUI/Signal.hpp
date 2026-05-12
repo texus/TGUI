@@ -231,26 +231,11 @@ namespace tgui
             return *static_cast<const std::decay_t<Type>*>(m_parameters[paramIndex]);
         }
 
-#if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
         template <typename Func, typename... Args>
         static void invokeFunc(Func&& func, Args&&... args)
         {
             std::invoke(std::forward<Func>(func), std::forward<Args>(args)...);
         }
-#else
-        // std::invoke only exists in C++17 so we use our own implementation to support C++14 compilers
-        template <typename Func, typename... Args, typename std::enable_if_t<std::is_member_pointer<std::decay_t<Func>>::value>* = nullptr>
-        static void invokeFunc(Func&& func, Args&&... args)
-        {
-            (std::mem_fn(func))(std::forward<Args>(args)...);
-        }
-
-        template <typename Func, typename... Args, typename std::enable_if_t<!std::is_member_pointer<std::decay_t<Func>>::value>* = nullptr>
-        static void invokeFunc(Func&& func, Args&&... args)
-        {
-            std::forward<Func>(func)(std::forward<Args>(args)...);
-        }
-#endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
