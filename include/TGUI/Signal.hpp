@@ -131,7 +131,7 @@ namespace tgui
             else
 #endif
             {
-                m_handlers[id] = [=] { invokeFunc(func, args...); };
+                m_handlers[id] = [=] { std::invoke(func, args...); };
             }
 
             return id;
@@ -152,7 +152,7 @@ namespace tgui
         unsigned int connectEx(const Func& func, const BoundArgs&... args)
         {
             // The name is copied so that the lambda does not depend on the 'this' pointer
-            return connect([func, name = m_name, args...]() { invokeFunc(func, args..., getWidget(), name); });
+            return connect([func, name = m_name, args...]() { std::invoke(func, args..., getWidget(), name); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,12 +231,6 @@ namespace tgui
             return *static_cast<const std::decay_t<Type>*>(m_parameters[paramIndex]);
         }
 
-        template <typename Func, typename... Args>
-        static void invokeFunc(Func&& func, Args&&... args)
-        {
-            std::invoke(std::forward<Func>(func), std::forward<Args>(args)...);
-        }
-
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected:
@@ -309,7 +303,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., T)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<T>(1)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<T>(1)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,7 +385,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., T1, T2)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<T1>(1), dereferenceParam<T2>(2)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<T1>(1), dereferenceParam<T2>(2)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -485,7 +479,7 @@ namespace tgui
                       std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<ChildWindow>&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceChildWindow()); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceChildWindow()); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -570,7 +564,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., int)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<int>(1)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -586,7 +580,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<String>(2)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<String>(2)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -603,7 +597,7 @@ namespace tgui
                       std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&, const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<String>(2), dereferenceParam<String>(3)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<String>(2), dereferenceParam<String>(3)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -686,7 +680,7 @@ namespace tgui
                   std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., int)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<int>(1)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -702,7 +696,7 @@ namespace tgui
                   std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Panel>&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferencePanel()); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferencePanel()); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -718,7 +712,7 @@ namespace tgui
                   std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<String>(3)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<String>(3)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -734,7 +728,7 @@ namespace tgui
                   std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., int, const std::shared_ptr<Panel>&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<int>(1), dereferencePanel()); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<int>(1), dereferencePanel()); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -751,7 +745,7 @@ namespace tgui
                       std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::shared_ptr<Panel>&, const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferencePanel(), dereferenceParam<String>(3)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferencePanel(), dereferenceParam<String>(3)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -769,7 +763,7 @@ namespace tgui
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect(
-                [=] { invokeFunc(func, args..., dereferenceParam<int>(1), dereferencePanel(), dereferenceParam<String>(3)); });
+                [=] { std::invoke(func, args..., dereferenceParam<int>(1), dereferencePanel(), dereferenceParam<String>(3)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -857,7 +851,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<String>(1)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<String>(1)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -874,7 +868,7 @@ namespace tgui
                       std::is_convertible<Func, std::function<void(const BoundArgs&..., const Filesystem::Path&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<Filesystem::Path>(2)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<Filesystem::Path>(2)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -891,7 +885,7 @@ namespace tgui
                       std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::vector<Filesystem::Path>&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<std::vector<Filesystem::Path>>(3)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<std::vector<Filesystem::Path>>(3)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -967,7 +961,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., ShowEffectType)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<ShowEffectType>(1)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<ShowEffectType>(1)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -983,7 +977,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., bool)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<bool>(2)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<bool>(2)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1000,7 +994,7 @@ namespace tgui
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             return Signal::connect(
-                [=] { invokeFunc(func, args..., dereferenceParam<ShowEffectType>(1), dereferenceParam<bool>(2)); });
+                [=] { std::invoke(func, args..., dereferenceParam<ShowEffectType>(1), dereferenceParam<bool>(2)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1077,7 +1071,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., AnimationType)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<AnimationType>(1)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<AnimationType>(1)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1154,7 +1148,7 @@ namespace tgui
                   typename std::enable_if_t<std::is_convertible<Func, std::function<void(const BoundArgs&..., const String&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<String>(1)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<String>(1)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1171,7 +1165,7 @@ namespace tgui
                       std::is_convertible<Func, std::function<void(const BoundArgs&..., const std::vector<String>&)>>::value>* = nullptr>
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
-            return Signal::connect([=] { invokeFunc(func, args..., dereferenceParam<std::vector<String>>(2)); });
+            return Signal::connect([=] { std::invoke(func, args..., dereferenceParam<std::vector<String>>(2)); });
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
