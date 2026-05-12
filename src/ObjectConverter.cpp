@@ -58,7 +58,7 @@ namespace tgui
             m_type = Type::Font;
         }
 
-        return m_value.get<Font>();
+        return std::get<Font>(m_value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ namespace tgui
             m_type = Type::Color;
         }
 
-        return m_value.get<Color>();
+        return std::get<Color>(m_value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ namespace tgui
             m_type = Type::Bool;
         }
 
-        return m_value.get<bool>();
+        return std::get<bool>(m_value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ namespace tgui
             m_type = Type::Number;
         }
 
-        return m_value.get<float>();
+        return std::get<float>(m_value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,7 +126,7 @@ namespace tgui
             m_type = Type::Outline;
         }
 
-        return m_value.get<Outline>();
+        return std::get<Outline>(m_value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ namespace tgui
             m_type = Type::Texture;
         }
 
-        return m_value.get<Texture>();
+        return std::get<Texture>(m_value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ namespace tgui
             m_type = Type::TextStyle;
         }
 
-        return m_value.get<TextStyles>();
+        return std::get<TextStyles>(m_value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +177,7 @@ namespace tgui
             m_type = Type::RendererData;
         }
 
-        return m_value.get<std::shared_ptr<RendererData>>();
+        return std::get<std::shared_ptr<RendererData>>(m_value);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -204,21 +204,21 @@ namespace tgui
             case Type::String:
                 return m_string == right.m_string;
             case Type::Bool:
-                return m_value.get<bool>() == right.m_value.get<bool>();
+                return std::get<bool>(m_value) == std::get<bool>(right.m_value);
             case Type::Font:
-                return m_value.get<Font>() == right.m_value.get<Font>();
+                return std::get<Font>(m_value) == std::get<Font>(right.m_value);
             case Type::Color:
-                return m_value.get<Color>() == right.m_value.get<Color>();
+                return std::get<Color>(m_value) == std::get<Color>(right.m_value);
             case Type::Number:
-                return m_value.get<float>() == right.m_value.get<float>();
+                return std::get<float>(m_value) == std::get<float>(right.m_value);
             case Type::Outline:
-                return m_value.get<Outline>() == right.m_value.get<Outline>();
+                return std::get<Outline>(m_value) == std::get<Outline>(right.m_value);
             case Type::Texture:
-                return m_value.get<Texture>() == right.m_value.get<Texture>();
+                return std::get<Texture>(m_value) == std::get<Texture>(right.m_value);
             case Type::TextStyle:
-                return m_value.get<TextStyles>() == right.m_value.get<TextStyles>();
+                return std::get<TextStyles>(m_value) == std::get<TextStyles>(right.m_value);
             case Type::RendererData:
-                return m_value.get<std::shared_ptr<RendererData>>() == right.m_value.get<std::shared_ptr<RendererData>>();
+                return std::get<std::shared_ptr<RendererData>>(m_value) == std::get<std::shared_ptr<RendererData>>(right.m_value);
             default: // This case should never occur, but prevents a warning that control reaches end of non-void function
                 return false;
         }

@@ -133,7 +133,6 @@ export namespace tgui
     using tgui::ToolTip;
     using tgui::Transform;
     using tgui::TwoFingerScrollDetect;
-    using tgui::Variant;
     using tgui::Vector2;
     using tgui::Vector2f;
     using tgui::Vector2u;

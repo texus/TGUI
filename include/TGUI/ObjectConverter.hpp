@@ -30,7 +30,8 @@
 #include <TGUI/Outline.hpp>
 #include <TGUI/TextStyle.hpp>
 #include <TGUI/Texture.hpp>
-#include <TGUI/Variant.hpp>
+
+#include <variant>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -295,7 +296,7 @@ namespace tgui
     private:
         Type m_type = Type::None;
 
-        Variant<String, Font, Color, Outline, bool, float, Texture, TextStyles, std::shared_ptr<RendererData>> m_value;
+        std::variant<String, Font, Color, Outline, bool, float, Texture, TextStyles, std::shared_ptr<RendererData>> m_value;
 
         bool m_serialized = false;
         String m_string;
