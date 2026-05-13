@@ -328,14 +328,12 @@ namespace tgui
             m_value = m_boundWidget->getSize().y;
         else if (m_operation == Operation::BindingInnerWidth)
         {
-            const auto* boundContainer = dynamic_cast<Container*>(boundWidget);
-            if (boundContainer)
+            if (const auto* boundContainer = dynamic_cast<Container*>(boundWidget); boundContainer)
                 m_value = boundContainer->getInnerSize().x;
         }
         else if (m_operation == Operation::BindingInnerHeight)
         {
-            const auto* boundContainer = dynamic_cast<Container*>(boundWidget);
-            if (boundContainer)
+            if (const auto* boundContainer = dynamic_cast<Container*>(boundWidget); boundContainer)
                 m_value = boundContainer->getInnerSize().y;
         }
 
@@ -709,15 +707,13 @@ namespace tgui
                 break;
             case Operation::BindingInnerWidth:
             {
-                const auto* boundContainer = dynamic_cast<Container*>(m_boundWidget);
-                if (boundContainer)
+                if (const auto* boundContainer = dynamic_cast<Container*>(m_boundWidget); boundContainer)
                     m_value = boundContainer->getInnerSize().x;
                 break;
             }
             case Operation::BindingInnerHeight:
             {
-                const auto* boundContainer = dynamic_cast<Container*>(m_boundWidget);
-                if (boundContainer)
+                if (const auto* boundContainer = dynamic_cast<Container*>(m_boundWidget); boundContainer)
                     m_value = boundContainer->getInnerSize().y;
                 break;
             }
