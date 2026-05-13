@@ -117,21 +117,12 @@ namespace tgui
         template <typename Func, typename... Args>
         unsigned int connectMenuItem(const std::vector<String>& hierarchy, Func&& handler, const Args&... args)
         {
-#if defined(__cpp_lib_invoke) && (__cpp_lib_invoke >= 201411L)
             return onMenuItemClick.connect(
                 [=](const std::vector<String>& clickedMenuItem)
                 {
                     if (clickedMenuItem == hierarchy)
                         std::invoke(handler, args...);
                 });
-#else
-            return onMenuItemClick.connect(
-                [f = std::function<void(const Args&...)>(handler), args..., hierarchy](const std::vector<String>& clickedMenuItem)
-                {
-                    if (clickedMenuItem == hierarchy)
-                        f(args...);
-                });
-#endif
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
