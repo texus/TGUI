@@ -67,13 +67,11 @@ namespace tgui
                 if (child->getToolTip())
                     addRenderer(child->getToolTip()->getSharedRenderer()->getData().get(), child->getToolTip().get());
 
-                const Container* const childContainer = dynamic_cast<Container*>(child.get());
-                if (childContainer)
+                if (const Container* const childContainer = dynamic_cast<Container*>(child.get()); childContainer)
                     getAllRenderers(orderedRenderers, rendererToWidgetsMap, childContainer);
                 else
                 {
-                    const auto* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get());
-                    if (subWidgetContainer)
+                    if (const auto* subWidgetContainer = dynamic_cast<SubwidgetContainer*>(child.get()); subWidgetContainer)
                     {
                         addRenderer(subWidgetContainer->getContainer()->getSharedRenderer()->getData().get(),
                                     subWidgetContainer->getContainer());
@@ -364,8 +362,7 @@ namespace tgui
         // If we still couldn't find it then check if there are any SubwidgetContainer widgets and search their subwidgets
         for (const auto& child : m_widgets)
         {
-            const auto* const subWidgetContainer = dynamic_cast<const SubwidgetContainer*>(child.get());
-            if (subWidgetContainer)
+            if (const auto* const subWidgetContainer = dynamic_cast<const SubwidgetContainer*>(child.get()); subWidgetContainer)
             {
                 Widget::Ptr widget = subWidgetContainer->getContainer()->get(widgetName);
                 if (widget != nullptr)

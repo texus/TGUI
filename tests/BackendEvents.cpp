@@ -59,8 +59,7 @@
 TEST_CASE("[Backend events]")
 {
 #if TGUI_HAS_WINDOW_BACKEND_SFML
-    auto* backendGuiSFML = dynamic_cast<tgui::BackendGuiSFML*>(globalGui);
-    if (backendGuiSFML)
+    if (auto* backendGuiSFML = dynamic_cast<tgui::BackendGuiSFML*>(globalGui); backendGuiSFML)
     {
         SECTION("SFML")
         {
@@ -961,8 +960,7 @@ TEST_CASE("[Backend events]")
 #endif // TGUI_HAS_WINDOW_BACKEND_SFML
 
 #if TGUI_HAS_WINDOW_BACKEND_SDL
-    auto backendGuiSDL = dynamic_cast<tgui::BackendGuiSDL*>(globalGui);
-    if (backendGuiSDL)
+    if (auto backendGuiSDL = dynamic_cast<tgui::BackendGuiSDL*>(globalGui); backendGuiSDL)
     {
         SECTION("SDL")
         {
@@ -1683,8 +1681,7 @@ TEST_CASE("[Backend events]")
 #endif
 
 #if TGUI_HAS_WINDOW_BACKEND_GLFW
-    auto backendGuiGLFW = dynamic_cast<tgui::BackendGuiGLFW*>(globalGui);
-    if (backendGuiGLFW)
+    if (auto backendGuiGLFW = dynamic_cast<tgui::BackendGuiGLFW*>(globalGui); backendGuiGLFW)
     {
         SECTION("GLFW")
         {
@@ -2043,8 +2040,7 @@ TEST_CASE("[Backend events]")
 #endif
 
 #if TGUI_HAS_WINDOW_BACKEND_RAYLIB
-    auto backendGuiRaylib = dynamic_cast<tgui::BackendGuiRaylib*>(globalGui);
-    if (backendGuiRaylib)
+    if (auto backendGuiRaylib = dynamic_cast<tgui::BackendGuiRaylib*>(globalGui); backendGuiRaylib)
     {
         SECTION("Raylib")
         {
