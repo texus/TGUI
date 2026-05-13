@@ -111,8 +111,7 @@ namespace tgui
         const float scaledOutlineThickness = outlineThickness * m_fontScale;
         const std::uint64_t glyphKey = constructGlyphKey(codePoint, scaledTextSize, bold, scaledOutlineThickness);
 
-        const auto it = m_glyphs.find(glyphKey);
-        if (it != m_glyphs.end())
+        if (const auto it = m_glyphs.find(glyphKey); it != m_glyphs.end())
             return it->second;
 
         FontGlyph glyph;
@@ -355,8 +354,8 @@ namespace tgui
             return nullptr;
 
         // Simply return the font if it already existed
-        auto it = m_fonts.find(scaledTextSize);
-        if (it != m_fonts.end())
+
+        if (auto it = m_fonts.find(scaledTextSize); it != m_fonts.end())
             return it->second;
 
         // Reload the font with a different character size when this was the first time the character size was requested
@@ -404,8 +403,7 @@ namespace tgui
     {
         const unsigned int scaledTextSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
-        auto it = m_cachedUnderlineInfo.find(scaledTextSize);
-        if (it != m_cachedUnderlineInfo.end())
+        if (auto it = m_cachedUnderlineInfo.find(scaledTextSize); it != m_cachedUnderlineInfo.end())
             return it->second;
 
         TTF_Font* font = getInternalFont(characterSize);

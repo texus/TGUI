@@ -629,8 +629,7 @@ namespace tgui
 
     std::shared_ptr<priv::dev::Component> ButtonBase::getComponent(const String& name)
     {
-        auto it = m_namedComponents.find(name);
-        if (it != m_namedComponents.end())
+        if (const auto it = m_namedComponents.find(name); it != m_namedComponents.end())
             return it->second;
         return nullptr;
     }

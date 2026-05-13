@@ -122,13 +122,11 @@ namespace tgui
                 if (sectionsIt == sections.end())
                 {
                     // We couldn't find a sections, so check if this is a reference to a global value
-                    const auto globalPropertyIt = globalProperties.find(name);
-                    if (globalPropertyIt != globalProperties.end())
+                    if (const auto globalPropertyIt = globalProperties.find(name); globalPropertyIt != globalProperties.end())
                     {
                         pair.second->value = globalPropertyIt->second;
                         continue;
                     }
-
                     throw Exception{U"Undefined reference to '" + name + U"' encountered."};
                 }
 

@@ -339,8 +339,7 @@ namespace tgui
                     const auto startOffset = static_cast<std::size_t>(c - value.cbegin());
 
                     String word;
-                    auto openingBracketPos = value.find(U'(', startOffset);
-                    if (openingBracketPos != String::npos)
+                    if (auto openingBracketPos = value.find(U'(', startOffset); openingBracketPos != String::npos)
                         word = value.substr(startOffset, openingBracketPos - startOffset);
                     else
                     {

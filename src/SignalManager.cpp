@@ -48,8 +48,7 @@ namespace tgui
 
     bool SignalManager::disconnect(unsigned int id)
     {
-        auto it = m_signals.find(id);
-        if (it != m_signals.end())
+        if (auto it = m_signals.find(id); it != m_signals.end())
         {
             for (auto it2 = m_connectedSignals.cbegin(); it2 != m_connectedSignals.cend();)
             {

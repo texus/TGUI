@@ -90,8 +90,7 @@ namespace tgui
     std::function<Widget::Ptr()> WidgetFactory::getConstructFunction(const String& type)
     {
         // If the type is not found then we will return a nullptr, without altering the list that could be returned by getWidgetTypes()
-        auto it = m_constructFunctions.find(type);
-        if (it != m_constructFunctions.end())
+        if (auto it = m_constructFunctions.find(type); it != m_constructFunctions.end())
             return it->second;
         return nullptr;
     }

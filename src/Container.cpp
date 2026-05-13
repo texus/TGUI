@@ -48,8 +48,7 @@ namespace tgui
         {
             const auto addRenderer = [&](RendererData* rendererData, const Widget* widget)
             {
-                const auto it = rendererToWidgetsMap.find(rendererData);
-                if (it != rendererToWidgetsMap.end())
+                if (const auto it = rendererToWidgetsMap.find(rendererData); it != rendererToWidgetsMap.end())
                     it->second.push_back(widget);
                 else
                 {
@@ -1217,9 +1216,7 @@ namespace tgui
         {
             const auto nameSeparator = childNode->name.find('.');
             const auto widgetType = childNode->name.substr(0, nameSeparator);
-
-            const auto& constructor = WidgetFactory::getConstructFunction(widgetType);
-            if (constructor)
+            if (const auto& constructor = WidgetFactory::getConstructFunction(widgetType); constructor)
             {
                 String className;
                 if (nameSeparator != String::npos)

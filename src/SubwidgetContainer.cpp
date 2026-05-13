@@ -207,8 +207,7 @@ namespace tgui
         }
 
         // If the property starts with "WidgetName." then the part behind the dot is the property name for that widget
-        const auto dotPos = property.find(U'.');
-        if (dotPos != String::npos)
+        if (const auto dotPos = property.find(U'.'); dotPos != String::npos)
         {
             const String& nameToSearch = property.substr(0, dotPos);
             const String& propertyForChild = property.substr(dotPos + 1);

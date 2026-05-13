@@ -251,8 +251,7 @@ namespace tgui
         // The icon will also be cached by the texture manager, but that cache is cleared each time a new
         // folder is opened (because the icons wouldn't be in use any more for a moment), while this cache
         // keeps all icons until the file dialog is destroyed.
-        const auto iconIt = m_iconCache.find(pathIt->first);
-        if (iconIt != m_iconCache.end())
+        if (const auto iconIt = m_iconCache.find(pathIt->first); iconIt != m_iconCache.end())
             return iconIt->second;
 
         // The icon exists but isn't in the cache yet, so load it and add it to the cache
@@ -323,8 +322,7 @@ namespace tgui
             // The icon will also be cached by the texture manager, but that cache is cleared each time a new
             // folder is opened (because the icons wouldn't be in use any more for a moment), while this cache
             // keeps all icons until the file dialog is destroyed.
-            const auto iconIt = m_iconCache.find(iconName);
-            if (iconIt != m_iconCache.end())
+            if (const auto iconIt = m_iconCache.find(iconName); iconIt != m_iconCache.end())
             {
                 icons.push_back(iconIt->second);
                 continue;
@@ -459,8 +457,7 @@ namespace tgui
                 const String iconName = iconFile.filename.substr(0, iconFile.filename.length() - 4);
 
                 // Only add the icon if it wasn't already there (with an equal or higher priority)
-                const auto it = foundIcons.find(iconName);
-                if (it != foundIcons.end())
+                if (const auto it = foundIcons.find(iconName); it != foundIcons.end())
                 {
                     if (it->second.second >= themeIconPriority)
                         continue;
@@ -470,8 +467,7 @@ namespace tgui
 
                 // The generic-icons file in the mime folder misses a lot of icons even though the icons exist.
                 // Many icon filenames match the MIME-type, so we make use of this to extend our icon mapping.
-                const auto firstDashPos = iconName.find('-');
-                if (firstDashPos != String::npos)
+                if (const auto firstDashPos = iconName.find('-'); firstDashPos != String::npos)
                 {
                     const String category = iconName.substr(0, firstDashPos);
                     if (category != U"x")
@@ -600,8 +596,8 @@ namespace tgui
             auto pos = file.filename.find('.');
             while ((pos != String::npos) && (pos + 1 < file.filename.length()))
             {
-                const auto extIt = m_extensionToMimeMap.find(file.filename.substr(pos + 1).toLower());
-                if (extIt != m_extensionToMimeMap.end())
+                if (const auto extIt = m_extensionToMimeMap.find(file.filename.substr(pos + 1).toLower());
+                    extIt != m_extensionToMimeMap.end())
                 {
                     mimeTypesBasedOnGlob = extIt->second;
                     break;
@@ -616,9 +612,7 @@ namespace tgui
             if (mimeTypesBasedOnGlob.size() == 1)
             {
                 firstMimeMatch = mimeTypesBasedOnGlob[0];
-
-                const auto mimeIt = m_mimeToIconMap.find(mimeTypesBasedOnGlob[0]);
-                if (mimeIt != m_mimeToIconMap.end())
+                if (const auto mimeIt = m_mimeToIconMap.find(mimeTypesBasedOnGlob[0]); mimeIt != m_mimeToIconMap.end())
                     pathIt = m_iconNameToIconPathMap.find(mimeIt->second);
             }
 
@@ -631,8 +625,7 @@ namespace tgui
                 if (firstMimeMatch.empty())
                     firstMimeMatch = mimeTypeFromMagic;
 
-                const auto mimeIt = m_mimeToIconMap.find(mimeTypeFromMagic);
-                if (mimeIt != m_mimeToIconMap.end())
+                if (const auto mimeIt = m_mimeToIconMap.find(mimeTypeFromMagic); mimeIt != m_mimeToIconMap.end())
                     pathIt = m_iconNameToIconPathMap.find(mimeIt->second);
             }
 
@@ -657,8 +650,7 @@ namespace tgui
             // If no exact mime type could be found then try to use a generic one based on the category
             if ((pathIt == m_iconNameToIconPathMap.end()) && !firstMimeMatch.empty())
             {
-                const auto slashPos = firstMimeMatch.find('/');
-                if (slashPos != String::npos)
+                if (const auto slashPos = firstMimeMatch.find('/'); slashPos != String::npos)
                 {
                     const String iconName = firstMimeMatch.substr(0, slashPos) + U"-x-generic";
                     pathIt = m_iconNameToIconPathMap.find(iconName);
