@@ -126,8 +126,7 @@ namespace tgui
             || (type == Cursor::Type::SizeBottomLeft) || (type == Cursor::Type::SizeTopRight))
         {
             // If the cursor was previously set to a bitmap then release its resources
-            auto it = m_mouseCursors.find(type);
-            if ((it != m_mouseCursors.end()) && it->second)
+            if (auto it = m_mouseCursors.find(type); (it != m_mouseCursors.end()) && it->second)
             {
                 SDL_DestroyCursor(it->second);
                 m_mouseCursors.erase(it);

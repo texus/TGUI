@@ -839,8 +839,7 @@ namespace tgui
             const auto& id = otherRendererPair.first;
             const auto& otherRenderer = otherRendererPair.second;
 
-            auto rendererIt = m_renderers.find(id);
-            if (rendererIt != m_renderers.end())
+            if (auto rendererIt = m_renderers.find(id); rendererIt != m_renderers.end())
                 continue; // We already have the renderer, it would have been handled by the earlier loop
 
             auto newRenderer = RendererData::create();
@@ -855,8 +854,7 @@ namespace tgui
     std::shared_ptr<RendererData> Theme::getRenderer(const String& id)
     {
         // If we already have this renderer in cache then just return it
-        auto it = m_renderers.find(id);
-        if (it != m_renderers.end())
+        if (auto it = m_renderers.find(id); it != m_renderers.end())
             return it->second;
 
         m_renderers[id] = RendererData::create();
@@ -873,8 +871,7 @@ namespace tgui
     std::shared_ptr<RendererData> Theme::getRendererNoThrow(const String& id)
     {
         // If we already have this renderer in cache then just return it
-        auto it = m_renderers.find(id);
-        if (it != m_renderers.end())
+        if (auto it = m_renderers.find(id); it != m_renderers.end())
             return it->second;
 
         if (!m_themeLoader->canLoad(m_primary, id))
@@ -909,8 +906,7 @@ namespace tgui
 
         // If a renderer with the same id already existed then disconnect the old renderer from this theme.
         // Widgets using the old renderer would thus remain unmodified.
-        auto existingRendererIt = m_renderers.find(id);
-        if (existingRendererIt != m_renderers.end())
+        if (auto existingRendererIt = m_renderers.find(id); existingRendererIt != m_renderers.end())
         {
             if (existingRendererIt->second->connectedTheme == this)
                 existingRendererIt->second->connectedTheme = nullptr;
@@ -924,8 +920,7 @@ namespace tgui
 
     bool Theme::removeRenderer(const String& id)
     {
-        auto it = m_renderers.find(id);
-        if (it != m_renderers.end())
+        if (auto it = m_renderers.find(id); it != m_renderers.end())
         {
             if (it->second->connectedTheme == this)
                 it->second->connectedTheme = nullptr;

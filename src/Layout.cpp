@@ -853,8 +853,7 @@ namespace tgui
         }
         else
         {
-            const auto dotPos = expression.find('.');
-            if (dotPos != String::npos)
+            if (const auto dotPos = expression.find('.'); dotPos != String::npos)
             {
                 const String widgetName = expression.substr(0, dotPos);
                 if (widgetName == U"parent" || widgetName == U"&")

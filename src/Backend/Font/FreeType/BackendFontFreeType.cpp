@@ -188,8 +188,7 @@ namespace tgui
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
-        const auto it = m_cachedLineSpacing.find(scaledCharacterSize);
-        if (it != m_cachedLineSpacing.end())
+        if (const auto it = m_cachedLineSpacing.find(scaledCharacterSize); it != m_cachedLineSpacing.end())
             return it->second / m_fontScale;
 
         if (!m_face || !setCurrentSize(characterSize))
@@ -206,8 +205,7 @@ namespace tgui
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
-        const auto it = m_cachedFontHeights.find(scaledCharacterSize);
-        if (it != m_cachedFontHeights.end())
+        if (const auto it = m_cachedFontHeights.find(scaledCharacterSize); it != m_cachedFontHeights.end())
             return it->second / m_fontScale;
 
         if (!m_face || !setCurrentSize(characterSize))
@@ -230,8 +228,7 @@ namespace tgui
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
-        const auto it = m_cachedAscents.find(scaledCharacterSize);
-        if (it != m_cachedAscents.end())
+        if (const auto it = m_cachedAscents.find(scaledCharacterSize); it != m_cachedAscents.end())
             return it->second / m_fontScale;
 
         if (!m_face || !setCurrentSize(characterSize))
@@ -253,8 +250,7 @@ namespace tgui
     {
         unsigned int scaledCharacterSize = static_cast<unsigned int>(characterSize * m_fontScale);
 
-        const auto it = m_cachedDescents.find(scaledCharacterSize);
-        if (it != m_cachedDescents.end())
+        if (const auto it = m_cachedDescents.find(scaledCharacterSize); it != m_cachedDescents.end())
             return it->second / m_fontScale;
 
         if (!m_face || !setCurrentSize(characterSize))

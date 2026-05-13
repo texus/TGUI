@@ -79,8 +79,7 @@ namespace tgui
         const unsigned int scaledTextSize = static_cast<unsigned int>(getGlobalTextSize() * m_fontScale);
         const std::uint64_t glyphKey = constructGlyphKey(codePoint, scaledTextSize, false, 0);
 
-        const auto it = m_glyphs.find(glyphKey);
-        if (it != m_glyphs.end())
+        if (const auto it = m_glyphs.find(glyphKey); it != m_glyphs.end())
             return true;
 
         int codePointInt = static_cast<int>(codePoint);
@@ -187,8 +186,7 @@ namespace tgui
         const float scaledOutlineThickness = outlineThickness * m_fontScale;
         const std::uint64_t glyphKey = constructGlyphKey(codePoint, scaledTextSize, bold, scaledOutlineThickness);
 
-        const auto it = m_glyphs.find(glyphKey);
-        if (it != m_glyphs.end())
+        if (const auto it = m_glyphs.find(glyphKey); it != m_glyphs.end())
             return it->second;
 
         // Loading a new glyph involves reloading the font, so we preload the default character set when attempting to load the first glyph
@@ -273,8 +271,7 @@ namespace tgui
 #endif
 
             // It's possible that we just loaded the glyph that we were searching for
-            const auto retryIt = m_glyphs.find(glyphKey);
-            if (retryIt != m_glyphs.end())
+            if (const auto retryIt = m_glyphs.find(glyphKey); retryIt != m_glyphs.end())
                 return retryIt->second;
         }
 

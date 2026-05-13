@@ -191,16 +191,14 @@ namespace tgui
 
     bool Grid::remove(const Widget::Ptr& widget)
     {
-        const auto callbackIt = m_connectedSizeCallbacks.find(widget);
-        if (callbackIt != m_connectedSizeCallbacks.end())
+        if (const auto callbackIt = m_connectedSizeCallbacks.find(widget); callbackIt != m_connectedSizeCallbacks.end())
         {
             widget->onSizeChange.disconnect(callbackIt->second);
             m_connectedSizeCallbacks.erase(callbackIt);
         }
 
         // Find the widget in the grid
-        const auto it = m_widgetCells.find(widget);
-        if (it != m_widgetCells.end())
+        if (const auto it = m_widgetCells.find(widget); it != m_widgetCells.end())
         {
             const std::size_t row = it->second.first;
             const std::size_t col = it->second.second;
@@ -396,8 +394,7 @@ namespace tgui
 
     void Grid::setWidgetPadding(const Widget::Ptr& widget, const Padding& padding)
     {
-        const auto it = m_widgetCells.find(widget);
-        if (it != m_widgetCells.end())
+        if (const auto it = m_widgetCells.find(widget); it != m_widgetCells.end())
         {
             const std::size_t row = it->second.first;
             const std::size_t col = it->second.second;
@@ -423,8 +420,7 @@ namespace tgui
 
     Padding Grid::getWidgetPadding(const Widget::Ptr& widget) const
     {
-        const auto it = m_widgetCells.find(widget);
-        if (it != m_widgetCells.end())
+        if (const auto it = m_widgetCells.find(widget); it != m_widgetCells.end())
         {
             const std::size_t row = it->second.first;
             const std::size_t col = it->second.second;
@@ -447,8 +443,7 @@ namespace tgui
 
     void Grid::setWidgetAlignment(const Widget::Ptr& widget, Alignment alignment)
     {
-        const auto it = m_widgetCells.find(widget);
-        if (it != m_widgetCells.end())
+        if (const auto it = m_widgetCells.find(widget); it != m_widgetCells.end())
         {
             const std::size_t row = it->second.first;
             const std::size_t col = it->second.second;
@@ -471,8 +466,7 @@ namespace tgui
 
     Grid::Alignment Grid::getWidgetAlignment(const Widget::Ptr& widget) const
     {
-        const auto it = m_widgetCells.find(widget);
-        if (it != m_widgetCells.end())
+        if (const auto it = m_widgetCells.find(widget); it != m_widgetCells.end())
         {
             const std::size_t row = it->second.first;
             const std::size_t col = it->second.second;
@@ -544,8 +538,7 @@ namespace tgui
 
             auto getWidgetsInGridString = [&](const Widget::Ptr& w) -> String
             {
-                auto it = widgetsMap.find(w);
-                if (it != widgetsMap.end())
+                if (auto it = widgetsMap.find(w); it != widgetsMap.end())
                 {
                     const auto row = it->second.first;
                     const auto col = it->second.second;
