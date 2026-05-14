@@ -230,15 +230,13 @@ namespace tgui
 
     bool ScrollablePanel::remove(const Widget::Ptr& widget)
     {
-        const auto posCallbackIt = m_connectedPositionCallbacks.find(widget);
-        if (posCallbackIt != m_connectedPositionCallbacks.end())
+        if (const auto posCallbackIt = m_connectedPositionCallbacks.find(widget); posCallbackIt != m_connectedPositionCallbacks.end())
         {
             widget->onPositionChange.disconnect(posCallbackIt->second);
             m_connectedPositionCallbacks.erase(posCallbackIt);
         }
 
-        const auto sizeCallbackIt = m_connectedSizeCallbacks.find(widget);
-        if (sizeCallbackIt != m_connectedSizeCallbacks.end())
+        if (const auto sizeCallbackIt = m_connectedSizeCallbacks.find(widget); sizeCallbackIt != m_connectedSizeCallbacks.end())
         {
             widget->onSizeChange.disconnect(sizeCallbackIt->second);
             m_connectedSizeCallbacks.erase(sizeCallbackIt);

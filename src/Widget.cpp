@@ -158,8 +158,7 @@ namespace tgui
                 String alias;
                 String section;
 
-                const auto dotPos = body.find('.');
-                if (dotPos == String::npos)
+                if (const auto dotPos = body.find('.'); dotPos == String::npos)
                 {
                     alias = body;
                     section = widget->getWidgetType();

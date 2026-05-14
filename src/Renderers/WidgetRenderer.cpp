@@ -151,8 +151,7 @@ namespace tgui
 
     Font WidgetRenderer::getFont() const
     {
-        auto it = m_data->propertyValuePairs.find("Font");
-        if (it != m_data->propertyValuePairs.end())
+        if (const auto it = m_data->propertyValuePairs.find("Font"); it != m_data->propertyValuePairs.end())
             return it->second.getFont();
         return {};
     }
@@ -168,8 +167,7 @@ namespace tgui
 
     unsigned int WidgetRenderer::getTextSize() const
     {
-        auto it = m_data->propertyValuePairs.find("TextSize");
-        if (it != m_data->propertyValuePairs.end())
+        if (const auto it = m_data->propertyValuePairs.find("TextSize"); it != m_data->propertyValuePairs.end())
             return static_cast<unsigned int>(it->second.getNumber());
         return 0;
     }
@@ -200,8 +198,7 @@ namespace tgui
 
     ObjectConverter WidgetRenderer::getProperty(const String& property) const
     {
-        auto it = m_data->propertyValuePairs.find(property);
-        if (it != m_data->propertyValuePairs.end())
+        if (const auto it = m_data->propertyValuePairs.find(property); it != m_data->propertyValuePairs.end())
             return it->second;
         return {};
     }
