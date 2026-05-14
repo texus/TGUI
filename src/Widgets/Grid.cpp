@@ -363,7 +363,7 @@ namespace tgui
         m_gridWidgets[row][col] = widget;
         m_objPadding[row][col] = padding;
         m_objAlignment[row][col] = alignment;
-        m_widgetCells[widget] = std::make_pair(row, col);
+        m_widgetCells[widget] = {row, col};
 
         // Update the widgets
         updateWidgets();

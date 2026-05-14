@@ -171,14 +171,14 @@ namespace tgui
 
     std::pair<SignalManager::Delegate, SignalManager::DelegateEx> SignalManager::makeSignal(const SignalManager::Delegate& handle)
     {
-        return std::make_pair(handle, SignalManager::DelegateEx{});
+        return {handle, SignalManager::DelegateEx{}};
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     std::pair<SignalManager::Delegate, SignalManager::DelegateEx> SignalManager::makeSignalEx(const SignalManager::DelegateEx& handle)
     {
-        return std::make_pair(SignalManager::Delegate{}, handle);
+        return {SignalManager::Delegate{}, handle};
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
