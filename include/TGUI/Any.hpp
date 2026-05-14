@@ -36,7 +36,7 @@ namespace tgui
     using Any = std::any;
 
     template <typename T>
-    [[deprecated("Use std::any_cast")]]
+    TGUI_DEPRECATED("Use std::any_cast instead")
     T AnyCast(const Any& obj)
     {
         return std::any_cast<T>(obj);
