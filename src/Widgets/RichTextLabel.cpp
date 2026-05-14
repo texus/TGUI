@@ -73,8 +73,7 @@ namespace tgui
                 const auto& textPiece = m_lines[i][j];
                 if (FloatRect{textPiece.getPosition(), textPiece.getSize()}.contains(innerPos))
                 {
-                    auto linkIt = m_links.find({i, j});
-                    if (linkIt != m_links.end())
+                    if (const auto linkIt = m_links.find({i, j}); linkIt != m_links.end())
                         return linkIt->second;
                     return "";
                 }
@@ -86,8 +85,7 @@ namespace tgui
             const auto& sprite = m_images[i];
             if (FloatRect{sprite.getPosition(), sprite.getSize()}.contains(innerPos))
             {
-                auto linkIt = m_imageLinks.find(i);
-                if (linkIt != m_imageLinks.end())
+                if (const auto linkIt = m_imageLinks.find(i); linkIt != m_imageLinks.end())
                     return linkIt->second;
                 return "";
             }
@@ -689,8 +687,7 @@ namespace tgui
                         else if (symbolName == U"url") // No url provided within the tag
                         {
                             String url;
-                            auto endPos = m_string.find(U"</url>", i + 5);
-                            if (endPos != String::npos)
+                            if (const auto endPos = m_string.find(U"</url>", i + 5); endPos != String::npos)
                                 url = m_string.substr(i + 5, endPos - (i + 5));
 
                             addTextPiece();
