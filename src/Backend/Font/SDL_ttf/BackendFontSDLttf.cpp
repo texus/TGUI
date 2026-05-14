@@ -354,7 +354,6 @@ namespace tgui
             return nullptr;
 
         // Simply return the font if it already existed
-
         if (auto it = m_fonts.find(scaledTextSize); it != m_fonts.end())
             return it->second;
 
