@@ -108,7 +108,7 @@ namespace tgui
                 return;
             }
 
-            auto commaPos = str.find(',');
+            const auto commaPos = str.find(',');
             if (commaPos == String::npos)
             {
                 TGUI_PRINT_WARNING("Failed to parse Vector2 '" + str + "'. Expected numbers separated with a comma.");
