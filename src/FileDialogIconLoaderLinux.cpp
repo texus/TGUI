@@ -463,7 +463,7 @@ namespace tgui
                         continue;
                 }
 
-                foundIcons[iconName] = std::make_pair(iconDir / iconFile.filename, themeIconPriority);
+                foundIcons[iconName] = {iconDir / iconFile.filename, themeIconPriority};
 
                 // The generic-icons file in the mime folder misses a lot of icons even though the icons exist.
                 // Many icon filenames match the MIME-type, so we make use of this to extend our icon mapping.
