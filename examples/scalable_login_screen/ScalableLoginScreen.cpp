@@ -51,7 +51,7 @@ void loadWidgets(tgui::BackendGui& gui)
     gui.onViewChange([&gui] { updateTextSize(gui); });
 
     // Create the background image
-    // The picture is of type tgui::Picture::Ptr which is actually just a typedef for std::shared_widget<tgui::Picture>
+    // The picture is of type tgui::Picture::Ptr which is just a type alias declaration for std::shared_ptr<tgui::Picture>
     // The picture will fit the entire window and will scale with it
     auto picture = tgui::Picture::create("xubuntu_bg_aluminium.jpg");
     picture->setSize({"100%", "100%"});
