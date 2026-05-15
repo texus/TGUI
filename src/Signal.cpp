@@ -158,7 +158,7 @@ namespace tgui
         assert(!paths.empty());
         const String& pathStr = paths[0].asString();
         m_parameters[1] = static_cast<const void*>(&pathStr);
-        m_parameters[2] = static_cast<const void*>(&paths[0]);
+        m_parameters[2] = static_cast<const void*>(paths.data());
         m_parameters[3] = static_cast<const void*>(&paths);
         return Signal::emit(widget);
     }
