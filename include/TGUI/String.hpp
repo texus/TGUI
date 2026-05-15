@@ -522,11 +522,7 @@ namespace tgui
 
         [[nodiscard]] char32_t* data() noexcept
         {
-#if __cplusplus >= 201703L
             return m_string.data();
-#else
-            return &m_string[0];
-#endif
         }
 
         [[nodiscard]] const char32_t* c_str() const noexcept
