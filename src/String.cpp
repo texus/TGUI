@@ -56,7 +56,7 @@ namespace tgui
     bool isWhitespace(char32_t character)
     {
         // wchar_t is only 2 bytes on Windows
-        TGUI_IF_CONSTEXPR(sizeof(wchar_t) < 4)
+        if constexpr (sizeof(wchar_t) < 4)
         {
             if (character > 0xFFFF)
                 return false;
@@ -70,7 +70,7 @@ namespace tgui
     bool isAlpha(char32_t character)
     {
         // wchar_t is only 2 bytes on Windows
-        TGUI_IF_CONSTEXPR(sizeof(wchar_t) < 4)
+        if constexpr (sizeof(wchar_t) < 4)
         {
             if (character > 0xFFFF)
                 return false;

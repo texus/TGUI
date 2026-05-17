@@ -257,7 +257,7 @@ namespace tgui
             std::wstring outStr;
             outStr.reserve(strUtf32.length() + 1);
 
-            TGUI_IF_CONSTEXPR(sizeof(wchar_t) == 4)
+            if constexpr (sizeof(wchar_t) == 4)
             {
                 // On Unix, wide characters are UCS-4 and we can just copy the characters
                 for (const char32_t codepoint : strUtf32)

@@ -153,8 +153,9 @@
     #endif
 #endif
 
-// TGUI_NEXT: Remove TGUI_EMPLACE_BACK and TGUI_NODISCARD defines, they should no longer be used
+// TGUI_NEXT: Remove TGUI_EMPLACE_BACK, TGUI_IF_CONSTEXPR and TGUI_NODISCARD defines, they should no longer be used
 #define TGUI_EMPLACE_BACK(object, vector) auto&(object) = (vector).emplace_back();
+#define TGUI_IF_CONSTEXPR if constexpr
 #define TGUI_NODISCARD [[nodiscard]]
 
 #ifndef TGUI_NO_DEPRECATED_WARNINGS
@@ -210,18 +211,6 @@
     #define TGUI_LAMBDA_CAPTURE_EQ_THIS [=, this]
 #else
     #define TGUI_LAMBDA_CAPTURE_EQ_THIS [=]
-#endif
-
-#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
-    #define TGUI_IF_CONSTEXPR if constexpr
-#else
-    #define TGUI_IF_CONSTEXPR if
-
-    // Disable warning in some Visual Studio versions about being able to use "if constexpr",
-    // which we aren't doing because these VS versions didn't define __cpp_if_constexpr yet.
-    #if defined TGUI_SYSTEM_WINDOWS && defined _MSC_VER
-        #pragma warning(disable : 4127)
-    #endif
 #endif
 
 #endif // TGUI_CONFIG_HPP
