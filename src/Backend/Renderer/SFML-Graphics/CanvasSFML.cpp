@@ -363,7 +363,7 @@ namespace tgui
             {{0, textureSize.y}, vertexColor, {0, 1}},
             {{textureSize.x, textureSize.y}, vertexColor, {1, 1}},
         }};
-        const std::array<unsigned int, 6> indices = {{0, 2, 1, 1, 2, 3}};
+        const std::array<unsigned int, 6> indices{0, 2, 1, 1, 2, 3};
 
         // Creating an sf::Vertex costs time because its constructor can't be inlined. Since our own Vertex struct has an identical memory layout,
         // we will create an array of our own Vertex objects and then use a reinterpret_cast to turn them into sf::Vertex.
