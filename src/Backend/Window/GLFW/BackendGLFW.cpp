@@ -24,7 +24,7 @@
 
 #include <TGUI/Backend/Window/GLFW/BackendGLFW.hpp>
 
-#define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extention loader
+#define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extension loader
 #include <GLFW/glfw3.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
