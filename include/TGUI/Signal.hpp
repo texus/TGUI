@@ -125,11 +125,9 @@ namespace tgui
         unsigned int connect(const Func& func, const BoundArgs&... args)
         {
             const auto id = ++m_lastSignalId;
-#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
             if constexpr (sizeof...(BoundArgs) == 0)
                 m_handlers[id] = func;
             else
-#endif
             {
                 m_handlers[id] = [=] { std::invoke(func, args...); };
             }

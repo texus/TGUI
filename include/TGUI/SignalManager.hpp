@@ -93,7 +93,6 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         [[nodiscard]] static SignalManager::Ptr getSignalManager();
 
-#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Connects a signal handler that will be called when this signal is emitted
         ///
@@ -106,41 +105,6 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         template <typename Func, typename... BoundArgs>
         unsigned int connect(String widgetName, String signalName, Func&& handler, const BoundArgs&... args);
-
-#else
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param widgetName   Name of the widget to connect to
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function that is given the extra arguments provided to this function as arguments
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
-        ///
-        /// @return Unique id of the connection
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func,
-                  typename... Args,
-                  typename std::enable_if_t<std::is_convertible<Func, std::function<void(const Args&...)>>::value>* = nullptr>
-        unsigned int connect(String widgetName, String signalName, Func&& handler, const Args&... args);
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Connects a signal handler that will be called when this signal is emitted
-        ///
-        /// @param widgetName   Name of the widget to connect to
-        /// @param signalName   Name of the signal
-        /// @param handler      Callback function that is given a pointer to the widget, the name of the signal and the extra
-        ///                     arguments provided to this function as arguments
-        /// @param args         Optional extra arguments to pass to the signal handler when the signal is emitted
-        ///
-        /// @return Unique id of the connection
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename Func,
-                  typename... BoundArgs,
-                  typename std::enable_if_t<
-                      !std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                      && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>* = nullptr>
-        unsigned int connect(String widgetName, String signalName, Func&& handler, BoundArgs&&... args);
-#endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Disconnect a signal handler
@@ -209,7 +173,6 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if defined(__cpp_if_constexpr) && (__cpp_if_constexpr >= 201606L)
     template <typename Func, typename... BoundArgs>
     unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, const BoundArgs&... args)
     {
@@ -232,37 +195,6 @@ namespace tgui
         connect(id);
         return id;
     }
-#else
-    template <typename Func, typename... Args, typename std::enable_if_t<std::is_convertible<Func, std::function<void(const Args&...)>>::value>*>
-    unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, const Args&... args)
-    {
-        const unsigned int id = generateUniqueId();
-        m_signals[id] = {widgetName,
-                         signalName,
-                         makeSignal([f = std::function<void(const Args&...)>(handler), args...]() { f(args...); })};
-
-        connect(id);
-        return id;
-    }
-
-    template <typename Func,
-              typename... BoundArgs,
-              typename std::enable_if_t<
-                  !std::is_convertible<Func, std::function<void(const BoundArgs&...)>>::value // Ambigious otherwise when passing bind expression
-                  && std::is_convertible<Func, std::function<void(const BoundArgs&..., std::shared_ptr<Widget>, const String&)>>::value>*>
-    unsigned int SignalManager::connect(String widgetName, String signalName, Func&& handler, BoundArgs&&... args)
-    {
-        const unsigned int id = generateUniqueId();
-        m_signals[id] = {widgetName,
-                         signalName,
-                         makeSignalEx(
-                             [f = std::function<void(const BoundArgs&..., const std::shared_ptr<Widget>&, const String&)>(handler),
-                              args...](const std::shared_ptr<Widget>& w, const String& s) { f(args..., w, s); })};
-
-        connect(id);
-        return id;
-    }
-#endif
 } // namespace tgui
 
 #endif // TGUI_SIGNAL_MANAGER_HPP
