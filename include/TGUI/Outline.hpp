@@ -55,7 +55,7 @@ namespace tgui
         ///
         /// @param size  Width and height of the outline in all directions
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic_v<T>, T>>
         constexpr Outline(T size) :
             m_left{size},
             m_top{size},
