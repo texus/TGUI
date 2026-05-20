@@ -183,7 +183,7 @@ namespace tgui
         /// The value can't be smaller than the minimum or bigger than the maximum.
         /// The default value is 0.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic_v<T>, T>>
         bool setValue(T value)
         {
             // TGUI_NEXT: For backwards compatibility, this function needs to accept a float without conversion warnings.
@@ -211,7 +211,7 @@ namespace tgui
         /// @param step  The new step size
         /// @pre The step size must be a positive value or 0.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic_v<T>, T>>
         void setStep(T step)
         {
             // TGUI_NEXT: For backwards compatibility, this function needs to accept a float without conversion warnings.

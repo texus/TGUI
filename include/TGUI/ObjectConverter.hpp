@@ -129,7 +129,7 @@ namespace tgui
         ///
         /// @param number  Number to store
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic_v<T>, T>>
         ObjectConverter(T number) :
             m_type{Type::Number},
             m_value{static_cast<float>(number)}

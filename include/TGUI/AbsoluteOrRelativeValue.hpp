@@ -53,7 +53,7 @@ namespace tgui
         ///
         /// @param constant  Value to set
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic_v<T>, T>>
         constexpr AbsoluteOrRelativeValue(T constant) :
             m_constant{true},
             m_value{static_cast<float>(constant)}

@@ -133,7 +133,7 @@ namespace tgui
         ///
         /// @param constant  Value of the layout
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic<T>::value, T>>
+        template <typename T, typename = typename std::enable_if_t<std::is_arithmetic_v<T>, T>>
         Layout(T constant) :
             m_value{static_cast<float>(constant)}
         {
