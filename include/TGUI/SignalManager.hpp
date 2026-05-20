@@ -179,7 +179,7 @@ namespace tgui
         const unsigned int id = generateUniqueId();
         auto fwdHandler = std::forward<Func>(handler);
 
-        constexpr bool takesCallerArgs = std::is_invocable<Func, BoundArgs..., const std::shared_ptr<Widget>&, const String&>::value;
+        constexpr bool takesCallerArgs = std::is_invocable_v<Func, BoundArgs..., const std::shared_ptr<Widget>&, const String&>;
         if constexpr (takesCallerArgs)
         {
             m_signals[id] = {widgetName,
