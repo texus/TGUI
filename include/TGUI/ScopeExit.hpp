@@ -51,7 +51,7 @@ namespace tgui
         ScopeExit& operator=(const ScopeExit&) = delete;
         ScopeExit& operator=(ScopeExit&&) = delete;
 
-        ScopeExit(ScopeExit&& other) noexcept(std::is_nothrow_move_constructible<F>::value) :
+        ScopeExit(ScopeExit&& other) noexcept(std::is_nothrow_move_constructible_v<F>) :
             m_func(std::move(other.m_func)),
             m_active(other.m_active)
         {
