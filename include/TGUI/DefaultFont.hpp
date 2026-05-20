@@ -99,11 +99,7 @@ from Tavmjong Bah. For further information, contact: tavmjong @ free
 */
 
 // DejaVuSans font
-#ifdef __cpp_inline_variables
 static inline const unsigned char defaultFontBytes[] = {
-#else
-static const unsigned char defaultFontBytes[] = {
-#endif
     0,   1,   0,   0,   0,   19,  1,   0,   0,   4,   0,   48,  70,  70,  84,  77,  96,  220, 152, 54,  0,   0,   1,   60,  0,
     0,   0,   28,  71,  68,  69,  70,  131, 92,  125, 80,  0,   0,   1,   88,  0,   0,   2,   148, 71,  80,  79,  83,  40,  255,
     158, 147, 0,   0,   3,   236, 0,   0,   152, 52,  71,  83,  85,  66,  24,  176, 110, 135, 0,   0,   156, 32,  0,   0,   21,
