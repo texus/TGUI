@@ -39,7 +39,7 @@ namespace tgui
     class ScopeExit
     {
     public:
-        template <typename G, typename = typename std::enable_if<!std::is_same<typename std::decay<G>::type, ScopeExit>::value>::type>
+        template <typename G, typename = typename std::enable_if<!std::is_same_v<typename std::decay<G>::type, ScopeExit>>::type>
         explicit ScopeExit(G&& func) :
             m_func(std::forward<G>(func)),
             m_active(true)
