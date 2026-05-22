@@ -351,7 +351,7 @@ namespace tgui
                 continue;
 
             if (!childNode->propertyValuePairs[U"Text"])
-                throw Exception{U"Failed to parse 'Menu' property, expected a nested 'Text' propery"};
+                throw Exception{U"Failed to parse 'Menu' property, expected a nested 'Text' property"};
 
             const String menuText = Deserializer::deserialize(ObjectConverter::Type::String,
                                                               childNode->propertyValuePairs[U"Text"]->value)
