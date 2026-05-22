@@ -195,7 +195,7 @@ namespace tgui
             for (const auto& widgetType : WidgetFactory::getWidgetTypes())
                 m_propertiesCache[filename][widgetType] = {};
 
-            // Cache all propery value pairs
+            // Cache all property value pairs
             for (const auto& section : sections)
             {
                 const auto& child = section.second;

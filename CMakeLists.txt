@@ -65,7 +65,7 @@ if(NOT DEFINED TGUI_SHARED_LIBS)
     if(NOT DEFINED BUILD_SHARED_LIBS AND (CMAKE_VERSION VERSION_LESS 3.21 OR PROJECT_IS_TOP_LEVEL) AND NOT TGUI_OS_EMSCRIPTEN)
         option(BUILD_SHARED_LIBS "ON to build a shared (dynamic) library, OFF to build a static library" ON)
     elseif(TGUI_OS_ANDROID AND NOT DEFINED BUILD_SHARED_LIBS)
-        # For backwards compatiblity we will default to a shared library on Android without asking
+        # For backwards compatibility we will default to a shared library on Android without asking
         set(BUILD_SHARED_LIBS ON)
     elseif(TGUI_OS_EMSCRIPTEN)
         # Emscripten does not support shared libraries

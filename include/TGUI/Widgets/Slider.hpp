@@ -90,7 +90,7 @@ namespace tgui
         ///
         /// @param size  The new size of the slider
         ///
-        /// Note that the Orientation propery is changed by this function based on the given width and height,
+        /// Note that the Orientation property is changed by this function based on the given width and height,
         /// unless the setOrientation function was previously called to explicitly select the orientation.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void setSize(const Layout2d& size) override;

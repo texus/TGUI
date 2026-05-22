@@ -135,7 +135,7 @@ namespace tgui
         ///
         /// @param property  Name of the global property to retrieve
         ///
-        /// @return Value of the global property, or an object with type ObjectConverter::Type::None if no such propery exists
+        /// @return Value of the global property, or an object with type ObjectConverter::Type::None if no such property exists
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         [[nodiscard]] ObjectConverter getGlobalProperty(const String& property);
 
