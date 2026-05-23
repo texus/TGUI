@@ -30,12 +30,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char CanvasSDLGPU::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     CanvasSDLGPU::CanvasSDLGPU(const char* typeName, bool initRenderer) :
         CanvasBase{typeName, initRenderer}
     {
