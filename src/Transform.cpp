@@ -25,6 +25,7 @@
 #include <TGUI/Transform.hpp>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
@@ -108,10 +109,10 @@ namespace tgui
     FloatRect Transform::transformRect(const FloatRect& rectangle) const
     {
         // Transform the 4 corners of the rectangle
-        const Vector2f points[] = {transformPoint({rectangle.left, rectangle.top}),
-                                   transformPoint({rectangle.left, rectangle.top + rectangle.height}),
-                                   transformPoint({rectangle.left + rectangle.width, rectangle.top}),
-                                   transformPoint({rectangle.left + rectangle.width, rectangle.top + rectangle.height})};
+        const std::array points{transformPoint({rectangle.left, rectangle.top}),
+                                transformPoint({rectangle.left, rectangle.top + rectangle.height}),
+                                transformPoint({rectangle.left + rectangle.width, rectangle.top}),
+                                transformPoint({rectangle.left + rectangle.width, rectangle.top + rectangle.height})};
 
         // Compute the bounding rectangle of the transformed points
         const float left = std::min({points[0].x, points[1].x, points[2].x, points[3].x});
