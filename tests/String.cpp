@@ -31,11 +31,7 @@
 
 #include "Tests.hpp"
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
 using namespace std::literals::string_view_literals;
-#else
-using namespace tgui::literals::string_view_literals;
-#endif
 
 TEST_CASE("[String]")
 {
@@ -46,26 +42,15 @@ TEST_CASE("[String]")
     const std::u16string u16s(u"\u03b1\u03b2\u03b3\u03b4\u03b5");
     const std::u32string u32s(U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
-#if TGUI_COMPILED_WITH_CPP_VER >= 17
     const std::string_view view_s(s);
     const std::wstring_view view_ws(ws);
     const std::u16string_view view_u16s(u16s);
     const std::u32string_view view_u32s(u32s);
-#else
-    const tgui::CharStringView view_s(s);
-    const tgui::StringViewImpl<wchar_t> view_ws(ws);
-    const tgui::StringViewImpl<char16_t> view_u16s(u16s);
-    const tgui::StringView view_u32s(u32s);
-#endif
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
     std::u8string u8s(u8"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
-    #if TGUI_COMPILED_WITH_CPP_VER >= 17
     std::u8string_view view_u8s(u8s);
-    #else
-    tgui::StringViewImpl<char8_t> view_u8s(u8s);
-    #endif
 #endif
 
     SECTION("Constructor")
@@ -144,15 +129,10 @@ TEST_CASE("[String]")
         REQUIRE(tgui::String(std::u8string(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"), 2, 6) == u8"\u03b2\u03b3\u03b4");
         REQUIRE(tgui::String(u8s.cbegin(), u8s.cend()) == u8"\u03b1\u03b2\u03b3\u03b4\u03b5");
         REQUIRE(tgui::String(3, u8'x') == "xxx");
-
-    #if TGUI_COMPILED_WITH_CPP_VER >= 17
         REQUIRE(tgui::String(u8"\U00010348"sv) == u8"\U00010348");
         REQUIRE(tgui::String(u8"\u03b1\u03b2\u03b3\u03b4\u03b5"sv, 2, 6) == u8"\u03b2\u03b3\u03b4");
-    #endif
-
         REQUIRE(tgui::String(view_u8s) == U"\u03b1\u03b2\u03b3\u03b4\u03b5");
 #endif
-
         REQUIRE(tgui::String(15) == "15");
         REQUIRE(tgui::String(-3) == "-3");
         REQUIRE(tgui::String(0.5) == "0.5");
