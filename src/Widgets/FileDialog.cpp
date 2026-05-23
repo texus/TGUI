@@ -26,6 +26,7 @@
 #include <TGUI/Widgets/FileDialog.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 
+#include <array>
 #include <ctime>
 #include <map>
 #include <vector>
@@ -864,24 +865,24 @@ namespace tgui
 
             String modificationTimeStr;
             bool modificationTimeConverted = false;
-            char buffer[19];
+            std::array<char, 19> buffer{};
 #if defined(TGUI_SYSTEM_WINDOWS) && defined(_MSC_VER)
             std::tm TimeStructure;
             if (localtime_s(&TimeStructure, &file.modificationTime) == 0)
             {
-                if (std::strftime(&buffer[0], sizeof(buffer), "%e %b %Y  %R", &TimeStructure) != 0)
+                if (std::strftime(buffer.data(), buffer.size(), "%e %b %Y  %R", &TimeStructure) != 0)
                     modificationTimeConverted = true;
             }
 #elif defined(TGUI_SYSTEM_WINDOWS) \
     && defined(__GNUC__) // MinGW doesn't support %e (day of the month without leading 0) and %R (same as %H:%M)
-            if (strftime(&buffer[0], sizeof(buffer), "%d %b %Y  %H:%M", std::localtime(&file.modificationTime)) != 0)
+            if (strftime(buffer.data(), buffer.size(), "%d %b %Y  %H:%M", std::localtime(&file.modificationTime)) != 0)
                 modificationTimeConverted = true;
 #else
-            if (strftime(&buffer[0], sizeof(buffer), "%e %b %Y  %R", std::localtime(&file.modificationTime)) != 0)
+            if (strftime(buffer.data(), buffer.size(), "%e %b %Y  %R", std::localtime(&file.modificationTime)) != 0)
                 modificationTimeConverted = true;
 #endif
             if (modificationTimeConverted)
-                modificationTimeStr = static_cast<char*>(buffer);
+                modificationTimeStr = static_cast<char*>(buffer.data());
 
 #if defined(TGUI_SYSTEM_WINDOWS)
             // Hide .lnk and .url extensions

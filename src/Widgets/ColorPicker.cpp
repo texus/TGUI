@@ -26,6 +26,7 @@
 #include <TGUI/Widgets/EditBox.hpp>
 #include <TGUI/Widgets/Label.hpp>
 
+#include <array>
 #include <cmath>
 
 #if defined(__cpp_lib_math_constants) && (__cpp_lib_math_constants >= 201907L)
@@ -52,13 +53,13 @@ namespace
         s = std::clamp(s, 0.f, 1.f);
         v = std::clamp(v, 0.f, 1.f);
 
-        const float K[] = {1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
+        const std::array K{1.0f, 2.0f / 3.0f, 1.0f / 3.0f, 3.0f};
 
-        const float p[] = {std::abs((fract(h + K[0]) * 6.0f) - K[3]),
+        const std::array p{std::abs((fract(h + K[0]) * 6.0f) - K[3]),
                            std::abs((fract(h + K[1]) * 6.0f) - K[3]),
                            std::abs((fract(h + K[2]) * 6.0f) - K[3])};
 
-        const float C[] = {v * mix(K[0], std::clamp(p[0] - K[0], 0.f, 1.f), s),
+        const std::array C{v * mix(K[0], std::clamp(p[0] - K[0], 0.f, 1.f), s),
                            v * mix(K[0], std::clamp(p[1] - K[0], 0.f, 1.f), s),
                            v * mix(K[0], std::clamp(p[2] - K[0], 0.f, 1.f), s)};
 
