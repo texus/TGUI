@@ -30,12 +30,6 @@
 
 namespace tgui
 {
-#if TGUI_COMPILED_WITH_CPP_VER < 17
-    constexpr const char CanvasRaylib::StaticWidgetType[];
-#endif
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     CanvasRaylib::CanvasRaylib(const char* typeName, bool initRenderer) :
         CanvasBase{typeName, initRenderer}
     {
