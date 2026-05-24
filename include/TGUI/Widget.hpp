@@ -69,13 +69,10 @@ namespace tgui
     enum class ShowEffectType;
 } // namespace tgui
 
-namespace tgui
+namespace tgui::priv
 {
-    namespace priv
-    {
-        class Animation;
-    } // namespace priv
-} // namespace tgui
+    class Animation;
+} // namespace tgui::priv
 
 namespace tgui
 {

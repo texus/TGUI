@@ -90,54 +90,51 @@
     #define TGUI_GL_CHECK(expr) expr
 #endif
 
-namespace tgui
+namespace tgui::priv
 {
-    namespace priv
-    {
 #if !defined(NDEBUG) && !defined(TGUI_NO_RUNTIME_WARNINGS)
-        inline void checkAndLogErrorOpenGL(const char* file, unsigned int line, const char* expression)
+    inline void checkAndLogErrorOpenGL(const char* file, unsigned int line, const char* expression)
+    {
+        const GLenum errorCode = glGetError();
+        if (errorCode == GL_NO_ERROR)
+            return;
+
+        const char* error;
+        switch (errorCode)
         {
-            const GLenum errorCode = glGetError();
-            if (errorCode == GL_NO_ERROR)
-                return;
-
-            const char* error;
-            switch (errorCode)
-            {
-                case GL_INVALID_ENUM:
-                    error = "GL_INVALID_ENUM";
-                    break;
-                case GL_INVALID_VALUE:
-                    error = "GL_INVALID_VALUE";
-                    break;
-                case GL_INVALID_OPERATION:
-                    error = "GL_INVALID_OPERATION";
-                    break;
-                case GL_STACK_OVERFLOW:
-                    error = "GL_STACK_OVERFLOW";
-                    break;
-                case GL_STACK_UNDERFLOW:
-                    error = "GL_STACK_UNDERFLOW";
-                    break;
-                case GL_OUT_OF_MEMORY:
-                    error = "GL_OUT_OF_MEMORY";
-                    break;
-                default:
-                    error = "Unknown error";
-                    break;
-            }
-
-            const std::string fileStr = file;
-            TGUI_PRINT_WARNING(
-                "An internal OpenGL call failed in " + fileStr.substr(fileStr.find_last_of("\\/") + 1) + "("
-                + std::to_string(line) + ")." + "\nExpression:\n   " + expression + "\nError description:\n   " + error + "\n");
+            case GL_INVALID_ENUM:
+                error = "GL_INVALID_ENUM";
+                break;
+            case GL_INVALID_VALUE:
+                error = "GL_INVALID_VALUE";
+                break;
+            case GL_INVALID_OPERATION:
+                error = "GL_INVALID_OPERATION";
+                break;
+            case GL_STACK_OVERFLOW:
+                error = "GL_STACK_OVERFLOW";
+                break;
+            case GL_STACK_UNDERFLOW:
+                error = "GL_STACK_UNDERFLOW";
+                break;
+            case GL_OUT_OF_MEMORY:
+                error = "GL_OUT_OF_MEMORY";
+                break;
+            default:
+                error = "Unknown error";
+                break;
         }
+
+        const std::string fileStr = file;
+        TGUI_PRINT_WARNING(
+            "An internal OpenGL call failed in " + fileStr.substr(fileStr.find_last_of("\\/") + 1) + "(" + std::to_string(line)
+            + ")." + "\nExpression:\n   " + expression + "\nError description:\n   " + error + "\n");
+    }
 #else
-        inline void checkAndLogErrorOpenGL(const char*, unsigned int, const char*)
-        {
-        }
+    inline void checkAndLogErrorOpenGL(const char*, unsigned int, const char*)
+    {
+    }
 #endif
-    } // namespace priv
-} // namespace tgui
+} // namespace tgui::priv
 
 #endif // TGUI_OPENGL_HPP
