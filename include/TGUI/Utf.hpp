@@ -288,7 +288,7 @@ namespace tgui
 
             for (const char32_t codepoint : strUtf32)
             {
-                // If the codepoint fitst inside 2 bytes and it would represent a valid character then just copy it
+                // If the codepoint fits inside 2 bytes and it would represent a valid character then just copy it
                 if (codepoint <= 0xFFFF)
                 {
                     if ((codepoint < 0xD800) || (codepoint > 0xDFFF))
