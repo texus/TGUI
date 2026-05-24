@@ -74,7 +74,7 @@ namespace tgui
     namespace priv
     {
         class Animation;
-    }
+    } // namespace priv
 } // namespace tgui
 
 namespace tgui

@@ -267,7 +267,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     };
-}
+} // namespace tgui
 
 TGUI_IGNORE_DEPRECATED_WARNINGS_END
 

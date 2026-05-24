@@ -110,9 +110,7 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         [[nodiscard]] std::unique_ptr<std::uint8_t[]> readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const override;
 #endif
     };
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace tgui
 
 TGUI_IGNORE_DEPRECATED_WARNINGS_END
 
