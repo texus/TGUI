@@ -233,7 +233,7 @@ namespace tgui
                 parentNode->children.push_back(std::move(itemNode));
             }
         }
-    } // namespace
+    } // anonymous namespace
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

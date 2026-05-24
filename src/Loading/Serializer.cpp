@@ -286,7 +286,7 @@ namespace tgui
             DataIO::emit(node, ss);
             return ss.str();
         }
-    } // namespace
+    } // anonymous namespace
 
     std::unordered_map<ObjectConverter::Type, Serializer::SerializeFunc> Serializer::m_serializers =
         {{ObjectConverter::Type::None, serializeEmptyObject},

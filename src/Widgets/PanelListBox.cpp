@@ -33,7 +33,7 @@ namespace tgui
         const float defaultWidth = 160;
         const float defaultHeight = 140;
         const float defaultPanelHeight = 40;
-    } // namespace
+    } // anonymous namespace
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

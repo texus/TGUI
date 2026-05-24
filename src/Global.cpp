@@ -63,7 +63,7 @@ namespace
             return stream.view();
         }
     };
-} // namespace
+} // anonymous namespace
 #endif
 
 namespace tgui
@@ -75,7 +75,7 @@ namespace tgui
         Duration globalDoubleClickTime = std::chrono::milliseconds(500);
         Duration globalEditBlinkRate = std::chrono::milliseconds(500);
         Filesystem::Path globalResourcePath;
-    } // namespace
+    } // anonymous namespace
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

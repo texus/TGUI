@@ -41,7 +41,7 @@ namespace
 #endif
         return event;
     }
-} // namespace
+} // anonymous namespace
 
 TEST_CASE("[TextArea]")
 {
