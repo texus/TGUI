@@ -33,280 +33,277 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+namespace tgui::utf
 {
-    namespace utf
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Helper function that encodes a single UTF-32 character into one or more UTF-8 characters
+    /// @param input       UTF-32 character to encode
+    /// @param outStrUtf8  Reference to string to which the output UTF-8 characters are appended
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename CharT> // CharT is either char or char8_t
+    void encodeCharUtf8(char32_t input, std::basic_string<CharT>& outStrUtf8)
     {
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Helper function that encodes a single UTF-32 character into one or more UTF-8 characters
-        /// @param input       UTF-32 character to encode
-        /// @param outStrUtf8  Reference to string to which the output UTF-8 characters are appended
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename CharT> // CharT is either char or char8_t
-        void encodeCharUtf8(char32_t input, std::basic_string<CharT>& outStrUtf8)
+        if (input < 128)
         {
-            if (input < 128)
-            {
-                outStrUtf8.push_back(static_cast<CharT>(input));
-                return;
-            }
+            outStrUtf8.push_back(static_cast<CharT>(input));
+            return;
+        }
 
-            // Encode the character (if it is valid)
-            if ((input > 0x0010FFFF) || ((input >= 0xD800) && (input <= 0xDBFF)))
-                return;
+        // Encode the character (if it is valid)
+        if ((input > 0x0010FFFF) || ((input >= 0xD800) && (input <= 0xDBFF)))
+            return;
 
-            // Get the number of bytes to write
-            std::size_t bytestoWrite;
-            std::uint8_t firstByteMask;
-            if (input < 0x800)
-            {
-                bytestoWrite = 2;
-                firstByteMask = 0xC0;
-            }
-            else if (input < 0x10000)
-            {
-                bytestoWrite = 3;
-                firstByteMask = 0xE0;
-            }
-            else
-            {
-                bytestoWrite = 4;
-                firstByteMask = 0xF0;
-            }
+        // Get the number of bytes to write
+        std::size_t bytestoWrite;
+        std::uint8_t firstByteMask;
+        if (input < 0x800)
+        {
+            bytestoWrite = 2;
+            firstByteMask = 0xC0;
+        }
+        else if (input < 0x10000)
+        {
+            bytestoWrite = 3;
+            firstByteMask = 0xE0;
+        }
+        else
+        {
+            bytestoWrite = 4;
+            firstByteMask = 0xF0;
+        }
 
-            // Extract the bytes to write
-            std::array<CharT, 4> bytes;
-            if (bytestoWrite == 4)
-            {
-                bytes[3] = static_cast<CharT>((input | 0x80) & 0xBF);
-                input >>= 6;
-            }
-            if (bytestoWrite >= 3)
-            {
-                bytes[2] = static_cast<CharT>((input | 0x80) & 0xBF);
-                input >>= 6;
-            }
-            bytes[1] = static_cast<CharT>((input | 0x80) & 0xBF);
+        // Extract the bytes to write
+        std::array<CharT, 4> bytes;
+        if (bytestoWrite == 4)
+        {
+            bytes[3] = static_cast<CharT>((input | 0x80) & 0xBF);
             input >>= 6;
-            bytes[0] = static_cast<CharT>(input | firstByteMask);
-
-            // Add them to the output
-            outStrUtf8.append(bytes.cbegin(), bytes.cbegin() + static_cast<std::ptrdiff_t>(bytestoWrite));
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Helper function that decodes one or more UTF-8 characters into a single UTF-32 character
-        /// @param inputCharIt  Iterator to the UTF-8 character that should be decoded
-        /// @param inputEndIt   Iterator to the end of the input
-        /// @param outStrUtf32  Reference to string to which the output UTF-32 character is appended
-        /// @return Iterator to the next UTF-8 character or inputEndIt if there are no more characters
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename CharIt> // CharIt is an iterator for a string containing either char or char8_t
-        CharIt decodeCharUtf8(CharIt inputCharIt, CharIt inputEndIt, std::u32string& outStrUtf32)
+        if (bytestoWrite >= 3)
         {
-            if (static_cast<std::uint8_t>(*inputCharIt) < 128)
-            {
-                outStrUtf32.push_back(static_cast<char32_t>(static_cast<std::uint8_t>(*inputCharIt)));
-                return ++inputCharIt;
-            }
-
-            // Some useful precomputed data
-            static const std::array<std::uint32_t, 6> offsetsMap = {0x00000000, 0x00003080, 0x000E2080, 0x03C82080, 0xFA082080, 0x82082080};
-            static const std::array<std::uint8_t, 128> trailingMap =
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
-
-            // decode the character
-            const std::uint8_t trailingBytes = trailingMap[static_cast<std::uint8_t>(*inputCharIt) - 128];
-            const std::uint32_t offset = offsetsMap[trailingBytes];
-            const auto remainingBytes = std::distance(inputCharIt, inputEndIt) - 1;
-            if (remainingBytes >= static_cast<decltype(remainingBytes)>(trailingBytes))
-            {
-                char32_t outputChar = 0;
-                for (std::uint8_t i = 0; i < trailingBytes; ++i)
-                {
-                    outputChar += static_cast<char32_t>(static_cast<std::uint8_t>(*inputCharIt++));
-                    outputChar <<= 6;
-                }
-
-                outputChar += static_cast<char32_t>(static_cast<std::uint8_t>(*inputCharIt++));
-                outputChar -= offset;
-                outStrUtf32.push_back(outputChar);
-            }
-            else // Incomplete character
-                inputCharIt = inputEndIt;
-
-            return inputCharIt;
+            bytes[2] = static_cast<CharT>((input | 0x80) & 0xBF);
+            input >>= 6;
         }
+        bytes[1] = static_cast<CharT>((input | 0x80) & 0xBF);
+        input >>= 6;
+        bytes[0] = static_cast<CharT>(input | firstByteMask);
+
+        // Add them to the output
+        outStrUtf8.append(bytes.cbegin(), bytes.cbegin() + static_cast<std::ptrdiff_t>(bytestoWrite));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Helper function that decodes one or more UTF-8 characters into a single UTF-32 character
+    /// @param inputCharIt  Iterator to the UTF-8 character that should be decoded
+    /// @param inputEndIt   Iterator to the end of the input
+    /// @param outStrUtf32  Reference to string to which the output UTF-32 character is appended
+    /// @return Iterator to the next UTF-8 character or inputEndIt if there are no more characters
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename CharIt> // CharIt is an iterator for a string containing either char or char8_t
+    CharIt decodeCharUtf8(CharIt inputCharIt, CharIt inputEndIt, std::u32string& outStrUtf32)
+    {
+        if (static_cast<std::uint8_t>(*inputCharIt) < 128)
+        {
+            outStrUtf32.push_back(static_cast<char32_t>(static_cast<std::uint8_t>(*inputCharIt)));
+            return ++inputCharIt;
+        }
+
+        // Some useful precomputed data
+        static const std::array<std::uint32_t, 6> offsetsMap = {0x00000000, 0x00003080, 0x000E2080, 0x03C82080, 0xFA082080, 0x82082080};
+        static const std::array<std::uint8_t, 128> trailingMap =
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+             2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5};
+
+        // decode the character
+        const std::uint8_t trailingBytes = trailingMap[static_cast<std::uint8_t>(*inputCharIt) - 128];
+        const std::uint32_t offset = offsetsMap[trailingBytes];
+        const auto remainingBytes = std::distance(inputCharIt, inputEndIt) - 1;
+        if (remainingBytes >= static_cast<decltype(remainingBytes)>(trailingBytes))
+        {
+            char32_t outputChar = 0;
+            for (std::uint8_t i = 0; i < trailingBytes; ++i)
+            {
+                outputChar += static_cast<char32_t>(static_cast<std::uint8_t>(*inputCharIt++));
+                outputChar <<= 6;
+            }
+
+            outputChar += static_cast<char32_t>(static_cast<std::uint8_t>(*inputCharIt++));
+            outputChar -= offset;
+            outStrUtf32.push_back(outputChar);
+        }
+        else // Incomplete character
+            inputCharIt = inputEndIt;
+
+        return inputCharIt;
+    }
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert an UTF-32 string to UTF-8
-        /// @param strUtf32  Input UTF-32 string
-        /// @return Output UTF-8 string
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        [[nodiscard]] inline std::u8string convertUtf32toUtf8(const std::u32string& strUtf32)
-        {
-            std::u8string outStrUtf8;
-            outStrUtf8.reserve(strUtf32.length() + 1);
-            for (const char32_t& codepoint : strUtf32)
-                encodeCharUtf8(codepoint, outStrUtf8);
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Convert an UTF-32 string to UTF-8
+    /// @param strUtf32  Input UTF-32 string
+    /// @return Output UTF-8 string
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [[nodiscard]] inline std::u8string convertUtf32toUtf8(const std::u32string& strUtf32)
+    {
+        std::u8string outStrUtf8;
+        outStrUtf8.reserve(strUtf32.length() + 1);
+        for (const char32_t& codepoint : strUtf32)
+            encodeCharUtf8(codepoint, outStrUtf8);
 
-            return outStrUtf8;
-        }
+        return outStrUtf8;
+    }
 #endif
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert an UTF-8 string to UTF-32
-        /// @param inputBegin  Begin iterator to input UTF-8 string
-        /// @param inputBegin  End iterator to input UTF-8 string
-        /// @return Output UTF-32 string
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename CharIt>
-        [[nodiscard]] std::u32string convertUtf8toUtf32(CharIt inputBegin, CharIt inputEnd)
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Convert an UTF-8 string to UTF-32
+    /// @param inputBegin  Begin iterator to input UTF-8 string
+    /// @param inputBegin  End iterator to input UTF-8 string
+    /// @return Output UTF-32 string
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename CharIt>
+    [[nodiscard]] std::u32string convertUtf8toUtf32(CharIt inputBegin, CharIt inputEnd)
+    {
+        std::u32string outStrUtf32;
+        outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
+
+        auto it = inputBegin;
+        while (it < inputEnd)
+            it = decodeCharUtf8(it, inputEnd, outStrUtf32);
+
+        return outStrUtf32;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Convert an UTF-16 string to UTF-32
+    /// @param inputBegin Begin iterator to input UTF-16 string
+    /// @param inputEnd   End iterator to input UTF-16 string
+    /// @return Output UTF-32 string
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename U16CharIt>
+    [[nodiscard]] std::u32string convertUtf16toUtf32(U16CharIt inputBegin, U16CharIt inputEnd)
+    {
+        std::u32string outStrUtf32;
+        outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
+
+        auto it = inputBegin;
+        while (it < inputEnd)
         {
-            std::u32string outStrUtf32;
-            outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
+            const char16_t first = *it++;
 
-            auto it = inputBegin;
-            while (it < inputEnd)
-                it = decodeCharUtf8(it, inputEnd, outStrUtf32);
-
-            return outStrUtf32;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert an UTF-16 string to UTF-32
-        /// @param inputBegin Begin iterator to input UTF-16 string
-        /// @param inputEnd   End iterator to input UTF-16 string
-        /// @return Output UTF-32 string
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename U16CharIt>
-        [[nodiscard]] std::u32string convertUtf16toUtf32(U16CharIt inputBegin, U16CharIt inputEnd)
-        {
-            std::u32string outStrUtf32;
-            outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
-
-            auto it = inputBegin;
-            while (it < inputEnd)
+            // Copy the character if it isn't a surrogate pair
+            if ((first < 0xD800) || (first > 0xDBFF))
             {
-                const char16_t first = *it++;
-
-                // Copy the character if it isn't a surrogate pair
-                if ((first < 0xD800) || (first > 0xDBFF))
-                {
-                    outStrUtf32.push_back(static_cast<char32_t>(first));
-                    continue;
-                }
-
-                // We need to read another character
-                if (it == inputEnd)
-                    break;
-
-                const char16_t second = *it++;
-                if ((second >= 0xDC00) && (second <= 0xDFFF))
-                    outStrUtf32.push_back(
-                        ((static_cast<char32_t>(first) - 0xD800) << 10) + (static_cast<char32_t>(second) - 0xDC00) + 0x0010000);
+                outStrUtf32.push_back(static_cast<char32_t>(first));
+                continue;
             }
 
-            return outStrUtf32;
+            // We need to read another character
+            if (it == inputEnd)
+                break;
+
+            const char16_t second = *it++;
+            if ((second >= 0xDC00) && (second <= 0xDFFF))
+                outStrUtf32.push_back(
+                    ((static_cast<char32_t>(first) - 0xD800) << 10) + (static_cast<char32_t>(second) - 0xDC00) + 0x0010000);
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert an std::wstring string to UTF-32
-        /// @param str  Input wstring to copy
-        /// @return Output UTF-32 string
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        template <typename WCharIt>
-        [[nodiscard]] std::u32string convertWidetoUtf32(WCharIt inputBegin, WCharIt inputEnd)
+        return outStrUtf32;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Convert an std::wstring string to UTF-32
+    /// @param str  Input wstring to copy
+    /// @return Output UTF-32 string
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    template <typename WCharIt>
+    [[nodiscard]] std::u32string convertWidetoUtf32(WCharIt inputBegin, WCharIt inputEnd)
+    {
+        std::u32string outStrUtf32;
+        outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
+
+        // std::wstring uses UCS-2 on Windows and UCS-4 on unix, so we can be cast directly
+        for (auto it = inputBegin; it != inputEnd; ++it)
+            outStrUtf32.push_back(static_cast<char32_t>(*it));
+
+        return outStrUtf32;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Convert an UTF-32 string to UTF-8
+    /// @param strUtf32  Input UTF-32 string
+    /// @return Output UTF-8 string
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [[nodiscard]] inline std::string convertUtf32toStdStringUtf8(const std::u32string& strUtf32)
+    {
+        std::string outStrUtf8;
+        outStrUtf8.reserve(strUtf32.length() + 1);
+        for (const char32_t codepoint : strUtf32)
+            encodeCharUtf8(codepoint, outStrUtf8);
+
+        return outStrUtf8;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Convert an UTF-32 string to std::wstring
+    /// @param strUtf32  Input UTF-32 string
+    /// @return Output wstring
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [[nodiscard]] inline std::wstring convertUtf32toWide(const std::u32string& strUtf32)
+    {
+        std::wstring outStr;
+        outStr.reserve(strUtf32.length() + 1);
+
+        if constexpr (sizeof(wchar_t) == 4)
         {
-            std::u32string outStrUtf32;
-            outStrUtf32.reserve(static_cast<std::size_t>((inputEnd - inputBegin) + 1));
-
-            // std::wstring uses UCS-2 on Windows and UCS-4 on unix, so we can be cast directly
-            for (auto it = inputBegin; it != inputEnd; ++it)
-                outStrUtf32.push_back(static_cast<char32_t>(*it));
-
-            return outStrUtf32;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert an UTF-32 string to UTF-8
-        /// @param strUtf32  Input UTF-32 string
-        /// @return Output UTF-8 string
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        [[nodiscard]] inline std::string convertUtf32toStdStringUtf8(const std::u32string& strUtf32)
-        {
-            std::string outStrUtf8;
-            outStrUtf8.reserve(strUtf32.length() + 1);
+            // On Unix, wide characters are UCS-4 and we can just copy the characters
             for (const char32_t codepoint : strUtf32)
-                encodeCharUtf8(codepoint, outStrUtf8);
-
-            return outStrUtf8;
+                outStr.push_back(static_cast<wchar_t>(codepoint));
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert an UTF-32 string to std::wstring
-        /// @param strUtf32  Input UTF-32 string
-        /// @return Output wstring
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        [[nodiscard]] inline std::wstring convertUtf32toWide(const std::u32string& strUtf32)
+        else
         {
-            std::wstring outStr;
-            outStr.reserve(strUtf32.length() + 1);
-
-            if constexpr (sizeof(wchar_t) == 4)
+            // On Windows, wide characters are UCS-2. We just drop the characters that don't fit within a single wide character here.
+            for (const char32_t codepoint : strUtf32)
             {
-                // On Unix, wide characters are UCS-4 and we can just copy the characters
-                for (const char32_t codepoint : strUtf32)
+                if ((codepoint < 0xD800) || ((codepoint > 0xDFFF) && (codepoint <= 0xFFFF)))
                     outStr.push_back(static_cast<wchar_t>(codepoint));
             }
-            else
-            {
-                // On Windows, wide characters are UCS-2. We just drop the characters that don't fit within a single wide character here.
-                for (const char32_t codepoint : strUtf32)
-                {
-                    if ((codepoint < 0xD800) || ((codepoint > 0xDFFF) && (codepoint <= 0xFFFF)))
-                        outStr.push_back(static_cast<wchar_t>(codepoint));
-                }
-            }
-
-            return outStr;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// @brief Convert an UTF-32 string to UTF-16
-        /// @param strUtf32  Input UTF-32 string
-        /// @return Output UTF-16 string
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        [[nodiscard]] inline std::u16string convertUtf32toUtf16(const std::u32string& strUtf32)
+        return outStr;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// @brief Convert an UTF-32 string to UTF-16
+    /// @param strUtf32  Input UTF-32 string
+    /// @return Output UTF-16 string
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [[nodiscard]] inline std::u16string convertUtf32toUtf16(const std::u32string& strUtf32)
+    {
+        std::u16string outStrUtf16;
+        outStrUtf16.reserve(strUtf32.length() + 1);
+
+        for (const char32_t codepoint : strUtf32)
         {
-            std::u16string outStrUtf16;
-            outStrUtf16.reserve(strUtf32.length() + 1);
-
-            for (const char32_t codepoint : strUtf32)
+            // If the codepoint fits inside 2 bytes and it would represent a valid character then just copy it
+            if (codepoint <= 0xFFFF)
             {
-                // If the codepoint fits inside 2 bytes and it would represent a valid character then just copy it
-                if (codepoint <= 0xFFFF)
-                {
-                    if ((codepoint < 0xD800) || (codepoint > 0xDFFF))
-                        outStrUtf16.push_back(static_cast<char16_t>(codepoint));
+                if ((codepoint < 0xD800) || (codepoint > 0xDFFF))
+                    outStrUtf16.push_back(static_cast<char16_t>(codepoint));
 
-                    continue;
-                }
-                if (codepoint > 0x0010FFFF)
-                    continue; // Invalid character (greater than the maximum Unicode value)
-
-                // The input character needs be converted to two UTF-16 elements
-                outStrUtf16.push_back(static_cast<char16_t>(((codepoint - 0x0010000) >> 10) + 0xD800));
-                outStrUtf16.push_back(static_cast<char16_t>(((codepoint - 0x0010000) & 0x3FFUL) + 0xDC00));
+                continue;
             }
+            if (codepoint > 0x0010FFFF)
+                continue; // Invalid character (greater than the maximum Unicode value)
 
-            return outStrUtf16;
+            // The input character needs be converted to two UTF-16 elements
+            outStrUtf16.push_back(static_cast<char16_t>(((codepoint - 0x0010000) >> 10) + 0xD800));
+            outStrUtf16.push_back(static_cast<char16_t>(((codepoint - 0x0010000) & 0x3FFUL) + 0xDC00));
         }
-    } // namespace utf
-} // namespace tgui
+
+        return outStrUtf16;
+    }
+} // namespace tgui::utf
 
 #endif // TGUI_UTF_HPP

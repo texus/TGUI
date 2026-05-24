@@ -32,13 +32,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+namespace tgui::priv
 {
-    namespace priv
-    {
-        struct SvgImageData;
-    } // namespace priv
-} // namespace tgui
+    struct SvgImageData;
+} // namespace tgui::priv
 
 namespace tgui
 {
