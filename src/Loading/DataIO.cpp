@@ -547,7 +547,7 @@ namespace tgui
             output.emplace_back("}");
             return output;
         }
-    } // namespace
+    } // anonymous namespace
 
     std::unique_ptr<DataIO::Node> DataIO::parse(std::stringstream& stream)
     {

@@ -157,7 +157,7 @@ namespace tgui
             for (const auto& childNode : node->children)
                 makePathsRelativeToForm(childNode, formPath);
         }
-    } // namespace
+    } // anonymous namespace
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
