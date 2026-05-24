@@ -30,4 +30,4 @@
 namespace tgui
 {
     TGUI_RENDERER_PROPERTY_OUTLINE(GroupRenderer, Padding)
-}
+} // namespace tgui

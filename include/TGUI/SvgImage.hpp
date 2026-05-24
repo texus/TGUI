@@ -37,7 +37,7 @@ namespace tgui
     namespace priv
     {
         struct SvgImageData;
-    }
+    } // namespace priv
 } // namespace tgui
 
 namespace tgui

@@ -30,4 +30,4 @@
 namespace tgui
 {
     TGUI_RENDERER_PROPERTY_TEXTURE(PictureRenderer, Texture)
-}
+} // namespace tgui

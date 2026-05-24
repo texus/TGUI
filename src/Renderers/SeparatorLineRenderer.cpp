@@ -30,4 +30,4 @@
 namespace tgui
 {
     TGUI_RENDERER_PROPERTY_COLOR(SeparatorLineRenderer, Color, Color::Black)
-}
+} // namespace tgui
