@@ -27,129 +27,126 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+namespace tgui::priv
 {
-    namespace priv
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    AnimationType Animation::getType() const
     {
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        return m_type;
+    }
 
-        AnimationType Animation::getType() const
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Animation::finish()
+    {
+        if (m_finishedCallback != nullptr)
+            m_finishedCallback();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Animation::Animation(AnimationType type, Widget::Ptr widget, Duration duration, std::function<void()> finishedCallback) :
+        m_type{type},
+        m_widget{std::move(widget)},
+        m_totalDuration{duration},
+        m_finishedCallback{std::move(finishedCallback)}
+    {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback) :
+        Animation{AnimationType::Move, std::move(widget), duration, std::move(finishedCallback)},
+        m_startPos{start},
+        m_endPos{std::move(end)}
+    {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool MoveAnimation::update(Duration elapsedTime)
+    {
+        m_elapsedTime += elapsedTime;
+        if (m_elapsedTime >= m_totalDuration)
         {
-            return m_type;
+            finish();
+            return true;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        m_widget->setPosition(m_startPos + ((m_elapsedTime / m_totalDuration) * (m_endPos.getValue() - m_startPos)));
+        return false;
+    }
 
-        void Animation::finish()
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void MoveAnimation::finish()
+    {
+        m_widget->setPosition(m_endPos);
+        Animation::finish();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback) :
+        Animation{AnimationType::Resize, std::move(widget), duration, std::move(finishedCallback)},
+        m_startSize{start},
+        m_endSize{std::move(end)}
+    {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool ResizeAnimation::update(Duration elapsedTime)
+    {
+        m_elapsedTime += elapsedTime;
+        if (m_elapsedTime >= m_totalDuration)
         {
-            if (m_finishedCallback != nullptr)
-                m_finishedCallback();
+            finish();
+            return true;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        m_widget->setSize(m_startSize + ((m_elapsedTime / m_totalDuration) * (m_endSize.getValue() - m_startSize)));
+        return false;
+    }
 
-        Animation::Animation(AnimationType type, Widget::Ptr widget, Duration duration, std::function<void()> finishedCallback) :
-            m_type{type},
-            m_widget{std::move(widget)},
-            m_totalDuration{duration},
-            m_finishedCallback{std::move(finishedCallback)}
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void ResizeAnimation::finish()
+    {
+        m_widget->setSize(m_endSize);
+        Animation::finish();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, Duration duration, std::function<void()> finishedCallback) :
+        Animation{AnimationType::Opacity, std::move(widget), duration, std::move(finishedCallback)},
+        m_startOpacity{std::clamp(start, 0.f, 1.f)},
+        m_endOpacity{std::clamp(end, 0.f, 1.f)}
+    {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool FadeAnimation::update(Duration elapsedTime)
+    {
+        m_elapsedTime += elapsedTime;
+        if (m_elapsedTime >= m_totalDuration)
         {
+            finish();
+            return true;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        m_widget->setInheritedOpacity(m_startOpacity + ((m_elapsedTime / m_totalDuration) * (m_endOpacity - m_startOpacity)));
+        return false;
+    }
 
-        MoveAnimation::MoveAnimation(Widget::Ptr widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback) :
-            Animation{AnimationType::Move, std::move(widget), duration, std::move(finishedCallback)},
-            m_startPos{start},
-            m_endPos{std::move(end)}
-        {
-        }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        bool MoveAnimation::update(Duration elapsedTime)
-        {
-            m_elapsedTime += elapsedTime;
-            if (m_elapsedTime >= m_totalDuration)
-            {
-                finish();
-                return true;
-            }
-
-            m_widget->setPosition(m_startPos + ((m_elapsedTime / m_totalDuration) * (m_endPos.getValue() - m_startPos)));
-            return false;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        void MoveAnimation::finish()
-        {
-            m_widget->setPosition(m_endPos);
-            Animation::finish();
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        ResizeAnimation::ResizeAnimation(Widget::Ptr widget, Vector2f start, Layout2d end, Duration duration, std::function<void()> finishedCallback) :
-            Animation{AnimationType::Resize, std::move(widget), duration, std::move(finishedCallback)},
-            m_startSize{start},
-            m_endSize{std::move(end)}
-        {
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        bool ResizeAnimation::update(Duration elapsedTime)
-        {
-            m_elapsedTime += elapsedTime;
-            if (m_elapsedTime >= m_totalDuration)
-            {
-                finish();
-                return true;
-            }
-
-            m_widget->setSize(m_startSize + ((m_elapsedTime / m_totalDuration) * (m_endSize.getValue() - m_startSize)));
-            return false;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        void ResizeAnimation::finish()
-        {
-            m_widget->setSize(m_endSize);
-            Animation::finish();
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        FadeAnimation::FadeAnimation(Widget::Ptr widget, float start, float end, Duration duration, std::function<void()> finishedCallback) :
-            Animation{AnimationType::Opacity, std::move(widget), duration, std::move(finishedCallback)},
-            m_startOpacity{std::clamp(start, 0.f, 1.f)},
-            m_endOpacity{std::clamp(end, 0.f, 1.f)}
-        {
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        bool FadeAnimation::update(Duration elapsedTime)
-        {
-            m_elapsedTime += elapsedTime;
-            if (m_elapsedTime >= m_totalDuration)
-            {
-                finish();
-                return true;
-            }
-
-            m_widget->setInheritedOpacity(m_startOpacity + ((m_elapsedTime / m_totalDuration) * (m_endOpacity - m_startOpacity)));
-            return false;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        void FadeAnimation::finish()
-        {
-            m_widget->setInheritedOpacity(m_endOpacity);
-            Animation::finish();
-        }
-    } // namespace priv
-} // namespace tgui
+    void FadeAnimation::finish()
+    {
+        m_widget->setInheritedOpacity(m_endOpacity);
+        Animation::finish();
+    }
+} // namespace tgui::priv
