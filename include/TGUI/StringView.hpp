@@ -82,10 +82,10 @@ namespace tgui
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [[nodiscard]] inline bool viewEqualIgnoreCase(StringView view1, StringView view2)
     {
-        return std::equal(view1.begin(),
-                          view1.end(),
-                          view2.begin(),
-                          view2.end(),
+        return std::equal(view1.cbegin(),
+                          view1.cend(),
+                          view2.cbegin(),
+                          view2.cend(),
                           [](char32_t char1, char32_t char2)
                           {
                               if (char1 == char2)
