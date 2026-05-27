@@ -24,6 +24,8 @@
 
 #include <TGUI/Config.hpp>
 
+#include <TGUI/Exception.hpp>
+
 #include <cstdlib>
 #ifdef TGUI_SYSTEM_WINDOWS
     #include <TGUI/extlibs/IncludeWindows.hpp> // GetCommandLineW
@@ -47,14 +49,17 @@
 #include "GuiBuilder.hpp"
 
 #ifdef TGUI_SYSTEM_WINDOWS
-int main(int, char**) // We don't use argv on Windows
+int main(int argc, char**) // We don't use argv on Windows
 #else
 // cppcheck-suppress[constParameter, unmatchedSuppression]
-int main(int, char* argv[])
+int main(int argc, char* argv[])
 #endif
 {
     try
     {
+        if (argc < 1)
+            throw tgui::Exception("Insufficient command-line arguments. Need at least 1.");
+
         // On Windows we can't rely on argv because it would contain '?' characters if the path contained non-ANSI characters.
         // There are other main function signatures on Windows that do support unicode, but this function might not be the
         // actual entry point of the program (e.g. when including SDL_main.h), so we can't use them.
