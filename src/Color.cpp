@@ -27,13 +27,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+namespace tgui::priv
 {
-    namespace priv
+    TGUI_API Color constructColorFromString(const String& string)
     {
-        TGUI_API Color constructColorFromString(const String& string)
-        {
-            return Deserializer::deserialize(ObjectConverter::Type::Color, string).getColor();
-        }
-    } // namespace priv
-} // namespace tgui
+        return Deserializer::deserialize(ObjectConverter::Type::Color, string).getColor();
+    }
+} // namespace tgui::priv
