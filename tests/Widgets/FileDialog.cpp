@@ -142,8 +142,12 @@ TEST_CASE("[FileDialog]")
         REQUIRE(dialog->getIconLoader() != nullptr);
         REQUIRE(dialog->getIconLoader() != iconLoader);
 
-        dialog->setIconLoader(iconLoader);
+        REQUIRE_NOTHROW(dialog->setIconLoader(iconLoader));
         REQUIRE(dialog->getIconLoader() == iconLoader);
+
+        REQUIRE(!iconLoader->update());
+        REQUIRE(!iconLoader->supportsSystemIcons());
+        REQUIRE(!iconLoader->hasGenericIcons());
     }
 
     testWidgetRenderer(dialog->getRenderer());
