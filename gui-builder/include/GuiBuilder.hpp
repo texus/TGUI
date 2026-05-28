@@ -51,7 +51,7 @@
 class GuiBuilder
 {
 public:
-    enum class UndoType
+    enum class UndoType : uint8_t
     {
         Delete,
         Move,
