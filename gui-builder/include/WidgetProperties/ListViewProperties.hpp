@@ -225,4 +225,4 @@ struct ListViewProperties : public WidgetProperties
     }
 };
 
-#endif // TGUI_GUI_BUILDER_LIST_BOX_PROPERTIES_HPP
+#endif // TGUI_GUI_BUILDER_LIST_VIEW_PROPERTIES_HPP
