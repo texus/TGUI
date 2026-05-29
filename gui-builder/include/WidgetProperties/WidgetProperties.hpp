@@ -130,7 +130,9 @@ struct WidgetProperties
             if (node->propertyValuePairs["list"])
             {
                 std::vector<tgui::String> list;
-                for (const auto& value : node->propertyValuePairs["list"]->valueList)
+                const auto& valueList = node->propertyValuePairs["list"]->valueList;
+                list.reserve(valueList.size());
+                for (const auto& value : valueList)
                     list.push_back(tgui::Deserializer::deserialize(tgui::ObjectConverter::Type::String, value).getString());
 
                 return list;
