@@ -27,8 +27,6 @@
 #include <TGUI/Layout.hpp>
 #include <TGUI/Widget.hpp>
 
-#include <list>
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace
@@ -151,7 +149,7 @@ namespace tgui
         }
 
         // The string contains an expression, so split it up in multiple layouts
-        std::list<Layout> operands;
+        std::vector<Layout> operands;
         std::vector<Operation> operators;
         decltype(searchPos) prevSearchPos = 0;
         while (searchPos != String::npos)
