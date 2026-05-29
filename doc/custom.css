@@ -1,11 +1,11 @@
 @media (prefers-color-scheme: dark) {
     .directory .levels span {
-	    color: #1982d2;
+        color: #1982d2;
     }
 
     address {
-	    font-style: normal;
-	    color: #2a4d99;
+        font-style: normal;
+        color: #2a4d99;
     }
 }
 
@@ -18,7 +18,7 @@ body {
 }
 
 #body {
-  background-color: var(--page-background-color);
+    background-color: var(--page-background-color);
 }
 
 div {
