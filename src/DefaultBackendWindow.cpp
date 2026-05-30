@@ -634,8 +634,8 @@ namespace tgui
                         event.type = Event::Type::Closed;
                         return true;
                     }
-                    else // This is the second attempt to close the window (this should not happen), just close it
-                        close();
+                    // This is the second attempt to close the window (this should not happen), just close it
+                    close();
                 }
             }
 
