@@ -33,11 +33,9 @@
     #include <fstream>
     #include <thread>
 
-    #if defined(__has_include)
-        #if __has_include(<magic.h>)
-            #define TGUI_MAGIC_HEADER_INCLUDED
-            #include <magic.h>
-        #endif
+    #if __has_include(<magic.h>)
+        #define TGUI_MAGIC_HEADER_INCLUDED
+        #include <magic.h>
     #endif
 
     #if !defined(TGUI_MAGIC_HEADER_INCLUDED)

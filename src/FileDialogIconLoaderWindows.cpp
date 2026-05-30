@@ -28,15 +28,13 @@
 
     #include <TGUI/extlibs/IncludeWindows.hpp>
 
-    #if defined(__has_include)
-        #if __has_include(<shellapi.h>)
-            #define TGUI_SHELL_API_HEADER_INCLUDED
-            #include <shellapi.h>
+    #if __has_include(<shellapi.h>)
+        #define TGUI_SHELL_API_HEADER_INCLUDED
+        #include <shellapi.h>
 
-            // MinGW.org based TDM-GCC doesn't define SHGFI_ADDOVERLAYS
-            #ifndef SHGFI_ADDOVERLAYS
-                #define SHGFI_ADDOVERLAYS 0x000000020
-            #endif
+        // MinGW.org based TDM-GCC doesn't define SHGFI_ADDOVERLAYS
+        #ifndef SHGFI_ADDOVERLAYS
+            #define SHGFI_ADDOVERLAYS 0x000000020
         #endif
     #endif
 
