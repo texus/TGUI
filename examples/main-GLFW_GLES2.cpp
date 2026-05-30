@@ -58,7 +58,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "TGUI example (GLFW-GLES2)", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "TGUI example (GLFW-GLES2)", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     glfwSwapInterval(1);
