@@ -59,7 +59,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); // Required for macOS
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "TGUI example (GLFW-OpenGL3)", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "TGUI example (GLFW-OpenGL3)", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     glfwSwapInterval(1);
