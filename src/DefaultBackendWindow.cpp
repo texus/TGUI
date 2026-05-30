@@ -64,7 +64,6 @@
 namespace tgui
 {
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
-
     class BackendWindowSFML : public DefaultBackendWindow
     {
     public:
@@ -383,7 +382,6 @@ namespace tgui
     };
 
 #elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
-
     class BackendWindowGLFW : public DefaultBackendWindow
     {
     public:
@@ -568,7 +566,6 @@ namespace tgui
     };
 
 #elif TGUI_HAS_BACKEND_RAYLIB
-
     class BackendWindowRaylib : public DefaultBackendWindow
     {
     public:
