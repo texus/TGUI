@@ -27,6 +27,9 @@
 TEST_CASE("[ToggleButton]")
 {
     const tgui::ToggleButton::Ptr button = tgui::ToggleButton::create();
+    const tgui::ToggleButton::Ptr buttonWithText = tgui::ToggleButton::create("Button text");
+    const tgui::ToggleButton::Ptr buttonWithTextDown = tgui::ToggleButton::create("Button text down", true);
+    const tgui::ToggleButton::Ptr buttonWithoutTextDown = tgui::ToggleButton::create("", true);
     button->getRenderer()->setFont("resources/DejaVuSans.ttf");
 
     SECTION("Signals")
@@ -59,6 +62,11 @@ TEST_CASE("[ToggleButton]")
         REQUIRE(button->getText().empty());
         button->setText("SomeText");
         REQUIRE(button->getText() == "SomeText");
+        REQUIRE(!buttonWithText->getText().empty());
+        REQUIRE(buttonWithText->getText() == "Button text");
+        REQUIRE(!buttonWithTextDown->getText().empty());
+        REQUIRE(buttonWithTextDown->getText() == "Button text down");
+        REQUIRE(buttonWithoutTextDown->getText().empty());
     }
 
     SECTION("Down")
@@ -72,6 +80,9 @@ TEST_CASE("[ToggleButton]")
         REQUIRE(!button->isDown());
         REQUIRE_NOTHROW(button->setDown(false));
         REQUIRE(!button->isDown());
+        REQUIRE(!buttonWithText->isDown());
+        REQUIRE(buttonWithTextDown->isDown());
+        REQUIRE(buttonWithoutTextDown->isDown());
     }
 
     SECTION("TextSize")
