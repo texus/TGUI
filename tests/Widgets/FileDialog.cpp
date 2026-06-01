@@ -22,9 +22,13 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "TGUI/Texture.hpp"
 #include "Tests.hpp"
+#include "catch.hpp"
 
 #include <TGUI/FileDialogIconLoader.hpp>
+
+#include <SFML/Graphics/Texture.hpp>
 
 TEST_CASE("[FileDialog]")
 {
@@ -148,6 +152,9 @@ TEST_CASE("[FileDialog]")
         REQUIRE(!iconLoader->update());
         REQUIRE(!iconLoader->supportsSystemIcons());
         REQUIRE(!iconLoader->hasGenericIcons());
+        REQUIRE(iconLoader->getGenericFileIcon({}) == tgui::Texture{});
+        REQUIRE_NOTHROW(iconLoader->requestFileIcons({}));
+        REQUIRE(iconLoader->retrieveFileIcons() == std::vector<tgui::Texture>{});
     }
 
     testWidgetRenderer(dialog->getRenderer());
