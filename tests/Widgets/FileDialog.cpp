@@ -28,8 +28,6 @@
 
 #include <TGUI/FileDialogIconLoader.hpp>
 
-#include <SFML/Graphics/Texture.hpp>
-
 TEST_CASE("[FileDialog]")
 {
     const tgui::FileDialog::Ptr dialog = tgui::FileDialog::create();
