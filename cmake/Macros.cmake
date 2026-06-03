@@ -51,6 +51,7 @@ function(tgui_set_global_compile_flags target)
                                $<$<BOOL:${TGUI_WARNINGS_AS_ERRORS}>:/WX>
                                /W4
                                /permissive-
+                               /Zc:__cplusplus
         )
     else()
         target_compile_options(${target} PRIVATE
