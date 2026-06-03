@@ -52,6 +52,7 @@ function(tgui_set_global_compile_flags target)
                                /W4
                                /permissive-
                                /Zc:__cplusplus
+                               /Zc:preprocessor
         )
     else()
         target_compile_options(${target} PRIVATE
