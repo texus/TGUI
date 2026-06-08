@@ -76,7 +76,7 @@ if(NOT DEFINED TGUI_SHARED_LIBS)
 endif()
 
 # If a compiler uses a new C++ version by default then automatically select it as the default choice to build TGUI with
-if(CMAKE_CXX_STANDARD_DEFAULT GREATER "17")
+if(CMAKE_CXX_STANDARD_DEFAULT GREATER 17 AND CMAKE_CXX_STANDARD_DEFAULT LESS 98)
     set(TGUI_DEFAULT_CXX_STANDARD ${CMAKE_CXX_STANDARD_DEFAULT})
 else() # Use C++17 by default on all other compilers
     set(TGUI_DEFAULT_CXX_STANDARD "17")
