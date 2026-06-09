@@ -259,7 +259,7 @@ jobs:
       - name: Upload coverage reports to Codecov
         working-directory: TGUI
         run: |
-          curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --import
+          curl https://keybase.io/codecovsecops/pgp_keys.asc | gpg --no-default-keyring --import
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
           curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
