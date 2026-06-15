@@ -54,6 +54,7 @@ function(tgui_set_global_compile_flags target)
                                /Zc:__cplusplus
                                /Zc:preprocessor
                                /Zc:inline
+                               /Zc:throwingNew
                                /volatile:iso
         )
     else()
