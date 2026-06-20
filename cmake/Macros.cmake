@@ -54,9 +54,11 @@ function(tgui_set_global_compile_flags target)
                                /Zc:__cplusplus
                                /Zc:preprocessor
                                /Zc:inline
-                               /Zc:throwingNew
                                /volatile:iso
         )
+        if(TGUI_COMPILER_MSVC)
+            target_compile_options(${target} PRIVATE /Zc:throwingNew)
+        endif()
     else()
         target_compile_options(${target} PRIVATE
                                $<$<BOOL:${TGUI_WARNINGS_AS_ERRORS}>:-Werror>
