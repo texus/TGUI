@@ -38,72 +38,68 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace tgui
+namespace tgui::keyboard
 {
-    namespace keyboard
-    {
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifndef TGUI_REMOVE_DEPRECATED_CODE
-        TGUI_DEPRECATED("Use BackendGui::startTextInput instead")
-        inline void openVirtualKeyboard(const Widget* requestingWidget, FloatRect inputRect)
-        {
-            TGUI_ASSERT(requestingWidget != nullptr, "requestingWidget must not be nullptr");
-            if (!requestingWidget)
-                return;
+    TGUI_DEPRECATED("Use BackendGui::startTextInput instead")
+    inline void openVirtualKeyboard(const Widget* requestingWidget, FloatRect inputRect)
+    {
+        TGUI_ASSERT(requestingWidget != nullptr, "requestingWidget must not be nullptr");
+        if (!requestingWidget)
+            return;
 
-            const Widget* widget = requestingWidget;
-            while (widget)
+        const Widget* widget = requestingWidget;
+        while (widget)
+        {
+            const bool defaultOrigin = (widget->getOrigin().x == 0) && (widget->getOrigin().y == 0);
+            const bool scaledOrRotated = (widget->getScale().x != 1) || (widget->getScale().y != 1) || (widget->getRotation() != 0);
+            if (defaultOrigin && !scaledOrRotated)
+                inputRect.setPosition(inputRect.getPosition() + widget->getPosition());
+            else
             {
-                const bool defaultOrigin = (widget->getOrigin().x == 0) && (widget->getOrigin().y == 0);
-                const bool scaledOrRotated = (widget->getScale().x != 1) || (widget->getScale().y != 1)
-                                             || (widget->getRotation() != 0);
-                if (defaultOrigin && !scaledOrRotated)
-                    inputRect.setPosition(inputRect.getPosition() + widget->getPosition());
+                const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
+                if (!scaledOrRotated)
+                    inputRect.setPosition(inputRect.getPosition() + widget->getPosition() - origin);
                 else
                 {
-                    const Vector2f origin{widget->getOrigin().x * widget->getSize().x, widget->getOrigin().y * widget->getSize().y};
-                    if (!scaledOrRotated)
-                        inputRect.setPosition(inputRect.getPosition() + widget->getPosition() - origin);
-                    else
-                    {
-                        const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x,
-                                                 widget->getRotationOrigin().y * widget->getSize().y};
-                        const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x,
-                                                   widget->getScaleOrigin().y * widget->getSize().y};
+                    const Vector2f rotOrigin{widget->getRotationOrigin().x * widget->getSize().x,
+                                             widget->getRotationOrigin().y * widget->getSize().y};
+                    const Vector2f scaleOrigin{widget->getScaleOrigin().x * widget->getSize().x,
+                                               widget->getScaleOrigin().y * widget->getSize().y};
 
-                        Transform transform;
-                        transform.translate(widget->getPosition() - origin);
-                        transform.rotate(widget->getRotation(), rotOrigin);
-                        transform.scale(widget->getScale(), scaleOrigin);
-                        inputRect = transform.transformRect(inputRect);
-                    }
+                    Transform transform;
+                    transform.translate(widget->getPosition() - origin);
+                    transform.rotate(widget->getRotation(), rotOrigin);
+                    transform.scale(widget->getScale(), scaleOrigin);
+                    inputRect = transform.transformRect(inputRect);
                 }
-
-                const Container* parent = widget->getParent();
-                if (parent)
-                {
-                    inputRect.setPosition(inputRect.getPosition() + parent->getChildWidgetsOffset());
-
-                    const auto* panel = dynamic_cast<const ScrollablePanel*>(parent);
-                    if (panel)
-                        inputRect.setPosition(inputRect.getPosition() - panel->getContentOffset());
-                }
-
-                widget = parent;
             }
 
-            const auto* gui = requestingWidget->getParentGui();
-            if (gui)
+            const Container* parent = widget->getParent();
+            if (parent)
             {
-                const Vector2f topLeftPos = gui->mapCoordsToPixel(inputRect.getPosition());
-                const Vector2f bottomRightPos = gui->mapCoordsToPixel(inputRect.getPosition() + inputRect.getSize());
-                inputRect = {topLeftPos, bottomRightPos - topLeftPos};
+                inputRect.setPosition(inputRect.getPosition() + parent->getChildWidgetsOffset());
+
+                const auto* panel = dynamic_cast<const ScrollablePanel*>(parent);
+                if (panel)
+                    inputRect.setPosition(inputRect.getPosition() - panel->getContentOffset());
             }
 
-            TGUI_IGNORE_DEPRECATED_WARNINGS_START
-            getBackend()->openVirtualKeyboard(inputRect);
-            TGUI_IGNORE_DEPRECATED_WARNINGS_END
+            widget = parent;
         }
+
+        const auto* gui = requestingWidget->getParentGui();
+        if (gui)
+        {
+            const Vector2f topLeftPos = gui->mapCoordsToPixel(inputRect.getPosition());
+            const Vector2f bottomRightPos = gui->mapCoordsToPixel(inputRect.getPosition() + inputRect.getSize());
+            inputRect = {topLeftPos, bottomRightPos - topLeftPos};
+        }
+
+        TGUI_IGNORE_DEPRECATED_WARNINGS_START
+        getBackend()->openVirtualKeyboard(inputRect);
+        TGUI_IGNORE_DEPRECATED_WARNINGS_END
+    }
 #endif
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -343,7 +339,6 @@ namespace tgui
             return (event.code == Event::KeyboardKey::Delete) && event.control && !event.alt && !event.system;
 #endif
         }
-    } // namespace keyboard
-} // namespace tgui
+} // namespace tgui::keyboard
 
 #endif // TGUI_KEYBOARD_HPP

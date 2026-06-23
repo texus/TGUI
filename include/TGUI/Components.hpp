@@ -40,657 +40,652 @@ namespace tgui
 {
     class BackendRenderTarget;
 
-    namespace priv
+    namespace priv::dev
     {
-        namespace dev
+        /// State of a widget or a component inside it
+        enum class ComponentState : std::uint8_t
         {
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            Normal = 0,             //!< Default state
+            Hover = 1,              //!< Mouse hover
+            Active = 2,             //!< Pressed/checked/selected
+            ActiveHover = 3,        //!< Pressed/checked/selected with mouse hover
+            Focused = 4,            //!< Has focused
+            FocusedHover = 5,       //!< Has focused with mouse hover
+            FocusedActive = 6,      //!< Has focused while pressed/checked/selected
+            FocusedActiveHover = 7, //!< Has focused while pressed/checked/selected with mouse hover
+            Disabled = 8,           //!< Is disabled
+            DisabledActive = 10     //!< Is disabled while pressed/checked/selected
+        };
 
-            /// State of a widget or a component inside it
-            enum class ComponentState : std::uint8_t
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// Layout alignment for automatically setting the position and (part of) the size of a component
+        enum class AlignLayout : std::uint8_t
+        {
+            None, //!< Position and size need to be manually set. This is the default.
+            Top, //!< Places the component on on the top and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
+            Left, //!< Places the component on the left side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
+            Right, //!< Places the component on the right side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
+            Bottom, //!< Places the component on on the bottom and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
+            Leftmost, //!< Places the component on the left side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no component uses Top or Bottom alignment.
+            Rightmost, //!< Places the component on the right side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no component uses Top or Bottom alignment.
+            Fill       //!< Sets the position to (0, 0) and size to (100%, 100%).
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// Position alignment of a component within its parent
+        enum class PositionAlignment : std::uint8_t
+        {
+            None,        //!< Place the component at the manually set position. This is the default.
+            TopLeft,     //!< Place the component in the upper left corner of its parent
+            Top,         //!< Place the component at the upper side of its parent (horizontally centered)
+            TopRight,    //!< Place the component in the upper right corner of its parent
+            Right,       //!< Place the component at the right side of its parent (vertically centered)
+            BottomRight, //!< Place the component in the bottom right corner of its parent
+            Bottom,      //!< Place the component at the bottom of its parent (horizontally centered)
+            BottomLeft,  //!< Place the component in the bottom left corner of its parent
+            Left,        //!< Place the component at the left side of its parent (vertically centered)
+            Center       //!< Center the component in its parent
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        class TGUI_API MessageBroker
+        {
+        public:
+            [[nodiscard]] static std::uint64_t createTopic();
+
+            static void destroyTopic(std::uint64_t topicId);
+
+            [[nodiscard]] static std::uint64_t subscribe(std::uint64_t topicId, std::function<void()> func);
+
+            static void unsubscribe(std::uint64_t callbackId);
+
+            static void sendEvent(std::uint64_t topicId);
+
+        private:
+            static std::unordered_map<std::uint64_t, std::set<std::uint64_t>> m_topicIdToCallbackIds;
+            static std::unordered_map<std::uint64_t, std::uint64_t> m_callbackIdToTopicId;
+            static std::unordered_map<std::uint64_t, std::function<void()>> m_listeners; // CallbackId -> Func
+
+            // All topic and callback ids are unique and non-overlapping
+            static std::uint64_t m_lastId;
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        class TGUI_API StylePropertyBase
+        {
+        public:
+            virtual ~StylePropertyBase() = default;
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        template <typename ValueType>
+        class TGUI_API StyleProperty : public StylePropertyBase
+        {
+        public:
+            StyleProperty() :
+                m_defaultValue{},
+                m_messageTopicId{MessageBroker::createTopic()}
             {
-                Normal = 0,             //!< Default state
-                Hover = 1,              //!< Mouse hover
-                Active = 2,             //!< Pressed/checked/selected
-                ActiveHover = 3,        //!< Pressed/checked/selected with mouse hover
-                Focused = 4,            //!< Has focused
-                FocusedHover = 5,       //!< Has focused with mouse hover
-                FocusedActive = 6,      //!< Has focused while pressed/checked/selected
-                FocusedActiveHover = 7, //!< Has focused while pressed/checked/selected with mouse hover
-                Disabled = 8,           //!< Is disabled
-                DisabledActive = 10     //!< Is disabled while pressed/checked/selected
-            };
+            }
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            /// Layout alignment for automatically setting the position and (part of) the size of a component
-            enum class AlignLayout : std::uint8_t
+            explicit StyleProperty(ValueType defaultValue) :
+                m_defaultValue{std::move(defaultValue)},
+                m_messageTopicId{MessageBroker::createTopic()}
             {
-                None, //!< Position and size need to be manually set. This is the default.
-                Top, //!< Places the component on on the top and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
-                Left, //!< Places the component on the left side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
-                Right, //!< Places the component on the right side and sets its height to the area between Top and Bottom aligned components. Width needs to be manually set.
-                Bottom, //!< Places the component on on the bottom and sets its width to the area between Leftmost and Rightmost aligned components. Height needs to be manually set.
-                Leftmost, //!< Places the component on the left side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no component uses Top or Bottom alignment.
-                Rightmost, //!< Places the component on the right side and sets height to 100%. Width needs to be manually set. Same as Left alignment if no component uses Top or Bottom alignment.
-                Fill       //!< Sets the position to (0, 0) and size to (100%, 100%).
-            };
+            }
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            /// Position alignment of a component within its parent
-            enum class PositionAlignment : std::uint8_t
+            StyleProperty(const StyleProperty& other) :
+                m_defaultValue{other.m_defaultValue},
+                m_messageTopicId{MessageBroker::createTopic()},
+                m_globalValues{other.m_globalValues}
             {
-                None,        //!< Place the component at the manually set position. This is the default.
-                TopLeft,     //!< Place the component in the upper left corner of its parent
-                Top,         //!< Place the component at the upper side of its parent (horizontally centered)
-                TopRight,    //!< Place the component in the upper right corner of its parent
-                Right,       //!< Place the component at the right side of its parent (vertically centered)
-                BottomRight, //!< Place the component in the bottom right corner of its parent
-                Bottom,      //!< Place the component at the bottom of its parent (horizontally centered)
-                BottomLeft,  //!< Place the component in the bottom left corner of its parent
-                Left,        //!< Place the component at the left side of its parent (vertically centered)
-                Center       //!< Center the component in its parent
-            };
+                unsetValue();
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
+                const std::uint64_t oldBaseIndex = other.m_propertyData & 0xFFFFFFFFFFFF0000;
+                const auto oldStoredStates = static_cast<std::uint16_t>(other.m_propertyData & 0xFFFF);
 
-            class TGUI_API MessageBroker
-            {
-            public:
-                [[nodiscard]] static std::uint64_t createTopic();
-
-                static void destroyTopic(std::uint64_t topicId);
-
-                [[nodiscard]] static std::uint64_t subscribe(std::uint64_t topicId, std::function<void()> func);
-
-                static void unsubscribe(std::uint64_t callbackId);
-
-                static void sendEvent(std::uint64_t topicId);
-
-            private:
-                static std::unordered_map<std::uint64_t, std::set<std::uint64_t>> m_topicIdToCallbackIds;
-                static std::unordered_map<std::uint64_t, std::uint64_t> m_callbackIdToTopicId;
-                static std::unordered_map<std::uint64_t, std::function<void()>> m_listeners; // CallbackId -> Func
-
-                // All topic and callback ids are unique and non-overlapping
-                static std::uint64_t m_lastId;
-            };
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            class TGUI_API StylePropertyBase
-            {
-            public:
-                virtual ~StylePropertyBase() = default;
-            };
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            template <typename ValueType>
-            class TGUI_API StyleProperty : public StylePropertyBase
-            {
-            public:
-                StyleProperty() :
-                    m_defaultValue{},
-                    m_messageTopicId{MessageBroker::createTopic()}
+                std::uint16_t total = 0;
+                std::uint8_t bitIndex = 0;
+                while (total < oldStoredStates)
                 {
-                }
-
-                explicit StyleProperty(ValueType defaultValue) :
-                    m_defaultValue{std::move(defaultValue)},
-                    m_messageTopicId{MessageBroker::createTopic()}
-                {
-                }
-
-                StyleProperty(const StyleProperty& other) :
-                    m_defaultValue{other.m_defaultValue},
-                    m_messageTopicId{MessageBroker::createTopic()},
-                    m_globalValues{other.m_globalValues}
-                {
-                    unsetValue();
-
-                    const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-                    const std::uint64_t oldBaseIndex = other.m_propertyData & 0xFFFFFFFFFFFF0000;
-                    const auto oldStoredStates = static_cast<std::uint16_t>(other.m_propertyData & 0xFFFF);
-
-                    std::uint16_t total = 0;
-                    std::uint8_t bitIndex = 0;
-                    while (total < oldStoredStates)
+                    if (oldStoredStates & (1 << bitIndex))
                     {
-                        if (oldStoredStates & (1 << bitIndex))
-                        {
-                            m_globalValues[baseIndex + bitIndex] = m_globalValues[oldBaseIndex + bitIndex];
-                            total += static_cast<std::uint16_t>(1 << bitIndex);
-                        }
-                        ++bitIndex;
+                        m_globalValues[baseIndex + bitIndex] = m_globalValues[oldBaseIndex + bitIndex];
+                        total += static_cast<std::uint16_t>(1 << bitIndex);
                     }
-
-                    m_propertyData = baseIndex | oldStoredStates;
+                    ++bitIndex;
                 }
 
-                StyleProperty(StyleProperty&& other) noexcept :
-                    m_defaultValue{std::move(other.m_defaultValue)},
-                    m_propertyData{std::move(other.m_propertyData)},
-                    m_messageTopicId{std::move(other.m_messageTopicId)},
-                    m_globalValues{std::move(other.m_globalValues)}
+                m_propertyData = baseIndex | oldStoredStates;
+            }
+
+            StyleProperty(StyleProperty&& other) noexcept :
+                m_defaultValue{std::move(other.m_defaultValue)},
+                m_propertyData{std::move(other.m_propertyData)},
+                m_messageTopicId{std::move(other.m_messageTopicId)},
+                m_globalValues{std::move(other.m_globalValues)}
+            {
+                other.m_messageTopicId = 0;
+            }
+
+            ~StyleProperty() override
+            {
+                if (m_messageTopicId) // Can be 0 on moved object
+                    MessageBroker::destroyTopic(m_messageTopicId);
+                unsetValueImpl();
+            }
+
+            StyleProperty& operator=(const StyleProperty& other)
+            {
+                if (&other != this)
                 {
+                    StyleProperty temp(other);
+                    std::swap(m_defaultValue, temp.m_defaultValue);
+                    std::swap(m_propertyData, temp.m_propertyData);
+                    std::swap(m_messageTopicId, temp.m_messageTopicId);
+                    std::swap(m_globalValues, temp.m_globalValues);
+                }
+
+                return *this;
+            }
+
+            StyleProperty& operator=(StyleProperty&& other) noexcept
+            {
+                if (&other != this)
+                {
+                    m_defaultValue = std::move(other.m_defaultValue);
+                    m_propertyData = std::move(other.m_propertyData);
+                    m_messageTopicId = std::move(other.m_messageTopicId);
+                    m_globalValues = std::move(other.m_globalValues);
+
                     other.m_messageTopicId = 0;
                 }
 
-                ~StyleProperty() override
+                return *this;
+            }
+
+            StyleProperty& operator=(const ValueType& value)
+            {
+                unsetValueImpl();
+                setValue(value, ComponentState::Normal);
+                return *this;
+            }
+
+            void setValue(const ValueType& value, ComponentState state = ComponentState::Normal)
+            {
+                const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
+                m_propertyData |= static_cast<std::uint64_t>(1) << static_cast<std::uint8_t>(state);
+                m_globalValues[baseIndex + static_cast<std::uint8_t>(state)] = value;
+
+                MessageBroker::sendEvent(m_messageTopicId);
+            }
+
+            void unsetValue(ComponentState state)
+            {
+                const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
+                m_propertyData &= ~(static_cast<std::uint64_t>(1) << static_cast<std::uint8_t>(state));
+                m_globalValues.erase(baseIndex + static_cast<std::uint8_t>(state));
+
+                MessageBroker::sendEvent(m_messageTopicId);
+            }
+
+            void unsetValue()
+            {
+                unsetValueImpl();
+                MessageBroker::sendEvent(m_messageTopicId);
+            }
+
+            [[nodiscard]] const ValueType& getValue(ComponentState state = ComponentState::Normal) const
+            {
+                const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
+                const auto storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
+
+                // If we don't have a value for any state then we can just return the default value
+                if (storedStates == 0)
+                    return m_defaultValue;
+
+                // If we only have a value for the Normal state then always use this value
+                if (storedStates == 1)
+                    return m_globalValues.at(baseIndex);
+
+                if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Disabled))
                 {
-                    if (m_messageTopicId) // Can be 0 on moved object
-                        MessageBroker::destroyTopic(m_messageTopicId);
-                    unsetValueImpl();
+                    if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
+                        && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::DisabledActive))))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::DisabledActive));
+                    if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Disabled)))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Disabled));
                 }
 
-                StyleProperty& operator=(const StyleProperty& other)
+                if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
                 {
-                    if (&other != this)
-                    {
-                        StyleProperty temp(other);
-                        std::swap(m_defaultValue, temp.m_defaultValue);
-                        std::swap(m_propertyData, temp.m_propertyData);
-                        std::swap(m_messageTopicId, temp.m_messageTopicId);
-                        std::swap(m_globalValues, temp.m_globalValues);
-                    }
-
-                    return *this;
-                }
-
-                StyleProperty& operator=(StyleProperty&& other) noexcept
-                {
-                    if (&other != this)
-                    {
-                        m_defaultValue = std::move(other.m_defaultValue);
-                        m_propertyData = std::move(other.m_propertyData);
-                        m_messageTopicId = std::move(other.m_messageTopicId);
-                        m_globalValues = std::move(other.m_globalValues);
-
-                        other.m_messageTopicId = 0;
-                    }
-
-                    return *this;
-                }
-
-                StyleProperty& operator=(const ValueType& value)
-                {
-                    unsetValueImpl();
-                    setValue(value, ComponentState::Normal);
-                    return *this;
-                }
-
-                void setValue(const ValueType& value, ComponentState state = ComponentState::Normal)
-                {
-                    const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-                    m_propertyData |= static_cast<std::uint64_t>(1) << static_cast<std::uint8_t>(state);
-                    m_globalValues[baseIndex + static_cast<std::uint8_t>(state)] = value;
-
-                    MessageBroker::sendEvent(m_messageTopicId);
-                }
-
-                void unsetValue(ComponentState state)
-                {
-                    const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-                    m_propertyData &= ~(static_cast<std::uint64_t>(1) << static_cast<std::uint8_t>(state));
-                    m_globalValues.erase(baseIndex + static_cast<std::uint8_t>(state));
-
-                    MessageBroker::sendEvent(m_messageTopicId);
-                }
-
-                void unsetValue()
-                {
-                    unsetValueImpl();
-                    MessageBroker::sendEvent(m_messageTopicId);
-                }
-
-                [[nodiscard]] const ValueType& getValue(ComponentState state = ComponentState::Normal) const
-                {
-                    const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-                    const auto storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
-
-                    // If we don't have a value for any state then we can just return the default value
-                    if (storedStates == 0)
-                        return m_defaultValue;
-
-                    // If we only have a value for the Normal state then always use this value
-                    if (storedStates == 1)
-                        return m_globalValues.at(baseIndex);
-
-                    if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Disabled))
-                    {
-                        if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
-                            && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::DisabledActive))))
-                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::DisabledActive));
-                        if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Disabled)))
-                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Disabled));
-                    }
-
-                    if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Active))
-                    {
-                        if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover))
-                        {
-                            if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
-                                && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActiveHover))))
-                                return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActiveHover));
-                            if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::ActiveHover)))
-                                return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::ActiveHover));
-                        }
-
-                        if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
-                            && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActive))))
-                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActive));
-                        if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Active)))
-                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Active));
-                    }
-
                     if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover))
                     {
                         if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
-                            && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedHover))))
-                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedHover));
-                        if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Hover)))
-                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Hover));
+                            && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActiveHover))))
+                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActiveHover));
+                        if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::ActiveHover)))
+                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::ActiveHover));
                     }
 
-                    if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
+                    if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
+                        && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedActive))))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedActive));
+                    if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Active)))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Active));
+                }
+
+                if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Hover))
+                {
+                    if ((static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
+                        && (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::FocusedHover))))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::FocusedHover));
+                    if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Hover)))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Hover));
+                }
+
+                if (static_cast<std::uint8_t>(state) & static_cast<std::uint8_t>(ComponentState::Focused))
+                {
+                    if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Focused)))
+                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Focused));
+                }
+
+                if (storedStates & 1)
+                {
+                    // We have a value for the Normal state, so return it. It is possible to pass here while storedStates != 1 when there
+                    // is e.g. a value for both Normal and Disabled state and the widget is enabled.
+                    return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Normal));
+                }
+
+                // We don't have any relevant values, so return the default value. It is possible to
+                // pass here while storedStates > 0 when there is e.g. only a value for the Disabled
+                // state and the widget is enabled.
+                return m_defaultValue;
+            }
+
+            [[nodiscard]] std::uint64_t connectCallback(std::function<void()> func)
+            {
+                return MessageBroker::subscribe(m_messageTopicId, std::move(func));
+            }
+
+            void disconnectCallback(std::uint64_t id)
+            {
+                MessageBroker::unsubscribe(id);
+            }
+
+        private:
+            void unsetValueImpl()
+            {
+                const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
+                const auto storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
+
+                std::uint16_t total = 0;
+                std::uint8_t bitIndex = 0;
+                while (total < storedStates)
+                {
+                    if (storedStates & (1 << bitIndex))
                     {
-                        if (storedStates & (1 << static_cast<std::uint8_t>(ComponentState::Focused)))
-                            return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Focused));
+                        m_globalValues.erase(baseIndex + bitIndex);
+                        total += static_cast<std::uint16_t>(1 << bitIndex);
                     }
-
-                    if (storedStates & 1)
-                    {
-                        // We have a value for the Normal state, so return it. It is possible to pass here while storedStates != 1 when there
-                        // is e.g. a value for both Normal and Disabled state and the widget is enabled.
-                        return m_globalValues.at(baseIndex + static_cast<std::uint8_t>(ComponentState::Normal));
-                    }
-
-                    // We don't have any relevant values, so return the default value. It is possible to
-                    // pass here while storedStates > 0 when there is e.g. only a value for the Disabled
-                    // state and the widget is enabled.
-                    return m_defaultValue;
+                    ++bitIndex;
                 }
 
-                [[nodiscard]] std::uint64_t connectCallback(std::function<void()> func)
-                {
-                    return MessageBroker::subscribe(m_messageTopicId, std::move(func));
-                }
+                m_propertyData = baseIndex; // Forget about the states that were stored
+            }
 
-                void disconnectCallback(std::uint64_t id)
-                {
-                    MessageBroker::unsubscribe(id);
-                }
+        private:
+            ValueType m_defaultValue;
 
-            private:
-                void unsetValueImpl()
-                {
-                    const std::uint64_t baseIndex = m_propertyData & 0xFFFFFFFFFFFF0000;
-                    const auto storedStates = static_cast<std::uint16_t>(m_propertyData & 0xFFFF);
+            // The highest 48 bits store the index in a static map of values (see below).
+            // The next 16 bits are used to indicate the set of states that are present for this property.
+            std::uint64_t m_propertyData = 0;
 
-                    std::uint16_t total = 0;
-                    std::uint8_t bitIndex = 0;
-                    while (total < storedStates)
-                    {
-                        if (storedStates & (1 << bitIndex))
-                        {
-                            m_globalValues.erase(baseIndex + bitIndex);
-                            total += static_cast<std::uint16_t>(1 << bitIndex);
-                        }
-                        ++bitIndex;
-                    }
+            // Index of the event that we publish to when the property changes.
+            std::uint64_t m_messageTopicId = 0;
 
-                    m_propertyData = baseIndex; // Forget about the states that were stored
-                }
+            // All values are stored in a static map, which can be seen as a very large sparse list.
+            // Each instance holds a unique 48-bit id that can be seen as the high bits of the index in the list.
+            // The lowest 4 bits of the index contain the widget state. The remaining 12 bits inbetween are always 0.
+            ///static std::unordered_map<std::uint64_t, ValueType> m_globalValues;
+            ///static std::uint64_t m_nextGlobalValueIndex;
 
-            private:
-                ValueType m_defaultValue;
+            /// TODO: The system with global values caused way too many implementation and platform-specific problems.
+            ///       For now we just store the values in the StyleProperty itself.
+            std::unordered_map<std::uint64_t, ValueType> m_globalValues;
+        };
 
-                // The highest 48 bits store the index in a static map of values (see below).
-                // The next 16 bits are used to indicate the set of states that are present for this property.
-                std::uint64_t m_propertyData = 0;
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                // Index of the event that we publish to when the property changes.
-                std::uint64_t m_messageTopicId = 0;
+        struct TGUI_API StylePropertyBackground
+        {
+            StyleProperty<Color> borderColor{Color::Black};
+            StyleProperty<Color> color{Color::White};
+            StyleProperty<Texture> texture;
+            StyleProperty<Outline> borders;
+            StyleProperty<Outline> padding;
 
-                // All values are stored in a static map, which can be seen as a very large sparse list.
-                // Each instance holds a unique 48-bit id that can be seen as the high bits of the index in the list.
-                // The lowest 4 bits of the index contain the widget state. The remaining 12 bits inbetween are always 0.
-                ///static std::unordered_map<std::uint64_t, ValueType> m_globalValues;
-                ///static std::uint64_t m_nextGlobalValueIndex;
+            float roundedBorderRadius = 0;
+        };
 
-                /// TODO: The system with global values caused way too many implementation and platform-specific problems.
-                ///       For now we just store the values in the StyleProperty itself.
-                std::unordered_map<std::uint64_t, ValueType> m_globalValues;
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        struct TGUI_API StylePropertyText
+        {
+            StyleProperty<Color> color{Color::Black};
+            StyleProperty<TextStyles> style;
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        class GroupComponent;
+
+        class TGUI_API Component
+        {
+        public:
+            Component() = default;
+            virtual ~Component() = default;
+
+            Component(const Component& other);
+            Component& operator=(const Component& other);
+
+            Component(Component&&) = default;
+            Component& operator=(Component&&) = default;
+
+            void setPosition(Vector2f position);
+
+            [[nodiscard]] Vector2f getPosition() const;
+
+            [[nodiscard]] Vector2f getSize() const;
+
+            void setPositionAlignment(PositionAlignment alignment);
+
+            void setVisible(bool visible);
+
+            [[nodiscard]] bool isVisible() const;
+
+            void setParent(GroupComponent* parent);
+
+            virtual void draw(BackendRenderTarget& target, RenderStates states) const = 0;
+
+            virtual void updateLayout();
+
+            [[nodiscard]] virtual std::shared_ptr<Component> clone() const = 0;
+
+        protected:
+            friend void swap(Component& first, Component& second) noexcept;
+
+        protected:
+            ComponentState m_state = ComponentState::Normal;
+            PositionAlignment m_positionAlignment = PositionAlignment::None;
+            Vector2f m_position;
+            Vector2f m_size;
+            bool m_visible = true;
+            float m_opacity = 1;
+            GroupComponent* m_parent = nullptr;
+        };
+
+        class TGUI_API GroupComponent : public Component
+        {
+        public:
+            GroupComponent(const GroupComponent& other);
+            GroupComponent& operator=(const GroupComponent& other);
+
+            GroupComponent(GroupComponent&&) = default;
+            GroupComponent& operator=(GroupComponent&&) = default;
+
+            [[nodiscard]] Vector2f getClientSize() const;
+
+            void addComponent(const std::shared_ptr<Component>& component);
+
+            [[nodiscard]] const std::vector<std::shared_ptr<Component>>& getComponents() const;
+
+            void draw(BackendRenderTarget& target, RenderStates states) const override;
+
+            void updateLayout() override;
+
+            [[nodiscard]] std::shared_ptr<Component> clone() const override;
+
+            friend void swap(GroupComponent& first, GroupComponent& second) noexcept;
+
+        protected:
+            GroupComponent() = default;
+
+        protected:
+            std::vector<std::shared_ptr<Component>> m_children;
+            Vector2f m_clientSize;
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        class TGUI_API BackgroundComponent : public GroupComponent
+        {
+        public:
+            explicit BackgroundComponent(StylePropertyBackground* backgroundStyle);
+
+            ~BackgroundComponent() override;
+
+            BackgroundComponent(const BackgroundComponent& other, StylePropertyBackground* backgroundStyle = nullptr);
+            BackgroundComponent& operator=(const BackgroundComponent& other);
+
+            void init();
+
+            void setSize(Vector2f size);
+
+            void setBorders(const Outline& border);
+
+            [[nodiscard]] const Outline& getBorders() const;
+
+            void setPadding(const Outline& padding);
+
+            [[nodiscard]] const Outline& getPadding() const;
+
+            void setOpacity(float opacity);
+
+            void setComponentState(ComponentState state);
+
+            [[nodiscard]] bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
+
+            void draw(BackendRenderTarget& target, RenderStates states) const override;
+
+            [[nodiscard]] Vector2f getSizeWithoutBorders() const;
+
+            void updateLayout() override;
+
+            [[nodiscard]] std::shared_ptr<Component> clone() const override;
+
+        private:
+            struct ColorRect
+            {
+                Color color;
+                FloatRect rect;
             };
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            StylePropertyBackground* m_backgroundStyle;
 
-            struct TGUI_API StylePropertyBackground
+            ColorRect m_background{Color::White, {}};
+            Color m_borderColor = Color::Black;
+            Sprite m_sprite;
+            Outline m_borders;
+            Outline m_padding;
+
+            std::uint64_t m_borderColorCallbackId = 0;
+            std::uint64_t m_backgroundColorCallbackId = 0;
+            std::uint64_t m_textureCallbackId = 0;
+            std::uint64_t m_bordersCallbackId = 0;
+            std::uint64_t m_paddingCallbackId = 0;
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        class TGUI_API TextComponent : public Component
+        {
+        public:
+            explicit TextComponent(StylePropertyText* textStyle);
+
+            ~TextComponent() override;
+
+            TextComponent(const TextComponent& other, StylePropertyText* textStyle = nullptr);
+            TextComponent& operator=(const TextComponent& other);
+
+            void init();
+
+            void setString(const String& caption);
+
+            [[nodiscard]] const String& getString() const;
+
+            void setCharacterSize(unsigned int size);
+
+            [[nodiscard]] unsigned int getCharacterSize() const;
+
+            void setFont(const Font& font);
+
+            [[nodiscard]] Font getFont() const;
+
+            void setOutlineColor(Color color);
+
+            [[nodiscard]] Color getOutlineColor() const;
+
+            void setOutlineThickness(float thickness);
+
+            [[nodiscard]] float getOutlineThickness() const;
+
+            [[nodiscard]] float getLineHeight() const;
+
+            void setOpacity(float opacity);
+
+            void updateLayout() override;
+
+            void setComponentState(ComponentState state);
+
+            void draw(BackendRenderTarget& target, RenderStates states) const override;
+
+            [[nodiscard]] std::shared_ptr<Component> clone() const override;
+
+        private:
+            Text m_text;
+            StylePropertyText* m_textStyle;
+
+            Color m_color = Color::Black;
+            TextStyles m_style = TextStyle::Regular;
+
+            std::uint64_t m_colorCallbackId = 0;
+            std::uint64_t m_styleCallbackId = 0;
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        class TGUI_API ImageComponent : public Component
+        {
+        public:
+            explicit ImageComponent(StyleProperty<Texture>* textureStyle);
+
+            ~ImageComponent() override;
+
+            ImageComponent(const ImageComponent& other, StyleProperty<Texture>* textureStyle = nullptr);
+            ImageComponent& operator=(const ImageComponent& other);
+
+            void init();
+
+            void setSize(Vector2f size);
+
+            void setOpacity(float opacity);
+
+            void setComponentState(ComponentState state);
+
+            [[nodiscard]] bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
+
+            void draw(BackendRenderTarget& target, RenderStates states) const override;
+
+            [[nodiscard]] std::shared_ptr<Component> clone() const override;
+
+        private:
+            StyleProperty<Texture>* m_textureStyle;
+            Sprite m_sprite;
+
+            std::uint64_t m_textureCallbackId = 0;
+        };
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        [[nodiscard]] inline ComponentState getStateFromFlags(bool hover, bool active, bool focused = false, bool enabled = true)
+        {
+            if (!enabled)
             {
-                StyleProperty<Color> borderColor{Color::Black};
-                StyleProperty<Color> color{Color::White};
-                StyleProperty<Texture> texture;
-                StyleProperty<Outline> borders;
-                StyleProperty<Outline> padding;
+                if (active)
+                    return ComponentState::DisabledActive;
 
-                float roundedBorderRadius = 0;
-            };
+                return ComponentState::Disabled;
+            }
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            struct TGUI_API StylePropertyText
+            if (focused)
             {
-                StyleProperty<Color> color{Color::Black};
-                StyleProperty<TextStyles> style;
-            };
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            class GroupComponent;
-
-            class TGUI_API Component
-            {
-            public:
-                Component() = default;
-                virtual ~Component() = default;
-
-                Component(const Component& other);
-                Component& operator=(const Component& other);
-
-                Component(Component&&) = default;
-                Component& operator=(Component&&) = default;
-
-                void setPosition(Vector2f position);
-
-                [[nodiscard]] Vector2f getPosition() const;
-
-                [[nodiscard]] Vector2f getSize() const;
-
-                void setPositionAlignment(PositionAlignment alignment);
-
-                void setVisible(bool visible);
-
-                [[nodiscard]] bool isVisible() const;
-
-                void setParent(GroupComponent* parent);
-
-                virtual void draw(BackendRenderTarget& target, RenderStates states) const = 0;
-
-                virtual void updateLayout();
-
-                [[nodiscard]] virtual std::shared_ptr<Component> clone() const = 0;
-
-            protected:
-                friend void swap(Component& first, Component& second) noexcept;
-
-            protected:
-                ComponentState m_state = ComponentState::Normal;
-                PositionAlignment m_positionAlignment = PositionAlignment::None;
-                Vector2f m_position;
-                Vector2f m_size;
-                bool m_visible = true;
-                float m_opacity = 1;
-                GroupComponent* m_parent = nullptr;
-            };
-
-            class TGUI_API GroupComponent : public Component
-            {
-            public:
-                GroupComponent(const GroupComponent& other);
-                GroupComponent& operator=(const GroupComponent& other);
-
-                GroupComponent(GroupComponent&&) = default;
-                GroupComponent& operator=(GroupComponent&&) = default;
-
-                [[nodiscard]] Vector2f getClientSize() const;
-
-                void addComponent(const std::shared_ptr<Component>& component);
-
-                [[nodiscard]] const std::vector<std::shared_ptr<Component>>& getComponents() const;
-
-                void draw(BackendRenderTarget& target, RenderStates states) const override;
-
-                void updateLayout() override;
-
-                [[nodiscard]] std::shared_ptr<Component> clone() const override;
-
-                friend void swap(GroupComponent& first, GroupComponent& second) noexcept;
-
-            protected:
-                GroupComponent() = default;
-
-            protected:
-                std::vector<std::shared_ptr<Component>> m_children;
-                Vector2f m_clientSize;
-            };
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            class TGUI_API BackgroundComponent : public GroupComponent
-            {
-            public:
-                explicit BackgroundComponent(StylePropertyBackground* backgroundStyle);
-
-                ~BackgroundComponent() override;
-
-                BackgroundComponent(const BackgroundComponent& other, StylePropertyBackground* backgroundStyle = nullptr);
-                BackgroundComponent& operator=(const BackgroundComponent& other);
-
-                void init();
-
-                void setSize(Vector2f size);
-
-                void setBorders(const Outline& border);
-
-                [[nodiscard]] const Outline& getBorders() const;
-
-                void setPadding(const Outline& padding);
-
-                [[nodiscard]] const Outline& getPadding() const;
-
-                void setOpacity(float opacity);
-
-                void setComponentState(ComponentState state);
-
-                [[nodiscard]] bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
-
-                void draw(BackendRenderTarget& target, RenderStates states) const override;
-
-                [[nodiscard]] Vector2f getSizeWithoutBorders() const;
-
-                void updateLayout() override;
-
-                [[nodiscard]] std::shared_ptr<Component> clone() const override;
-
-            private:
-                struct ColorRect
-                {
-                    Color color;
-                    FloatRect rect;
-                };
-
-                StylePropertyBackground* m_backgroundStyle;
-
-                ColorRect m_background{Color::White, {}};
-                Color m_borderColor = Color::Black;
-                Sprite m_sprite;
-                Outline m_borders;
-                Outline m_padding;
-
-                std::uint64_t m_borderColorCallbackId = 0;
-                std::uint64_t m_backgroundColorCallbackId = 0;
-                std::uint64_t m_textureCallbackId = 0;
-                std::uint64_t m_bordersCallbackId = 0;
-                std::uint64_t m_paddingCallbackId = 0;
-            };
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            class TGUI_API TextComponent : public Component
-            {
-            public:
-                explicit TextComponent(StylePropertyText* textStyle);
-
-                ~TextComponent() override;
-
-                TextComponent(const TextComponent& other, StylePropertyText* textStyle = nullptr);
-                TextComponent& operator=(const TextComponent& other);
-
-                void init();
-
-                void setString(const String& caption);
-
-                [[nodiscard]] const String& getString() const;
-
-                void setCharacterSize(unsigned int size);
-
-                [[nodiscard]] unsigned int getCharacterSize() const;
-
-                void setFont(const Font& font);
-
-                [[nodiscard]] Font getFont() const;
-
-                void setOutlineColor(Color color);
-
-                [[nodiscard]] Color getOutlineColor() const;
-
-                void setOutlineThickness(float thickness);
-
-                [[nodiscard]] float getOutlineThickness() const;
-
-                [[nodiscard]] float getLineHeight() const;
-
-                void setOpacity(float opacity);
-
-                void updateLayout() override;
-
-                void setComponentState(ComponentState state);
-
-                void draw(BackendRenderTarget& target, RenderStates states) const override;
-
-                [[nodiscard]] std::shared_ptr<Component> clone() const override;
-
-            private:
-                Text m_text;
-                StylePropertyText* m_textStyle;
-
-                Color m_color = Color::Black;
-                TextStyles m_style = TextStyle::Regular;
-
-                std::uint64_t m_colorCallbackId = 0;
-                std::uint64_t m_styleCallbackId = 0;
-            };
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            class TGUI_API ImageComponent : public Component
-            {
-            public:
-                explicit ImageComponent(StyleProperty<Texture>* textureStyle);
-
-                ~ImageComponent() override;
-
-                ImageComponent(const ImageComponent& other, StyleProperty<Texture>* textureStyle = nullptr);
-                ImageComponent& operator=(const ImageComponent& other);
-
-                void init();
-
-                void setSize(Vector2f size);
-
-                void setOpacity(float opacity);
-
-                void setComponentState(ComponentState state);
-
-                [[nodiscard]] bool isTransparentPixel(Vector2f pos, bool transparentTexture) const;
-
-                void draw(BackendRenderTarget& target, RenderStates states) const override;
-
-                [[nodiscard]] std::shared_ptr<Component> clone() const override;
-
-            private:
-                StyleProperty<Texture>* m_textureStyle;
-                Sprite m_sprite;
-
-                std::uint64_t m_textureCallbackId = 0;
-            };
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            [[nodiscard]] inline ComponentState getStateFromFlags(bool hover, bool active, bool focused = false, bool enabled = true)
-            {
-                if (!enabled)
-                {
-                    if (active)
-                        return ComponentState::DisabledActive;
-
-                    return ComponentState::Disabled;
-                }
-
-                if (focused)
-                {
-                    if (active)
-                    {
-                        if (hover)
-                            return ComponentState::FocusedActiveHover;
-
-                        return ComponentState::FocusedActive;
-                    }
-
-                    if (hover)
-                        return ComponentState::FocusedHover;
-
-                    return ComponentState::Focused;
-                }
-
                 if (active)
                 {
                     if (hover)
-                        return ComponentState::ActiveHover;
+                        return ComponentState::FocusedActiveHover;
 
-                    return ComponentState::Active;
+                    return ComponentState::FocusedActive;
                 }
 
                 if (hover)
-                    return ComponentState::Hover;
+                    return ComponentState::FocusedHover;
 
-                return ComponentState::Normal;
+                return ComponentState::Focused;
             }
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            inline void setOptionalPropertyValue(StyleProperty<Color>& property, const Color& color, ComponentState state)
+            if (active)
             {
-                if (color.isSet())
-                    property.setValue(color, state);
-                else
-                    property.unsetValue(state);
+                if (hover)
+                    return ComponentState::ActiveHover;
+
+                return ComponentState::Active;
             }
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (hover)
+                return ComponentState::Hover;
 
-            inline void setOptionalPropertyValue(StyleProperty<TextStyles>& property, const TextStyles& style, ComponentState state)
-            {
-                if (style.isSet())
-                    property.setValue(style, state);
-                else
-                    property.unsetValue(state);
-            }
+            return ComponentState::Normal;
+        }
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            inline void setOptionalPropertyValue(StyleProperty<Texture>& property, const Texture& texture, ComponentState state)
-            {
-                if (texture.getData())
-                    property.setValue(texture, state);
-                else
-                    property.unsetValue(state);
-            }
+        inline void setOptionalPropertyValue(StyleProperty<Color>& property, const Color& color, ComponentState state)
+        {
+            if (color.isSet())
+                property.setValue(color, state);
+            else
+                property.unsetValue(state);
+        }
 
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        } // namespace dev
-    } // namespace priv
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        inline void setOptionalPropertyValue(StyleProperty<TextStyles>& property, const TextStyles& style, ComponentState state)
+        {
+            if (style.isSet())
+                property.setValue(style, state);
+            else
+                property.unsetValue(state);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        inline void setOptionalPropertyValue(StyleProperty<Texture>& property, const Texture& texture, ComponentState state)
+        {
+            if (texture.getData())
+                property.setValue(texture, state);
+            else
+                property.unsetValue(state);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    } // namespace priv::dev
 } // namespace tgui
 
 #endif // TGUI_COMPONENTS_HPP
