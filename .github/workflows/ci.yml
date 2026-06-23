@@ -331,7 +331,7 @@ jobs:
       - name: Install build tools and dependencies
         run: |
           apt-get update
-          apt-get -y install g++-$GCC_VERSION clang-$CLANG_VERSION ninja-build wget
+          apt-get -y install g++-$GCC_VERSION clang-$CLANG_VERSION ninja-build wget emscripten
           apt-get -y install xorg-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev
           sh -c 'wget -nv -O- "https://cmake.org/files/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.${CMAKE_VERSION_PATCH}-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
 
@@ -450,6 +450,12 @@ jobs:
           cmake --build tests/cmake/build --config Debug
 
           test -e tests/cmake/build/TguiTest
+
+      - name: Emscripten
+        run: |
+          emcmake cmake -S examples/emscripten/ -B build-emscripten
+          cd build-emscripten
+          emmake make -j4
 
   #----------------------------------------
 
