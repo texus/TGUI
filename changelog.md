@@ -1,8 +1,8 @@
-TGUI 1.13  (TBD)
-----------------
+TGUI 1.13  (24 June 2026)
+-------------------------
 
 - Implemented support for using themes in form files ([PR #348](https://github.com/texus/TGUI/pull/348))
-- Code quality improvements (e.g. introduce clang-format [PR #318](https://github.com/texus/TGUI/pull/318))
+- Code quality improvements by @jjuhl (e.g. adding clang-format [PR #318](https://github.com/texus/TGUI/pull/318))
 - Added Emscripten support
 - C++17 is now a minimum requirement
 - Added setTextInputUsesTextCursorByDefault to use I-beam cursor by default on edit boxes

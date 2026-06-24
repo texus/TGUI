@@ -1200,7 +1200,7 @@ jobs:
   #       I've decided to just put the nightly build code in this file as well.
   nightly-build-windows-visual-studio:
     if: github.event_name == 'push' && github.ref == 'refs/heads/1.x'
-    needs: [linux, linux-latest-dev, linux-oldest, linux-per-backend, windows, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sdl-gpu, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
+    needs: [linux, linux-latest-dev, linux-oldest, linux-emscripten, linux-per-backend, windows, windows-oldest, windows-clang, windows-static-mt, macos, android-sdl, android-sdl-gpu, android-sfml-graphics, ios-sfml-graphics, ios-sdl]
     runs-on: windows-2025
     env:
       SFML_VERSION: 3.1.0
