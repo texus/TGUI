@@ -47,6 +47,7 @@ set(TEST_SOURCES
     Loading/ThemeLoader.cpp
     MouseCursors.cpp
     Outline.cpp
+    Rect.cpp
     Signal.cpp
     SignalManager.cpp
     Sprite.cpp

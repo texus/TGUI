@@ -67,10 +67,17 @@ namespace tgui
         /// @param rect  Rectangle to initialize
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         explicit constexpr Rect(sf::Rect<T> rect) :
+#if SFML_VERSION_MAJOR >= 3
+            left{rect.position.x},
+            top{rect.position.y},
+            width{rect.size.x},
+            height{rect.size.y}
+#else
             left{rect.left},
             top{rect.top},
             width{rect.width},
             height{rect.height}
+#endif
         {
         }
 #endif
@@ -153,7 +160,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         explicit operator sf::Rect<T>() const
         {
-            return sf::Rect<T>{left, top, width, height};
+            return sf::Rect<T>{{left, top}, {width, height}};
         }
 #endif
 
