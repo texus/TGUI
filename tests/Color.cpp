@@ -38,4 +38,9 @@ TEST_CASE("[Color]")
     REQUIRE(tgui::Color(tgui::String("#10204080")) == color);
     REQUIRE(tgui::Color(tgui::String("Red")) == tgui::Color::Red);
     REQUIRE(tgui::Color(tgui::String("blue")) == tgui::Color::Blue);
+
+#if TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS && !TGUI_DISABLE_SFML_CONVERSIONS
+    REQUIRE(tgui::Color(sf::Color{16, 32, 64, 128}) == color);
+    REQUIRE(sf::Color(color).toInteger() == 0x10204080);
+#endif
 }
