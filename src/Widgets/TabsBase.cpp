@@ -259,7 +259,7 @@ namespace tgui
     bool TabsBase::remove(std::size_t index)
     {
         // The index can't be too high
-        if (index > m_tabs.size() - 1)
+        if (index >= m_tabs.size())
             return false;
 
         // Remove the tab
