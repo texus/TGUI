@@ -327,8 +327,10 @@ namespace tgui
                                            height,
                                            [&](unsigned int charSize, float h)
                                            { return std::max(font.getLineSpacing(charSize), font.getFontHeight(charSize)) < h; });
-        if (high == textSizes.end())
+        if (high == textSizes.cend())
             return static_cast<unsigned int>(height);
+        if (high == textSizes.cbegin())
+            return *high;
 
         const float highLineSpacing = font.getLineSpacing(*high);
         if (highLineSpacing == height)
