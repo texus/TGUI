@@ -409,7 +409,8 @@ namespace tgui
             const Vector2u svgTextureSize{static_cast<unsigned int>(std::round(getSize().x)),
                                           static_cast<unsigned int>(std::round(getSize().y))};
 
-            m_texture.getData()->svgImage->rasterize(*m_svgTexture, svgTextureSize);
+            if (svgTextureSize.x > 0 && svgTextureSize.y > 0)
+                m_texture.getData()->svgImage->rasterize(*m_svgTexture, svgTextureSize);
 
             m_scalingType = ScalingType::Normal;
             textureSize = getSize();
