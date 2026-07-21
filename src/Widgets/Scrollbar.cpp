@@ -1149,7 +1149,7 @@ namespace tgui
         }
         else
         {
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Thumb) && m_thumbColorHoverCached.isSet())
+            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Thumb || m_mouseHoverOverPart == Scrollbar::Part::None) && m_thumbColorHoverCached.isSet())
                 target.drawFilledRect(states,
                                       {m_thumb.width, m_thumb.height},
                                       Color::applyOpacity(m_thumbColorHoverCached, m_opacityCached));
