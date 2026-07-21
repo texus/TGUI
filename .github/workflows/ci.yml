@@ -221,7 +221,7 @@ jobs:
 
           sudo make -C build -j$(nproc) install
 
-      - uses: NcStudios/VulkanCI@v1.3
+      - uses: NcStudios/VulkanCI@v1.2
         with:
           sdkVersion: 1.4.309.0
 
