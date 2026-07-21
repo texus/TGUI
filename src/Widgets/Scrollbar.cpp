@@ -449,6 +449,11 @@ namespace tgui
             if (!m_mouseHover)
                 mouseEnteredWidget();
         }
+        else
+        {
+            if (m_mouseHover)
+                mouseLeftWidget();
+        }
 
         pos -= getPosition();
 
@@ -1142,14 +1147,14 @@ namespace tgui
         states.transform.translate(m_thumb.getPosition());
         if (m_spriteThumb.isSet())
         {
-            if (m_mouseHover && m_spriteThumbHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Thumb || m_mouseHoverOverPart == Scrollbar::Part::None))
+            if (((m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Thumb)) || (m_mouseDown && m_mouseDownOnThumb)) && m_spriteThumbHover.isSet())
                 target.drawSprite(states, m_spriteThumbHover);
             else
                 target.drawSprite(states, m_spriteThumb);
         }
         else
         {
-            if (m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Thumb || m_mouseHoverOverPart == Scrollbar::Part::None) && m_thumbColorHoverCached.isSet())
+            if (((m_mouseHover && (m_mouseHoverOverPart == Scrollbar::Part::Thumb)) || (m_mouseDown && m_mouseDownOnThumb)) && m_thumbColorHoverCached.isSet())
                 target.drawFilledRect(states,
                                       {m_thumb.width, m_thumb.height},
                                       Color::applyOpacity(m_thumbColorHoverCached, m_opacityCached));
