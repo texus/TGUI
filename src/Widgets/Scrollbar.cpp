@@ -449,11 +449,6 @@ namespace tgui
             if (!m_mouseHover)
                 mouseEnteredWidget();
         }
-        else
-        {
-            if (m_mouseHover)
-                mouseLeftWidget();
-        }
 
         pos -= getPosition();
 
@@ -1147,7 +1142,7 @@ namespace tgui
         states.transform.translate(m_thumb.getPosition());
         if (m_spriteThumb.isSet())
         {
-            if (m_mouseHover && m_spriteThumbHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Thumb))
+            if (m_mouseHover && m_spriteThumbHover.isSet() && (m_mouseHoverOverPart == Scrollbar::Part::Thumb || m_mouseHoverOverPart == Scrollbar::Part::None))
                 target.drawSprite(states, m_spriteThumbHover);
             else
                 target.drawSprite(states, m_spriteThumb);
