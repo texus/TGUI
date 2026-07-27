@@ -52,8 +52,11 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Processes events that occured during the last frame and passes the event to the widgets
         ///
-        /// @return Has the event been consumed?
-        ///         When this function returns false, then the event was ignored by all widgets.
+        /// @return Has the event been consumed? This function returns false when the event was ignored by all widgets.
+        ///
+        /// @warning True might still be returned for some events even when the event was ignored.
+        ///          The return value is only an indication for whether the event is for the UI or your own code,
+        ///          you may sometimes still need to check the event type before or after calling this function.
         ///
         /// @warning This function does not process key events, those are processed by repeatedly calling the handleCharPressed
         ///          and handleKeyPressed functions with the values returned from GetCharPressed and GetKeyPressed (until these
@@ -64,8 +67,10 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Passes the typed character to the focused widget
         ///
-        /// @return Has the event been consumed?
-        ///         When this function returns false, then the event was ignored by all widgets.
+        /// @return Has the event been consumed? This function returns false when the event was ignored by all widgets.
+        ///
+        /// @warning True might still be returned when a widget has focus even when the event was ignored.
+        ///          The return value is only an indication for whether the event is for the UI or your own code.
         ///
         /// This function may need to be called multiple times each frame. It is intended to be used as follows:
         /// @code
@@ -82,8 +87,11 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Passes the key press event to the focused widget
         ///
-        /// @return Has the event been consumed?
-        ///         When this function returns false, then the event was ignored by all widgets.
+        /// @return Has the event been consumed? This function returns false when the event was ignored by all widgets.
+        ///
+        /// By default true will be returned for almost all key presses for backwards compatibility.
+        /// Call setKeyboardNavigationEnabled(true) to enable the new behavior and cause the return value to depend
+        /// on whether the key was actually handled.
         ///
         /// This function may need to be called multiple times each frame. It is intended to be used as follows:
         /// @code

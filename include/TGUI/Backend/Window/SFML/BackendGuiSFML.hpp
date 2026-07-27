@@ -57,8 +57,16 @@ namespace tgui
         ///
         /// @param event  The event that was polled from the window
         ///
-        /// @return Has the event been consumed?
-        ///         When this function returns false, then the event was ignored by all widgets.
+        /// @return Has the event been consumed? This function returns false when the event was ignored by all widgets.
+        ///
+        /// @warning True might still be returned for some events even when the event was ignored (e.g. a TextEntered
+        ///          event is marked as handled when a widget has focus, even if the leaf widget does nothing with it).
+        ///          The return value is only an indication for whether the event is for the UI or your own code,
+        ///          you may sometimes still need to check the event type before or after calling this function.
+        ///
+        /// By default true will be returned for almost all KeyPressed events for backwards compatibility.
+        /// Call setKeyboardNavigationEnabled(true) to enable the new behavior and cause the return value to depend
+        /// on whether the key was actually handled. Note that this is only about KeyPressed events, not TextEntered.
         ///
         /// You should call this function in your event loop.
         ///
