@@ -25,7 +25,6 @@
 #ifndef TGUI_TAB_CONTAINER_HPP
 #define TGUI_TAB_CONTAINER_HPP
 
-#include <TGUI/SubwidgetContainer.hpp>
 #include <TGUI/Widgets/Panel.hpp>
 #include <TGUI/Widgets/Tabs.hpp>
 
