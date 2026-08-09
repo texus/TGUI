@@ -657,7 +657,7 @@ namespace tgui
                                oldParentNodes.cend(),
                                [node](const std::shared_ptr<Node>& child) { return child.get() == node; });
         assert(it != oldParentNodes.end());
-        auto nodeSharedPtr = *it;
+        const auto& nodeSharedPtr = *it;
         oldParentNodes.erase(it);
 
         // Add the node to the new parent
