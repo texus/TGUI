@@ -183,7 +183,7 @@ jobs:
         if: steps.cache-raylib.outputs.cache-hit != 'true'
         run: |
           git clone --depth 1 $RAYLIB_GITHUB_URL raylib
-          cmake -GNinja -DCMAKE_INSTALL_PREFIX=RAYLIB_INSTALL -DBUILD_SHARED_LIBS=ON -S raylib -B raylib-build
+          cmake -GNinja -DCMAKE_INSTALL_PREFIX=RAYLIB_INSTALL -DBUILD_SHARED_LIBS=ON -DBUILD_EXAMPLES=OFF -S raylib -B raylib-build
           cmake --build raylib-build --config Debug --target install
 
       - name: Build TGUI
@@ -372,7 +372,7 @@ jobs:
         run: |
           mkdir raylib
           wget -nv -O- "https://github.com/raysan5/raylib/archive/refs/tags/$RAYLIB_VERSION.tar.gz" | tar --strip-components=1 -xz -C raylib
-          cmake -GNinja -DCMAKE_CXX_COMPILER=g++-$GCC_VERSION -DCMAKE_C_COMPILER=gcc-$GCC_VERSION -DCMAKE_INSTALL_PREFIX=RAYLIB_INSTALL -DBUILD_SHARED_LIBS=ON -S raylib -B raylib-build
+          cmake -GNinja -DCMAKE_CXX_COMPILER=g++-$GCC_VERSION -DCMAKE_C_COMPILER=gcc-$GCC_VERSION -DCMAKE_INSTALL_PREFIX=RAYLIB_INSTALL -DBUILD_SHARED_LIBS=ON -DBUILD_EXAMPLES=OFF -S raylib -B raylib-build
           cmake --build raylib-build --config Release --target install
 
       - name: Build TGUI (old gcc)
