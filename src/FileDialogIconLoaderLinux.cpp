@@ -27,6 +27,7 @@
 
 #if defined(TGUI_SYSTEM_LINUX)
 
+    #include <map>
     #include <atomic>
     #include <cstdlib> // getenv
     #include <dlfcn.h> // dlopen, dlsym, dlclose

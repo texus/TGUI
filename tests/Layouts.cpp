@@ -224,6 +224,10 @@ TEST_CASE("[Layouts]")
                 REQUIRE(button3->getPosition() == tgui::Vector2f(995, 5560));
                 REQUIRE(button3->getAbsolutePosition() == tgui::Vector2f(1005, 5585));
 
+                button1->setScale(0.5f);
+                button2->setScale(2.f, {0.25f, 0.8f});
+                REQUIRE(button3->getPosition() == tgui::Vector2f(520, 3152));
+
                 auto button4 = std::make_shared<tgui::Button>();
                 button4->setSize(200, 50);
 

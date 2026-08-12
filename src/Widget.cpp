@@ -680,9 +680,10 @@ namespace tgui
         m_size.x.connectWidget(this, true, [this] { setSize(getSizeLayout()); });
         m_size.y.connectWidget(this, false, [this] { setSize(getSizeLayout()); });
 
-        if (getSize() != m_prevSize)
+        const auto scaledSize = getSize().multiplyComponents(getScale());
+        if (scaledSize != m_prevSize)
         {
-            m_prevSize = getSize();
+            m_prevSize = scaledSize;
             onSizeChange.emit(this, getSize());
 
             recalculateBoundSizeLayouts();
@@ -690,7 +691,7 @@ namespace tgui
             // If the origin isn't in the top left then changing the size also changes the position of the widget.
             // Note that getPosition() will still return the same value (hence we don't trigger onPositionChange), but if a
             // layout was bound the the left or top of the widget as opposed to the X/Y coordinate then it needs to be recalculated.
-            if ((m_origin.x != 0) || (m_origin.y != 0))
+            if ((m_origin.x != 0) || (m_origin.y != 0) || (m_scaleOrigin.has_value() && ((m_scaleFactors.x != 0) || (m_scaleFactors.y != 0))))
                 recalculateBoundPositionLayouts();
 
             if ((m_autoLayout != AutoLayout::Manual) && m_autoLayoutUpdateEnabled && m_parent)
@@ -774,6 +775,7 @@ namespace tgui
     {
         m_scaleFactors = scaleFactors;
         m_scaleOrigin.reset();
+        setSize(getSizeLayout());
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -782,6 +784,7 @@ namespace tgui
     {
         m_scaleFactors = scaleFactors;
         m_scaleOrigin = origin;
+        setSize(getSizeLayout());
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

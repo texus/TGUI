@@ -1,3 +1,9 @@
+TGUI 1.14  (TBD)
+----------------
+
+- Bound layouts didn't take widget scale factors into account
+
+
 TGUI 1.13  (24 June 2026)
 -------------------------
 

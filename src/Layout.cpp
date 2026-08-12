@@ -311,30 +311,6 @@ namespace tgui
                         || (m_operation == Operation::BindingInnerWidth) || (m_operation == Operation::BindingInnerHeight),
                     "Layout constructor with bound widget must be called with an operation that involves the widget");
 
-        // TODO: Try to resolve the code duplicate with recalculateValue()
-        if (m_operation == Operation::BindingPosX)
-            m_value = m_boundWidget->getPosition().x;
-        else if (m_operation == Operation::BindingPosY)
-            m_value = m_boundWidget->getPosition().y;
-        else if (m_operation == Operation::BindingLeft)
-            m_value = m_boundWidget->getPosition().x - (m_boundWidget->getOrigin().x * m_boundWidget->getSize().x);
-        else if (m_operation == Operation::BindingTop)
-            m_value = m_boundWidget->getPosition().y - (m_boundWidget->getOrigin().y * m_boundWidget->getSize().y);
-        else if (m_operation == Operation::BindingWidth)
-            m_value = m_boundWidget->getSize().x;
-        else if (m_operation == Operation::BindingHeight)
-            m_value = m_boundWidget->getSize().y;
-        else if (m_operation == Operation::BindingInnerWidth)
-        {
-            if (const auto* boundContainer = dynamic_cast<Container*>(boundWidget); boundContainer)
-                m_value = boundContainer->getInnerSize().x;
-        }
-        else if (m_operation == Operation::BindingInnerHeight)
-        {
-            if (const auto* boundContainer = dynamic_cast<Container*>(boundWidget); boundContainer)
-                m_value = boundContainer->getInnerSize().y;
-        }
-
         resetPointers();
         recalculateValue();
     }
@@ -692,16 +668,38 @@ namespace tgui
                 m_value = m_boundWidget->getPosition().y;
                 break;
             case Operation::BindingLeft:
-                m_value = m_boundWidget->getPosition().x - (m_boundWidget->getOrigin().x * m_boundWidget->getSize().x);
+            {
+                const float width = m_boundWidget->getSize().x;
+                const float originX = m_boundWidget->getOrigin().x;
+                m_value = m_boundWidget->getPosition().x - (originX * width);
+
+                const float scaleX = m_boundWidget->getScale().x;
+                if (scaleX != 1)
+                {
+                    const float scaleOriginX = m_boundWidget->getScaleOrigin().x;
+                    m_value -= (scaleX - 1.f) * scaleOriginX * width;
+                }
                 break;
+            }
             case Operation::BindingTop:
-                m_value = m_boundWidget->getPosition().y - (m_boundWidget->getOrigin().y * m_boundWidget->getSize().y);
+            {
+                const float height = m_boundWidget->getSize().y;
+                const float originY = m_boundWidget->getOrigin().y;
+                m_value = m_boundWidget->getPosition().y - (originY * height);
+
+                const float scaleY = m_boundWidget->getScale().y;
+                if (scaleY != 1)
+                {
+                    const float scaleOriginY = m_boundWidget->getScaleOrigin().y;
+                    m_value -= (scaleY - 1.f) * scaleOriginY * height;
+                }
                 break;
+            }
             case Operation::BindingWidth:
-                m_value = m_boundWidget->getSize().x;
+                m_value = m_boundWidget->getSize().x * m_boundWidget->getScale().x;
                 break;
             case Operation::BindingHeight:
-                m_value = m_boundWidget->getSize().y;
+                m_value = m_boundWidget->getSize().y * m_boundWidget->getScale().y;
                 break;
             case Operation::BindingInnerWidth:
             {
