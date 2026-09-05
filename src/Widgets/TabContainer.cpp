@@ -302,11 +302,11 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    int TabContainer::getIndex(const Panel::Ptr& ptr)
+    int TabContainer::getIndex(const Panel::Ptr& panel)
     {
         for (std::size_t i = 0; i < m_panels.size(); ++i)
         {
-            if (m_panels[i] == ptr)
+            if (m_panels[i] == panel)
                 return static_cast<int>(i);
         }
 

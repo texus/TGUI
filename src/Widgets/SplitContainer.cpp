@@ -57,10 +57,10 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    SplitContainer::Ptr SplitContainer::copy(const SplitContainer::ConstPtr& contaier)
+    SplitContainer::Ptr SplitContainer::copy(const SplitContainer::ConstPtr& splitContainer)
     {
-        if (contaier)
-            return std::static_pointer_cast<SplitContainer>(contaier->clone());
+        if (splitContainer)
+            return std::static_pointer_cast<SplitContainer>(splitContainer->clone());
         return nullptr;
     }
 
