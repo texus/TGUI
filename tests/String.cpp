@@ -48,9 +48,9 @@ TEST_CASE("[String]")
     const std::u32string_view view_u32s(u32s);
 
 #if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
-    std::u8string u8s(u8"\u03b1\u03b2\u03b3\u03b4\u03b5");
+    const std::u8string u8s(u8"\u03b1\u03b2\u03b3\u03b4\u03b5");
 
-    std::u8string_view view_u8s(u8s);
+    const std::u8string_view view_u8s(u8s);
 #endif
 
     SECTION("Constructor")
