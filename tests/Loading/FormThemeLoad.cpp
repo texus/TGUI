@@ -41,7 +41,7 @@
 
 TEST_CASE("[FormThemeLoad]")
 {
-    tgui::Panel::Ptr panel = tgui::Panel::create();
+    const tgui::Panel::Ptr panel = tgui::Panel::create();
 
     SECTION("Renderer section can be empty")
     {
@@ -66,7 +66,7 @@ TEST_CASE("[FormThemeLoad]")
 
     SECTION("Renderer = @ThemeName")
     {
-        std::string form(
+        const std::string form(
             "Renderer.1 { TextColor = rgb(200, 100, 50); }\n"
             "Theme.ThemeName { Button = &1; }\n"
             "Button.B1 { Renderer = @ThemeName; }\n");
@@ -214,7 +214,7 @@ TEST_CASE("[FormThemeLoad]")
 
     SECTION("Themes still work for nested widgets")
     {
-        std::string form(
+        const std::string form(
             "Renderer.1 { TextColor = rgb(200, 100, 50); }\n"
             "Theme.Main { Button = &1; }\n"
             "ChildWindow.Outer {\n"
