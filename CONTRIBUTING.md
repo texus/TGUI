@@ -17,4 +17,4 @@ The official TGUI style is encoded in the .clang-format file found in the root o
 There are 3 differences that I'm aware of:
 - TGUI uses `@` in Doxygen documentation where SFML uses `\`
 - Lines consisting of only slashes (to separate functions) are longer in TGUI
-- TGUI code targets C++14
+- TGUI code targets C++17
