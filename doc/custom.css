@@ -32,10 +32,10 @@ div {
     max-width: 100%;
 }
 
-#doc-content {
-    height: auto !important;
+#top {
+    padding-top: 50px;
 }
 
 address.footer {
-    padding-bottom: 1.4em;
+    padding-bottom: 2em;
 }
