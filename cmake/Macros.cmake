@@ -55,6 +55,7 @@ function(tgui_set_global_compile_flags target)
                                /Zc:preprocessor
                                /Zc:inline
                                /volatile:iso
+                               /diagnostics:caret
         )
         if(TGUI_COMPILER_MSVC)
             target_compile_options(${target} PRIVATE /Zc:throwingNew)
