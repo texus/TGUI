@@ -106,7 +106,7 @@ TGUI 1.5  (25 August 2024)
 
 - Added uniform scrollbar access to all widgets with a scrollbar
 - Added getter for hovered item to ListBox, ListView, PanelListBox, Tabs and TreeView
-- Added option to buttons to only repond to clicks and ignore space/return key presses
+- Added option to buttons to only respond to clicks and ignore space/return key presses
 - Added setItemIndexInParent and getItemIndexInParent functions to TreeView
 - Added changeItemHierarchy to TreeView
 - Scrollbar::setOrientation will no longer flip width and height

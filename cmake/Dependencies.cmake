@@ -45,7 +45,7 @@ macro(tgui_find_dependency_sfml component optional_quiet)
         # Whether found or not, we afterwards search the package again without the QUIET flag,
         # so that it can print information about the found version.
         # Note that find_package resets SFML_DIR on failure, so we need to reset it when we attempt another search.
-        # We also need to reset the CACHE entry to prevent seaching sfml-main from the root cmake script to fails later on.
+        # We also need to reset the CACHE entry to prevent searching sfml-main from the root cmake script to fails later on.
         set(sfml_dir_original ${SFML_DIR})
         find_package(SFML 3 CONFIG QUIET COMPONENTS ${component})
         if(SFML_FOUND)
@@ -287,7 +287,7 @@ macro(tgui_add_dependency_sdl)
     tgui_find_dependency_sdl()
 
     # Link to SDL and set include and library search directories.
-    # TGUI_USE_STATIC_SDL allows explicitly chosing how SDL is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
+    # TGUI_USE_STATIC_SDL allows explicitly choosing how SDL is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
     if(TGUI_USE_SDL3)
         if (TGUI_OS_EMSCRIPTEN AND NOT TARGET SDL3::SDL3-shared AND NOT TARGET SDL3::SDL3-static)
             target_compile_options(tgui PUBLIC "-sUSE_SDL=3")
@@ -533,7 +533,7 @@ macro(tgui_add_dependency_sdl_ttf)
             target_link_options(tgui PUBLIC "-sUSE_SDL_TTF=2")
         else()
             # Link to SDL_ttf and set include and library search directories. The dependency is PUBLIC because the user has to call TTF_Init and TTF_Quit.
-            # TGUI_USE_STATIC_SDL_TTF allows explicitly chosing how SDL_ttf is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
+            # TGUI_USE_STATIC_SDL_TTF allows explicitly choosing how SDL_ttf is linked. By default it is undefined and a static lib is preferred (but not required) when linking statically.
             if(TGUI_USE_STATIC_SDL_TTF AND NOT TARGET SDL2_ttf::SDL2_ttf-static)
                 # If the user explicitly asks for a static target then it must exist
                 message(FATAL_ERROR "Couldn't link to SDL2_ttf::SDL2_ttf-static, no such target exists")
