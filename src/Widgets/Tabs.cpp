@@ -226,7 +226,7 @@ namespace tgui
                 }
 
                 // Now add the borders to the tabs
-                totalWidth += (visibleTabs + 1) * ((m_bordersCached.getLeftPlusRight()) / 2.f);
+                totalWidth += (visibleTabs + 1) * (m_bordersCached.getLeftPlusRight() / 2.f);
 
                 TabsBase::setSize({totalWidth, getSizeLayout().y});
             }
@@ -235,7 +235,7 @@ namespace tgui
         {
             if (visibleTabs > 0)
             {
-                const float tabWidth = (getSize().x - ((visibleTabs + 1) * ((m_bordersCached.getLeftPlusRight()) / 2.f))) / visibleTabs;
+                const float tabWidth = (getSize().x - ((visibleTabs + 1) * (m_bordersCached.getLeftPlusRight() / 2.f))) / visibleTabs;
                 for (auto& tab : m_tabs)
                     tab.width = tabWidth;
             }
@@ -283,7 +283,7 @@ namespace tgui
 
     void Tabs::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        const float borderWidth = (m_bordersCached.getLeftPlusRight()) / 2.f;
+        const float borderWidth = m_bordersCached.getLeftPlusRight() / 2.f;
         const bool roundedCorners = (m_roundedBorderRadiusCached > 0) && !m_spriteTab.isSet();
         if (!roundedCorners)
         {

@@ -203,7 +203,7 @@ namespace tgui
 
     void VerticalTabs::draw(BackendRenderTarget& target, RenderStates states) const
     {
-        const float borderHeight = (m_bordersCached.getTopPlusBottom()) / 2.f;
+        const float borderHeight = m_bordersCached.getTopPlusBottom() / 2.f;
         const bool roundedCorners = (m_roundedBorderRadiusCached > 0) && !m_spriteTab.isSet();
         if (!roundedCorners)
         {
