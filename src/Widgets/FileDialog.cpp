@@ -803,11 +803,8 @@ namespace tgui
             m_listView->setShowVerticalGridLines(true);
         }
         m_listView->removeAllItems();
-        for (const auto& item : items)
+        for (const auto& [file, icon] : items)
         {
-            const Filesystem::FileInfo& file = item.first;
-            const Texture& icon = item.second;
-
             // Filter the files
             if (!file.directory && !m_fileTypeFilters[m_selectedFileTypeFilter].second.empty())
             {

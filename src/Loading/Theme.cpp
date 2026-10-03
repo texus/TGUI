@@ -834,11 +834,8 @@ namespace tgui
         }
 
         // Add the renderers that only existed in the other renderers (e.g. added via the addRenderer function)
-        for (const auto& otherRendererPair : otherTheme.m_renderers)
+        for (const auto& [id, otherRenderer] : otherTheme.m_renderers)
         {
-            const auto& id = otherRendererPair.first;
-            const auto& otherRenderer = otherRendererPair.second;
-
             if (auto rendererIt = m_renderers.find(id); rendererIt != m_renderers.end())
                 continue; // We already have the renderer, it would have been handled by the earlier loop
 
