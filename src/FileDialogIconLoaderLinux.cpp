@@ -306,11 +306,8 @@ namespace tgui
         if (m_loadFileIconsThreadStarted)
             return icons; // Thread is still running, this shouldn't happen
 
-        for (const auto& pair : m_fileIcons)
+        for (const auto& [iconName, filename] : m_fileIcons)
         {
-            const String& iconName = pair.first;
-            const String& filename = pair.second;
-
             if (filename.empty())
             {
                 icons.emplace_back();

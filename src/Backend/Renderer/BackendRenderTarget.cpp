@@ -366,10 +366,8 @@ namespace tgui
 
         auto vertexData = text.getBackendText()->getVertexData();
 
-        for (const auto& data : vertexData)
+        for (const auto& [texture, vertices] : vertexData)
         {
-            const std::shared_ptr<BackendTexture>& texture = data.first;
-            const std::shared_ptr<std::vector<Vertex>>& vertices = data.second;
             drawVertexArray(transformedStates, vertices->data(), vertices->size(), nullptr, 0, texture);
         }
     }
@@ -386,10 +384,8 @@ namespace tgui
 
         auto vertexData = text.getBackendText()->getVertexData(true, false);
 
-        for (const auto& data : vertexData)
+        for (const auto& [texture, vertices] : vertexData)
         {
-            const std::shared_ptr<BackendTexture>& texture = data.first;
-            const std::shared_ptr<std::vector<Vertex>>& vertices = data.second;
             drawVertexArray(transformedStates, vertices->data(), vertices->size(), nullptr, 0, texture);
         }
     }
@@ -406,10 +402,8 @@ namespace tgui
 
         auto vertexData = text.getBackendText()->getVertexData(false, true);
 
-        for (const auto& data : vertexData)
+        for (const auto& [texture, vertices] : vertexData)
         {
-            const std::shared_ptr<BackendTexture>& texture = data.first;
-            const std::shared_ptr<std::vector<Vertex>>& vertices = data.second;
             drawVertexArray(transformedStates, vertices->data(), vertices->size(), nullptr, 0, texture);
         }
     }
