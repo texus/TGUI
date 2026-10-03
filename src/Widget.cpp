@@ -691,7 +691,8 @@ namespace tgui
             // If the origin isn't in the top left then changing the size also changes the position of the widget.
             // Note that getPosition() will still return the same value (hence we don't trigger onPositionChange), but if a
             // layout was bound the the left or top of the widget as opposed to the X/Y coordinate then it needs to be recalculated.
-            if ((m_origin.x != 0) || (m_origin.y != 0) || (m_scaleOrigin.has_value() && ((m_scaleFactors.x != 0) || (m_scaleFactors.y != 0))))
+            if ((m_origin.x != 0) || (m_origin.y != 0)
+                || (m_scaleOrigin.has_value() && ((m_scaleFactors.x != 0) || (m_scaleFactors.y != 0))))
                 recalculateBoundPositionLayouts();
 
             if ((m_autoLayout != AutoLayout::Manual) && m_autoLayoutUpdateEnabled && m_parent)

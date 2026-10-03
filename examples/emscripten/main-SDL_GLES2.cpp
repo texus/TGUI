@@ -1,8 +1,11 @@
 #include <TGUI/TGUI.hpp>
+
 #include <TGUI/Backend/SDL-GLES2.hpp>
-#include <emscripten/emscripten.h>
+
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_opengles2.h>
+
+#include <emscripten/emscripten.h>
 #include <iostream>
 
 EM_JS(int, canvas_get_width, (), { return canvas.width; });
