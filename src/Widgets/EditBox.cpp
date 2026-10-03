@@ -466,7 +466,7 @@ namespace tgui
             ++caretPosition;
 
         // Check if this is a double click
-        if ((m_possibleDoubleClick) && (m_selChars == 0) && (caretPosition == m_selEnd))
+        if (m_possibleDoubleClick && (m_selChars == 0) && (caretPosition == m_selEnd))
         {
             // The next click is going to be a normal one again
             m_possibleDoubleClick = false;
@@ -635,13 +635,12 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Enter) || (event.code == Event::KeyboardKey::Backspace)
             || (event.code == Event::KeyboardKey::Delete) || (event.code == Event::KeyboardKey::PageUp)
-            || (event.code == Event::KeyboardKey::PageDown) || (keyboard::isKeyPressCopy(event))
-            || (keyboard::isKeyPressCut(event)) || (keyboard::isKeyPressPaste(event)) || (keyboard::isKeyPressSelectAll(event))
-            || (keyboard::isKeyPressMoveCaretLeft(event)) || (keyboard::isKeyPressMoveCaretRight(event))
-            || (keyboard::isKeyPressMoveCaretWordBegin(event)) || (keyboard::isKeyPressMoveCaretWordEnd(event))
-            || keyboard::isKeyPressMoveCaretLineStart(event) || keyboard::isKeyPressMoveCaretDocumentBegin(event)
-            || keyboard::isKeyPressMoveCaretLineEnd(event) || keyboard::isKeyPressMoveCaretDocumentEnd(event)
-            || (keyboard::isKeyPressMoveCaretUp(event) && !m_navWidgetUp.lock())
+            || (event.code == Event::KeyboardKey::PageDown) || keyboard::isKeyPressCopy(event) || keyboard::isKeyPressCut(event)
+            || keyboard::isKeyPressPaste(event) || keyboard::isKeyPressSelectAll(event) || keyboard::isKeyPressMoveCaretLeft(event)
+            || keyboard::isKeyPressMoveCaretRight(event) || keyboard::isKeyPressMoveCaretWordBegin(event)
+            || keyboard::isKeyPressMoveCaretWordEnd(event) || keyboard::isKeyPressMoveCaretLineStart(event)
+            || keyboard::isKeyPressMoveCaretDocumentBegin(event) || keyboard::isKeyPressMoveCaretLineEnd(event)
+            || keyboard::isKeyPressMoveCaretDocumentEnd(event) || (keyboard::isKeyPressMoveCaretUp(event) && !m_navWidgetUp.lock())
             || (keyboard::isKeyPressMoveCaretDown(event) && !m_navWidgetDown.lock()))
         {
             return true;

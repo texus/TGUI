@@ -1950,7 +1950,7 @@ void GuiBuilder::addPropertyValueLayout(const tgui::String& property, const tgui
     const tgui::Layout layout(value);
 
     assert(property == U"Left" || property == U"Top" || property.ends_with(U"Width") || property.ends_with(U"Height"));
-    const bool isHorizontal = (property == U"Left") || (property.ends_with(U"Width"));
+    const bool isHorizontal = (property == U"Left") || property.ends_with(U"Width");
 
     const bool layoutIsConstant = layout.isConstant();
     const bool layoutIsPercentage = !layoutIsConstant && value.ends_with(U'%') && layout.getLeftOperand() && layout.getRightOperand()
@@ -3186,7 +3186,7 @@ bool GuiBuilder::fillWidgetHierarchy(std::vector<tgui::String>& hierarchy, tgui:
         const size_t widgetCount = parent->getWidgets().size();
         for (size_t i = 0; i < widgetCount; ++i)
         {
-            if ((parent->getWidgets()[i]).get() == widget)
+            if (parent->getWidgets()[i].get() == widget)
             {
                 wasFound = fillWidgetHierarchy(hierarchy, parent);
                 break;

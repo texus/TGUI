@@ -106,7 +106,7 @@ namespace
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font")
+            if (((pair.first.size() >= 7) && pair.first.starts_with(U"Texture")) || (pair.first == U"Font")
                 || (pair.first == U"Image"))
             {
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
@@ -178,7 +178,7 @@ namespace
     {
         for (const auto& pair : node->propertyValuePairs)
         {
-            if (((pair.first.size() >= 7) && (pair.first.starts_with(U"Texture"))) || (pair.first == U"Font")
+            if (((pair.first.size() >= 7) && pair.first.starts_with(U"Texture")) || (pair.first == U"Font")
                 || (pair.first == U"Image"))
             {
                 if (pair.second->value.empty() || pair.second->value.equalIgnoreCase(U"none")
@@ -1008,7 +1008,7 @@ void Form::save()
     if (formPath.back() != '/')
         formPath.push_back('/');
 
-    tgui::String guiBuilderPath = (tgui::getResourcePath()).getParentPath().asString();
+    tgui::String guiBuilderPath = tgui::getResourcePath().getParentPath().asString();
     if (guiBuilderPath.back() != '/')
         guiBuilderPath.push_back('/');
 

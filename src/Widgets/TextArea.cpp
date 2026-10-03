@@ -486,7 +486,7 @@ namespace tgui
         bool isDragging = true; // User may start selecting text
 
         // If there is a scrollbar then pass the event
-        if ((m_verticalScrollbar->isShown()) && (m_verticalScrollbar->isMouseOnWidget(pos)))
+        if (m_verticalScrollbar->isShown() && m_verticalScrollbar->isMouseOnWidget(pos))
         {
             isDragging = m_verticalScrollbar->leftMousePressed(pos);
             recalculateVisibleLines();
@@ -505,7 +505,7 @@ namespace tgui
             const auto oldSelEnd = m_selEnd;
 
             // Check if this is a double click
-            if ((m_possibleDoubleClick) && (m_selStart == m_selEnd) && (caretPosition == m_selEnd))
+            if (m_possibleDoubleClick && (m_selStart == m_selEnd) && (caretPosition == m_selEnd))
             {
                 // The next click is going to be a normal one again
                 m_possibleDoubleClick = false;
@@ -756,10 +756,10 @@ namespace tgui
         if ((event.code == Event::KeyboardKey::Tab) || (event.code == Event::KeyboardKey::Enter)
             || (event.code == Event::KeyboardKey::Backspace) || (event.code == Event::KeyboardKey::Delete)
             || (event.code == Event::KeyboardKey::PageUp) || (event.code == Event::KeyboardKey::PageDown)
-            || (keyboard::isKeyPressCopy(event)) || (keyboard::isKeyPressCut(event)) || (keyboard::isKeyPressPaste(event))
-            || (keyboard::isKeyPressSelectAll(event)) || (keyboard::isKeyPressMoveCaretLeft(event))
-            || (keyboard::isKeyPressMoveCaretRight(event)) || (keyboard::isKeyPressMoveCaretWordBegin(event))
-            || (keyboard::isKeyPressMoveCaretWordEnd(event)) || keyboard::isKeyPressMoveCaretLineStart(event)
+            || keyboard::isKeyPressCopy(event) || keyboard::isKeyPressCut(event) || keyboard::isKeyPressPaste(event)
+            || keyboard::isKeyPressSelectAll(event) || keyboard::isKeyPressMoveCaretLeft(event)
+            || keyboard::isKeyPressMoveCaretRight(event) || keyboard::isKeyPressMoveCaretWordBegin(event)
+            || keyboard::isKeyPressMoveCaretWordEnd(event) || keyboard::isKeyPressMoveCaretLineStart(event)
             || keyboard::isKeyPressMoveCaretUp(event) || keyboard::isKeyPressMoveCaretDown(event)
             || keyboard::isKeyPressMoveCaretDocumentBegin(event) || keyboard::isKeyPressMoveCaretLineEnd(event)
             || keyboard::isKeyPressMoveCaretDocumentEnd(event))

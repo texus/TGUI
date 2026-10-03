@@ -191,7 +191,7 @@ namespace tgui
                                 *this = Layout{expression.substr(1, expression.size() - 2)};
                                 return;
                             }
-                            if ((searchPos == 3) && (bracketPos == expression.size() - 1) && (expression.starts_with(U"min")))
+                            if ((searchPos == 3) && (bracketPos == expression.size() - 1) && expression.starts_with(U"min"))
                             {
                                 const auto& minSubExpressions = parseMinMaxExpresssion(expression.substr(4, expression.size() - 5));
                                 *this = Layout{Operation::Minimum,
@@ -199,7 +199,7 @@ namespace tgui
                                                std::make_unique<Layout>(minSubExpressions.second)};
                                 return;
                             }
-                            if ((searchPos == 3) && (bracketPos == expression.size() - 1) && (expression.starts_with(U"max")))
+                            if ((searchPos == 3) && (bracketPos == expression.size() - 1) && expression.starts_with(U"max"))
                             {
                                 const auto& maxSubExpressions = parseMinMaxExpresssion(expression.substr(4, expression.size() - 5));
                                 *this = Layout{Operation::Maximum,

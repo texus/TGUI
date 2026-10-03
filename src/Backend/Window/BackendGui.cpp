@@ -730,7 +730,7 @@ namespace tgui
 
         const Vector2f touchPos = mapPixelToCoords(Vector2i{m_twoFingerScroll.getTouchPosition()});
         const float touchDelta = m_twoFingerScroll.getDelta(m_view.getHeight() / m_viewport.getHeight());
-        if ((touchDelta != 0) && (m_container->processScrollEvent(touchDelta, touchPos, true)))
+        if ((touchDelta != 0) && m_container->processScrollEvent(touchDelta, touchPos, true))
             return true;
 
         // Even if no widget was scrolled, we will still absorb the event when the scrolling bagan on top of a widget

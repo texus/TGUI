@@ -963,11 +963,10 @@ namespace tgui
         const Padding padding = m_listBox->getSharedRenderer()->getPadding();
 
         if (m_nrOfItemsToDisplay > 0)
-            m_listBox->setSize(
-                {getSize().x,
-                 (m_listBox->getItemHeight()
-                  * (std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1))))
-                     + borders.getTop() + borders.getBottom() + padding.getTop() + padding.getBottom()});
+            m_listBox->setSize({getSize().x,
+                                (m_listBox->getItemHeight()
+                                 * std::min<std::size_t>(m_nrOfItemsToDisplay, std::max<std::size_t>(m_listBox->getItemCount(), 1)))
+                                    + borders.getTop() + borders.getBottom() + padding.getTop() + padding.getBottom()});
         else
             m_listBox->setSize({getSize().x,
                                 (m_listBox->getItemHeight() * std::max<std::size_t>(m_listBox->getItemCount(), 1))
