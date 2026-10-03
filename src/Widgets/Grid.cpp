@@ -73,11 +73,11 @@ namespace tgui
         m_widgetCells{std::move(other.m_widgetCells)},
         m_connectedSizeCallbacks{std::move(other.m_connectedSizeCallbacks)}
     {
-        for (auto& widget : m_widgets)
+        for (const auto& widget : m_widgets)
             widget->onSizeChange.disconnect(m_connectedSizeCallbacks[widget]);
 
         m_connectedSizeCallbacks.clear();
-        for (auto& widget : m_widgets)
+        for (const auto& widget : m_widgets)
             m_connectedSizeCallbacks[widget] = widget->onSizeChange([this]() { updateWidgets(); });
     }
 
@@ -119,7 +119,7 @@ namespace tgui
     {
         if (this != &other)
         {
-            for (auto& widget : other.m_widgets)
+            for (const auto& widget : other.m_widgets)
                 widget->onSizeChange.disconnect(other.m_connectedSizeCallbacks[widget]);
 
             m_autoSize = std::move(other.m_autoSize);
@@ -132,7 +132,7 @@ namespace tgui
             Container::operator=(std::move(other));
 
             m_connectedSizeCallbacks.clear();
-            for (auto& widget : m_widgets)
+            for (const auto& widget : m_widgets)
                 m_connectedSizeCallbacks[widget] = widget->onSizeChange([this]() { updateWidgets(); });
         }
 
@@ -536,9 +536,9 @@ namespace tgui
                 }
             };
 
-            auto getWidgetsInGridString = [&](const Widget::Ptr& w) -> String
+            const auto getWidgetsInGridString = [&](const Widget::Ptr& w) -> String
             {
-                if (auto it = widgetsMap.find(w); it != widgetsMap.end())
+                if (const auto it = widgetsMap.find(w); it != widgetsMap.end())
                 {
                     const auto row = it->second.first;
                     const auto col = it->second.second;

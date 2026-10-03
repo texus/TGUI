@@ -71,7 +71,7 @@ namespace tgui
         float currentOffset = 0;
         for (std::size_t i = 0; i < m_widgets.size(); ++i)
         {
-            auto& widget = m_widgets[i];
+            const auto& widget = m_widgets[i];
             const float height = (contentSize.y - totalSpaceBetweenWidgets) * (m_ratios[i] / totalRatio);
 
             widget->setSize({contentSize.x, height});

@@ -226,7 +226,7 @@ namespace tgui
     {
         m_label->setTextSize(m_textSizeCached);
 
-        for (auto& button : m_buttons)
+        for (const auto& button : m_buttons)
             button->setTextSize(m_textSizeCached);
 
         rearrange();
@@ -340,7 +340,7 @@ namespace tgui
         // Calculate the space needed for the buttons
         const float distance = std::round(buttonHeight * 2.0f / 3.0f);
         float buttonsAreaWidth = distance;
-        for (auto& button : m_buttons)
+        for (const auto& button : m_buttons)
         {
             button->setSize({buttonWidth, buttonHeight});
             buttonsAreaWidth += button->getSize().x + distance;
@@ -378,7 +378,7 @@ namespace tgui
         if (m_buttonAlignment == HorizontalAlignment::Left)
         {
             float leftPosition = distance;
-            for (auto& button : m_buttons)
+            for (const auto& button : m_buttons)
             {
                 button->setPosition({leftPosition, topPosition});
                 leftPosition += button->getSize().x + distance;
@@ -387,7 +387,7 @@ namespace tgui
         else if (m_buttonAlignment == HorizontalAlignment::Right)
         {
             float leftPosition = getClientSize().x;
-            for (auto& button : m_buttons)
+            for (const auto& button : m_buttons)
             {
                 leftPosition -= distance + button->getSize().x;
                 button->setPosition({leftPosition, topPosition});
@@ -396,7 +396,7 @@ namespace tgui
         else // if (m_buttonAlignment == HorizontalAlignment::Center)
         {
             float leftPosition = 0;
-            for (auto& button : m_buttons)
+            for (const auto& button : m_buttons)
             {
                 leftPosition += distance + ((getClientSize().x - buttonsAreaWidth) / (m_buttons.size() + 1));
                 button->setPosition({leftPosition, topPosition});
@@ -425,7 +425,7 @@ namespace tgui
         else if (property == U"Button")
         {
             const auto& renderer = getSharedRenderer()->getButton();
-            for (auto& button : m_buttons)
+            for (const auto& button : m_buttons)
                 button->setRenderer(renderer);
         }
         else if (property == U"Font")
@@ -434,7 +434,7 @@ namespace tgui
 
             m_label->setInheritedFont(m_fontCached);
 
-            for (auto& button : m_buttons)
+            for (const auto& button : m_buttons)
                 button->setInheritedFont(m_fontCached);
 
             rearrange();
@@ -530,7 +530,7 @@ namespace tgui
             if ((widget->getWidgetName().length() >= 32)
                 && (widget->getWidgetName().starts_with(U"#TGUI_INTERNAL$MessageBoxButton:")))
             {
-                auto button = std::dynamic_pointer_cast<Button>(widget);
+                const auto button = std::dynamic_pointer_cast<Button>(widget);
                 m_buttons.push_back(button);
                 connectButtonPressSignal(m_buttons.size() - 1);
             }
@@ -556,7 +556,7 @@ namespace tgui
 
     void MessageBox::addButtonImpl(const String& caption)
     {
-        auto button = Button::create(caption);
+        const auto button = Button::create(caption);
         button->setRenderer(getSharedRenderer()->getButton());
         button->setTextSize(m_textSizeCached);
 

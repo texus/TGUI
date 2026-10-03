@@ -803,7 +803,7 @@ namespace tgui
         else
         {
             // Tell the widgets that the mouse was released
-            for (auto& widget : m_widgets)
+            for (const auto& widget : m_widgets)
                 widget->leftMouseButtonNoLongerDown();
 
             // Check if the mouse is on top of the title bar
@@ -845,7 +845,7 @@ namespace tgui
         else
         {
             // Tell the widgets that the mouse was released
-            for (auto& widget : m_widgets)
+            for (const auto& widget : m_widgets)
                 widget->rightMouseButtonNoLongerDown();
         }
     }
@@ -1195,7 +1195,7 @@ namespace tgui
         }
         else if (property == U"CloseButton")
         {
-            auto closeButtonRenderer = getSharedRenderer()->getCloseButton();
+            const auto closeButtonRenderer = getSharedRenderer()->getCloseButton();
             m_closeButton->setRenderer(closeButtonRenderer);
 
             const auto maximizeButtonRenderer = getSharedRenderer()->getMaximizeButton();

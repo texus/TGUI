@@ -774,7 +774,7 @@ namespace tgui
                 closeSubMenus(menuBelowMouse->menuItems, menuBelowMouse->selectedMenuItem);
 
                 // Mark the item below the mouse as selected
-                auto& menuItem = menuBelowMouse->menuItems[menuItemIndexBelowMouse];
+                const auto& menuItem = menuBelowMouse->menuItems[menuItemIndexBelowMouse];
                 if (menuItem.enabled && !isSeparator(menuItem))
                 {
                     updateMenuTextColor(menuBelowMouse->menuItems[menuItemIndexBelowMouse], true);
