@@ -330,7 +330,7 @@ namespace tgui
         const auto caret = getCaretPosition();
         if (caret == 0)
             return 1;
-        auto lineStart = m_text.rfind('\n', caret - 1);
+        const auto lineStart = m_text.rfind('\n', caret - 1);
         if (lineStart == String::npos)
             return caret + 1;
         return caret - lineStart;
@@ -619,7 +619,7 @@ namespace tgui
         // If the mouse is held down then you are selecting text
         else if (m_mouseDown)
         {
-            auto caretPosition = findCaretPosition(pos);
+            const auto caretPosition = findCaretPosition(pos);
             const auto oldSelEnd = m_selEnd;
 
             if (caretPosition != m_selEnd)
@@ -784,7 +784,7 @@ namespace tgui
         if ((m_maxChars > 0) && (m_text.length() + 1 > m_maxChars))
             return;
 
-        auto insert = TGUI_LAMBDA_CAPTURE_EQ_THIS()
+        const auto insert = TGUI_LAMBDA_CAPTURE_EQ_THIS()
         {
             deleteSelectedCharacters();
 
@@ -939,7 +939,7 @@ namespace tgui
 
     std::size_t TextArea::getIndexOfSelectionPos(Vector2<std::size_t> selectionPos) const
     {
-        auto findIndex = [this](std::size_t line)
+        const auto findIndex = [this](std::size_t line)
         {
             std::size_t counter = 0;
             for (std::size_t i = 0; i < line; ++i)

@@ -34,9 +34,9 @@ namespace tgui
 {
     namespace
     {
-        void setTextSizeImpl(std::vector<std::shared_ptr<TreeView::Node>>& nodes, unsigned int textSize)
+        void setTextSizeImpl(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, unsigned int textSize)
         {
-            for (auto& node : nodes)
+            for (const auto& node : nodes)
             {
                 node->text.setCharacterSize(textSize);
                 if (!node->nodes.empty())
@@ -46,9 +46,9 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void setTextOpacityImpl(std::vector<std::shared_ptr<TreeView::Node>>& nodes, float opacity)
+        void setTextOpacityImpl(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, float opacity)
         {
-            for (auto& node : nodes)
+            for (const auto& node : nodes)
             {
                 node->text.setOpacity(opacity);
                 if (!node->nodes.empty())
@@ -58,9 +58,9 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void setTextFontImpl(std::vector<std::shared_ptr<TreeView::Node>>& nodes, const Font& font)
+        void setTextFontImpl(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, const Font& font)
         {
-            for (auto& node : nodes)
+            for (const auto& node : nodes)
             {
                 node->text.setFont(font);
                 if (!node->nodes.empty())
@@ -108,9 +108,9 @@ namespace tgui
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        void expandOrCollapseAll(std::vector<std::shared_ptr<TreeView::Node>>& nodes, bool expandNode)
+        void expandOrCollapseAll(const std::vector<std::shared_ptr<TreeView::Node>>& nodes, bool expandNode)
         {
-            for (auto& node : nodes)
+            for (const auto& node : nodes)
             {
                 if (!node->nodes.empty())
                 {
@@ -472,7 +472,7 @@ namespace tgui
         if (hierarchy.empty())
             return false;
 
-        auto* node = findNode(m_nodes, hierarchy, 0);
+        const auto* node = findNode(m_nodes, hierarchy, 0);
         if (!node)
             return false;
 
@@ -614,7 +614,7 @@ namespace tgui
         {
             std::vector<String> parentHierarchy = hierarchy;
             parentHierarchy.pop_back();
-            auto* node = findNode(m_nodes, parentHierarchy, 0);
+            const auto* node = findNode(m_nodes, parentHierarchy, 0);
             if (!node)
                 return -1;
 
@@ -653,11 +653,11 @@ namespace tgui
 
         // Remove the node from its old parent
         auto& oldParentNodes = node->parent ? node->parent->nodes : m_nodes;
-        auto it = std::find_if(oldParentNodes.cbegin(),
-                               oldParentNodes.cend(),
-                               [node](const std::shared_ptr<Node>& child) { return child.get() == node; });
+        const auto it = std::find_if(oldParentNodes.cbegin(),
+                                     oldParentNodes.cend(),
+                                     [node](const std::shared_ptr<Node>& child) { return child.get() == node; });
         assert(it != oldParentNodes.end());
-        auto nodeSharedPtr = *it;
+        const auto nodeSharedPtr = *it;
         oldParentNodes.erase(it);
 
         // Add the node to the new parent
@@ -682,7 +682,7 @@ namespace tgui
             return;
 
         std::vector<String> hierarchy;
-        auto* node = m_visibleNodes[index].get();
+        const auto* node = m_visibleNodes[index].get();
         assert(node != nullptr);
         while (node)
         {
@@ -735,7 +735,7 @@ namespace tgui
         if (hierarchy.empty())
             return constNode;
 
-        auto* node = findNode(m_nodes, hierarchy, 0);
+        const auto* node = findNode(m_nodes, hierarchy, 0);
         if (!node)
             return constNode;
 
@@ -892,7 +892,7 @@ namespace tgui
     void TreeView::leftMouseReleased(Vector2f pos)
     {
         pos -= getPosition();
-        auto childPos = pos;
+        const auto childPos = pos;
         if (m_mouseDown && !m_verticalScrollbar->isMouseDown() && !m_horizontalScrollbar->isMouseDown())
         {
             m_mouseDown = false;
@@ -951,7 +951,7 @@ namespace tgui
                     if (m_visibleNodes[static_cast<std::size_t>(selectedIndex)]->nodes.empty())
                     {
                         std::vector<String> hierarchy;
-                        auto* node = m_visibleNodes[static_cast<std::size_t>(selectedIndex)].get();
+                        const auto* node = m_visibleNodes[static_cast<std::size_t>(selectedIndex)].get();
                         assert(node != nullptr);
                         while (node)
                         {
@@ -1002,7 +1002,7 @@ namespace tgui
                 updateSelectedItem(selectedItem);
 
                 std::vector<String> hierarchy;
-                auto* node = m_visibleNodes[static_cast<std::size_t>(selectedItem)].get();
+                const auto* node = m_visibleNodes[static_cast<std::size_t>(selectedItem)].get();
                 assert(node != nullptr);
                 while (node)
                 {
@@ -1428,7 +1428,7 @@ namespace tgui
 
     unsigned int TreeView::updateVisibleNodes(std::vector<std::shared_ptr<Node>>& nodes, Node* selectedNode, float textPadding, unsigned int pos)
     {
-        for (auto& node : nodes)
+        for (const auto& node : nodes)
         {
             m_visibleNodes.push_back(node);
             if (selectedNode == node.get())
@@ -1766,7 +1766,7 @@ namespace tgui
 
     void TreeView::updateTextColors(std::vector<std::shared_ptr<Node>>& nodes)
     {
-        for (auto& node : nodes)
+        for (const auto& node : nodes)
         {
             node->text.setColor(m_textColorCached);
             updateTextColors(node->nodes);
@@ -1830,7 +1830,7 @@ namespace tgui
         if (m_selectedItem >= 0)
         {
             std::vector<String> hierarchy;
-            auto* node = m_visibleNodes[static_cast<std::size_t>(m_selectedItem)].get();
+            const auto* node = m_visibleNodes[static_cast<std::size_t>(m_selectedItem)].get();
             assert(node != nullptr);
             while (node)
             {
@@ -1854,7 +1854,7 @@ namespace tgui
                                              Node* parent,
                                              bool createParents)
     {
-        for (auto& node : nodes)
+        for (const auto& node : nodes)
         {
             if (node->text.getString() != hierarchy[parentIndex])
                 continue;

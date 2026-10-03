@@ -49,7 +49,7 @@ namespace tgui
     {
         for (const auto& widget : m_widgets)
         {
-            auto panel = std::dynamic_pointer_cast<Panel>(widget);
+            const auto panel = std::dynamic_pointer_cast<Panel>(widget);
             if (panel)
                 m_panels.push_back(panel);
         }
@@ -90,7 +90,7 @@ namespace tgui
 
             for (const auto& widget : m_widgets)
             {
-                auto panel = std::dynamic_pointer_cast<Panel>(widget);
+                const auto panel = std::dynamic_pointer_cast<Panel>(widget);
                 if (panel)
                     m_panels.push_back(panel);
             }
@@ -170,7 +170,7 @@ namespace tgui
     {
         Container::setSize(size);
 
-        for (auto& panel : m_panels)
+        for (const auto& panel : m_panels)
             panel->setSize({getSize().x, getSize().y - m_tabs->getSize().y});
 
         layoutTabs();
@@ -491,7 +491,7 @@ namespace tgui
 
         for (const auto& widget : m_widgets)
         {
-            auto panel = std::dynamic_pointer_cast<Panel>(widget);
+            const auto panel = std::dynamic_pointer_cast<Panel>(widget);
             if (!panel)
                 continue;
 

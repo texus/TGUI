@@ -517,7 +517,7 @@ namespace tgui
                 // Copy the properties of the first parent that isn't empty as well
                 for (const String& parentType : parentTypes)
                 {
-                    auto parentRenderer = rendererData->connectedTheme->getRendererNoThrow(parentType);
+                    const auto parentRenderer = rendererData->connectedTheme->getRendererNoThrow(parentType);
                     if (!parentRenderer || parentRenderer->propertyValuePairs.empty())
                         continue;
 
@@ -539,7 +539,7 @@ namespace tgui
                         continue;
 
                     const String& subwidgetType = pair.second.empty() ? pair.first : pair.second;
-                    auto subwidgetRenderer = rendererData->connectedTheme->getRendererNoThrow(subwidgetType);
+                    const auto subwidgetRenderer = rendererData->connectedTheme->getRendererNoThrow(subwidgetType);
                     if (!subwidgetRenderer)
                         continue;
 

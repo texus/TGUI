@@ -57,7 +57,7 @@ namespace tgui
     void RadioButtonGroup::uncheckRadioButtons()
     {
         // Loop through all radio buttons and uncheck them
-        for (auto& widget : m_widgets)
+        for (const auto& widget : m_widgets)
         {
             if (widget->getWidgetType() == U"RadioButton")
                 std::static_pointer_cast<RadioButton>(widget)->setChecked(false);
