@@ -27,11 +27,11 @@
 
 #if defined(TGUI_SYSTEM_LINUX)
 
-    #include <map>
     #include <atomic>
     #include <cstdlib> // getenv
     #include <dlfcn.h> // dlopen, dlsym, dlclose
     #include <fstream>
+    #include <map>
     #include <thread>
 
     #if __has_include(<magic.h>)

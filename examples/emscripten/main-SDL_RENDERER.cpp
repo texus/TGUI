@@ -1,5 +1,7 @@
 #include <TGUI/TGUI.hpp>
+
 #include <TGUI/Backend/SDL-Renderer.hpp>
+
 #include <emscripten/emscripten.h>
 #include <iostream>
 

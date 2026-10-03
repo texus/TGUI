@@ -1,5 +1,7 @@
 #include <TGUI/TGUI.hpp>
+
 #include <TGUI/Backend/raylib.hpp>
+
 #include <emscripten/emscripten.h>
 #include <iostream>
 
