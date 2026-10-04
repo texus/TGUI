@@ -53,14 +53,14 @@ void loadWidgets(tgui::BackendGui& gui)
     // Create the background image
     // The picture is of type tgui::Picture::Ptr which is just a type alias declaration for std::shared_ptr<tgui::Picture>
     // The picture will fit the entire window and will scale with it
-    auto picture = tgui::Picture::create("xubuntu_bg_aluminium.jpg");
+    const auto picture = tgui::Picture::create("xubuntu_bg_aluminium.jpg");
     picture->setSize({"100%", "100%"});
     gui.add(picture);
 
     // Create the username edit box
     // Similar to the picture, we set a relative position and size
     // In case it isn't obvious, the default text is the text that is displayed when the edit box is empty
-    auto editBoxUsername = tgui::EditBox::create();
+    const auto editBoxUsername = tgui::EditBox::create();
     editBoxUsername->setSize({"66.67%", "12.5%"});
     editBoxUsername->setPosition({"16.67%", "16.67%"});
     editBoxUsername->setDefaultText("Username");
@@ -68,14 +68,14 @@ void loadWidgets(tgui::BackendGui& gui)
 
     // Create the password edit box
     // We copy the previous edit box here and keep the same size
-    auto editBoxPassword = tgui::EditBox::copy(editBoxUsername);
+    const auto editBoxPassword = tgui::EditBox::copy(editBoxUsername);
     editBoxPassword->setPosition({"16.67%", "41.6%"});
     editBoxPassword->setPasswordCharacter('*');
     editBoxPassword->setDefaultText("Password");
     gui.add(editBoxPassword);
 
     // Create the login button
-    auto button = tgui::Button::create("Login");
+    const auto button = tgui::Button::create("Login");
     button->setSize({"50%", "16.67%"});
     button->setPosition({"25%", "70%"});
     gui.add(button);
