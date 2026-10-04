@@ -958,7 +958,7 @@ namespace tgui
 
             // If we were looking for a file but a directory was selected then just enter that directory
             if (!m_selectingDirectory && (m_listView->getSelectedItemIndices().size() == 1)
-                && (m_listView->getItemData<bool>(*m_listView->getSelectedItemIndices().begin())))
+                && m_listView->getItemData<bool>(*m_listView->getSelectedItemIndices().begin()))
             {
                 changePath(m_currentDirectory / m_listView->getItem(*m_listView->getSelectedItemIndices().begin()), true);
                 m_editBoxFilename->setText(U"");
