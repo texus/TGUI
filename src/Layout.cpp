@@ -121,7 +121,7 @@ namespace tgui
                     || (partAfterDot == U"innersize"))
                 {
                     // We can't search for the referenced widget yet as no widget is connected to the widget yet, so store the string for future parsing
-                    m_boundString = expression;
+                    m_boundString = std::move(expression);
                     m_operation = Operation::BindingString;
                 }
                 else if (partAfterDot == U"right")
