@@ -133,7 +133,7 @@ namespace tgui
                 if (dataIt->data == textureDataToRemove)
                 {
                     // If this was the only place where the texture is used then delete it
-                    if (--(dataIt->users) == 0)
+                    if (--dataIt->users == 0)
                     {
                         imageIt->second.erase(dataIt);
                         if (imageIt->second.empty())
