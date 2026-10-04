@@ -1431,9 +1431,15 @@ namespace tgui
     {
         bool screenRefreshRequired = Widget::updateTime(elapsedTime);
 
-        // Loop through all widgets
-        for (auto& widget : m_widgets)
+        // Callbacks triggered from a child's updateTime could alter widgets in this container, so we iterate over
+        // a snapshot of the widgets. This keeps all the widgets alive until the loop is done, even if they get removed.
+        const std::vector<Widget::Ptr> widgets = m_widgets;
+        for (const auto& widget : widgets)
         {
+            // Skip widgets that were removed from this container by an earlier callback during this loop
+            if (widget->getParent() != this)
+                continue;
+
             // Update the elapsed time in widgets that need it
             if (widget->isVisible())
                 screenRefreshRequired |= widget->updateTime(elapsedTime);
@@ -1674,10 +1680,17 @@ namespace tgui
         if (m_focusedWidget == widget)
             return true;
 
+        const auto widgetToFocus = widget;
         if (m_focusedWidget)
             m_focusedWidget->setFocused(false);
 
-        m_focusedWidget = widget;
+        // Handle the case where the unfocus event from "m_focusedWidget->setFocused(false)" would have
+        // caused the widget to be focused to no longer exist. We copied the shared_ptr above so that the
+        // widget would still be alive even if it got removed by the user.
+        if (widgetToFocus->getParent() != this)
+            return false;
+
+        m_focusedWidget = widgetToFocus;
         m_focusedWidget->setFocused(true);
         return true;
     }
