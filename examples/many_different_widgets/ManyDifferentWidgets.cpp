@@ -37,7 +37,7 @@ bool runExample(tgui::BackendGui& gui)
 
         gui.add(tgui::Picture::create("RedBackground.jpg"));
 
-        auto tabs = tgui::Tabs::create();
+        const auto tabs = tgui::Tabs::create();
         tabs->setRenderer(theme.getRenderer("Tabs"));
         tabs->setTabHeight(30);
         tabs->setPosition(70, 40);
@@ -46,7 +46,7 @@ bool runExample(tgui::BackendGui& gui)
         tabs->add("Tab - 3");
         gui.add(tabs);
 
-        auto menu = tgui::MenuBar::create();
+        const auto menu = tgui::MenuBar::create();
         menu->setRenderer(theme.getRenderer("MenuBar"));
         menu->setHeight(22.f);
         menu->addMenu("File");
@@ -95,7 +95,7 @@ bool runExample(tgui::BackendGui& gui)
         label->setTextSize(18);
         gui.add(label);
 
-        auto editBox = tgui::EditBox::create();
+        const auto editBox = tgui::EditBox::create();
         editBox->setRenderer(theme.getRenderer("EditBox"));
         editBox->setSize(200, 25);
         editBox->setTextSize(18);
@@ -110,7 +110,7 @@ bool runExample(tgui::BackendGui& gui)
         label->setTextSize(18);
         gui.add(label);
 
-        auto listBox = tgui::ListBox::create();
+        const auto listBox = tgui::ListBox::create();
         listBox->setRenderer(theme.getRenderer("ListBox"));
         listBox->setSize(250, 120);
         listBox->setItemHeight(24);
@@ -127,7 +127,7 @@ bool runExample(tgui::BackendGui& gui)
         label->setTextSize(18);
         gui.add(label);
 
-        auto progressBar = tgui::ProgressBar::create();
+        const auto progressBar = tgui::ProgressBar::create();
         progressBar->setRenderer(theme.getRenderer("ProgressBar"));
         progressBar->setPosition(10, 500);
         progressBar->setSize(200, 20);
@@ -148,14 +148,14 @@ bool runExample(tgui::BackendGui& gui)
         label->setTextSize(18);
         gui.add(label);
 
-        auto slider = tgui::Slider::create();
+        const auto slider = tgui::Slider::create();
         slider->setRenderer(theme.getRenderer("Slider"));
         slider->setPosition(10, 560);
         slider->setSize(200, 18);
         slider->setValue(4);
         gui.add(slider);
 
-        auto scrollbar = tgui::Scrollbar::create();
+        const auto scrollbar = tgui::Scrollbar::create();
         scrollbar->setRenderer(theme.getRenderer("Scrollbar"));
         scrollbar->setPosition(380, 40);
         scrollbar->setSize(18, 540);
@@ -163,7 +163,7 @@ bool runExample(tgui::BackendGui& gui)
         scrollbar->setViewportSize(70);
         gui.add(scrollbar);
 
-        auto comboBox = tgui::ComboBox::create();
+        const auto comboBox = tgui::ComboBox::create();
         comboBox->setRenderer(theme.getRenderer("ComboBox"));
         comboBox->setSize(120, 21);
         comboBox->setPosition(420, 40);
@@ -173,7 +173,7 @@ bool runExample(tgui::BackendGui& gui)
         comboBox->setSelectedItem("Item 2");
         gui.add(comboBox);
 
-        auto child = tgui::ChildWindow::create();
+        const auto child = tgui::ChildWindow::create();
         child->setRenderer(theme.getRenderer("ChildWindow"));
         child->setClientSize({250, 120});
         child->setPosition(420, 80);
@@ -216,7 +216,7 @@ bool runExample(tgui::BackendGui& gui)
         label->setTextSize(18);
         gui.add(label);
 
-        auto chatbox = tgui::ChatBox::create();
+        const auto chatbox = tgui::ChatBox::create();
         chatbox->setRenderer(theme.getRenderer("ChatBox"));
         chatbox->setSize(300, 100);
         chatbox->setTextSize(18);
