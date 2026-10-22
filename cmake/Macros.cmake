@@ -141,11 +141,7 @@ function(copy_dlls_to_exe post_build_destination install_destination target)
         if(TGUI_HAS_FONT_BACKEND_FREETYPE AND FREETYPE_WINDOWS_BINARIES_PATH AND NOT TGUI_USE_STATIC_STD_LIBS)
             # Turn backslashes into slashes on Windows, because the install() command can fail if the
             # FREETYPE_WINDOWS_BINARIES_PATH variable was initialized with an environment variable that contains backslashes.
-            if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
-                cmake_path(SET FREETYPE_WINDOWS_BINARIES_PATH "${FREETYPE_WINDOWS_BINARIES_PATH}")
-            else()
-                file(TO_CMAKE_PATH "${FREETYPE_WINDOWS_BINARIES_PATH}" FREETYPE_WINDOWS_BINARIES_PATH)
-            endif()
+            cmake_path(SET FREETYPE_WINDOWS_BINARIES_PATH "${FREETYPE_WINDOWS_BINARIES_PATH}")
 
             if(CMAKE_SIZEOF_VOID_P EQUAL 8)
                 set(freetype_dll "${FREETYPE_WINDOWS_BINARIES_PATH}/release dll/win64/freetype.dll")

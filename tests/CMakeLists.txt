@@ -109,45 +109,6 @@ set(TEST_SOURCES
     Widgets/VerticalTabs.cpp
 )
 
-# Bundle multiple files together when performing a unity build (useful for CI to speed up compilation).
-# Note that this creates new source files which causes CMake to no longer detect changed to the original source files,
-# so this should only be enabled in places where the TGUI is build only once.
-# For CMake 3.18 and newer, TGUI supports the CMAKE_UNITY_BUILD option and this code should no longer be used.
-if(TGUI_OPTIMIZE_SINGLE_BUILD)
-    if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18")
-        # The only reason this code still exists is so that the CI can continue to do unity builds with an
-        # older CMake version. Once the CMake version is updated, we should fail here to prevent keeping the old code.
-        message(FATAL_ERROR "TGUI_OPTIMIZE_SINGLE_BUILD has been replaced with CMAKE_UNITY_BUILD")
-    endif()
-    list(LENGTH TEST_SOURCES fileCount)
-    if(TGUI_OPTIMIZE_SINGLE_BUILD_THREADS)
-        set(threads ${TGUI_OPTIMIZE_SINGLE_BUILD_THREADS})
-    else()
-        include(ProcessorCount)
-        ProcessorCount(threads)
-    endif()
-
-    if(${threads} LESS ${fileCount})
-        math(EXPR threads "(${threads} / 2) + 1")
-        math(EXPR fileCountMinusOne "${fileCount} - 1")
-        math(EXPR threadsMinusOne "${threads} - 1")
-
-        set(NEW_TEST_SOURCES "")
-        foreach(i RANGE 0 ${threadsMinusOne})
-            set(OutputFile "${CMAKE_CURRENT_SOURCE_DIR}/CombinedSources-Tests-${i}.cpp")
-            file(WRITE "${OutputFile}" "")
-            foreach(j RANGE ${i} ${fileCountMinusOne} ${threads})
-                list(GET TEST_SOURCES ${j} inputFile)
-                file(READ ${inputFile} CONTENTS)
-                file(APPEND "${OutputFile}" "${CONTENTS}")
-                list(APPEND NEW_TEST_SOURCES "${OutputFile}")
-            endforeach()
-        endforeach()
-
-        set(TEST_SOURCES ${NEW_TEST_SOURCES})
-    endif()
-endif()
-
 # Add some files last that shouldn't be part of the unity build as they may include different backends
 list(APPEND TEST_SOURCES Widgets/Canvas.cpp)
 list(APPEND TEST_SOURCES BackendEvents.cpp)
@@ -158,7 +119,7 @@ target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(tests PRIVATE tgui tgui-console-app-interface)
 
 # Enable unity build by default
-if(NOT DEFINED CMAKE_UNITY_BUILD AND NOT DEFINED TGUI_OPTIMIZE_SINGLE_BUILD)
+if(NOT DEFINED CMAKE_UNITY_BUILD)
     set_target_properties(tests PROPERTIES UNITY_BUILD ON)
 endif()
 
@@ -170,12 +131,6 @@ if(TGUI_COMPILER_MSVC)
     target_compile_options(tests PRIVATE /wd4996)
 else()
     target_compile_options(tests PRIVATE -Wno-deprecated-declarations)
-endif()
-
-if(TGUI_OPTIMIZE_SINGLE_BUILD AND TGUI_COMPILER_MSVC)
-    # We don't need this for the new UNITY_BUILD, only for the deprecated TGUI_OPTIMIZE_SINGLE_BUILD option,
-    # because the new batching doesn't result in such huge object files.
-    target_compile_options(tests PRIVATE /bigobj)
 endif()
 
 if(TGUI_ENABLE_DRAW_TESTS)
@@ -210,21 +165,14 @@ copy_dlls_to_exe("$<TARGET_FILE_DIR:tests>" "${target_install_dir}" tests)
 
 # Set the RPATH of the executable on Linux (and BSD)
 if(TGUI_SHARED_LIBS AND TGUI_OS_LINUX)
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
-        cmake_path(SET lib_dir NORMALIZE "${CMAKE_INSTALL_PREFIX}")
-        cmake_path(APPEND lib_dir "${CMAKE_INSTALL_LIBDIR}")
+    cmake_path(SET lib_dir NORMALIZE "${CMAKE_INSTALL_PREFIX}")
+    cmake_path(APPEND lib_dir "${CMAKE_INSTALL_LIBDIR}")
 
-        cmake_path(SET exe_dir NORMALIZE "${CMAKE_INSTALL_PREFIX}")
-        cmake_path(APPEND exe_dir "${target_install_dir}")
+    cmake_path(SET exe_dir NORMALIZE "${CMAKE_INSTALL_PREFIX}")
+    cmake_path(APPEND exe_dir "${target_install_dir}")
 
-        set(rel_lib_dir "${lib_dir}")
-        cmake_path(RELATIVE_PATH rel_lib_dir BASE_DIRECTORY "${exe_dir}")
-    else()
-        # This code for CMake < 3.20 only works if CMAKE_INSTALL_PREFIX is an absolute path
-        file(RELATIVE_PATH rel_lib_dir
-             "${CMAKE_INSTALL_PREFIX}/${target_install_dir}"
-             "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-    endif()
+    set(rel_lib_dir "${lib_dir}")
+    cmake_path(RELATIVE_PATH rel_lib_dir BASE_DIRECTORY "${exe_dir}")
 
     set_target_properties(tests PROPERTIES
                           INSTALL_RPATH "$ORIGIN/${rel_lib_dir}"  # RPATH will contain relative path to where we installed our own library

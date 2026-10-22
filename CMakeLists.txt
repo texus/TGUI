@@ -22,7 +22,7 @@
 
 # If the cmake version is higher than the minimum version then enable all new policies, up to the maximum version specified.
 # When cmake is newer than the highest version then its newest policies will still be set to the old behavior for compatibility.
-cmake_minimum_required(VERSION 3.16...4.4)
+cmake_minimum_required(VERSION 3.22...4.4)
 
 # Include macros such as tgui_set_option
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Macros.cmake)
@@ -59,10 +59,10 @@ endif()
 # Add an option for choosing the build type (shared or static).
 # If TGUI_SHARED_LIBS is explicitly set then it overrules BUILD_SHARED_LIBS, otherwise honor the global setting.
 if(NOT DEFINED TGUI_SHARED_LIBS)
-    # Only create a cache variable for BUILD_SHARED_LIBS when TGUI is the top level project (or when CMake is too old to recognise it).
+    # Only create a cache variable for BUILD_SHARED_LIBS when TGUI is the top level project.
     # The cache entry is made to help people who build TGUI with the CMake GUI. Creating such a cache variable in a subproject could
     # lead to different behavior in the main project between first and subsequent CMake runs.
-    if(NOT DEFINED BUILD_SHARED_LIBS AND (CMAKE_VERSION VERSION_LESS 3.21 OR PROJECT_IS_TOP_LEVEL) AND NOT TGUI_OS_EMSCRIPTEN)
+    if(NOT DEFINED BUILD_SHARED_LIBS AND PROJECT_IS_TOP_LEVEL AND NOT TGUI_OS_EMSCRIPTEN)
         option(BUILD_SHARED_LIBS "ON to build a shared (dynamic) library, OFF to build a static library" ON)
     elseif(TGUI_OS_ANDROID AND NOT DEFINED BUILD_SHARED_LIBS)
         # For backwards compatibility we will default to a shared library on Android without asking
@@ -244,7 +244,7 @@ set(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 # Don't create an install target if we detect a dependency that is being build without an install target,
 # of if TGUI is being built as a subdirectory.
 if(NOT DEFINED TGUI_INSTALL)
-    if((CMAKE_VERSION VERSION_GREATER_EQUAL 3.21 AND NOT PROJECT_IS_TOP_LEVEL)
+    if(NOT PROJECT_IS_TOP_LEVEL
      OR (DEFINED SDL2_DISABLE_INSTALL AND SDL2_DISABLE_INSTALL)
      OR (DEFINED SDL_DISABLE_INSTALL AND SDL_DISABLE_INSTALL)
      OR (DEFINED SDL_INSTALL AND NOT SDL_INSTALL)
