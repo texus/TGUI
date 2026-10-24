@@ -192,7 +192,7 @@ bool runExample(tgui::BackendGui& gui)
         button->setPosition(75, 70);
         button->setText("OK");
         button->setSize(100, 30);
-        button->onPress([=] { child->setVisible(false); });
+        button->onPress([childPtr=child.get()] { childPtr->setVisible(false); });
         child->add(button);
 
         auto checkbox = tgui::CheckBox::create();
