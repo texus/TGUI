@@ -514,7 +514,10 @@ namespace tgui
 
         m_backendRenderTarget->setClearColor(clearColor);
 
-        glfwSwapInterval(1);
+        // Enable vsync for the OpenGL context (which does not exist for the Vulkan backend)
+        if (glfwGetCurrentContext())
+            glfwSwapInterval(1);
+
         glfwSetWindowUserPointer(m_window, this);
 
         glfwSetWindowFocusCallback(m_window,
@@ -563,9 +566,7 @@ namespace tgui
             const auto timePointNextAllowed = lastRenderTime + std::chrono::milliseconds(15);
             if (timePointNextAllowed <= timePointNow)
             {
-                m_backendRenderTarget->clearScreen();
-                draw();
-                glfwSwapBuffers(m_window);
+                renderFrame(clearColor);
                 lastRenderTime = std::chrono::steady_clock::now(); // Don't use timePointNow to provide enough rest on low-end hardware
             }
 
@@ -656,6 +657,15 @@ namespace tgui
         glfwGetFramebufferSize(m_window, &m_framebufferSize.x, &m_framebufferSize.y);
 
         BackendGui::updateContainerSize();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGuiGLFW::renderFrame(Color)
+    {
+        m_backendRenderTarget->clearScreen();
+        draw();
+        glfwSwapBuffers(m_window);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

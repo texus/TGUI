@@ -122,6 +122,15 @@ if(NOT TARGET glfw AND @TGUI_HAS_WINDOW_BACKEND_GLFW@)
     endif()
 endif()
 
+# Search for the Vulkan headers when a backend requires it
+if(NOT TARGET Vulkan::Headers AND @TGUI_HAS_RENDERER_BACKEND_VULKAN@)
+    if(@TGUI_FOUND_VULKAN_HEADERS_CONFIG@)
+        find_dependency(VulkanHeaders CONFIG)
+    else()
+        find_dependency(Vulkan)
+    endif()
+endif()
+
 # Search for raylib when a backend requires it
 if(NOT TARGET raylib AND (@TGUI_HAS_WINDOW_BACKEND_RAYLIB@ OR @TGUI_HAS_FONT_BACKEND_RAYLIB@ OR @TGUI_HAS_RENDERER_BACKEND_RAYLIB@))
     if(@TGUI_FOUND_RAYLIB_CONFIG@)

@@ -118,6 +118,12 @@ add_executable(tests ${TEST_SOURCES})
 target_include_directories(tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(tests PRIVATE tgui tgui-console-app-interface)
 
+if(TGUI_HAS_RENDERER_BACKEND_VULKAN)
+    # The tests for Vulkan create the Vulkan instance and thus needs to link the Vulkan loader
+    find_package(Vulkan REQUIRED)
+    target_link_libraries(tests PRIVATE Vulkan::Vulkan)
+endif()
+
 # Enable unity build by default
 if(NOT DEFINED CMAKE_UNITY_BUILD)
     set_target_properties(tests PROPERTIES UNITY_BUILD ON)

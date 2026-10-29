@@ -44,11 +44,19 @@
     #include <TGUI/Backend/SDL-OpenGL3.hpp>
 #elif TGUI_HAS_BACKEND_SDL_GLES2
     #include <TGUI/Backend/SDL-GLES2.hpp>
-#elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
+#elif TGUI_HAS_BACKEND_SDL_VULKAN
+    #include <TGUI/Backend/SDL-Vulkan.hpp>
+
+    #include <SDL3/SDL_vulkan.h>
+    #define TGUI_DEFAULT_WINDOW_USES_VULKAN 1
+#elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2 || TGUI_HAS_BACKEND_GLFW_VULKAN
     #if TGUI_HAS_BACKEND_GLFW_OPENGL3
         #include <TGUI/Backend/GLFW-OpenGL3.hpp>
-    #else
+    #elif TGUI_HAS_BACKEND_GLFW_GLES2
         #include <TGUI/Backend/GLFW-GLES2.hpp>
+    #else
+        #include <TGUI/Backend/GLFW-Vulkan.hpp>
+        #define TGUI_DEFAULT_WINDOW_USES_VULKAN 1
     #endif
 
     #define GLFW_INCLUDE_NONE // Don't let GLFW include an OpenGL extension loader
@@ -59,10 +67,197 @@
     #include <TGUI/Backend/raylib.hpp>
 #endif
 
+#if TGUI_DEFAULT_WINDOW_USES_VULKAN
+    #include <TGUI/Backend/Renderer/Vulkan/SwapchainVulkan.hpp>
+
+    #include <cstring>
+    #include <functional>
+    #include <vector>
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
 {
+#if TGUI_DEFAULT_WINDOW_USES_VULKAN
+
+    // Functions are loaded via vkGetInstanceProcAddr so that TGUI doesn't have to to link to the Vulkan loader
+    #define TGUI_LOAD_VULKAN_FUNCTION(instance, func) \
+        const auto func = reinterpret_cast<PFN_##func>(getInstanceProcAddr(instance, #func))
+
+    namespace
+    {
+        // Draws a frame to the window via the swapchain
+        template <typename GuiType>
+        void drawVulkanFrame(GuiType& gui, SwapchainVulkan& swapchain, Vector2u framebufferSize)
+        {
+            const VkCommandBuffer cmdBuffer = swapchain.beginFrame(framebufferSize, {200, 200, 200});
+            if (cmdBuffer == VK_NULL_HANDLE)
+                return; // The window is probably minimized
+
+            gui.setRenderPass(swapchain.getRenderPass(), swapchain.getColorFormat(), SwapchainVulkan::FramesInFlight);
+            gui.draw(cmdBuffer);
+            swapchain.endFrame();
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Creates a Vulkan instance and a device with a queue that can render and present to the window
+        VulkanContext createVulkanDevice(PFN_vkGetInstanceProcAddr getInstanceProcAddr,
+                                         std::vector<const char*> instanceExtensions,
+                                         const std::function<bool(VkInstance, VkPhysicalDevice, std::uint32_t)>& isPresentationSupported)
+        {
+            if (!getInstanceProcAddr)
+                throw Exception("Failed to load the Vulkan library");
+
+            TGUI_LOAD_VULKAN_FUNCTION(VK_NULL_HANDLE, vkCreateInstance);
+            TGUI_LOAD_VULKAN_FUNCTION(VK_NULL_HANDLE, vkEnumerateInstanceExtensionProperties);
+            if (!vkCreateInstance || !vkEnumerateInstanceExtensionProperties)
+                throw Exception("Failed to load the Vulkan functions");
+
+            VkApplicationInfo appInfo = {};
+            appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+            appInfo.pEngineName = "TGUI";
+            appInfo.apiVersion = VK_API_VERSION_1_0;
+
+            VkInstanceCreateInfo instanceInfo = {};
+            instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+            instanceInfo.pApplicationInfo = &appInfo;
+
+    #ifdef VK_KHR_portability_enumeration
+            // The portability extension has to be enabled to find devices that use MoltenVK on macOS
+            std::uint32_t availableExtensionCount = 0;
+            vkEnumerateInstanceExtensionProperties(nullptr, &availableExtensionCount, nullptr);
+            std::vector<VkExtensionProperties> availableExtensions(availableExtensionCount);
+            vkEnumerateInstanceExtensionProperties(nullptr, &availableExtensionCount, availableExtensions.data());
+            for (const auto& extension : availableExtensions)
+            {
+                if (std::strcmp(extension.extensionName, VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME) == 0)
+                {
+                    instanceExtensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+                    instanceInfo.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+                }
+            }
+    #endif
+
+            VulkanContext vulkanContext;
+            vulkanContext.getInstanceProcAddr = getInstanceProcAddr;
+            instanceInfo.enabledExtensionCount = static_cast<std::uint32_t>(instanceExtensions.size());
+            instanceInfo.ppEnabledExtensionNames = instanceExtensions.data();
+            if (vkCreateInstance(&instanceInfo, nullptr, &vulkanContext.instance) != VK_SUCCESS)
+                throw Exception("Failed to create Vulkan instance");
+
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkDestroyInstance);
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkEnumeratePhysicalDevices);
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkEnumerateDeviceExtensionProperties);
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkGetPhysicalDeviceQueueFamilyProperties);
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkGetPhysicalDeviceProperties);
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkCreateDevice);
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkGetDeviceQueue);
+
+            // Pick a device that has a queue family that supports both graphics and presenting, preferring a discrete GPU
+            std::uint32_t physicalDeviceCount = 0;
+            vkEnumeratePhysicalDevices(vulkanContext.instance, &physicalDeviceCount, nullptr);
+            std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
+            vkEnumeratePhysicalDevices(vulkanContext.instance, &physicalDeviceCount, physicalDevices.data());
+
+            bool hasPortabilitySubset = false;
+            for (const VkPhysicalDevice physicalDevice : physicalDevices)
+            {
+                std::uint32_t deviceExtensionCount = 0;
+                vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &deviceExtensionCount, nullptr);
+                std::vector<VkExtensionProperties> deviceExtensions(deviceExtensionCount);
+                vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &deviceExtensionCount, deviceExtensions.data());
+
+                bool hasSwapchain = false;
+                bool hasPortability = false;
+                for (const auto& extension : deviceExtensions)
+                {
+                    if (std::strcmp(extension.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
+                        hasSwapchain = true;
+                    else if (std::strcmp(extension.extensionName, "VK_KHR_portability_subset") == 0)
+                        hasPortability = true;
+                }
+                if (!hasSwapchain)
+                    continue;
+
+                std::uint32_t queueFamilyCount = 0;
+                vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+                std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+                vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
+
+                std::uint32_t queueFamilyIndex = 0;
+                while ((queueFamilyIndex < queueFamilyCount)
+                       && (!(queueFamilies[queueFamilyIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+                           || !isPresentationSupported(vulkanContext.instance, physicalDevice, queueFamilyIndex)))
+                    ++queueFamilyIndex;
+                if (queueFamilyIndex == queueFamilyCount)
+                    continue;
+
+                VkPhysicalDeviceProperties properties;
+                vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+                const bool isDiscreteGpu = (properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU);
+                if ((vulkanContext.physicalDevice == VK_NULL_HANDLE) || isDiscreteGpu)
+                {
+                    vulkanContext.physicalDevice = physicalDevice;
+                    vulkanContext.queueFamilyIndex = queueFamilyIndex;
+                    hasPortabilitySubset = hasPortability;
+                }
+
+                if (isDiscreteGpu)
+                    break;
+            }
+
+            if (vulkanContext.physicalDevice == VK_NULL_HANDLE)
+            {
+                vkDestroyInstance(vulkanContext.instance, nullptr);
+                throw Exception("Failed to find a Vulkan device that can render to the window");
+            }
+
+            const float queuePriority = 1;
+            VkDeviceQueueCreateInfo queueInfo = {};
+            queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            queueInfo.queueFamilyIndex = vulkanContext.queueFamilyIndex;
+            queueInfo.queueCount = 1;
+            queueInfo.pQueuePriorities = &queuePriority;
+
+            std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+            if (hasPortabilitySubset)
+                deviceExtensions.push_back("VK_KHR_portability_subset");
+
+            VkDeviceCreateInfo deviceCreateInfo = {};
+            deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+            deviceCreateInfo.queueCreateInfoCount = 1;
+            deviceCreateInfo.pQueueCreateInfos = &queueInfo;
+            deviceCreateInfo.enabledExtensionCount = static_cast<std::uint32_t>(deviceExtensions.size());
+            deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+            if (vkCreateDevice(vulkanContext.physicalDevice, &deviceCreateInfo, nullptr, &vulkanContext.device) != VK_SUCCESS)
+            {
+                vkDestroyInstance(vulkanContext.instance, nullptr);
+                throw Exception("Failed to create Vulkan device");
+            }
+
+            vkGetDeviceQueue(vulkanContext.device, vulkanContext.queueFamilyIndex, 0, &vulkanContext.queue);
+            return vulkanContext;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void destroyVulkanDevice(const VulkanContext& vulkanContext)
+        {
+            if (!vulkanContext.instance)
+                return;
+
+            const PFN_vkGetInstanceProcAddr getInstanceProcAddr = vulkanContext.getInstanceProcAddr;
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkDestroyDevice);
+            TGUI_LOAD_VULKAN_FUNCTION(vulkanContext.instance, vkDestroyInstance);
+            if (vulkanContext.device)
+                vkDestroyDevice(vulkanContext.device, nullptr);
+            vkDestroyInstance(vulkanContext.instance, nullptr);
+        }
+    } // namespace
+#endif
+
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
     class BackendWindowSFML : public DefaultBackendWindow
     {
@@ -173,7 +368,7 @@ namespace tgui
     };
 
 #elif TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 \
-    || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+    || TGUI_HAS_BACKEND_SDL_VULKAN || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
 
     class BackendWindowSDL : public DefaultBackendWindow
     {
@@ -194,17 +389,22 @@ namespace tgui
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    #elif TGUI_HAS_BACKEND_SDL_GLES || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+    #elif TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     #endif
 
     #if SDL_MAJOR_VERSION >= 3
+        #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+            SDL_WindowFlags backendWindowFlags = SDL_WINDOW_VULKAN;
+        #else
+            SDL_WindowFlags backendWindowFlags = SDL_WINDOW_OPENGL;
+        #endif
             m_window = SDL_CreateWindow(title.toStdString().c_str(),
                                         static_cast<int>(width),
                                         static_cast<int>(height),
-                                        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+                                        backendWindowFlags | SDL_WINDOW_RESIZABLE);
     #else
             m_window = SDL_CreateWindow(title.toStdString().c_str(),
                                         SDL_WINDOWPOS_UNDEFINED,
@@ -225,6 +425,20 @@ namespace tgui
         #endif
             m_gui = std::make_unique<Gui>(m_window, m_renderer);
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
+    #elif TGUI_DEFAULT_WINDOW_USES_VULKAN
+            Uint32 sdlExtensionCount = 0;
+            const char* const* sdlExtensions = SDL_Vulkan_GetInstanceExtensions(&sdlExtensionCount);
+            if (!sdlExtensions)
+                throw Exception("Vulkan is not available for SDL windows on this system. Error: " + String(SDL_GetError()));
+
+            m_vulkanContext = createVulkanDevice(reinterpret_cast<PFN_vkGetInstanceProcAddr>(SDL_Vulkan_GetVkGetInstanceProcAddr()),
+                                                 {sdlExtensions, sdlExtensions + sdlExtensionCount},
+                                                 [](VkInstance instance, VkPhysicalDevice physicalDevice, std::uint32_t queueFamilyIndex)
+                                                 {
+                                                     return SDL_Vulkan_GetPresentationSupport(instance, physicalDevice, queueFamilyIndex);
+                                                 });
+            m_gui = std::make_unique<Gui>(m_window, m_vulkanContext);
+            m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
     #else
             m_glContext = SDL_GL_CreateContext(m_window);
             m_gui = std::make_unique<Gui>(m_window);
@@ -235,6 +449,9 @@ namespace tgui
 
         ~BackendWindowSDL() override
         {
+    #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+            m_swapchain = nullptr;
+    #endif
             m_gui = nullptr; // Gui must be destroyed before destroying SDL window
 
     #if TGUI_HAS_BACKEND_SDL_GPU
@@ -247,6 +464,10 @@ namespace tgui
     #elif TGUI_HAS_BACKEND_SDL_RENDERER
             if (m_renderer)
                 SDL_DestroyRenderer(m_renderer);
+            if (m_window)
+                SDL_DestroyWindow(m_window);
+    #elif TGUI_DEFAULT_WINDOW_USES_VULKAN
+            destroyVulkanDevice(m_vulkanContext);
             if (m_window)
                 SDL_DestroyWindow(m_window);
     #else
@@ -328,6 +549,24 @@ namespace tgui
             m_gui->getBackendRenderTarget()->clearScreen();
             m_gui->draw();
             SDL_RenderPresent(m_renderer);
+    #elif TGUI_DEFAULT_WINDOW_USES_VULKAN
+            if (!m_swapchain || m_swapchain->isSurfaceLost())
+            {
+                m_swapchain = nullptr; // A window can't have multiple swapchains at the same time
+                VkSurfaceKHR surface = VK_NULL_HANDLE;
+                if (!SDL_Vulkan_CreateSurface(m_window, m_vulkanContext.instance, nullptr, &surface))
+                    throw Exception("Failed to create a Vulkan surface for the window. Error: " + String(SDL_GetError()));
+                m_swapchain = std::make_unique<SwapchainVulkan>(std::static_pointer_cast<BackendRendererVulkan>(
+                                                                    getBackend()->getRenderer()),
+                                                                surface);
+            }
+
+            int framebufferWidth = 0;
+            int framebufferHeight = 0;
+            SDL_GetWindowSizeInPixels(m_window, &framebufferWidth, &framebufferHeight);
+            drawVulkanFrame(*m_gui,
+                            *m_swapchain,
+                            {static_cast<unsigned int>(framebufferWidth), static_cast<unsigned int>(framebufferHeight)});
     #else
             m_gui->getBackendRenderTarget()->clearScreen();
             m_gui->draw();
@@ -337,6 +576,9 @@ namespace tgui
 
         void mainLoop(Color clearColor) override
         {
+    #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+            m_swapchain = nullptr; // The gui creates its own swapchain for the window
+    #endif
             m_gui->mainLoop(clearColor);
         }
 
@@ -374,6 +616,9 @@ namespace tgui
         SDL_GPUDevice* m_device = nullptr;
     #elif TGUI_HAS_BACKEND_SDL_RENDERER
         SDL_Renderer* m_renderer = nullptr;
+    #elif TGUI_DEFAULT_WINDOW_USES_VULKAN
+        VulkanContext m_vulkanContext;
+        std::unique_ptr<SwapchainVulkan> m_swapchain; // Only exists when draw() is used outside the main loop
     #else
         SDL_GLContext m_glContext = nullptr;
     #endif
@@ -381,7 +626,7 @@ namespace tgui
         bool m_windowOpen = false;
     };
 
-#elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
+#elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2 || TGUI_HAS_BACKEND_GLFW_VULKAN
     class BackendWindowGLFW : public DefaultBackendWindow
     {
     public:
@@ -394,18 +639,37 @@ namespace tgui
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); // Required for macOS
-    #else
+    #elif TGUI_HAS_BACKEND_GLFW_GLES2
             glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    #else
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     #endif
 
             m_window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height), title.toStdString().c_str(), nullptr, nullptr);
-            glfwMakeContextCurrent(m_window);
 
+    #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+            std::uint32_t glfwExtensionCount = 0;
+            const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+            if (!glfwExtensions)
+                throw Exception("Vulkan is not available for GLFW windows on this system");
+
+            m_vulkanContext = createVulkanDevice(reinterpret_cast<PFN_vkGetInstanceProcAddr>(
+                                                     glfwGetInstanceProcAddress(nullptr, "vkGetInstanceProcAddr")),
+                                                 {glfwExtensions, glfwExtensions + glfwExtensionCount},
+                                                 [](VkInstance instance, VkPhysicalDevice physicalDevice, std::uint32_t queueFamilyIndex)
+                                                 {
+                                                     return glfwGetPhysicalDevicePresentationSupport(instance, physicalDevice, queueFamilyIndex)
+                                                            == GLFW_TRUE;
+                                                 });
+            m_gui = std::make_unique<Gui>(m_window, m_vulkanContext);
+    #else
+            glfwMakeContextCurrent(m_window);
             glfwSwapInterval(1);
 
             m_gui = std::make_unique<Gui>(m_window);
+    #endif
             m_gui->getBackendRenderTarget()->setClearColor({200, 200, 200});
 
             // Set callback functions to push new events on a queue that is accessed by pollEvent
@@ -473,7 +737,14 @@ namespace tgui
 
         ~BackendWindowGLFW() override
         {
+    #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+            m_swapchain = nullptr;
+    #endif
             m_gui = nullptr; // Gui must be destroyed before destroying GLFW window
+
+    #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+            destroyVulkanDevice(m_vulkanContext);
+    #endif
 
             if (m_window)
                 glfwDestroyWindow(m_window);
@@ -528,13 +799,36 @@ namespace tgui
 
         void draw() override
         {
+    #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+            if (!m_swapchain || m_swapchain->isSurfaceLost())
+            {
+                m_swapchain = nullptr; // A window can't have multiple swapchains at the same time
+                VkSurfaceKHR surface = VK_NULL_HANDLE;
+                if (glfwCreateWindowSurface(m_vulkanContext.instance, m_window, nullptr, &surface) != VK_SUCCESS)
+                    throw Exception("Failed to create a Vulkan surface for the window");
+                m_swapchain = std::make_unique<SwapchainVulkan>(std::static_pointer_cast<BackendRendererVulkan>(
+                                                                    getBackend()->getRenderer()),
+                                                                surface);
+            }
+
+            int framebufferWidth = 0;
+            int framebufferHeight = 0;
+            glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
+            drawVulkanFrame(*m_gui,
+                            *m_swapchain,
+                            {static_cast<unsigned int>(framebufferWidth), static_cast<unsigned int>(framebufferHeight)});
+    #else
             m_gui->getBackendRenderTarget()->clearScreen();
             m_gui->draw();
             glfwSwapBuffers(m_window);
+    #endif
         }
 
         void mainLoop(Color clearColor) override
         {
+    #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+            m_swapchain = nullptr; // The gui creates its own swapchain for the window
+    #endif
             m_gui->mainLoop(clearColor);
         }
 
@@ -560,6 +854,10 @@ namespace tgui
 
     private:
         GLFWwindow* m_window = nullptr;
+    #if TGUI_DEFAULT_WINDOW_USES_VULKAN
+        VulkanContext m_vulkanContext;
+        std::unique_ptr<SwapchainVulkan> m_swapchain; // Only exists when draw() is used outside the main loop
+    #endif
         std::unique_ptr<Gui> m_gui;
         std::queue<Event> m_events;
         bool m_closeEventGenerated = false;
@@ -696,9 +994,9 @@ namespace tgui
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
         return std::make_shared<BackendWindowSFML>(width, height, title);
 #elif TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_GLES2 \
-    || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
+    || TGUI_HAS_BACKEND_SDL_VULKAN || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2
         return std::make_shared<BackendWindowSDL>(width, height, title);
-#elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
+#elif TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2 || TGUI_HAS_BACKEND_GLFW_VULKAN
         return std::make_shared<BackendWindowGLFW>(width, height, title);
 #elif TGUI_HAS_BACKEND_RAYLIB
         return std::make_shared<BackendWindowRaylib>(width, height, title);

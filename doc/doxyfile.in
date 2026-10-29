@@ -36,6 +36,7 @@ INPUT                  = "@PROJECT_SOURCE_DIR@/include/TGUI" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/SDL_Renderer" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/SFML-Graphics" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/Raylib" \
+                         "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Renderer/Vulkan" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Window" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Window/GLFW" \
                          "@PROJECT_SOURCE_DIR@/include/TGUI/Backend/Window/SDL" \
@@ -80,6 +81,7 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER=1 \
                          TGUI_HAS_RENDERER_BACKEND_OPENGL3=1 \
                          TGUI_HAS_RENDERER_BACKEND_GLES2=1 \
+                         TGUI_HAS_RENDERER_BACKEND_VULKAN=1 \
                          TGUI_HAS_RENDERER_BACKEND_RAYLIB=1 \
                          TGUI_HAS_FONT_BACKEND_SFML_GRAPHICS=1 \
                          TGUI_HAS_FONT_BACKEND_SDL_TTF=1 \
@@ -92,8 +94,10 @@ PREDEFINED             = TGUI_DEPRECATED(x)= \
                          TGUI_HAS_BACKEND_SDL_GLES2=1 \
                          TGUI_HAS_BACKEND_SDL_TTF_OPENGL3=1 \
                          TGUI_HAS_BACKEND_SDL_TTF_GLES2=1 \
+                         TGUI_HAS_BACKEND_SDL_VULKAN=1 \
                          TGUI_HAS_BACKEND_GLFW_OPENGL3=1 \
                          TGUI_HAS_BACKEND_GLFW_GLES2=1 \
+                         TGUI_HAS_BACKEND_GLFW_VULKAN=1 \
                          TGUI_HAS_BACKEND_RAYLIB=1 \
                          SFML_VERSION_MAJOR=3 \
                          SDL_MAJOR_VERSION=3

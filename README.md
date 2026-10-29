@@ -27,8 +27,10 @@ OS support for each backend:
 | **SDL\_TTF\_GLES2**     |                     | :heavy_check_mark:  | N/A                 | :heavy_check_mark:  | :heavy_check_mark: :question: | :heavy_check_mark: |
 | **SDL\_OPENGL3**        | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
 | **SDL\_GLES2**          |                     | :heavy_check_mark:  | N/A                 |                     |                     | :heavy_check_mark:  |
+| **SDL\_VULKAN**         | :heavy_check_mark:  | :heavy_check_mark:  | :question:          | :heavy_check_mark:  |                     | N/A                 |
 | **GLFW\_OPENGL3**       | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 |
 | **GLFW\_GLES2**         |                     | :heavy_check_mark:  | N/A                 | N/A                 | N/A                 | :heavy_check_mark:  |
+| **GLFW\_VULKAN**        | :heavy_check_mark:  | :heavy_check_mark:  | :question:          | N/A                 | N/A                 | N/A                 |
 | **RAYLIB**              | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | :heavy_check_mark:  | N/A                 | :heavy_check_mark:  |
 
 
@@ -44,8 +46,10 @@ Dependencies for each backend:
 | **SDL\_TTF\_GLES2**     | SDL  (>= 2.0.6)       | SDL_ttf  (>= 2.0.14)    | OpenGL ES  (>= 2.0)     |
 | **SDL\_OPENGL3**        | SDL  (>= 2.0.6)       | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
 | **SDL\_GLES2**          | SDL  (>= 2.0.6)       | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
+| **SDL\_VULKAN**         | SDL  (>= 3.2)         | FreeType  (>= 2.6)      | Vulkan  (>= 1.0)        |
 | **GLFW\_OPENGL3**       | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | OpenGL  (>= 3.3)        |
 | **GLFW\_GLES2**         | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | OpenGL ES  (>= 2.0)     |
+| **GLFW\_VULKAN**        | GLFW  (>= 3.2)        | FreeType  (>= 2.6)      | Vulkan  (>= 1.0)        |
 | **RAYLIB**              | raylib  (>= 4.2)      | raylib  (>= 4.2)        | raylib  (>= 4.2)        |
 
 

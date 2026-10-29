@@ -1,7 +1,9 @@
 TGUI 1.14  (TBD)
 ----------------
 
+- Added new `SDL_VULKAN` and `GLFW_VULKAN` backends
 - Bound layouts didn't take widget scale factors into account
+- Fixed possible text corruption when switching between fonts
 
 
 TGUI 1.13  (24 June 2026)

@@ -166,7 +166,10 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Draws all the widgets that were added to the gui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        virtual void draw(); // TGUI_NEXT: Remove from base class, as some backends require parameters
+        // TGUI_NEXT: Remove from base class, as some backends require parameters. Each Gui class should declare its own
+        //            draw function with the parameters that its renderer needs, and mainLoop should render via functions
+        //            in the render target to start and present a frame instead of relying on draw() and presentScreen().
+        virtual void draw();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns the internal container of the Gui

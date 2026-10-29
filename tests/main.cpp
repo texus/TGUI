@@ -36,8 +36,8 @@
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
     #include <SFML/Window.hpp>
 #endif
-#if TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2 \
-    || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_GPU
+#if TGUI_HAS_BACKEND_SDL_GLES2 || TGUI_HAS_BACKEND_SDL_OPENGL3 || TGUI_HAS_BACKEND_SDL_TTF_GLES2 || TGUI_HAS_BACKEND_SDL_TTF_OPENGL3 \
+    || TGUI_HAS_BACKEND_SDL_RENDERER || TGUI_HAS_BACKEND_SDL_GPU || TGUI_HAS_BACKEND_SDL_VULKAN
     // If the program links to sfml-main then we shouldn't let SDL redefine "main" as "SDL_main"
     #if TGUI_HAS_BACKEND_SFML_GRAPHICS || TGUI_HAS_BACKEND_SFML_OPENGL3
         #define SDL_MAIN_HANDLED
@@ -54,7 +54,13 @@
         #include <SDL_ttf.h>
     #endif
 #endif
-#if TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2
+#if TGUI_HAS_BACKEND_GLFW_VULKAN || TGUI_HAS_BACKEND_SDL_VULKAN
+    #include <vulkan/vulkan.h>
+#endif
+#if TGUI_HAS_BACKEND_SDL_VULKAN
+    #include <SDL3/SDL_vulkan.h>
+#endif
+#if TGUI_HAS_BACKEND_GLFW_OPENGL3 || TGUI_HAS_BACKEND_GLFW_GLES2 || TGUI_HAS_BACKEND_GLFW_VULKAN
     #ifdef TGUI_SYSTEM_WINDOWS
         #include <TGUI/extlibs/IncludeWindows.hpp>
     #endif
@@ -459,6 +465,114 @@ struct TestsWindowSdlGLES2 : public TestsWindowBase
     SDL_GLContext glContext = nullptr;
 };
 #endif
+#if TGUI_HAS_BACKEND_GLFW_VULKAN || TGUI_HAS_BACKEND_SDL_VULKAN
+    #include <TGUI/Backend/Renderer/Vulkan/BackendRendererVulkan.hpp>
+
+// Creates a Vulkan instance and a device, using the first queue family that supports both graphics and presenting
+template <typename PresentationSupportFunc>
+tgui::VulkanContext createVulkanDevice(std::uint32_t extensionCount, const char* const* extensions, PresentationSupportFunc isPresentationSupported)
+{
+    tgui::VulkanContext vulkanContext;
+
+    VkInstanceCreateInfo instanceInfo = {};
+    instanceInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    instanceInfo.enabledExtensionCount = extensionCount;
+    instanceInfo.ppEnabledExtensionNames = extensions;
+    if (vkCreateInstance(&instanceInfo, nullptr, &vulkanContext.instance) != VK_SUCCESS)
+        throw tgui::Exception("Failed to create Vulkan instance");
+
+    std::uint32_t physicalDeviceCount = 0;
+    vkEnumeratePhysicalDevices(vulkanContext.instance, &physicalDeviceCount, nullptr);
+    std::vector<VkPhysicalDevice> physicalDevices(physicalDeviceCount);
+    vkEnumeratePhysicalDevices(vulkanContext.instance, &physicalDeviceCount, physicalDevices.data());
+
+    for (const VkPhysicalDevice physicalDevice : physicalDevices)
+    {
+        std::uint32_t queueFamilyCount = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
+        for (std::uint32_t i = 0; (i < queueFamilyCount) && !vulkanContext.physicalDevice; ++i)
+        {
+            if ((queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+                && isPresentationSupported(vulkanContext.instance, physicalDevice, i))
+            {
+                vulkanContext.physicalDevice = physicalDevice;
+                vulkanContext.queueFamilyIndex = i;
+            }
+        }
+    }
+    if (!vulkanContext.physicalDevice)
+        throw tgui::Exception("Failed to find a suitable Vulkan device");
+
+    const float queuePriority = 1;
+    VkDeviceQueueCreateInfo queueInfo = {};
+    queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueInfo.queueFamilyIndex = vulkanContext.queueFamilyIndex;
+    queueInfo.queueCount = 1;
+    queueInfo.pQueuePriorities = &queuePriority;
+
+    const char* swapchainExtension = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+    VkDeviceCreateInfo deviceCreateInfo = {};
+    deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    deviceCreateInfo.queueCreateInfoCount = 1;
+    deviceCreateInfo.pQueueCreateInfos = &queueInfo;
+    deviceCreateInfo.enabledExtensionCount = 1;
+    deviceCreateInfo.ppEnabledExtensionNames = &swapchainExtension;
+    if (vkCreateDevice(vulkanContext.physicalDevice, &deviceCreateInfo, nullptr, &vulkanContext.device) != VK_SUCCESS)
+        throw tgui::Exception("Failed to create Vulkan device");
+
+    vkGetDeviceQueue(vulkanContext.device, vulkanContext.queueFamilyIndex, 0, &vulkanContext.queue);
+    return vulkanContext;
+}
+#endif
+#if TGUI_HAS_BACKEND_SDL_VULKAN
+    #include <TGUI/Backend/SDL-Vulkan.hpp>
+
+struct TestsWindowSdlVulkan : public TestsWindowBase
+{
+    TestsWindowSdlVulkan()
+    {
+        SDL_Init(SDL_INIT_VIDEO);
+        window = SDL_CreateWindow(windowTitle, windowWidth, windowHeight, SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
+
+        Uint32 extensionCount = 0;
+        const char* const* extensions = SDL_Vulkan_GetInstanceExtensions(&extensionCount);
+        const auto vulkanContext = createVulkanDevice(extensionCount,
+                                                      extensions,
+                                                      [](VkInstance vulkanInstance, VkPhysicalDevice physicalDevice, std::uint32_t queueFamilyIndex)
+                                                      {
+                                                          return SDL_Vulkan_GetPresentationSupport(vulkanInstance,
+                                                                                                   physicalDevice,
+                                                                                                   queueFamilyIndex);
+                                                      });
+        instance = vulkanContext.instance;
+        device = vulkanContext.device;
+
+        gui = std::make_unique<tgui::SDL_VULKAN::Gui>(window, vulkanContext);
+    }
+
+    ~TestsWindowSdlVulkan() override
+    {
+        gui = nullptr;
+        vkDestroyDevice(device, nullptr);
+        vkDestroyInstance(instance, nullptr);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+    }
+
+    void close() override
+    {
+        SDL_Event event;
+        event.type = SDL_EVENT_QUIT;
+        SDL_PushEvent(&event);
+    }
+
+    SDL_Window* window = nullptr;
+    VkInstance instance = VK_NULL_HANDLE;
+    VkDevice device = VK_NULL_HANDLE;
+};
+#endif
 #if TGUI_HAS_BACKEND_GLFW_OPENGL3
     #include <TGUI/Backend/GLFW-OpenGL3.hpp>
 
@@ -522,6 +636,53 @@ struct TestsWindowGlfwGLES2 : public TestsWindowBase
     GLFWwindow* window = nullptr;
 };
 #endif
+#if TGUI_HAS_BACKEND_GLFW_VULKAN
+    #include <TGUI/Backend/GLFW-Vulkan.hpp>
+
+struct TestsWindowGlfwVulkan : public TestsWindowBase
+{
+    TestsWindowGlfwVulkan()
+    {
+        glfwInit();
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        window = glfwCreateWindow(windowWidth, windowHeight, windowTitle, nullptr, nullptr);
+
+        std::uint32_t extensionCount = 0;
+        const char** extensions = glfwGetRequiredInstanceExtensions(&extensionCount);
+        const auto vulkanContext = createVulkanDevice(extensionCount,
+                                                      extensions,
+                                                      [](VkInstance vulkanInstance, VkPhysicalDevice physicalDevice, std::uint32_t queueFamilyIndex)
+                                                      {
+                                                          return glfwGetPhysicalDevicePresentationSupport(vulkanInstance,
+                                                                                                          physicalDevice,
+                                                                                                          queueFamilyIndex)
+                                                                 == GLFW_TRUE;
+                                                      });
+        instance = vulkanContext.instance;
+        device = vulkanContext.device;
+
+        gui = std::make_unique<tgui::GLFW_VULKAN::Gui>(window, vulkanContext);
+    }
+
+    ~TestsWindowGlfwVulkan() override
+    {
+        gui = nullptr;
+        vkDestroyDevice(device, nullptr);
+        vkDestroyInstance(instance, nullptr);
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
+
+    void close() override
+    {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+
+    GLFWwindow* window = nullptr;
+    VkInstance instance = VK_NULL_HANDLE;
+    VkDevice device = VK_NULL_HANDLE;
+};
+#endif
 #if TGUI_HAS_BACKEND_RAYLIB
     #include <TGUI/Backend/raylib.hpp>
 
@@ -566,60 +727,76 @@ int main(int argc, char* argv[])
     }
 
     std::unique_ptr<TestsWindowBase> window;
-    if (selectedBackend.empty())
-        window = std::make_unique<TestsWindowDefault>();
-    else
+    try
     {
+        if (selectedBackend.empty())
+            window = std::make_unique<TestsWindowDefault>();
+        else
+        {
 #if TGUI_HAS_BACKEND_SFML_GRAPHICS
-        if (selectedBackend == "SFML_GRAPHICS")
-            window = std::make_unique<TestsWindowSfmlGraphics>();
+            if (selectedBackend == "SFML_GRAPHICS")
+                window = std::make_unique<TestsWindowSfmlGraphics>();
 #endif
 #if TGUI_HAS_BACKEND_SFML_OPENGL3
-        if (selectedBackend == "SFML_OPENGL3")
-            window = std::make_unique<TestsWindowSfmlOpenGL3>();
+            if (selectedBackend == "SFML_OPENGL3")
+                window = std::make_unique<TestsWindowSfmlOpenGL3>();
 #endif
 #if TGUI_HAS_BACKEND_SDL_GPU
-        if (selectedBackend == "SDL_GPU")
-            window = std::make_unique<TestsWindowSdlGPU>();
+            if (selectedBackend == "SDL_GPU")
+                window = std::make_unique<TestsWindowSdlGPU>();
 #endif
 #if TGUI_HAS_BACKEND_SDL_RENDERER
-        if (selectedBackend == "SDL_RENDERER")
-            window = std::make_unique<TestsWindowSdlRenderer>();
+            if (selectedBackend == "SDL_RENDERER")
+                window = std::make_unique<TestsWindowSdlRenderer>();
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_OPENGL3
-        if (selectedBackend == "SDL_TTF_OPENGL3")
-            window = std::make_unique<TestsWindowSdlTtfOpenGL3>();
+            if (selectedBackend == "SDL_TTF_OPENGL3")
+                window = std::make_unique<TestsWindowSdlTtfOpenGL3>();
 #endif
 #if TGUI_HAS_BACKEND_SDL_TTF_GLES2
-        if (selectedBackend == "SDL_TTF_GLES2")
-            window = std::make_unique<TestsWindowSdlTtfGLES2>();
+            if (selectedBackend == "SDL_TTF_GLES2")
+                window = std::make_unique<TestsWindowSdlTtfGLES2>();
 #endif
 #if TGUI_HAS_BACKEND_SDL_OPENGL3
-        if (selectedBackend == "SDL_OPENGL3")
-            window = std::make_unique<TestsWindowSdlOpenGL3>();
+            if (selectedBackend == "SDL_OPENGL3")
+                window = std::make_unique<TestsWindowSdlOpenGL3>();
 #endif
 #if TGUI_HAS_BACKEND_SDL_GLES2
-        if (selectedBackend == "SDL_GLES2")
-            window = std::make_unique<TestsWindowSdlGLES2>();
+            if (selectedBackend == "SDL_GLES2")
+                window = std::make_unique<TestsWindowSdlGLES2>();
+#endif
+#if TGUI_HAS_BACKEND_SDL_VULKAN
+            if (selectedBackend == "SDL_VULKAN")
+                window = std::make_unique<TestsWindowSdlVulkan>();
 #endif
 #if TGUI_HAS_BACKEND_GLFW_OPENGL3
-        if (selectedBackend == "GLFW_OPENGL3")
-            window = std::make_unique<TestsWindowGlfwOpenGL3>();
+            if (selectedBackend == "GLFW_OPENGL3")
+                window = std::make_unique<TestsWindowGlfwOpenGL3>();
 #endif
 #if TGUI_HAS_BACKEND_GLFW_GLES2
-        if (selectedBackend == "GLFW_GLES2")
-            window = std::make_unique<TestsWindowGlfwGLES2>();
+            if (selectedBackend == "GLFW_GLES2")
+                window = std::make_unique<TestsWindowGlfwGLES2>();
+#endif
+#if TGUI_HAS_BACKEND_GLFW_VULKAN
+            if (selectedBackend == "GLFW_VULKAN")
+                window = std::make_unique<TestsWindowGlfwVulkan>();
 #endif
 #if TGUI_HAS_BACKEND_RAYLIB
-        if (selectedBackend == "RAYLIB")
-            window = std::make_unique<TestsWindowRaylib>();
+            if (selectedBackend == "RAYLIB")
+                window = std::make_unique<TestsWindowRaylib>();
 #endif
 
-        if (!window)
-        {
-            std::cerr << "Backend parameter was provided but no matching backend was enabled TGUI\n";
-            return EXIT_FAILURE;
+            if (!window)
+            {
+                std::cerr << "Backend parameter was provided but no matching backend was enabled TGUI\n";
+                return EXIT_FAILURE;
+            }
         }
+    }
+    catch (const tgui::Exception& e)
+    {
+        std::cerr << "Failed to create the window: " << e.what() << '\n';
+        return EXIT_FAILURE;
     }
 
     globalGui = window->getGui();

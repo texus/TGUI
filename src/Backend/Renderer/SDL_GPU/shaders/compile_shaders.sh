@@ -17,16 +17,16 @@ cat shader.frag.msl | sed 's/^/        /'
 echo '    )";'
 echo ''
 
-python -c "b=open('shader.vert.spv', 'rb').read(); print('    static const std::uint8_t vertexShaderSPV[] = \n        \"' + '\"\n        \"'.join(''.join(r'\x{:02x}'.format(c) for c in b[i:i+40]) for i in range(0, len(b), 40)) + '\";')"
+python3 -c "b=open('shader.vert.spv', 'rb').read(); print('    static const std::uint8_t vertexShaderSPV[] = \n        \"' + '\"\n        \"'.join(''.join(r'\x{:02x}'.format(c) for c in b[i:i+40]) for i in range(0, len(b), 40)) + '\";')"
 
 echo ''
 
-python -c "b=open('shader.frag.spv', 'rb').read(); print('    static const std::uint8_t fragmentShaderSPV[] = \n        \"' + '\"\n        \"'.join(''.join(r'\x{:02x}'.format(c) for c in b[i:i+40]) for i in range(0, len(b), 40)) + '\";')"
+python3 -c "b=open('shader.frag.spv', 'rb').read(); print('    static const std::uint8_t fragmentShaderSPV[] = \n        \"' + '\"\n        \"'.join(''.join(r'\x{:02x}'.format(c) for c in b[i:i+40]) for i in range(0, len(b), 40)) + '\";')"
 
 echo ''
 
-python -c "b=open('shader.vert.dxil', 'rb').read(); print('    static const std::uint8_t vertexShaderDXIL[] = \n        \"' + '\"\n        \"'.join(''.join(r'\x{:02x}'.format(c) for c in b[i:i+40]) for i in range(0, len(b), 40)) + '\";')"
+python3 -c "b=open('shader.vert.dxil', 'rb').read(); print('    static const std::uint8_t vertexShaderDXIL[] = \n        \"' + '\"\n        \"'.join(''.join(r'\x{:02x}'.format(c) for c in b[i:i+40]) for i in range(0, len(b), 40)) + '\";')"
 
 echo ''
 
-python -c "b=open('shader.frag.dxil', 'rb').read(); print('    static const std::uint8_t fragmentShaderDXIL[] = \n        \"' + '\"\n        \"'.join(''.join(r'\x{:02x}'.format(c) for c in b[i:i+40]) for i in range(0, len(b), 40)) + '\";')"
+python3 -c "b=open('shader.frag.dxil', 'rb').read(); print('    static const std::uint8_t fragmentShaderDXIL[] = \n        \"' + '\"\n        \"'.join(''.join(r'\x{:02x}'.format(c) for c in b[i:i+40]) for i in range(0, len(b), 40)) + '\";')"

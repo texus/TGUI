@@ -169,7 +169,7 @@ macro(tgui_find_dependency_sdl)
     # An option is added to explicitly search for the other version, in case the default decision is unwanted.
     if(NOT DEFINED TGUI_USE_SDL3)
         set(description "Determines whether TGUI looks for SDL2 or SDL3")
-        if(TGUI_FOUND_SDL3 OR TGUI_HAS_BACKEND_SDL_GPU OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_GPU)
+        if(TGUI_FOUND_SDL3 OR TGUI_HAS_BACKEND_SDL_GPU OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_GPU OR TGUI_HAS_BACKEND_SDL_VULKAN)
             option(TGUI_USE_SDL3 "${description}" TRUE)
         elseif(TGUI_FOUND_SDL2_CONFIG OR TGUI_FOUND_SDL2_MODULE)
             option(TGUI_USE_SDL3 "${description}" FALSE)
@@ -184,6 +184,9 @@ macro(tgui_find_dependency_sdl)
 
     if(NOT TGUI_USE_SDL3 AND (TGUI_HAS_BACKEND_SDL_GPU OR TGUI_CUSTOM_BACKEND_HAS_RENDERER_SDL_GPU))
         message(FATAL_ERROR "SDL_GPU backend requires SDL3. Change the value of TGUI_USE_SDL3 or select a different backend.")
+    endif()
+    if(NOT TGUI_USE_SDL3 AND TGUI_HAS_BACKEND_SDL_VULKAN)
+        message(FATAL_ERROR "SDL_VULKAN backend requires SDL3. Change the value of TGUI_USE_SDL3 or select a different backend.")
     endif()
 
     if(TGUI_USE_SDL3)
@@ -721,6 +724,28 @@ macro(tgui_add_dependency_gles2)
     endif()
 
     target_link_libraries(tgui PRIVATE EGL GLESv2)
+endmacro()
+
+
+# Find the Vulkan headers and add them as a dependency.
+# TGUI doesn't link to the Vulkan loader, the functions are loaded at runtime via vkGetInstanceProcAddr.
+macro(tgui_add_dependency_vulkan)
+    if(NOT TARGET Vulkan::Headers)
+        # Prefer the config file that comes with the Vulkan-Headers package as FindVulkan also requires the loader library to be found
+        find_package(VulkanHeaders CONFIG QUIET)
+        if(VulkanHeaders_FOUND)
+            set(TGUI_FOUND_VULKAN_HEADERS_CONFIG TRUE)
+        else()
+            find_package(Vulkan REQUIRED)
+            set(TGUI_FOUND_VULKAN_HEADERS_CONFIG FALSE)
+        endif()
+    endif()
+
+    target_link_libraries(tgui PUBLIC Vulkan::Headers)
+
+    # Make certain that TGUI never accidentally calls the functions exported by the loader directly,
+    # all calls should be made to the functions that are loaded at runtime.
+    target_compile_definitions(tgui PRIVATE VK_NO_PROTOTYPES)
 endmacro()
 
 

@@ -148,7 +148,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get -y install xorg-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype-dev libharfbuzz-dev ninja-build libwayland-dev libxkbcommon-dev
+          sudo apt-get -y install xorg-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype-dev libharfbuzz-dev ninja-build libwayland-dev libxkbcommon-dev libvulkan-dev
           sudo sh -c 'wget -nv -O- "https://cmake.org/files/v${{env.CMAKE_VERSION}}/cmake-${{env.CMAKE_VERSION}}.${{env.CMAKE_VERSION_PATCH}}-linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local'
 
       - name: Build SFML
@@ -215,8 +215,10 @@ jobs:
           -DTGUI_HAS_BACKEND_SDL_GLES2=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_OPENGL3=ON
           -DTGUI_HAS_BACKEND_SDL_TTF_GLES2=ON
+          -DTGUI_HAS_BACKEND_SDL_VULKAN=ON
           -DTGUI_HAS_BACKEND_GLFW_OPENGL3=ON
           -DTGUI_HAS_BACKEND_GLFW_GLES2=ON
+          -DTGUI_HAS_BACKEND_GLFW_VULKAN=ON
           -DTGUI_HAS_BACKEND_RAYLIB=ON
 
           sudo make -C build -j$(nproc) install
@@ -240,6 +242,8 @@ jobs:
           MESA_GLES_VERSION_OVERRIDE=3.0 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_TTF_GLES2
           MESA_GL_VERSION_OVERRIDE=4.5 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_OPENGL3
           MESA_GLES_VERSION_OVERRIDE=2.0 xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_GLES2
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=SDL_VULKAN
+          xvfb-run --server-args="-screen 0, 1280x720x24" -a ./tests --backend=GLFW_VULKAN
 
       - name: Test TGUIConfig.cmake
         working-directory: TGUI

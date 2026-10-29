@@ -237,6 +237,61 @@ TEST_CASE("[CanvasSDLGPU]")
 }
 #endif
 
+#if TGUI_HAS_RENDERER_BACKEND_VULKAN
+
+    #include <TGUI/Backend/Renderer/Vulkan/BackendRendererVulkan.hpp>
+    #include <TGUI/Backend/Renderer/Vulkan/CanvasVulkan.hpp>
+
+TEST_CASE("[CanvasVulkan]")
+{
+    if (std::dynamic_pointer_cast<tgui::BackendRendererVulkan>(tgui::getBackend()->getRenderer()))
+    {
+        tgui::CanvasVulkan::Ptr canvas = tgui::CanvasVulkan::create();
+        canvas->getRenderer()->setFont("resources/DejaVuSans.ttf");
+
+        SECTION("WidgetType")
+        {
+            REQUIRE(canvas->getWidgetType() == "CanvasVulkan");
+        }
+
+        SECTION("constructor")
+        {
+            canvas = tgui::CanvasVulkan::create({200, 100});
+            REQUIRE(canvas->getSize() == tgui::Vector2f(200, 100));
+            REQUIRE(canvas->getImage() != VK_NULL_HANDLE);
+            REQUIRE(canvas->getImageView() != VK_NULL_HANDLE);
+        }
+
+        SECTION("internal image")
+        {
+            canvas = tgui::CanvasVulkan::create({50, 50});
+            VkImageView internalImageView = canvas->getImageView();
+
+            canvas->setSize({70, 80});
+
+            // The image is recreated on resize and the handle will be different
+            REQUIRE(internalImageView != canvas->getImageView());
+            internalImageView = canvas->getImageView();
+
+            // Changing the position has no impact on the internal image
+            canvas->setPosition({10, 5});
+            REQUIRE(internalImageView == canvas->getImageView());
+        }
+
+        testCanvasCommon(canvas);
+
+        testWidgetRenderer(canvas->getRenderer());
+
+        SECTION("Saving and loading from file")
+        {
+            REQUIRE_NOTHROW(canvas = tgui::CanvasVulkan::create({60, 40}));
+
+            testSavingWidget("CanvasVulkan", canvas, false);
+        }
+    }
+}
+#endif
+
 #if TGUI_HAS_RENDERER_BACKEND_SDL_RENDERER
 
     #include <TGUI/Backend/Renderer/SDL_Renderer/BackendRendererSDL.hpp>

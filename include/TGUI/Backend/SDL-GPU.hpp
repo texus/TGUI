@@ -78,8 +78,9 @@ namespace tgui
             SDL_GPUDevice* getDevice() const;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// @brief This function is not used by this backend, use draw(SDL_GPUCommandBuffer*, SDL_GPURenderPass*) instead
+            /// @brief This function is not used by this backend, use prepareDraw and draw(SDL_GPURenderPass*) instead
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            TGUI_DEPRECATED("This backend requires a render pass, use prepareDraw and draw(SDL_GPURenderPass*) instead")
             void draw() override
             {
                 TGUI_ASSERT(false,

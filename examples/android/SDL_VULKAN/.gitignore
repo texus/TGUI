@@ -1,0 +1,12 @@
+/local.properties
+/build
+/build.sh
+/.idea
+/.gradle
+/app/.externalNativeBuild
+/app/.cxx
+/app/build
+/app/jni/SDL
+/app/jni/SDL_image
+/app/jni/SDL_ttf
+/app/jni/TGUI

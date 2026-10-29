@@ -42,6 +42,13 @@ macro(tgui_add_example target)
     add_executable(${target} ${GUI_APP} ${THIS_SOURCES} "../main-${TGUI_DEFAULT_BACKEND}.cpp")
 
     target_link_libraries(${target} PRIVATE tgui tgui-gui-app-interface)
+
+    if(TGUI_DEFAULT_BACKEND STREQUAL "GLFW_VULKAN" OR TGUI_DEFAULT_BACKEND STREQUAL "SDL_VULKAN")
+        # The Vulkan example creates the Vulkan instance and thus needs to link the Vulkan loader
+        find_package(Vulkan REQUIRED)
+        target_link_libraries(${target} PRIVATE Vulkan::Vulkan)
+    endif()
+
     tgui_set_global_compile_flags(${target})
     tgui_set_stdlib(${target})
 
