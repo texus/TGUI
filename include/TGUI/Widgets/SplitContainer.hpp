@@ -114,6 +114,18 @@ namespace tgui
         void add(const Widget::Ptr& widgetPtr, const String& widgetName = "") override;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Removes a single widget that was added to the container
+        ///
+        /// @param widget  Pointer to the widget to remove
+        ///
+        /// @return True if widget is removed, false if widget was not found
+        ///
+        /// If the container already has 2 widgets when the first widget is removed then the second widget will take its
+        /// place on the left/top side of the splitter.
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool remove(const Widget::Ptr& widget) override;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes the index of a widget in this container
         ///
         /// Widgets are drawn in the order of the list, so overlapping widgets with a higher index will appear on top of others.

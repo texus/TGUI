@@ -103,6 +103,17 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    bool SplitContainer::remove(const Widget::Ptr& widget)
+    {
+        if (!Group::remove(widget))
+            return false;
+
+        updateChildren();
+        return true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool SplitContainer::setWidgetIndex(const Widget::Ptr& widget, std::size_t index)
     {
         if (!Group::setWidgetIndex(widget, index))

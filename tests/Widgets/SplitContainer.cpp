@@ -128,6 +128,16 @@ TEST_CASE("[SplitContainer]")
             REQUIRE(child1->getSize() == tgui::Vector2f{100, 60});
             REQUIRE(child2->getPosition() == tgui::Vector2f{0, 0});
             REQUIRE(child2->getSize() == tgui::Vector2f{95, 60});
+
+            auto child3 = tgui::Panel::create();
+            splitContainer->add(child3);
+            REQUIRE(splitContainer->remove(child2));
+            REQUIRE(child1->getPosition() == tgui::Vector2f{0, 0});
+            REQUIRE(child1->getSize() == tgui::Vector2f{95, 60});
+            REQUIRE(child3->getPosition() == tgui::Vector2f{100, 0});
+            REQUIRE(child3->getSize() == tgui::Vector2f{100, 60});
+
+            REQUIRE(!splitContainer->remove(child2));
         }
 
         SECTION("Vertical")
