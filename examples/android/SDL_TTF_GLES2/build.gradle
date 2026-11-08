@@ -2,7 +2,7 @@
 
 buildscript {
     // AGP 8.x and older don't work with Gradle 9.6 or newer, while AGP 9.5 requires at least Gradle 9.6
-    def androidGradlePluginVersion = GradleVersion.current().baseVersion >= GradleVersion.version('9.6') ? '9.5.1' : '7.3.1'
+    def androidGradlePluginVersion = GradleVersion.current().baseVersion >= GradleVersion.version('9.6') ? '9.5.1' : '8.13.2'
 
     repositories {
         mavenCentral()
