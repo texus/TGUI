@@ -664,6 +664,22 @@ void Form::updateSelectionSquarePositions()
         square->setPosition({std::round(square->getPosition().x - (square->getSize().y / 2.f)),
                              std::round(square->getPosition().y - (square->getSize().x / 2.f))});
     }
+
+    // Disable the squares that would change a part of the geometry that is controlled by the parent of the widget.
+    // They are kept visible (but dimmed) as they still indicate which widget is selected.
+    const auto locked = getLockedGeometry(widget);
+    const bool canResizeLeft = !locked.width && !locked.left;
+    const bool canResizeTop = !locked.height && !locked.top;
+    const bool canResizeRight = !locked.width;
+    const bool canResizeBottom = !locked.height;
+    m_selectionSquares[0]->setEnabled(canResizeLeft);
+    m_selectionSquares[1]->setEnabled(canResizeTop);
+    m_selectionSquares[2]->setEnabled(canResizeBottom);
+    m_selectionSquares[3]->setEnabled(canResizeRight);
+    m_selectionSquares[4]->setEnabled(canResizeTop && canResizeLeft);
+    m_selectionSquares[5]->setEnabled(canResizeBottom && canResizeLeft);
+    m_selectionSquares[6]->setEnabled(canResizeTop && canResizeRight);
+    m_selectionSquares[7]->setEnabled(canResizeBottom && canResizeRight);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -750,8 +766,17 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
     const auto controlPressed = keyEvent.control;
 #endif
 
+    // Don't allow moving or resizing the widget in a direction that is controlled by its parent
+    const auto locked = getLockedGeometry(selectedWidget);
+    const bool horizontalKey = (keyEvent.code == tgui::Event::KeyboardKey::Left) || (keyEvent.code == tgui::Event::KeyboardKey::Right);
+    const bool moveLocked = horizontalKey ? locked.left : locked.top;
+    const bool resizeLocked = horizontalKey ? locked.width : locked.height;
+
     if (keyEvent.shift && controlPressed)
     {
+        if (moveLocked)
+            return;
+
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
         {
             m_guiBuilder->saveUndoState(GuiBuilder::UndoType::Move);
@@ -779,6 +804,9 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
     }
     else if (keyEvent.shift)
     {
+        if (resizeLocked)
+            return;
+
         if ((keyEvent.code == tgui::Event::KeyboardKey::Left) || (keyEvent.code == tgui::Event::KeyboardKey::Right))
         {
             const float originalLeft = selectedWidget->getPosition().x
@@ -810,11 +838,15 @@ void Form::arrowKeyPressed(const tgui::Event::KeyEvent& keyEvent)
         }
 
         setChanged(true);
+        updateParentLayout(selectedWidget);
         updateSelectionSquarePositions();
         m_guiBuilder->reloadProperties();
     }
     else if (controlPressed)
     {
+        if (moveLocked)
+            return;
+
         if (keyEvent.code == tgui::Event::KeyboardKey::Left)
         {
             m_guiBuilder->saveUndoState(GuiBuilder::UndoType::Move);
@@ -1083,6 +1115,40 @@ void Form::updateAlignmentLines()
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+Form::LockedGeometry Form::getLockedGeometry(const tgui::Widget::Ptr& widget)
+{
+    tgui::Container* parent = widget->getParent();
+    if (!parent)
+        return {};
+
+    if (dynamic_cast<tgui::HorizontalLayout*>(parent) || dynamic_cast<tgui::VerticalLayout*>(parent) || dynamic_cast<tgui::SplitContainer*>(parent))
+        return {true, true, true, true};
+    if (dynamic_cast<tgui::GrowHorizontalLayout*>(parent))
+        return {true, true, false, true};
+    if (dynamic_cast<tgui::GrowVerticalLayout*>(parent))
+        return {true, true, true, false};
+    if (dynamic_cast<tgui::HorizontalWrap*>(parent))
+        return {true, true, false, false};
+
+    return {};
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void Form::updateParentLayout(const tgui::Widget::Ptr& widget)
+{
+    // If the parent doesn't control (part of) the geometry of this widget then there is nothing to do
+    const auto locked = getLockedGeometry(widget);
+    if (!locked.left && !locked.top && !locked.width && !locked.height)
+        return;
+
+    // Reset the size of the parent to force it to update its children, to make certain it repositions and resizes them if needed
+    tgui::Container* parent = widget->getParent();
+    parent->setSize(parent->getSizeLayout());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void Form::importLoadedWidgets(const tgui::Container::Ptr& parent)
 {
     const auto& widgets = parent->getWidgets();
@@ -1194,7 +1260,9 @@ void Form::onDrag(tgui::Vector2i mousePos)
 
     bool updated = false;
 
-    if (m_draggingWidget)
+    // Don't allow moving the widget in a direction that is controlled by its parent
+    const auto locked = getLockedGeometry(selectedWidget);
+    if (m_draggingWidget && (!locked.left || !locked.top))
     {
         // Saves state for undo recall
         if (!m_onDragSaved)
@@ -1203,32 +1271,38 @@ void Form::onDrag(tgui::Vector2i mousePos)
             m_onDragSaved = true;
         }
 
-        while (pos.x - m_draggingPos.x >= MOVE_STEP)
+        if (!locked.left)
         {
-            selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPositionLayout().y});
-            m_draggingPos.x += MOVE_STEP;
-            updated = true;
+            while (pos.x - m_draggingPos.x >= MOVE_STEP)
+            {
+                selectedWidget->setPosition({selectedWidget->getPosition().x + MOVE_STEP, selectedWidget->getPositionLayout().y});
+                m_draggingPos.x += MOVE_STEP;
+                updated = true;
+            }
+
+            while (m_draggingPos.x - pos.x >= MOVE_STEP)
+            {
+                selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y});
+                m_draggingPos.x -= MOVE_STEP;
+                updated = true;
+            }
         }
 
-        while (m_draggingPos.x - pos.x >= MOVE_STEP)
+        if (!locked.top)
         {
-            selectedWidget->setPosition({selectedWidget->getPosition().x - MOVE_STEP, selectedWidget->getPositionLayout().y});
-            m_draggingPos.x -= MOVE_STEP;
-            updated = true;
-        }
+            while (pos.y - m_draggingPos.y >= MOVE_STEP)
+            {
+                selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP});
+                m_draggingPos.y += MOVE_STEP;
+                updated = true;
+            }
 
-        while (pos.y - m_draggingPos.y >= MOVE_STEP)
-        {
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y + MOVE_STEP});
-            m_draggingPos.y += MOVE_STEP;
-            updated = true;
-        }
-
-        while (m_draggingPos.y - pos.y >= MOVE_STEP)
-        {
-            selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP});
-            m_draggingPos.y -= MOVE_STEP;
-            updated = true;
+            while (m_draggingPos.y - pos.y >= MOVE_STEP)
+            {
+                selectedWidget->setPosition({selectedWidget->getPositionLayout().x, selectedWidget->getPosition().y - MOVE_STEP});
+                m_draggingPos.y -= MOVE_STEP;
+                updated = true;
+            }
         }
     }
 
@@ -1483,6 +1557,7 @@ void Form::onDrag(tgui::Vector2i mousePos)
     if (updated)
     {
         setChanged(true);
+        updateParentLayout(selectedWidget);
         updateSelectionSquarePositions();
         m_guiBuilder->reloadProperties();
     }

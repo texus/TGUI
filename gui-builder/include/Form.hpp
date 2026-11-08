@@ -34,6 +34,16 @@ class GuiBuilder;
 class Form
 {
 public:
+    // Parts of the position and size of a widget that are overwritten by its parent (e.g. when it is a layout)
+    struct LockedGeometry
+    {
+        bool left = false;
+        bool top = false;
+        bool width = false;
+        bool height = false;
+    };
+
+public:
     Form(GuiBuilder* guiBuilder, const tgui::String& filename, const tgui::ChildWindow::Ptr& formWindow, tgui::Vector2f formSize);
     tgui::String addWidget(const tgui::Widget::Ptr& widget, tgui::Container* parent, bool selectNewWidget = true);
     void removeWidget(const tgui::String& id);
@@ -65,6 +75,8 @@ public:
     [[nodiscard]] std::stringstream saveState();
     void loadState(std::stringstream& state);
     void updateAlignmentLines();
+    [[nodiscard]] static LockedGeometry getLockedGeometry(const tgui::Widget::Ptr& widget);
+    static void updateParentLayout(const tgui::Widget::Ptr& widget);
 
 private:
     void importLoadedWidgets(const tgui::Container::Ptr& parent);

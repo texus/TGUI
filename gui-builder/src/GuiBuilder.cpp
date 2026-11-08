@@ -422,6 +422,7 @@ void GuiBuilder::mainLoop()
 
                                 m_selectedWidgetComboBox->setSelectedItemById(widgetPtrToStrId(widgetToMove));
                                 widgetHierarchyChanged();
+                                initProperties(); // Which properties can be edited depends on the parent
                                 m_selectedForm->updateSelectionSquarePositions(); // Absolute widget position moved if its parent changed
                                 m_selectedForm->setChanged(true);
                             }
@@ -791,6 +792,18 @@ void GuiBuilder::reloadProperties()
 
         topPosition += 10;
         m_propertyValuePairs = m_widgetProperties.at(selectedWidget->ptr->getWidgetType())->initProperties(selectedWidget->ptr);
+
+        // Don't show the properties that would be overwritten by the parent of the widget (e.g. when it is a layout)
+        const auto locked = Form::getLockedGeometry(selectedWidget->ptr);
+        if (locked.left)
+            m_propertyValuePairs.first.erase("Left");
+        if (locked.top)
+            m_propertyValuePairs.first.erase("Top");
+        if (locked.width)
+            m_propertyValuePairs.first.erase("Width");
+        if (locked.height)
+            m_propertyValuePairs.first.erase("Height");
+
         for (const auto& property : m_propertyValuePairs.first)
         {
             addPropertyValueWidgets(topPosition,
@@ -1316,6 +1329,7 @@ bool GuiBuilder::updateWidgetProperty(const tgui::String& property, const tgui::
         displayErrorMessage(tgui::String(U"Exception caught when setting property: ") + e.what());
     }
 
+    Form::updateParentLayout(selectedWidget->ptr);    // the parent may need to reposition its children if the widget changed
     reloadProperties();                               // reload all properties in case something else changed
     m_selectedForm->updateSelectionSquarePositions(); // update the position of the selection squares in case the position or size of the widget changed
     return valueChanged;
@@ -3038,6 +3052,10 @@ void GuiBuilder::menuBarCallbackBringWidgetToFront()
     m_selectedForm->getSelectedWidget()->ptr->moveToFront();
     m_selectedForm->setChanged(true);
 
+    // Changing the widget order can move the widget inside a layout and change which of its properties are locked
+    initProperties();
+    m_selectedForm->updateSelectionSquarePositions();
+
     widgetHierarchyChanged();
 }
 
@@ -3048,6 +3066,10 @@ void GuiBuilder::menuBarCallbackSendWidgetToBack()
     saveUndoState(GuiBuilder::UndoType::SendtoBack);
     m_selectedForm->getSelectedWidget()->ptr->moveToBack();
     m_selectedForm->setChanged(true);
+
+    // Changing the widget order can move the widget inside a layout and change which of its properties are locked
+    initProperties();
+    m_selectedForm->updateSelectionSquarePositions();
 
     widgetHierarchyChanged();
 }
