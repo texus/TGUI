@@ -5,10 +5,6 @@
 #include <emscripten/emscripten.h>
 #include <iostream>
 
-EM_JS(int, canvas_get_width, (), { return canvas.width; });
-EM_JS(int, canvas_get_height, (), { return canvas.height; });
-
-bool quit = false;
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 std::unique_ptr<tgui::Gui> gui = nullptr;
@@ -30,7 +26,7 @@ void init()
     renderer = SDL_CreateRenderer(window, nullptr);
     if (renderer == nullptr)
     {
-        window = NULL;
+        SDL_DestroyWindow(window);
         SDL_Quit();
         throw std::runtime_error("Failed to create renderer");
     }
@@ -50,9 +46,6 @@ void init()
 
 void input(const SDL_Event& event)
 {
-    if (event.type == SDL_EVENT_QUIT)
-        quit = true;
-
     gui->handleEvent(event);
 }
 
@@ -76,13 +69,6 @@ void mainLoop()
 int main(int, char**)
 {
     init();
-
-    emscripten_set_main_loop(mainLoop, -1, true);
-
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    TTF_Quit();
-    SDL_Quit();
-
-    return 0;
+    emscripten_set_main_loop(mainLoop, -1, true); // Never returns
+    return 0; // Never reached, but required if SDL3/SDL_main.h is included
 }

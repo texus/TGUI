@@ -2,16 +2,11 @@
 
 #include <TGUI/Backend/SDL-TTF-GLES2.hpp>
 
-#include <SDL3/SDL_main.h>
 #include <SDL3/SDL_opengles2.h>
 
 #include <emscripten/emscripten.h>
 #include <iostream>
 
-EM_JS(int, canvas_get_width, (), { return canvas.width; });
-EM_JS(int, canvas_get_height, (), { return canvas.height; });
-
-bool quit = false;
 SDL_Window* window = nullptr;
 SDL_GLContext glContext = nullptr;
 std::unique_ptr<tgui::Gui> gui = nullptr;
@@ -27,7 +22,7 @@ void init()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-    window = SDL_CreateWindow("TGUI - Emscripten - SDL_GLES2", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    window = SDL_CreateWindow("TGUI - Emscripten - SDL_TTF_GLES2", 640, 480, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (window == nullptr)
     {
         SDL_Quit();
@@ -38,7 +33,7 @@ void init()
 
     gui = std::make_unique<tgui::Gui>(window);
 
-    auto picture = tgui::Picture::create("data/image.png");
+    auto picture = tgui::Picture::create("data/background.jpg");
     picture->setSize({400, 300});
     gui->add(picture);
 
@@ -51,9 +46,6 @@ void init()
 
 void input(const SDL_Event& event)
 {
-    if (event.type == SDL_EVENT_QUIT)
-        quit = true;
-
     gui->handleEvent(event);
 }
 
@@ -77,13 +69,6 @@ void mainLoop()
 int main(int, char**)
 {
     init();
-
-    emscripten_set_main_loop(mainLoop, -1, true);
-
-    SDL_GL_DestroyContext(glContext);
-    SDL_DestroyWindow(window);
-    TTF_Quit();
-    SDL_Quit();
-
-    return 0;
+    emscripten_set_main_loop(mainLoop, -1, true); // Never returns
+    return 0; // Never reached, but required if SDL3/SDL_main.h is included
 }

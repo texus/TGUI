@@ -2,16 +2,11 @@
 
 #include <TGUI/Backend/SDL-GLES2.hpp>
 
-#include <SDL3/SDL_main.h>
 #include <SDL3/SDL_opengles2.h>
 
 #include <emscripten/emscripten.h>
 #include <iostream>
 
-EM_JS(int, canvas_get_width, (), { return canvas.width; });
-EM_JS(int, canvas_get_height, (), { return canvas.height; });
-
-bool quit = false;
 SDL_Window* window = nullptr;
 SDL_GLContext glContext = nullptr;
 std::unique_ptr<tgui::Gui> gui = nullptr;
@@ -49,9 +44,6 @@ void init()
 
 void input(const SDL_Event& event)
 {
-    if (event.type == SDL_EVENT_QUIT)
-        quit = true;
-
     gui->handleEvent(event);
 }
 
@@ -75,12 +67,6 @@ void mainLoop()
 int main(int, char**)
 {
     init();
-
-    emscripten_set_main_loop(mainLoop, -1, true);
-
-    SDL_GL_DestroyContext(glContext);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
-    return 0;
+    emscripten_set_main_loop(mainLoop, -1, true); // Never returns
+    return 0; // Never reached, but required if SDL3/SDL_main.h is included
 }

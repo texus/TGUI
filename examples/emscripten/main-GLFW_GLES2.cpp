@@ -9,18 +9,12 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-EM_JS(int, canvas_get_width, (), { return canvas.width; });
-EM_JS(int, canvas_get_height, (), { return canvas.height; });
-
 GLFWwindow* window = nullptr;
 std::unique_ptr<tgui::Gui> gui = nullptr;
 
 void init()
 {
     glfwInit();
-
-    std::cout << "glfwGetVersionString PROG " << glfwGetVersionString() << " " << GLFW_VERSION_MAJOR << "." << GLFW_VERSION_MINOR
-              << "." << GLFW_VERSION_REVISION << "\n";
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
@@ -56,12 +50,6 @@ void init()
     glfwSetCursorPosCallback(window,
                              [](GLFWwindow* wnd, double xpos, double ypos)
                              { static_cast<tgui::Gui*>(glfwGetWindowUserPointer(wnd))->cursorPosCallback(xpos, ypos); });
-    glfwSetMouseButtonCallback(window,
-                               [](GLFWwindow* wnd, int button, int action, int mods)
-                               {
-                                   std::cout << glfwGetWindowUserPointer(wnd) << "\n";
-                                   static_cast<tgui::Gui*>(glfwGetWindowUserPointer(wnd))->mouseButtonCallback(button, action, mods);
-                               });
     glfwSetCursorEnterCallback(window,
                                [](GLFWwindow* wnd, int entered)
                                { static_cast<tgui::Gui*>(glfwGetWindowUserPointer(wnd))->cursorEnterCallback(entered); });
@@ -99,10 +87,5 @@ void mainLoop()
 int main()
 {
     init();
-
-    emscripten_set_main_loop(mainLoop, -1, true);
-
-    gui = nullptr;
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    emscripten_set_main_loop(mainLoop, -1, true); // Never returns
 }

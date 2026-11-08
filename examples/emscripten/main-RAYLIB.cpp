@@ -5,9 +5,6 @@
 #include <emscripten/emscripten.h>
 #include <iostream>
 
-EM_JS(int, canvas_get_width, (), { return canvas.width; });
-EM_JS(int, canvas_get_height, (), { return canvas.height; });
-
 std::unique_ptr<tgui::Gui> gui = nullptr;
 
 void init()
@@ -54,10 +51,5 @@ void mainLoop()
 int main(int, char**)
 {
     init();
-
-    emscripten_set_main_loop(mainLoop, -1, true);
-
-    gui = nullptr;
-    CloseWindow();
-    return 0;
+    emscripten_set_main_loop(mainLoop, -1, true); // Never returns
 }
