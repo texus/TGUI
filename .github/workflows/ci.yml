@@ -1122,7 +1122,7 @@ jobs:
     runs-on: macos-26
     env:
       SDL_VERSION: 2.26.5
-      SDL_TTF_VERSION: 2.0.18
+      SDL_TTF_VERSION: 2.22.0
     steps:
       - name: Checkout TGUI
         uses: actions/checkout@v7
