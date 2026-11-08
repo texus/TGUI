@@ -4,6 +4,13 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+
+    // AGP 8.x and older don't work with Gradle 9.6 or newer, while AGP 9.5 requires at least Gradle 9.6
+    def androidGradlePluginVersion = GradleVersion.current().baseVersion >= GradleVersion.version('9.6') ? '9.5.1' : '8.5.0'
+    plugins {
+        id 'com.android.application' version androidGradlePluginVersion
+        id 'com.android.library' version androidGradlePluginVersion
+    }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

@@ -1,12 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    // AGP 8.x and older don't work with Gradle 9.6 or newer, while AGP 9.5 requires at least Gradle 9.6
+    val androidGradlePluginVersion = if (GradleVersion.current().baseVersion >= GradleVersion.version("9.6")) "9.5.1" else "8.13.2"
+
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.4.1")
+        classpath("com.android.tools.build:gradle:$androidGradlePluginVersion")
     }
 }
 
@@ -18,7 +21,7 @@ allprojects {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "8.3"
+    gradleVersion = "9.5.1"
     distributionType = Wrapper.DistributionType.BIN
 }
 

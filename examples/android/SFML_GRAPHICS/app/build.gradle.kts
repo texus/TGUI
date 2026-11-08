@@ -2,8 +2,8 @@ plugins {
     id("com.android.application")
 }
 
-val NDK_VERSION by extra(project.properties["NDK_VERSION"] as? String ?: "28.0.13004108")
-val ARCH_ABI by extra(project.properties["ARCH_ABI"] as? String ?: "arm64-v8a")
+val NDK_VERSION = project.findProperty("NDK_VERSION") as? String ?: "28.0.13004108"
+val ARCH_ABI = project.findProperty("ARCH_ABI") as? String ?: "arm64-v8a"
 
 android {
     namespace = "eu.tgui.app"
@@ -27,7 +27,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     externalNativeBuild {

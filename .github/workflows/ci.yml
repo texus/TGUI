@@ -980,7 +980,7 @@ jobs:
         run: |
           cmake -DTGUI_BACKEND=Custom -S ../../.. -B TGUI-build
           sed -i "s/^\(\s*\)abiFilters .*$/\1abiFilters 'x86_64'/" app/build.gradle
-          sed -i "s/^\(\s*\)ndkVersion .*$/\1ndkVersion '${ANDROID_NDK_ROOT##*/}'/" app/build.gradle
+          sed -i "s/^\(\s*\)ndkVersion .*$/\1ndkVersion = '${ANDROID_NDK_ROOT##*/}'/" app/build.gradle
           ln -s $GITHUB_WORKSPACE/SDL2 app/jni/SDL
           ln -s $GITHUB_WORKSPACE/SDL2_ttf app/jni/SDL_TTF
           ln -s $GITHUB_WORKSPACE/TGUI app/jni/TGUI
