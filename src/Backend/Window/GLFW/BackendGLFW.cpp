@@ -48,6 +48,11 @@ namespace tgui
     {
         TGUI_ASSERT(m_guis.find(gui) != m_guis.end(), "BackendGLFW::setGuiWindow called with a gui that wasn't attached");
         m_guiResources[gui].window = window;
+
+        // If the configured cursor isn't the default then apply the correct cursor to the new window
+        const Cursor::Type type = m_guiResources[gui].mouseCursor;
+        if (window && ((type != Cursor::Type::Arrow) || m_mouseCursors[type]))
+            updateShownMouseCursor(window, type);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
