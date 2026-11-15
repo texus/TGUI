@@ -39,6 +39,7 @@
 #include "WidgetProperties/HorizontalWrapProperties.hpp"
 #include "WidgetProperties/KnobProperties.hpp"
 #include "WidgetProperties/LabelProperties.hpp"
+#include "WidgetProperties/LinkLabelProperties.hpp"
 #include "WidgetProperties/ListBoxProperties.hpp"
 #include "WidgetProperties/ListViewProperties.hpp"
 #include "WidgetProperties/PanelListBoxProperties.hpp"
@@ -289,6 +290,7 @@ GuiBuilder::GuiBuilder(const tgui::String& programName) :
     m_widgetProperties["HorizontalWrap"] = std::make_unique<HorizontalWrapProperties>();
     m_widgetProperties["Knob"] = std::make_unique<KnobProperties>();
     m_widgetProperties["Label"] = std::make_unique<LabelProperties>();
+    m_widgetProperties["LinkLabel"] = std::make_unique<LinkLabelProperties>();
     m_widgetProperties["ListBox"] = std::make_unique<ListBoxProperties>();
     m_widgetProperties["ListView"] = std::make_unique<ListViewProperties>();
     m_widgetProperties["Panel"] = std::make_unique<PanelProperties>();
@@ -1183,6 +1185,7 @@ void GuiBuilder::loadToolbox()
         {"HorizontalWrap", [] { return tgui::HorizontalWrap::create({150, 150}); }},
         {"Knob", [] { return tgui::Knob::create(); }},
         {"Label", [] { return tgui::Label::create("Label"); }},
+        {"LinkLabel", [] { return tgui::LinkLabel::create("LinkLabel"); }},
         {"ListBox", [] { return tgui::ListBox::create(); }},
         {"ListView", [] { return tgui::ListView::create(); }},
         {"Panel", [] { return tgui::Panel::create({150, 150}); }},

@@ -47,6 +47,7 @@
 #include <TGUI/Widgets/HorizontalWrap.hpp>
 #include <TGUI/Widgets/Knob.hpp>
 #include <TGUI/Widgets/Label.hpp>
+#include <TGUI/Widgets/LinkLabel.hpp>
 #include <TGUI/Widgets/ListBox.hpp>
 #include <TGUI/Widgets/ListView.hpp>
 #include <TGUI/Widgets/MenuBar.hpp>

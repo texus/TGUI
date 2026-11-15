@@ -79,6 +79,12 @@ Knob {
     Borders = (2, 2, 2, 2);
 }
 
+LinkLabel {
+    TextColor      = rgb(90, 160, 255);
+    TextColorHover = rgb(140, 190, 255);
+    TextStyle      = Underlined;
+}
+
 ListBox {
     TextureBackground = "Black.png" Part(63, 146, 48, 48) Middle(16) Smooth;
     Padding           = (3, 3, 3, 3);

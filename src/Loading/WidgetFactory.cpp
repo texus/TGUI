@@ -50,6 +50,7 @@ namespace tgui
         {"HorizontalWrap", std::make_shared<HorizontalWrap>},
         {"Knob", std::make_shared<Knob>},
         {"Label", std::make_shared<Label>},
+        {"LinkLabel", std::make_shared<LinkLabel>},
         {"ListBox", std::make_shared<ListBox>},
         {"ListView", std::make_shared<ListView>},
         {"MenuBar", std::make_shared<MenuBar>},

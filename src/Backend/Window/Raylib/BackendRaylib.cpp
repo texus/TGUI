@@ -131,6 +131,14 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef TGUI_SYSTEM_ANDROID
+    bool BackendRaylib::openUrl(const String& url)
+    {
+        OpenURL(url.toStdString().c_str());
+        return true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::unique_ptr<std::uint8_t[]> BackendRaylib::readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const
     {
         int dataSize = 0;

@@ -240,6 +240,66 @@ namespace tgui
         fileSize = static_cast<std::size_t>(assetLength);
         return buffer;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool BackendSFML::openUrl(const String& url)
+    {
+        if (url.empty())
+            return false;
+
+        ANativeActivity* activity = sf::getNativeActivity();
+        if (!activity)
+            return false;
+
+        // Only attach (and later detach) the thread to the JVM if it wasn't attached yet
+        JNIEnv* env = nullptr;
+        bool attachedThread = false;
+        if (activity->vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) == JNI_EDETACHED)
+        {
+            if (activity->vm->AttachCurrentThread(&env, nullptr) != JNI_OK)
+                return false;
+
+            attachedThread = true;
+        }
+
+        // The local frame makes certain that all local references that we create are freed at the end of the function
+        bool success = false;
+        if (env->PushLocalFrame(8) == JNI_OK)
+        {
+            // Execute the following java code:
+            //     activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            const std::u16string urlUtf16 = url.toUtf16();
+            jstring jUrl = env->NewString(reinterpret_cast<const jchar*>(urlUtf16.data()), static_cast<jsize>(urlUtf16.length()));
+            jstring jActionView = env->NewStringUTF("android.intent.action.VIEW");
+
+            jclass uriClass = env->FindClass("android/net/Uri");
+            jmethodID uriParseMethod = env->GetStaticMethodID(uriClass, "parse", "(Ljava/lang/String;)Landroid/net/Uri;");
+            jobject uri = env->CallStaticObjectMethod(uriClass, uriParseMethod, jUrl);
+
+            jclass intentClass = env->FindClass("android/content/Intent");
+            jmethodID intentConstructor = env->GetMethodID(intentClass, "<init>", "(Ljava/lang/String;Landroid/net/Uri;)V");
+            jobject intent = env->NewObject(intentClass, intentConstructor, jActionView, uri);
+
+            jclass activityClass = env->GetObjectClass(activity->clazz);
+            jmethodID startActivityMethod = env->GetMethodID(activityClass, "startActivity", "(Landroid/content/Intent;)V");
+            env->CallVoidMethod(activity->clazz, startActivityMethod, intent);
+
+            // An ActivityNotFoundException is thrown when no app can handle the url. Exceptions have to be cleared
+            // before we can continue to use JNI.
+            if (env->ExceptionCheck())
+                env->ExceptionClear();
+            else
+                success = true;
+
+            env->PopLocalFrame(nullptr);
+        }
+
+        if (attachedThread)
+            activity->vm->DetachCurrentThread();
+
+        return success;
+    }
 #endif
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

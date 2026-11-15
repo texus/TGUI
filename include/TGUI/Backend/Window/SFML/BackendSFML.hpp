@@ -133,6 +133,17 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
         /// @return File contents if the file was successfully read, or a nullptr on failure or if platform isn't Android.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         [[nodiscard]] std::unique_ptr<std::uint8_t[]> readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const override;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Opens a URL in the default web browser
+        ///
+        /// @param url  URL to open (e.g. "https://tgui.eu")
+        ///
+        /// @return False if the URL couldn't be opened (e.g. because there is no app that can handle it), true otherwise
+        ///
+        /// @see Backend::openUrl
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool openUrl(const String& url) override;
 #endif
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

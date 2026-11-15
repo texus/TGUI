@@ -278,6 +278,19 @@ namespace tgui
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool BackendSDL::openUrl(const String& url)
+    {
+#if SDL_MAJOR_VERSION >= 3
+        return SDL_OpenURL(url.toStdString().c_str());
+#elif SDL_VERSION_ATLEAST(2, 0, 14)
+        return SDL_OpenURL(url.toStdString().c_str()) == 0;
+#else
+        return Backend::openUrl(url);
+#endif
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef TGUI_SYSTEM_ANDROID
     std::unique_ptr<std::uint8_t[]> BackendSDL::readFileFromAndroidAssets(const String& filename, std::size_t& fileSize) const
     {

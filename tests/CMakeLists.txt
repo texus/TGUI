@@ -81,6 +81,7 @@ set(TEST_SOURCES
     Widgets/HorizontalWrap.cpp
     Widgets/Knob.cpp
     Widgets/Label.cpp
+    Widgets/LinkLabel.cpp
     Widgets/ListBox.cpp
     Widgets/ListView.cpp
     Widgets/MenuBar.cpp

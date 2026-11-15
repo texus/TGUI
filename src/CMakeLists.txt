@@ -58,6 +58,7 @@ set(TGUI_SRC
     Renderers/GroupRenderer.cpp
     Renderers/KnobRenderer.cpp
     Renderers/LabelRenderer.cpp
+    Renderers/LinkLabelRenderer.cpp
     Renderers/ListBoxRenderer.cpp
     Renderers/ListViewRenderer.cpp
     Renderers/MenuBarRenderer.cpp
@@ -118,6 +119,7 @@ set(TGUI_SRC
     Widgets/HorizontalWrap.cpp
     Widgets/Knob.cpp
     Widgets/Label.cpp
+    Widgets/LinkLabel.cpp
     Widgets/ListBox.cpp
     Widgets/ListView.cpp
     Widgets/MenuBar.cpp
@@ -266,6 +268,7 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/GroupRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/KnobRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/LabelRenderer.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/LinkLabelRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/ListBoxRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/ListViewRenderer.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Renderers/MenuBarRenderer.hpp"
@@ -336,6 +339,7 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/HorizontalWrap.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/Knob.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/Label.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/LinkLabel.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ListBox.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/ListView.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Widgets/MenuBar.hpp"

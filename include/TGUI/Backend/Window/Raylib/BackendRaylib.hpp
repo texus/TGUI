@@ -100,6 +100,17 @@ TGUI_IGNORE_DEPRECATED_WARNINGS_START // Required for VS2017 due to inheriting a
 
 #ifdef TGUI_SYSTEM_ANDROID
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Opens a URL in the default web browser
+        ///
+        /// @param url  URL to open (e.g. "https://tgui.eu")
+        ///
+        /// @return Always returns true, as raylib doesn't report whether opening the URL succeeded
+        ///
+        /// @see Backend::openUrl
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        bool openUrl(const String& url) override;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Uses the AssetManager on Android to read a file and return its contents
         ///
         /// @param filename  Path to the file to read

@@ -67,6 +67,12 @@ Knob {
     Borders = (2, 2, 2, 2);
 }
 
+LinkLabel {
+    TextColor      = rgb(40, 120, 180);
+    TextColorHover = rgb(70, 160, 220);
+    TextStyle      = Underlined;
+}
+
 ListBox {
     Borders = (2, 2, 2, 2);
 }

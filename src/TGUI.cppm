@@ -171,6 +171,7 @@ export namespace tgui
     using tgui::HorizontalWrap;
     using tgui::Knob;
     using tgui::Label;
+    using tgui::LinkLabel;
     using tgui::ListBox;
     using tgui::ListView;
     using tgui::MenuBar;
@@ -211,6 +212,7 @@ export namespace tgui
     using tgui::GroupRenderer;
     using tgui::KnobRenderer;
     using tgui::LabelRenderer;
+    using tgui::LinkLabelRenderer;
     using tgui::ListBoxRenderer;
     using tgui::ListViewRenderer;
     using tgui::MenuBarRenderer;

@@ -32,6 +32,12 @@ Knob {
     Borders = 2;
 }
 
+LinkLabel {
+    TextColor = rgba(160, 210, 255, 215);
+    TextColorHover = rgba(190, 225, 255, 235);
+    TextStyle = Underlined;
+}
+
 ListView {
     HeaderBackgroundColor = rgb(160, 160, 160, 215);
 }

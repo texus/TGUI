@@ -32,6 +32,21 @@
 #include <TGUI/Loading/Theme.hpp>
 #include <TGUI/Timer.hpp>
 
+#if defined(TGUI_SYSTEM_WINDOWS)
+    #include <TGUI/extlibs/IncludeWindows.hpp>
+#elif defined(TGUI_SYSTEM_EMSCRIPTEN)
+    #include <emscripten.h>
+#elif defined(TGUI_SYSTEM_MACOS) || defined(TGUI_SYSTEM_LINUX)
+    #include <cerrno>
+    #include <spawn.h>
+    #include <sys/wait.h>
+    #if defined(TGUI_SYSTEM_MACOS)
+        #include <crt_externs.h>
+    #else
+extern char** environ;
+    #endif
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -176,6 +191,90 @@ namespace tgui
     String Backend::getClipboard() const
     {
         return m_clipboardContents;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Backend::openUrl(const String& url)
+    {
+        if (url.empty())
+            return false;
+
+#if defined(TGUI_SYSTEM_EMSCRIPTEN)
+        // Browsers block popups that aren't opened in response to a user action, so this only works while handling events.
+        // The "noopener" prevents the opened page from accessing our page via window.opener.
+        // window.open returns null when "noopener" is passed, so we can't detect whether the popup was blocked.
+        EM_ASM({ window.open(UTF8ToString($0), "_blank", "noopener"); }, url.toStdString().c_str());
+        return true;
+
+#elif defined(TGUI_SYSTEM_WINDOWS)
+        // We load shell32.dll dynamically, so that the user doesn't need to link to it when linking TGUI statically
+        HMODULE dllModuleHandle = LoadLibraryW(L"shell32.dll");
+        if (!dllModuleHandle)
+            return false;
+
+        using ShellExecuteWFuncType = HINSTANCE(WINAPI*)(HWND, LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR, INT);
+    #if defined(__clang__)
+        #pragma clang diagnostic push
+        #if defined(__clang_major__) && (__clang_major__ >= 19)
+            #pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
+        #endif
+    #elif defined(__GNUC__)
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wcast-function-type"
+    #endif
+        const auto shellExecuteFunc = reinterpret_cast<ShellExecuteWFuncType>(GetProcAddress(dllModuleHandle, "ShellExecuteW"));
+    #if defined(__clang__)
+        #pragma clang diagnostic pop
+    #elif defined(__GNUC__)
+        #pragma GCC diagnostic pop
+    #endif
+
+        bool success = false;
+        if (shellExecuteFunc)
+        {
+            // ShellExecuteW returns a value greater than 32 on success
+            const HINSTANCE result = shellExecuteFunc(nullptr, L"open", url.toWideString().c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+            success = (reinterpret_cast<INT_PTR>(result) > 32);
+        }
+
+        FreeLibrary(dllModuleHandle);
+        return success;
+
+#elif defined(TGUI_SYSTEM_MACOS) || defined(TGUI_SYSTEM_LINUX)
+        // Don't allow the url to be interpreted as a command line option
+        if (url[0] == U'-')
+            return false;
+
+        const std::string urlStr = url.toStdString();
+    #if defined(TGUI_SYSTEM_MACOS)
+        // The 'open' command returns immediately after passing the url to the browser
+        char** env = *_NSGetEnviron();
+        const char* argv[] = {"open", urlStr.c_str(), nullptr};
+    #else
+        // The xdg-open command might not return until the browser is closed (e.g. when it falls back to $BROWSER).
+        // We let the shell run it in the background so that we don't block. The url is passed as a separate argument
+        // instead of being part of the command string, so that it can't be used to execute other shell commands.
+        char** env = environ;
+        const char* argv[] = {"/bin/sh", "-c", "xdg-open \"$1\" >/dev/null 2>&1 &", "sh", urlStr.c_str(), nullptr};
+    #endif
+
+        pid_t pid;
+        if (posix_spawnp(&pid, argv[0], nullptr, nullptr, const_cast<char* const*>(argv), env) != 0)
+            return false;
+
+        int status = 0;
+        while (waitpid(pid, &status, 0) < 0)
+        {
+            if (errno != EINTR)
+                return false;
+        }
+
+        return WIFEXITED(status) && (WEXITSTATUS(status) == 0);
+
+#else
+        return false;
+#endif
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

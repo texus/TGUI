@@ -241,6 +241,22 @@ namespace tgui
         [[nodiscard]] virtual String getClipboard() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Opens a URL in the default web browser
+        ///
+        /// @param url  URL to open (e.g. "https://tgui.eu")
+        ///
+        /// @return False if the URL couldn't be opened, true if the request was passed to the OS (or browser).
+        ///         A return value of true doesn't guarantee that the browser successfully opened the page.
+        ///
+        /// When running in a web browser via Emscripten, the URL is opened in a new tab. Browsers only allow this in
+        /// response to a user action, so this function should be called when e.g. a mouse click is handled.
+        ///
+        /// @warning The url string is passed to the OS as-is, which may also open local files or programs.
+        ///          Don't pass untrusted input (e.g. text typed by a user) to this function without validating it.
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        virtual bool openUrl(const String& url);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Uses the AssetManager on Android to read a file and return its contents
         ///
         /// @param filename  Path to the file to read

@@ -1,7 +1,8 @@
 TGUI 1.14  (TBD)
 ----------------
 
-- Added new `SDL_VULKAN` and `GLFW_VULKAN` backends
+- New backends: `SDL_VULKAN` and `GLFW_VULKAN`
+- New widget: LinkLabel
 - Bound layouts didn't take widget scale factors into account
 - Fixed possible text corruption when switching between fonts
 
