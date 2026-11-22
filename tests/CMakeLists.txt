@@ -55,6 +55,7 @@ set(TEST_SOURCES
     SvgImage.cpp
     Tests.cpp
     Text.cpp
+    TextBoundaries.cpp
     Texture.cpp
     TextureManager.cpp
     Timer.cpp

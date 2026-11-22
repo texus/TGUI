@@ -87,6 +87,7 @@ set(TGUI_SRC
     SubwidgetContainer.cpp
     SvgImage.cpp
     Text.cpp
+    TextBoundaries.cpp
     TextStyle.cpp
     Texture.cpp
     TextureManager.cpp
@@ -301,6 +302,7 @@ set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/SvgImage.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/TGUI.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Text.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/TextBoundaries.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/TextStyle.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Texture.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/TextureData.hpp"
