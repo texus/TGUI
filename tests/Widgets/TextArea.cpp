@@ -447,6 +447,74 @@ TEST_CASE("[TextArea]")
                 REQUIRE(textArea->getText() == "ABCDEFGHIJ\nLMNOPQRSTUVWXYZ");
             }
 
+            SECTION("Moving by words")
+            {
+                // On Windows, moving to the next word places the caret at the start of that word instead of at its end
+#if defined(TGUI_SYSTEM_WINDOWS)
+                constexpr bool nextWordStart = true;
+#else
+                constexpr bool nextWordStart = false;
+#endif
+                const auto createWordKeyEvent = [](tgui::Event::KeyboardKey key)
+                {
+                    auto event = createKeyEvent(key, false, false);
+#ifdef TGUI_SYSTEM_MACOS
+                    event.alt = true;
+#else
+                    event.control = true;
+#endif
+                    return event;
+                };
+
+                textArea->setSize(400, 200);
+                textArea->setText("Cafe deja\nvu");
+                textArea->setCaretPosition(0);
+
+                textArea->keyPressed(createWordKeyEvent(tgui::Event::KeyboardKey::Right));
+                REQUIRE(textArea->getCaretPosition() == (nextWordStart ? 5 : 4));
+                textArea->keyPressed(createWordKeyEvent(tgui::Event::KeyboardKey::Right));
+                REQUIRE(textArea->getCaretPosition() == (nextWordStart ? 10 : 9));
+                REQUIRE(textArea->getCaretLine() == (nextWordStart ? 2 : 1));
+                textArea->keyPressed(createWordKeyEvent(tgui::Event::KeyboardKey::Right));
+                REQUIRE(textArea->getCaretPosition() == 12);
+
+                textArea->keyPressed(createWordKeyEvent(tgui::Event::KeyboardKey::Left));
+                REQUIRE(textArea->getCaretPosition() == 10);
+                textArea->keyPressed(createWordKeyEvent(tgui::Event::KeyboardKey::Left));
+                REQUIRE(textArea->getCaretPosition() == 5);
+                textArea->keyPressed(createWordKeyEvent(tgui::Event::KeyboardKey::Left));
+                REQUIRE(textArea->getCaretPosition() == 0);
+            }
+
+            SECTION("Characters with multiple code points")
+            {
+                // On Windows, the caret moves over an "e" with a combining accent as a single character
+#if defined(TGUI_SYSTEM_WINDOWS)
+                constexpr std::size_t accentedLength = 2;
+#else
+                constexpr std::size_t accentedLength = 1;
+#endif
+                const tgui::String text = U"ae\u0301b\ncd";
+                textArea->setText(text);
+                textArea->setCaretPosition(3);
+
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Left, false, false));
+                REQUIRE(textArea->getCaretPosition() == 3 - accentedLength);
+
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Right, false, true));
+                REQUIRE(textArea->getSelectedText() == text.substr(3 - accentedLength, accentedLength));
+
+                textArea->setCaretPosition(3);
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Backspace, false, false));
+                REQUIRE(textArea->getText() == tgui::String(text).erase(3 - accentedLength, accentedLength));
+                REQUIRE(textArea->getCaretPosition() == 3 - accentedLength);
+
+                textArea->setText(text);
+                textArea->setCaretPosition(1);
+                textArea->keyPressed(createKeyEvent(tgui::Event::KeyboardKey::Delete, false, false));
+                REQUIRE(textArea->getText() == tgui::String(text).erase(1, accentedLength));
+            }
+
             SECTION("Copy and Paste")
             {
                 for (unsigned int i = 0; i < 3; ++i)

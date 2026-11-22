@@ -23,6 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Keyboard.hpp>
+#include <TGUI/TextBoundaries.hpp>
 #include <TGUI/Widgets/EditBox.hpp>
 
 #include <algorithm>
@@ -1045,39 +1046,52 @@ namespace tgui
         const unsigned int textSize = getTextSize();
         const bool bold = (m_textFull.getStyle() & TextStyle::Bold) != 0;
 
-        std::size_t index;
-        for (index = 0; index < m_text.length(); ++index)
+        // A character can consist of multiple code points, the caret is placed either in front or behind the entire character
+        const std::vector<std::size_t> characterStarts = priv::findCharacterBoundaries(m_text);
+        for (std::size_t i = 0; i < characterStarts.size(); ++i)
         {
-            float charWidth;
-            const char32_t curChar = m_text[index];
-            if (curChar == '\n')
+            const std::size_t characterStart = characterStarts[i];
+            const std::size_t characterEnd = (i + 1 < characterStarts.size()) ? characterStarts[i + 1] : m_text.length();
+            if (m_text[characterStart] == '\n')
             {
                 // This should not happen as edit box is for single line text, but lets try the next line anyway since we haven't found the position yet
                 width = 0;
                 prevChar = 0;
                 continue;
             }
-            if (curChar == '\t')
-                charWidth = m_fontCached.getGlyph(' ', textSize, bold).advance * 4;
-            else
-                charWidth = m_fontCached.getGlyph(curChar, textSize, bold).advance;
 
-            const float kerning = m_fontCached.getKerning(prevChar, curChar, textSize, bold);
+            float charWidth = 0;
+            float kerning = 0;
+            for (std::size_t index = characterStart; index < characterEnd; ++index)
+            {
+                const char32_t curChar = m_text[index];
+                if (curChar == '\t')
+                    charWidth += m_fontCached.getGlyph(' ', textSize, bold).advance * 4;
+                else
+                    charWidth += m_fontCached.getGlyph(curChar, textSize, bold).advance;
+
+                // The kerning inside the character is part of its width
+                if (index == characterStart)
+                    kerning = m_fontCached.getKerning(prevChar, curChar, textSize, bold);
+                else
+                    charWidth += m_fontCached.getKerning(prevChar, curChar, textSize, bold);
+
+                prevChar = curChar;
+            }
+
             if (width + charWidth < posX)
                 width += charWidth + kerning;
             else
             {
                 // If the mouse is on the second halve of the character then the caret should be on the right of it
                 if (width + charWidth - posX < charWidth / 2.f)
-                    index++;
+                    return characterEnd;
 
-                break;
+                return characterStart;
             }
-
-            prevChar = curChar;
         }
 
-        return index;
+        return m_text.length();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1409,13 +1423,14 @@ namespace tgui
             if (m_selEnd == 0)
                 return;
 
-            // Erase the character
-            m_displayedText.erase(m_selEnd - 1, 1);
+            // Erase the character, which can consist of multiple code points
+            const std::size_t characterStart = priv::findPreviousCharacterBoundary(m_text, m_selEnd);
+            m_displayedText.erase(characterStart, m_selEnd - characterStart);
             m_textFull.setString(m_displayedText);
-            m_text.erase(m_selEnd - 1, 1);
+            m_text.erase(characterStart, m_selEnd - characterStart);
 
             // Set the caret back on the correct position
-            setCaretPosition(m_selEnd - 1);
+            setCaretPosition(characterStart);
 
             const float width = getVisibleEditBoxWidth();
 
@@ -1449,10 +1464,11 @@ namespace tgui
             if (m_selEnd == m_text.length())
                 return;
 
-            // Erase the character
-            m_displayedText.erase(m_selEnd, 1);
+            // Erase the character, which can consist of multiple code points
+            const std::size_t characterLength = priv::findNextCharacterBoundary(m_text, m_selEnd) - m_selEnd;
+            m_displayedText.erase(m_selEnd, characterLength);
             m_textFull.setString(m_displayedText);
-            m_text.erase(m_selEnd, 1);
+            m_text.erase(m_selEnd, characterLength);
 
             // Set the caret back on the correct position
             setCaretPosition(m_selEnd);
@@ -1527,7 +1543,7 @@ namespace tgui
         if ((m_selChars > 0) && !shiftPressed)
             updateSelEnd(std::min(m_selStart, m_selEnd));
         else if (m_selEnd > 0)
-            updateSelEnd(m_selEnd - 1);
+            updateSelEnd(priv::findPreviousCharacterBoundary(m_text, m_selEnd));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1538,7 +1554,7 @@ namespace tgui
         if ((m_selChars > 0) && !shiftPressed)
             updateSelEnd(std::max(m_selStart, m_selEnd));
         else if (m_selEnd < m_text.length())
-            updateSelEnd(m_selEnd + 1);
+            updateSelEnd(priv::findNextCharacterBoundary(m_text, m_selEnd));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1546,57 +1562,15 @@ namespace tgui
     void EditBox::moveCaretWordBegin()
     {
         // Move to the beginning of the word (or to the beginning of the previous word when already at the beginning)
-        bool done = false;
-        bool skippedWhitespace = false;
-        for (std::size_t i = m_selEnd; i > 0; --i)
-        {
-            if (skippedWhitespace)
-            {
-                if (isWhitespace(m_text[i - 1]))
-                {
-                    updateSelEnd(i);
-                    done = true;
-                    break;
-                }
-            }
-            else
-            {
-                if (!isWhitespace(m_text[i - 1]))
-                    skippedWhitespace = true;
-            }
-        }
-
-        if (!done && skippedWhitespace)
-            updateSelEnd(0);
+        updateSelEnd(priv::findPreviousWordBoundary(m_text, m_selEnd));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void EditBox::moveCaretWordEnd()
     {
-        // Move to the end of the word (or to the end of the next word when already at the end)
-        bool done = false;
-        bool skippedWhitespace = false;
-        for (std::size_t i = m_selEnd; i < m_text.length(); ++i)
-        {
-            if (skippedWhitespace)
-            {
-                if (isWhitespace(m_text[i]))
-                {
-                    updateSelEnd(i);
-                    done = true;
-                    break;
-                }
-            }
-            else
-            {
-                if (!isWhitespace(m_text[i]))
-                    skippedWhitespace = true;
-            }
-        }
-
-        if (!done && skippedWhitespace)
-            updateSelEnd(m_text.length());
+        // Move to the next word, which is the end of the word on most platforms and the start of the next word on Windows
+        updateSelEnd(priv::findNextWordBoundary(m_text, m_selEnd));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

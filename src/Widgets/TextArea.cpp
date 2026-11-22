@@ -23,6 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <TGUI/Keyboard.hpp>
+#include <TGUI/TextBoundaries.hpp>
 #include <TGUI/Widgets/Scrollbar.hpp>
 #include <TGUI/Widgets/TextArea.hpp>
 
@@ -33,6 +34,38 @@
 
 namespace tgui
 {
+    namespace
+    {
+        // Finds the line and position on that line on which the character at the given index of the text is located.
+        // A character directly behind a line that was split by word wrap is the first character of the next line.
+        [[nodiscard]] Vector2<std::size_t> findLineAndColumn(const std::vector<String>& lines,
+                                                             const String& text,
+                                                             std::size_t index)
+        {
+            index = std::min(index, text.length());
+
+            std::size_t count = 0;
+            for (std::size_t i = 0; i < lines.size(); ++i)
+            {
+                const std::size_t lineEnd = count + lines[i].length();
+                const bool wrappedLineEnd = (lineEnd == index) && (i + 1 < lines.size()) && (index < text.length())
+                                            && (text[index] != U'\n');
+                if ((lineEnd < index) || wrappedLineEnd)
+                {
+                    count += lines[i].length();
+                    if ((count < text.length()) && (text[count] == U'\n'))
+                        count += 1;
+                }
+                else
+                    return {index - count, i};
+            }
+
+            return {lines.back().length(), lines.size() - 1};
+        }
+    } // anonymous namespace
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     TextArea::TextArea(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
@@ -906,29 +939,45 @@ namespace tgui
         // Find between which character the mouse is standing
         float width = Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached) - m_horizontalScrollbar->getValue();
         char32_t prevChar = 0;
-        for (std::size_t i = 0; i < m_lines[lineNumber].size(); ++i)
-        {
-            float charWidth;
-            const char32_t curChar = m_lines[lineNumber][i];
-            //if (curChar == U'\n')
-            //    return Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextArea strips newlines but this code is kept for when this function is generalized
-            //else
-            if (curChar == U'\t')
-                charWidth = m_fontCached.getGlyph(' ', getTextSize(), false).advance * 4;
-            else
-                charWidth = m_fontCached.getGlyph(curChar, getTextSize(), false).advance;
+        const String& line = m_lines[lineNumber];
 
-            const float kerning = m_fontCached.getKerning(prevChar, curChar, getTextSize(), false);
+        // A character can consist of multiple code points, the caret is placed either in front or behind the entire character
+        const std::vector<std::size_t> characterStarts = priv::findCharacterBoundaries(line);
+        for (std::size_t i = 0; i < characterStarts.size(); ++i)
+        {
+            const std::size_t characterStart = characterStarts[i];
+            const std::size_t characterEnd = (i + 1 < characterStarts.size()) ? characterStarts[i + 1] : line.length();
+
+            float charWidth = 0;
+            float kerning = 0;
+            for (std::size_t index = characterStart; index < characterEnd; ++index)
+            {
+                const char32_t curChar = line[index];
+                //if (curChar == U'\n')
+                //    return Vector2<std::size_t>(m_lines[lineNumber].getSize() - 1, lineNumber); // TextArea strips newlines but this code is kept for when this function is generalized
+                //else
+                if (curChar == U'\t')
+                    charWidth += m_fontCached.getGlyph(' ', getTextSize(), false).advance * 4;
+                else
+                    charWidth += m_fontCached.getGlyph(curChar, getTextSize(), false).advance;
+
+                // The kerning inside the character is part of its width
+                if (index == characterStart)
+                    kerning = m_fontCached.getKerning(prevChar, curChar, getTextSize(), false);
+                else
+                    charWidth += m_fontCached.getKerning(prevChar, curChar, getTextSize(), false);
+
+                prevChar = curChar;
+            }
+
             if (width + charWidth + kerning <= position.x)
                 width += charWidth + kerning;
             else
             {
                 if (position.x < width + kerning + (charWidth / 2.0f))
-                    return {i, lineNumber};
-                return {i + 1, lineNumber};
+                    return {characterStart, lineNumber};
+                return {characterEnd, lineNumber};
             }
-
-            prevChar = curChar;
         }
 
         // You clicked behind the last character
@@ -1020,7 +1069,9 @@ namespace tgui
         {
             if (m_selEnd.x > 0)
             {
-                m_selEnd.x--;
+                // Move over the entire character, which can consist of multiple code points
+                const std::size_t pos = getSelectionEnd();
+                m_selEnd.x -= std::min(m_selEnd.x, pos - priv::findPreviousCharacterBoundary(m_text, pos));
                 onCaretPositionChange.emit(this);
             }
             else
@@ -1059,7 +1110,10 @@ namespace tgui
             }
             else
             {
-                m_selEnd.x++;
+                // Move over the entire character, which can consist of multiple code points
+                const std::size_t pos = getSelectionEnd();
+                m_selEnd.x += std::min(m_lines[m_selEnd.y].length() - m_selEnd.x,
+                                       priv::findNextCharacterBoundary(m_text, pos) - pos);
                 onCaretPositionChange.emit(this);
             }
         }
@@ -1070,101 +1124,15 @@ namespace tgui
     void TextArea::moveCaretWordBegin()
     {
         // Move to the beginning of the word (or to the beginning of the previous word when already at the beginning)
-        bool skippedWhitespace = false;
-        bool done = false;
-        const auto oldSelEnd = m_selEnd;
-        for (std::size_t j = m_selEnd.y + 1; j > 0; --j)
-        {
-            for (std::size_t i = m_selEnd.x; i > 0; --i)
-            {
-                if (skippedWhitespace)
-                {
-                    if (isWhitespace(m_lines[m_selEnd.y][i - 1]))
-                    {
-                        m_selEnd.x = i;
-                        done = true;
-                        break;
-                    }
-                }
-                else
-                {
-                    if (!isWhitespace(m_lines[m_selEnd.y][i - 1]))
-                        skippedWhitespace = true;
-                }
-            }
-
-            if (!done)
-            {
-                if (!skippedWhitespace)
-                {
-                    if (m_selEnd.y > 0)
-                    {
-                        m_selEnd.y--;
-                        m_selEnd.x = m_lines[m_selEnd.y].length();
-                    }
-                }
-                else
-                {
-                    m_selEnd.x = 0;
-                    break;
-                }
-            }
-            else
-                break;
-        }
-        if (oldSelEnd != m_selEnd)
-            onCaretPositionChange.emit(this);
+        updateSelEnd(findLineAndColumn(m_lines, m_text, priv::findPreviousWordBoundary(m_text, getSelectionEnd())));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void TextArea::moveCaretWordEnd()
     {
-        // Move to the end of the word (or to the end of the next word when already at the end)
-        bool skippedWhitespace = false;
-        bool done = false;
-        const auto oldSelEnd = m_selEnd;
-        for (std::size_t j = m_selEnd.y; j < m_lines.size(); ++j)
-        {
-            for (std::size_t i = m_selEnd.x; i < m_lines[m_selEnd.y].length(); ++i)
-            {
-                if (skippedWhitespace)
-                {
-                    if (isWhitespace(m_lines[m_selEnd.y][i]))
-                    {
-                        m_selEnd.x = i;
-                        done = true;
-                        break;
-                    }
-                }
-                else
-                {
-                    if (!isWhitespace(m_lines[m_selEnd.y][i]))
-                        skippedWhitespace = true;
-                }
-            }
-
-            if (!done)
-            {
-                if (!skippedWhitespace)
-                {
-                    if (m_selEnd.y + 1 < m_lines.size())
-                    {
-                        m_selEnd.y++;
-                        m_selEnd.x = 0;
-                    }
-                }
-                else
-                {
-                    m_selEnd.x = m_lines[m_selEnd.y].length();
-                    break;
-                }
-            }
-            else
-                break;
-        }
-        if (oldSelEnd != m_selEnd)
-            onCaretPositionChange.emit(this);
+        // Move to the next word, which is the end of the word on most platforms and the start of the next word on Windows
+        updateSelEnd(findLineAndColumn(m_lines, m_text, priv::findNextWordBoundary(m_text, getSelectionEnd())));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1244,19 +1212,21 @@ namespace tgui
             const std::size_t pos = getSelectionEnd();
             if (pos > 0)
             {
+                // The entire character in front of the caret is removed, which can consist of multiple code points
+                const std::size_t characterLength = pos - priv::findPreviousCharacterBoundary(m_text, pos);
                 if (m_selEnd.x > 0)
                 {
                     // There is a specific case that we have to watch out for. When we are removing the last character on
                     // a line which was placed there by word wrap and a newline follows this character then the caret
                     // has to be placed at the line above (before the newline) instead of at the same line (after the newline)
-                    if ((m_lines[m_selEnd.y].length() == 1) && (pos > 1) && (pos < m_text.length()) && (m_text[pos - 2] != '\n')
-                        && (m_text[pos] == '\n') && (m_selEnd.y > 0))
+                    if ((m_lines[m_selEnd.y].length() == characterLength) && (pos > characterLength) && (pos < m_text.length())
+                        && (m_text[pos - characterLength - 1] != '\n') && (m_text[pos] == '\n') && (m_selEnd.y > 0))
                     {
                         m_selEnd.y--;
                         m_selEnd.x = m_lines[m_selEnd.y].length();
                     }
                     else // Just remove the character normally
-                        --m_selEnd.x;
+                        m_selEnd.x -= std::min(m_selEnd.x, characterLength);
                 }
                 else // At the beginning of the line
                 {
@@ -1265,14 +1235,14 @@ namespace tgui
                         --m_selEnd.y;
                         m_selEnd.x = m_lines[m_selEnd.y].length();
 
-                        if ((m_text[pos - 1] != '\n') && m_selEnd.x > 0)
-                            --m_selEnd.x;
+                        if (m_text[pos - 1] != '\n')
+                            m_selEnd.x -= std::min(m_selEnd.x, characterLength);
                     }
                 }
 
                 m_selStart = m_selEnd;
 
-                m_text.erase(pos - 1, 1);
+                m_text.erase(pos - characterLength, characterLength);
                 // If the "special case" above passes, and we let rearrangeText() emit the onCaretPositionChange signal,
                 // the same signal will be emitted twice. So prevent sending signal in rearrangeText() and always send it manually afterwards.
                 rearrangeText(true, false);
@@ -1299,7 +1269,11 @@ namespace tgui
         // Check that we did not select any characters
         if (m_selStart == m_selEnd)
         {
-            m_text.erase(getSelectionEnd(), 1);
+            // The entire character behind the caret is removed, which can consist of multiple code points
+            const std::size_t pos = getSelectionEnd();
+            if (pos < m_text.length())
+                m_text.erase(pos, priv::findNextCharacterBoundary(m_text, pos) - pos);
+
             rearrangeText(true);
         }
         else // You did select some characters, so remove them
