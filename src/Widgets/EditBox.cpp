@@ -200,6 +200,20 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    std::size_t EditBox::getSelectionStart() const
+    {
+        return m_selStart;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t EditBox::getSelectionEnd() const
+    {
+        return m_selEnd;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     void EditBox::setPasswordCharacter(char32_t passwordChar)
     {
         m_passwordChar = passwordChar;
@@ -349,6 +363,16 @@ namespace tgui
     std::size_t EditBox::getCaretPosition() const
     {
         return m_selEnd;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Vector2f EditBox::getCharacterPosition(std::size_t index) const
+    {
+        // The text before the selection always starts at the left side of the text, even when part of it is scrolled away
+        index = std::min(index, m_displayedText.length());
+        return {m_bordersCached.getLeft() + m_textBeforeSelection.getPosition().x + m_textFull.findCharacterPos(index).x,
+                m_bordersCached.getTop() + m_textBeforeSelection.getPosition().y};
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

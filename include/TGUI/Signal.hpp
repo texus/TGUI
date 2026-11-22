@@ -212,6 +212,17 @@ namespace tgui
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @internal
+        /// @brief Sets the function that informs screen readers and other assistive technology that the signal was emitted
+        ///
+        /// @param handler  Function to call each time the signal is emitted, or an empty function to remove it
+        ///
+        /// The function is called even when the signal is disabled, it isn't removed by disconnect or disconnectAll and it
+        /// isn't copied together with the widget. You should not call this function yourself.
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAccessibilityHandler(std::function<void()> handler);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected:
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,6 +245,7 @@ namespace tgui
         bool m_enabled = true;
         String m_name;
         std::unordered_map<unsigned int, std::function<void()>> m_handlers;
+        std::function<void()> m_accessibilityHandler; // Not part of m_handlers so that it can't be disconnected
 
         static unsigned int m_lastSignalId;
         static std::deque<const void*> m_parameters;
@@ -313,7 +325,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool emit(const Widget* widget, T param)
         {
-            if (m_handlers.empty())
+            if (m_handlers.empty() && !m_accessibilityHandler)
                 return false;
 
             m_parameters[1] = static_cast<const void*>(&param);
@@ -396,7 +408,7 @@ namespace tgui
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         bool emit(const Widget* widget, T1 param1, T2 param2)
         {
-            if (m_handlers.empty())
+            if (m_handlers.empty() && !m_accessibilityHandler)
                 return false;
 
             m_parameters[1] = static_cast<const void*>(&param1);

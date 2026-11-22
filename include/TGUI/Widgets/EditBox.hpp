@@ -179,6 +179,29 @@ namespace tgui
         [[nodiscard]] String getSelectedText() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the index where the selection starts
+        ///
+        /// When no text is selected, this function returns the same getSelectionEnd.
+        ///
+        /// Note that the start of the selection may be behind the end of the selection when the user selected the text from
+        /// right to left.
+        ///
+        /// @return Amount of characters before the start of the selection
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [[nodiscard]] std::size_t getSelectionStart() const;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the index where the selection ends, which is also where the caret is located
+        ///
+        /// @return Amount of characters before the end of the selection
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [[nodiscard]] std::size_t getSelectionEnd() const;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Sets a password character
         ///
         /// @param passwordChar  The new password character.
@@ -296,6 +319,17 @@ namespace tgui
         /// @return Characters before the caret
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         [[nodiscard]] std::size_t getCaretPosition() const;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the position of a character relative to the top-left of the edit box
+        ///
+        /// @param index  Index of the character, or the length of the text to get the position behind the last character
+        ///
+        /// @return Top-left position of the character, taking into account that the text may be scrolled
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [[nodiscard]] Vector2f getCharacterPosition(std::size_t index) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Defines how the text input should look like

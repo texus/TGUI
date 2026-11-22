@@ -213,6 +213,8 @@ namespace tgui
         m_textComponent->setString(caption);
 
         updateTextSize();
+
+        onAccessibleTextChange.emit(this, caption);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

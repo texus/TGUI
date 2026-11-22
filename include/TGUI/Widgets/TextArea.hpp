@@ -231,6 +231,17 @@ namespace tgui
         [[nodiscard]] std::size_t getCaretPosition() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the position of a character relative to the top-left of the text area
+        ///
+        /// @param index  Index of the character, or the length of the text to get the position behind the last character
+        ///
+        /// @return Top-left position of the character, taking into account that the text may be scrolled
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [[nodiscard]] Vector2f getCharacterPosition(std::size_t index) const;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Returns which line the blinking cursor is currently located on
         ///
         /// @return The line the caret is currently located on
@@ -320,6 +331,19 @@ namespace tgui
         /// Note that this is the amount of lines after word-wrap is applied.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         [[nodiscard]] std::size_t getLinesCount() const;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the index of the first character on a line
+        ///
+        /// @param lineIndex  Index of the line, lines created by word wrap are counted as separate lines
+        ///
+        /// @return Amount of characters in front of the line, or the length of the text if the line doesn't exist
+        ///
+        /// @see getLinesCount
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [[nodiscard]] std::size_t getLineStartIndex(std::size_t lineIndex) const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Focus or unfocus the widget

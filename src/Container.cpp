@@ -363,6 +363,8 @@ namespace tgui
 
         if (widgetPtr->getAutoLayout() != AutoLayout::Manual)
             updateChildrenWithAutoLayout();
+
+        onChildrenChange.emit(this);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,6 +448,7 @@ namespace tgui
             if (widget->getAutoLayout() != AutoLayout::Manual)
                 updateChildrenWithAutoLayout();
 
+            onChildrenChange.emit(this);
             return true;
         }
 
@@ -475,6 +478,8 @@ namespace tgui
         m_widgetWithRightMouseDown = nullptr;
         m_focusedWidget = nullptr;
         m_draggingWidget = false;
+
+        onChildrenChange.emit(this);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -855,6 +860,7 @@ namespace tgui
         if (widgetToMove->getAutoLayout() != AutoLayout::Manual)
             updateChildrenWithAutoLayout();
 
+        onChildrenChange.emit(this);
         return true;
     }
 

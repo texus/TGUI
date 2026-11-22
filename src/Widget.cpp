@@ -33,6 +33,9 @@
 #include <TGUI/Vector2.hpp>
 #include <TGUI/Widget.hpp>
 
+#include <algorithm>
+#include <array>
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -199,6 +202,14 @@ namespace tgui
 
             throw Exception{U"Expected renderer reference '&' or theme binding '@' in Renderer property, got '" + trimmed + U"'."};
         }
+
+        // Names of the accessible roles as they are stored in files, in the same order as the AccessibleRole enum
+        const std::array<const char32_t*, 33> accessibleRoleNames = {
+            U"Default",     U"Window",  U"Pane",          U"Group",     U"Button",    U"ToggleButton", U"CheckBox",
+            U"RadioButton", U"Edit",    U"MultiLineEdit", U"Text",      U"Image",     U"ComboBox",     U"List",
+            U"ListItem",    U"Tree",    U"TreeItem",      U"Table",     U"TableRow",  U"TableCell",    U"Header",
+            U"HeaderItem",  U"TabList", U"TabItem",       U"Slider",    U"ScrollBar", U"Spinner",      U"ProgressBar",
+            U"MenuBar",     U"Menu",    U"MenuItem",      U"Separator", U"Custom"};
     } // anonymous namespace
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,6 +270,9 @@ namespace tgui
         m_autoLayout{other.m_autoLayout},
         m_autoLayoutUpdateEnabled{other.m_autoLayoutUpdateEnabled},
         m_ignoreMouseEvents{other.m_ignoreMouseEvents},
+        m_accessibleRole{other.m_accessibleRole},
+        m_accessibleName{other.m_accessibleName},
+        m_accessibleDescription{other.m_accessibleDescription},
         m_fontCached{other.m_fontCached},
         m_opacityCached{other.m_opacityCached},
         m_transparentTextureCached{other.m_transparentTextureCached},
@@ -284,6 +298,11 @@ namespace tgui
         onMouseLeave{std::move(other.onMouseLeave)},
         onShowEffectFinish{std::move(other.onShowEffectFinish)},
         onAnimationFinish{std::move(other.onAnimationFinish)},
+        onVisibilityChange{std::move(other.onVisibilityChange)},
+        onEnabledChange{std::move(other.onEnabledChange)},
+        onAccessibilityChange{std::move(other.onAccessibilityChange)},
+        onAccessibleTextChange{std::move(other.onAccessibleTextChange)},
+        onChildrenChange{std::move(other.onChildrenChange)},
         m_type{std::move(other.m_type)},
         m_name{std::move(other.m_name)},
         m_position{std::move(other.m_position)},
@@ -320,6 +339,9 @@ namespace tgui
         m_autoLayout{std::move(other.m_autoLayout)},
         m_autoLayoutUpdateEnabled{std::move(other.m_autoLayoutUpdateEnabled)},
         m_ignoreMouseEvents{std::move(other.m_ignoreMouseEvents)},
+        m_accessibleRole{std::move(other.m_accessibleRole)},
+        m_accessibleName{std::move(other.m_accessibleName)},
+        m_accessibleDescription{std::move(other.m_accessibleDescription)},
         m_fontCached{std::move(other.m_fontCached)},
         m_opacityCached{std::move(other.m_opacityCached)},
         m_transparentTextureCached{std::move(other.m_transparentTextureCached)},
@@ -357,6 +379,11 @@ namespace tgui
             onMouseLeave.disconnectAll();
             onShowEffectFinish.disconnectAll();
             onAnimationFinish.disconnectAll();
+            onVisibilityChange.disconnectAll();
+            onEnabledChange.disconnectAll();
+            onAccessibilityChange.disconnectAll();
+            onAccessibleTextChange.disconnectAll();
+            onChildrenChange.disconnectAll();
 
             m_showAnimations.clear();
 
@@ -397,6 +424,9 @@ namespace tgui
             m_autoLayout = other.m_autoLayout;
             m_autoLayoutUpdateEnabled = other.m_autoLayoutUpdateEnabled;
             m_ignoreMouseEvents = other.m_ignoreMouseEvents;
+            m_accessibleRole = other.m_accessibleRole;
+            m_accessibleName = other.m_accessibleName;
+            m_accessibleDescription = other.m_accessibleDescription;
             m_fontCached = other.m_fontCached;
             m_opacityCached = other.m_opacityCached;
             m_transparentTextureCached = other.m_transparentTextureCached;
@@ -430,6 +460,11 @@ namespace tgui
             onMouseLeave = std::move(other.onMouseLeave);
             onShowEffectFinish = std::move(other.onShowEffectFinish);
             onAnimationFinish = std::move(other.onAnimationFinish);
+            onVisibilityChange = std::move(other.onVisibilityChange);
+            onEnabledChange = std::move(other.onEnabledChange);
+            onAccessibilityChange = std::move(other.onAccessibilityChange);
+            onAccessibleTextChange = std::move(other.onAccessibleTextChange);
+            onChildrenChange = std::move(other.onChildrenChange);
             m_type = std::move(other.m_type);
             m_name = std::move(other.m_name);
             m_position = std::move(other.m_position);
@@ -468,6 +503,9 @@ namespace tgui
             m_autoLayout = std::move(other.m_autoLayout);
             m_autoLayoutUpdateEnabled = std::move(other.m_autoLayoutUpdateEnabled);
             m_ignoreMouseEvents = std::move(other.m_ignoreMouseEvents);
+            m_accessibleRole = std::move(other.m_accessibleRole);
+            m_accessibleName = std::move(other.m_accessibleName);
+            m_accessibleDescription = std::move(other.m_accessibleDescription);
             m_fontCached = std::move(other.m_fontCached);
             m_opacityCached = std::move(other.m_opacityCached);
             m_transparentTextureCached = std::move(other.m_transparentTextureCached);
@@ -1158,6 +1196,7 @@ namespace tgui
 
     void Widget::setVisible(bool visible)
     {
+        const bool visibilityChanged = (m_visible != visible);
         m_visible = visible;
 
         // If the widget is hiden while still focused then it must be unfocused
@@ -1174,12 +1213,16 @@ namespace tgui
 
             rightMouseButtonNoLongerDown();
         }
+
+        if (visibilityChanged)
+            onVisibilityChange.emit(this, visible);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     void Widget::setEnabled(bool enabled)
     {
+        const bool enabledChanged = (m_enabled != enabled);
         m_enabled = enabled;
 
         if (!enabled)
@@ -1192,6 +1235,9 @@ namespace tgui
         // Refresh widget opacity if there is a different value set for enabled and disabled widgets
         if (getSharedRenderer()->getOpacityDisabled() != -1)
             rendererChanged("OpacityDisabled");
+
+        if (enabledChanged)
+            onEnabledChange.emit(this, enabled);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1352,6 +1398,60 @@ namespace tgui
     String Widget::getWidgetName() const
     {
         return m_name;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setAccessibleRole(AccessibleRole role)
+    {
+        if (m_accessibleRole == role)
+            return;
+
+        m_accessibleRole = role;
+        onAccessibilityChange.emit(this);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    AccessibleRole Widget::getAccessibleRole() const
+    {
+        return m_accessibleRole;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setAccessibleName(const String& name)
+    {
+        if (m_accessibleName == name)
+            return;
+
+        m_accessibleName = name;
+        onAccessibilityChange.emit(this);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const String& Widget::getAccessibleName() const
+    {
+        return m_accessibleName;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Widget::setAccessibleDescription(const String& description)
+    {
+        if (m_accessibleDescription == description)
+            return;
+
+        m_accessibleDescription = description;
+        onAccessibilityChange.emit(this);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const String& Widget::getAccessibleDescription() const
+    {
+        return m_accessibleDescription;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1698,6 +1798,16 @@ namespace tgui
             return onAnimationFinish;
         if (signalName == onShowEffectFinish.getName())
             return onShowEffectFinish;
+        if (signalName == onVisibilityChange.getName())
+            return onVisibilityChange;
+        if (signalName == onEnabledChange.getName())
+            return onEnabledChange;
+        if (signalName == onAccessibilityChange.getName())
+            return onAccessibilityChange;
+        if (signalName == onAccessibleTextChange.getName())
+            return onAccessibleTextChange;
+        if (signalName == onChildrenChange.getName())
+            return onChildrenChange;
 
         throw Exception{U"No signal exists with name '" + std::move(signalName) + U"'."};
     }
@@ -1799,6 +1909,14 @@ namespace tgui
         if (m_ignoreMouseEvents)
             node->propertyValuePairs[U"IgnoreMouseEvents"] = std::make_unique<DataIO::ValueNode>(
                 Serializer::serialize(m_ignoreMouseEvents));
+        if (m_accessibleRole != AccessibleRole::Default)
+            node->propertyValuePairs[U"AccessibleRole"] = std::make_unique<DataIO::ValueNode>(
+                accessibleRoleNames[static_cast<std::size_t>(m_accessibleRole)]);
+        if (!m_accessibleName.empty())
+            node->propertyValuePairs[U"AccessibleName"] = std::make_unique<DataIO::ValueNode>(Serializer::serialize(m_accessibleName));
+        if (!m_accessibleDescription.empty())
+            node->propertyValuePairs[U"AccessibleDescription"] = std::make_unique<DataIO::ValueNode>(
+                Serializer::serialize(m_accessibleDescription));
 
         const auto navWidgetUp = m_navWidgetUp.lock();
         const auto navWidgetDown = m_navWidgetDown.lock();
@@ -1959,6 +2077,23 @@ namespace tgui
         if (node->propertyValuePairs[U"IgnoreMouseEvents"])
             setIgnoreMouseEvents(
                 Deserializer::deserialize(ObjectConverter::Type::Bool, node->propertyValuePairs[U"IgnoreMouseEvents"]->value).getBool());
+        if (node->propertyValuePairs[U"AccessibleRole"])
+        {
+            const String roleStr = node->propertyValuePairs[U"AccessibleRole"]->value.trim();
+            const auto it = std::find_if(accessibleRoleNames.begin(), accessibleRoleNames.end(),
+                                         [&roleStr](const char32_t* name) { return roleStr.equalIgnoreCase(name); });
+            if (it == accessibleRoleNames.end())
+                throw Exception{U"Failed to parse AccessibleRole property, found unknown value '" + roleStr + U"'."};
+
+            setAccessibleRole(static_cast<AccessibleRole>(it - accessibleRoleNames.begin()));
+        }
+        if (node->propertyValuePairs[U"AccessibleName"])
+            setAccessibleName(
+                Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"AccessibleName"]->value).getString());
+        if (node->propertyValuePairs[U"AccessibleDescription"])
+            setAccessibleDescription(
+                Deserializer::deserialize(ObjectConverter::Type::String, node->propertyValuePairs[U"AccessibleDescription"]->value)
+                    .getString());
 
         if (m_parentGui)
         {

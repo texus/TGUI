@@ -348,6 +348,24 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Vector2f TextArea::getCharacterPosition(std::size_t index) const
+    {
+        const Vector2<std::size_t> pos = findLineAndColumn(m_lines, m_text, index);
+
+        float x = m_bordersCached.getLeft() + m_paddingCached.getLeft() - static_cast<float>(m_horizontalScrollbar->getValue());
+        if (m_fontCached)
+        {
+            x += Text::getExtraHorizontalPadding(m_fontCached, m_textSizeCached)
+                 + Text::getLineWidth(m_lines[pos.y].substr(0, pos.x), m_fontCached, m_textSizeCached);
+        }
+
+        const float y = m_bordersCached.getTop() + m_paddingCached.getTop() + (static_cast<float>(pos.y) * m_lineHeight)
+                        - static_cast<float>(m_verticalScrollbar->getValue());
+        return {x, y};
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     std::size_t TextArea::getCaretLine() const
     {
         const auto caret = getCaretPosition();
@@ -388,6 +406,16 @@ namespace tgui
     std::size_t TextArea::getLinesCount() const
     {
         return m_lines.size();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    std::size_t TextArea::getLineStartIndex(std::size_t lineIndex) const
+    {
+        if (lineIndex >= m_lines.size())
+            return m_text.length();
+
+        return getIndexOfSelectionPos({0, lineIndex});
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
