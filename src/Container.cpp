@@ -157,6 +157,35 @@ namespace tgui
             for (const auto& childNode : node->children)
                 makePathsRelativeToForm(childNode, formPath);
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Radio buttons inside the same container form a group, which is only visited once when moving the focus with the
+        // tab key (the arrow keys move between the radio buttons in the group). The checked radio button receives the
+        // focus, or the first one when none of them is checked.
+        [[nodiscard]] bool isFocusStopOfRadioButtonGroup(const std::vector<Widget::Ptr>& widgets, const Widget::Ptr& widget)
+        {
+            if (widget->getWidgetType() != U"RadioButton")
+                return true;
+            if (std::static_pointer_cast<RadioButton>(widget)->isChecked())
+                return true;
+
+            Widget::Ptr firstRadioButton;
+            for (const auto& sibling : widgets)
+            {
+                if ((sibling->getWidgetType() != U"RadioButton") || !sibling->canGainFocus() || !sibling->isVisible()
+                    || !sibling->isEnabled())
+                    continue;
+
+                if (std::static_pointer_cast<RadioButton>(sibling)->isChecked())
+                    return false;
+
+                if (!firstRadioButton)
+                    firstRadioButton = sibling;
+            }
+
+            return firstRadioButton == widget;
+        }
     } // anonymous namespace
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1655,6 +1684,10 @@ namespace tgui
     {
         // If you are not allowed to focus the widget, then skip it
         if (!widget->canGainFocus() || !widget->isVisible() || !widget->isEnabled())
+            return false;
+
+        // Only one radio button of each group can receive the focus this way
+        if (!isFocusStopOfRadioButtonGroup(m_widgets, widget))
             return false;
 
         if (recursive && widget->isContainer())

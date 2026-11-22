@@ -180,7 +180,7 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             return true;
-        return RadioButton::canHandleKeyPress(event);
+        return ClickableWidget::canHandleKeyPress(event); // NOLINT(bugprone-parent-virtual-call)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

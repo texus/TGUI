@@ -294,9 +294,7 @@ TEST_CASE("[Focussing widgets]")
         rootContainer->focusNextWidget();
         REQUIRE(widgetFocused(editBox));
 
-        rootContainer->focusNextWidget();
-        REQUIRE(widgetFocused(radioButton1));
-
+        // Only the checked radio button of a group receives the focus
         rootContainer->focusNextWidget();
         REQUIRE(widgetFocused(radioButton2));
 
@@ -349,14 +347,19 @@ TEST_CASE("[Focussing widgets]")
         radioButton2->setFocused(true);
         REQUIRE(widgetFocused(radioButton2));
 
-        rootContainer->focusPreviousWidget();
-        REQUIRE(widgetFocused(radioButton1));
-
+        // Only the checked radio button of a group receives the focus
         rootContainer->focusPreviousWidget();
         REQUIRE(widgetFocused(editBox));
 
         rootContainer->focusPreviousWidget();
         REQUIRE(widgetFocused(radioButton2));
+
+        // The first radio button receives the focus when none of them is checked
+        radioButton2->setChecked(false);
+        editBox->setFocused(true);
+        rootContainer->focusPreviousWidget();
+        REQUIRE(widgetFocused(radioButton1));
+        radioButton2->setChecked(true);
 
         editBoxPassword->setFocused(true);
         REQUIRE(widgetFocused(editBoxPassword));
@@ -417,7 +420,38 @@ TEST_CASE("[Focussing widgets]")
         gui.handleEvent(event);
         REQUIRE(widgetFocused(radioButton2));
 
+        // The tab key skips the radio buttons that aren't checked
         event.type = tgui::Event::Type::KeyPressed;
+        gui.handleEvent(event);
+        REQUIRE(widgetFocused(editBox));
+
+        event.type = tgui::Event::Type::KeyPressed;
+        gui.handleEvent(event);
+        REQUIRE(widgetFocused(radioButton2));
+
+        // The arrow keys move the focus between the radio buttons and check them, wrapping around at the end of the group
+        event.key.shift = false;
+        event.key.code = tgui::Event::KeyboardKey::Up;
+        gui.handleEvent(event);
+        REQUIRE(widgetFocused(radioButton1));
+        REQUIRE(radioButton1->isChecked());
+        REQUIRE(!radioButton2->isChecked());
+
+        event.key.code = tgui::Event::KeyboardKey::Up;
+        gui.handleEvent(event);
+        REQUIRE(widgetFocused(radioButton2));
+        REQUIRE(radioButton2->isChecked());
+
+        event.key.code = tgui::Event::KeyboardKey::Right;
+        gui.handleEvent(event);
+        REQUIRE(widgetFocused(radioButton1));
+        REQUIRE(radioButton1->isChecked());
+
+        event.key.code = tgui::Event::KeyboardKey::Tab;
+        gui.handleEvent(event);
+        REQUIRE(widgetFocused(editBox));
+
+        event.key.shift = true;
         gui.handleEvent(event);
         REQUIRE(widgetFocused(radioButton1));
     }

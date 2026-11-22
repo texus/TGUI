@@ -25,8 +25,57 @@
 #include <TGUI/Container.hpp>
 #include <TGUI/Widgets/RadioButton.hpp>
 
+#include <algorithm>
+
 namespace tgui
 {
+    namespace
+    {
+        // Finds the radio button that comes before or after the given one in its group (the radio buttons inside the same
+        // container), skipping the ones that can't be focused. The search wraps around at the start and end of the group.
+        [[nodiscard]] RadioButton::Ptr findNeighbourInGroup(const RadioButton& radioButton, bool next)
+        {
+            const Container* parent = radioButton.getParent();
+            if (!parent)
+                return nullptr;
+
+            const auto& widgets = parent->getWidgets();
+            const auto it = std::find_if(widgets.begin(),
+                                         widgets.end(),
+                                         [&radioButton](const Widget::Ptr& childWidget)
+                                         { return childWidget.get() == &radioButton; });
+            if (it == widgets.end())
+                return nullptr;
+
+            const auto index = static_cast<std::size_t>(it - widgets.begin());
+            for (std::size_t offset = 1; offset < widgets.size(); ++offset)
+            {
+                const std::size_t i = next ? ((index + offset) % widgets.size())
+                                           : ((index + widgets.size() - offset) % widgets.size());
+                const auto& widget = widgets[i];
+                if ((widget->getWidgetType() == U"RadioButton") && widget->canGainFocus() && widget->isVisible()
+                    && widget->isEnabled())
+                    return std::static_pointer_cast<RadioButton>(widget);
+            }
+
+            return nullptr;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Returns whether one of the arrow keys was pressed without modifiers
+        [[nodiscard]] bool isArrowKeyPress(const Event::KeyEvent& event)
+        {
+            if (event.control || event.alt || event.shift || event.system)
+                return false;
+
+            return (event.code == Event::KeyboardKey::Up) || (event.code == Event::KeyboardKey::Down)
+                   || (event.code == Event::KeyboardKey::Left) || (event.code == Event::KeyboardKey::Right);
+        }
+    } // anonymous namespace
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     RadioButton::RadioButton(const char* typeName, bool initRenderer) :
         ClickableWidget{typeName, false}
     {
@@ -280,13 +329,23 @@ namespace tgui
     {
         if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
             setChecked(true);
+        else if (isArrowKeyPress(event))
+        {
+            // The arrow keys move the focus to the previous or next radio button in the group, which also checks it
+            const bool next = (event.code == Event::KeyboardKey::Down) || (event.code == Event::KeyboardKey::Right);
+            if (const auto neighbour = findNeighbourInGroup(*this, next))
+            {
+                neighbour->setFocused(true);
+                neighbour->setChecked(true);
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     bool RadioButton::canHandleKeyPress(const Event::KeyEvent& event)
     {
-        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter))
+        if ((event.code == Event::KeyboardKey::Space) || (event.code == Event::KeyboardKey::Enter) || isArrowKeyPress(event))
             return true;
         return ClickableWidget::canHandleKeyPress(event);
     }
