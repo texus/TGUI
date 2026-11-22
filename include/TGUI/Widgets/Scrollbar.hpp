@@ -276,7 +276,7 @@ namespace tgui
         /// @brief Returns whether the widget can gain focus
         /// @return Can the widget be focused?
         ///
-        /// For the scrollbar widget this function returns true when the scrollbar is shown and false when it is hidden.
+        /// This function returns false for Scrollbar widgets.
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         [[nodiscard]] bool canGainFocus() const override;
 
