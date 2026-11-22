@@ -24,6 +24,8 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_SRC_FILES := \
     $(subst $(LOCAL_PATH)/,, \
         $(wildcard $(LOCAL_PATH)/src/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Accessibility/*.cpp) \
+        $(wildcard $(LOCAL_PATH)/src/Accessibility/Widgets/*.cpp) \
         $(wildcard $(LOCAL_PATH)/src/Loading/*.cpp) \
         $(wildcard $(LOCAL_PATH)/src/Renderers/*.cpp) \
         $(wildcard $(LOCAL_PATH)/src/Widgets/*.cpp) \

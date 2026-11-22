@@ -21,6 +21,22 @@
 ####################################################################################################
 
 set(TGUI_SRC
+    Accessibility/AccessibilityTree.cpp
+    Accessibility/AccessibleObject.cpp
+    Accessibility/AccessibleWidgetHandler.cpp
+    Accessibility/Widgets/AccessibleButtonHandler.cpp
+    Accessibility/Widgets/AccessibleCheckBoxHandler.cpp
+    Accessibility/Widgets/AccessibleChildWindowHandler.cpp
+    Accessibility/Widgets/AccessibleContainerHandler.cpp
+    Accessibility/Widgets/AccessibleEditBoxHandler.cpp
+    Accessibility/Widgets/AccessibleLabelHandler.cpp
+    Accessibility/Widgets/AccessiblePictureHandler.cpp
+    Accessibility/Widgets/AccessibleRadioButtonHandler.cpp
+    Accessibility/Widgets/AccessibleRangeHandler.cpp
+    Accessibility/Widgets/AccessibleSeparatorLineHandler.cpp
+    Accessibility/Widgets/AccessibleTabsHandler.cpp
+    Accessibility/Widgets/AccessibleTextAreaHandler.cpp
+    Accessibility/Widgets/AccessibleToggleButtonHandler.cpp
     Animation.cpp
     Backend/Font/BackendFont.cpp
     Backend/Renderer/BackendRenderTarget.cpp
@@ -154,6 +170,11 @@ set(TGUI_SRC
 
 set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/AbsoluteOrRelativeValue.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/AccessibleRole.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Accessibility/AccessibilityTree.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Accessibility/AccessibilityTypes.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Accessibility/AccessibleObject.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Accessibility/AccessibleWidgetHandler.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/AllWidgets.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Animation.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Any.hpp"
