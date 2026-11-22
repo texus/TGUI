@@ -21,6 +21,7 @@
 ####################################################################################################
 
 set(TGUI_SRC
+    Accessibility/AccessibilityBackend.cpp
     Accessibility/AccessibilityTree.cpp
     Accessibility/AccessibleObject.cpp
     Accessibility/AccessibleWidgetHandler.cpp
@@ -171,6 +172,7 @@ set(TGUI_SRC
 set(TGUI_HEADERS
     "${PROJECT_SOURCE_DIR}/include/TGUI/AbsoluteOrRelativeValue.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/AccessibleRole.hpp"
+    "${PROJECT_SOURCE_DIR}/include/TGUI/Accessibility/AccessibilityBackend.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Accessibility/AccessibilityTree.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Accessibility/AccessibilityTypes.hpp"
     "${PROJECT_SOURCE_DIR}/include/TGUI/Accessibility/AccessibleObject.hpp"

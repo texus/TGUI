@@ -240,6 +240,10 @@ if(TGUI_OS_LINUX)
         tgui_add_dependency_x11()
     endif()
 endif()
+if(TGUI_OS_WINDOWS)
+    # UI Automation is used to expose the widgets to screen readers
+    tgui_add_dependency_uia()
+endif()
 
 set(module_src_files "")
 
@@ -275,6 +279,17 @@ if(TGUI_HAS_WINDOW_BACKEND_RAYLIB)
     target_sources(tgui PRIVATE ${new_tgui_backend_sources})
     set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "WINDOW_BACKEND_RAYLIB")
     list(APPEND module_src_files "Backend/Window/Raylib/BackendWindowRaylib.cppm")
+endif()
+if(TGUI_OS_WINDOWS)
+    set(new_tgui_backend_sources
+        Accessibility/UIA/AccessibilityBackendUIA.cpp
+        Accessibility/UIA/UiaElementProvider.cpp
+        Accessibility/UIA/UiaTextRangeProvider.cpp)
+    target_sources(tgui PRIVATE ${new_tgui_backend_sources})
+    set_source_files_properties(${new_tgui_backend_sources} PROPERTIES UNITY_GROUP "ACCESSIBILITY_BACKEND_UIA")
+
+    # The headers of the UI Automation backend are only used internally, so they aren't installed
+    target_sources(tgui PRIVATE Accessibility/UIA/AccessibilityBackendUIA.hpp Accessibility/UIA/UiaProviders.hpp)
 endif()
 
 if(TGUI_HAS_RENDERER_BACKEND_SFML_GRAPHICS)

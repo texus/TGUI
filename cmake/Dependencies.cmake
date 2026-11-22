@@ -764,3 +764,13 @@ macro(tgui_add_dependency_x11)
         target_link_libraries(tgui PRIVATE X11::X11)
     endif()
 endmacro()
+
+
+# Add the system libraries that are needed to make the widgets accessible to screen readers via UI Automation
+macro(tgui_add_dependency_uia)
+    if(NOT TGUI_OS_WINDOWS)
+        message(FATAL_ERROR "UI Automation isn't supported on this platform")
+    endif()
+
+    target_link_libraries(tgui PRIVATE uiautomationcore oleaut32 comctl32)
+endmacro()
