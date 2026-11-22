@@ -644,6 +644,10 @@ namespace tgui
 #endif
 
         updateContainerSize();
+
+#ifdef TGUI_SYSTEM_WINDOWS
+        setAccessibilityWindowHandle(glfwGetWin32Window(window));
+#endif
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -25,9 +25,12 @@
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 #include <TGUI/Backend/Window/Backend.hpp>
 #include <TGUI/Backend/Window/BackendGui.hpp>
+#include <TGUI/Accessibility/AccessibilityBackend.hpp>
 
 #include <TGUI/Timer.hpp>
 #include <TGUI/ToolTip.hpp>
+
+#include <thread>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +47,9 @@ namespace tgui
 
     BackendGui::~BackendGui()
     {
+        // The accessibility backend is destroyed first, so that it no longer accesses the widgets while they are being removed
+        m_accessibilityBackend = nullptr;
+
         m_container->setParentGui(nullptr);
 
         // Destroy the container and its widgets before destroying the backend.
@@ -324,6 +330,10 @@ namespace tgui
 
         TGUI_ASSERT(m_backendRenderTarget != nullptr, "Gui must be given a window (or render target) before calling draw()");
         m_backendRenderTarget->drawGui(m_container);
+
+        // Something may have changed that widgets don't report, such as the position of a widget that was scrolled
+        if (m_accessibilityBackend)
+            m_accessibilityBackend->guiDrawn();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -647,6 +657,10 @@ namespace tgui
     {
         bool screenRefreshRequired = Timer::updateTime(elapsedTime);
 
+        // Send the changes that widgets reported since the last update to the accessibility api
+        if (m_accessibilityBackend)
+            screenRefreshRequired |= m_accessibilityBackend->update();
+
         if (!m_windowFocused)
             return screenRefreshRequired;
 
@@ -800,6 +814,29 @@ namespace tgui
     bool BackendGui::isKeyboardNavigationEnabled() const
     {
         return m_keyboardNavigationEnabled;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGui::setAccessibilityWindowHandle(void* nativeWindowHandle)
+    {
+        if (nativeWindowHandle == m_accessibilityWindowHandle)
+            return;
+
+        m_accessibilityBackend = nullptr;
+        m_accessibilityWindowHandle = nativeWindowHandle;
+        if (nativeWindowHandle)
+            m_accessibilityBackend = priv::AccessibilityBackend::create(*this, nativeWindowHandle);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void BackendGui::waitForEvents(Duration timeout)
+    {
+        if (m_accessibilityBackend && m_accessibilityBackend->waitForEvents(timeout))
+            return;
+
+        std::this_thread::sleep_for(std::chrono::nanoseconds(timeout));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
