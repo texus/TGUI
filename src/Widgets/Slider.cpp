@@ -31,6 +31,23 @@
 
 namespace tgui
 {
+    namespace
+    {
+        // Returns whether a key was pressed that changes the value: an arrow key, page up, page down, home or end
+        [[nodiscard]] bool isSliderKeyPress(const Event::KeyEvent& event)
+        {
+            if (event.control || event.alt || event.shift || event.system)
+                return false;
+
+            return (event.code == Event::KeyboardKey::Left) || (event.code == Event::KeyboardKey::Right)
+                   || (event.code == Event::KeyboardKey::Up) || (event.code == Event::KeyboardKey::Down)
+                   || (event.code == Event::KeyboardKey::PageUp) || (event.code == Event::KeyboardKey::PageDown)
+                   || (event.code == Event::KeyboardKey::Home) || (event.code == Event::KeyboardKey::End);
+        }
+    } // anonymous namespace
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     Slider::Slider(const char* typeName, bool initRenderer) :
         Widget{typeName, false}
     {
@@ -520,6 +537,51 @@ namespace tgui
         }
 
         return true;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void Slider::keyPressed(const Event::KeyEvent& event)
+    {
+        if (!isSliderKeyPress(event))
+            return;
+
+        if (event.code == Event::KeyboardKey::Home)
+        {
+            setValue(m_minimum);
+            return;
+        }
+        if (event.code == Event::KeyboardKey::End)
+        {
+            setValue(m_maximum);
+            return;
+        }
+
+        // Without a step, the arrow keys change the value by 1% of the range. Page up and page down change it by 10%.
+        const float range = m_maximum - m_minimum;
+        const float smallChange = (m_step != 0) ? m_step : (range / 100);
+        float change = smallChange;
+        if ((event.code == Event::KeyboardKey::PageUp) || (event.code == Event::KeyboardKey::PageDown))
+            change = std::max(smallChange, range / 10);
+
+        const bool increase = (event.code == Event::KeyboardKey::Right) || (event.code == Event::KeyboardKey::Up)
+                              || (event.code == Event::KeyboardKey::PageUp);
+
+        // The keys move the thumb in the same direction as scrolling, which is reversed when min and max are swapped
+        if (increase != m_invertedDirection)
+            setValue(m_value + change);
+        else
+            setValue(m_value - change);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool Slider::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if (isSliderKeyPress(event))
+            return true;
+
+        return Widget::canHandleKeyPress(event);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

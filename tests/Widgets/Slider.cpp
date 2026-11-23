@@ -225,6 +225,44 @@ TEST_CASE("[Slider]")
         REQUIRE(!slider->getInvertedDirection());
     }
 
+    SECTION("Changing the value with the keyboard")
+    {
+        tgui::Event::KeyEvent keyEvent;
+        keyEvent.alt = false;
+        keyEvent.control = false;
+        keyEvent.shift = false;
+        keyEvent.system = false;
+        const auto pressKey = [&](tgui::Event::KeyboardKey key)
+        {
+            keyEvent.code = key;
+            slider->keyPressed(keyEvent);
+            return slider->getValue();
+        };
+
+        // The minimum is 10, the maximum is 20 and the step is 1
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Right) == 16);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Up) == 17);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Left) == 16);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Down) == 15);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::End) == 20);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Right) == 20);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Home) == 10);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Down) == 10);
+
+        // Page up and page down change the value by a tenth of the range, but at least by one step
+        slider->setMaximum(110);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::PageUp) == 20);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::PageDown) == 10);
+
+        // The keys follow the direction of the slider
+        slider->setInvertedDirection(true);
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Left) == 11);
+
+        // Keys with modifiers aren't used
+        keyEvent.control = true;
+        REQUIRE(pressKey(tgui::Event::KeyboardKey::Left) == 11);
+    }
+
     SECTION("ChangeValueOnScroll")
     {
         REQUIRE(slider->getChangeValueOnScroll());
