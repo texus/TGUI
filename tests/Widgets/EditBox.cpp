@@ -172,6 +172,80 @@ TEST_CASE("[EditBox]")
         REQUIRE(!editBox->isReadOnly());
     }
 
+    SECTION("Characters with multiple code points")
+    {
+        // On Windows, the caret moves over an "e" with a combining accent as a single character
+#if defined(TGUI_SYSTEM_WINDOWS)
+        constexpr std::size_t accentedLength = 2;
+#else
+        constexpr std::size_t accentedLength = 1;
+#endif
+        tgui::Event::KeyEvent keyEvent;
+        keyEvent.alt = false;
+        keyEvent.control = false;
+        keyEvent.shift = false;
+        keyEvent.system = false;
+
+        editBox->setText(U"ae\u0301b");
+        editBox->setCaretPosition(3);
+
+        keyEvent.code = tgui::Event::KeyboardKey::Left;
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getCaretPosition() == 3 - accentedLength);
+
+        keyEvent.code = tgui::Event::KeyboardKey::Right;
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getCaretPosition() == 3);
+
+        keyEvent.code = tgui::Event::KeyboardKey::Backspace;
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getText() == tgui::String(U"ae\u0301b").erase(3 - accentedLength, accentedLength));
+
+        editBox->setText(U"ae\u0301b");
+        editBox->setCaretPosition(1);
+        keyEvent.code = tgui::Event::KeyboardKey::Delete;
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getText() == tgui::String(U"ae\u0301b").erase(1, accentedLength));
+    }
+
+    SECTION("Moving by words")
+    {
+        // On Windows, moving to the next word places the caret at the start of that word instead of at the end of the word
+#if defined(TGUI_SYSTEM_WINDOWS)
+        constexpr bool nextWordStart = true;
+#else
+        constexpr bool nextWordStart = false;
+#endif
+        tgui::Event::KeyEvent keyEvent;
+        keyEvent.alt = false;
+        keyEvent.control = false;
+        keyEvent.shift = false;
+        keyEvent.system = false;
+#ifdef TGUI_SYSTEM_MACOS
+        keyEvent.alt = true;
+#else
+        keyEvent.control = true;
+#endif
+        editBox->setText("Cafe deja vu");
+        editBox->setCaretPosition(0);
+
+        keyEvent.code = tgui::Event::KeyboardKey::Right;
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getCaretPosition() == (nextWordStart ? 5 : 4));
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getCaretPosition() == (nextWordStart ? 10 : 9));
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getCaretPosition() == 12);
+
+        keyEvent.code = tgui::Event::KeyboardKey::Left;
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getCaretPosition() == 10);
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getCaretPosition() == 5);
+        editBox->keyPressed(keyEvent);
+        REQUIRE(editBox->getCaretPosition() == 0);
+    }
+
     SECTION("Suffix")
     {
         REQUIRE(editBox->getSuffix().empty());

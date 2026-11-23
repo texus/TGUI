@@ -32,8 +32,6 @@
     #include <TGUI/WindowsIMM.hpp>
 #endif
 
-#include <thread>
-
 namespace
 {
     [[nodiscard]] tgui::Event::KeyboardKey convertKeyCode(sf::Keyboard::Key key)
@@ -363,7 +361,7 @@ namespace tgui
                 if (eventProcessed || refreshRequired)
                     break;
 
-                std::this_thread::sleep_for(std::chrono::nanoseconds(getTimerWakeUpTime()));
+                waitForEvents(getTimerWakeUpTime());
             }
 
             if (!windowOpen)
@@ -823,6 +821,14 @@ namespace tgui
         std::static_pointer_cast<BackendSFML>(getBackend())->setGuiWindow(this, m_window);
 
         updateContainerSize();
+
+#ifdef TGUI_SYSTEM_WINDOWS
+    #if SFML_VERSION_MAJOR >= 3
+        setAccessibilityWindowHandle(m_window->getNativeHandle());
+    #else
+        setAccessibilityWindowHandle(m_window->getSystemHandle());
+    #endif
+#endif
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

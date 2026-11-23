@@ -27,6 +27,7 @@ endif()
 
 set(TEST_SOURCES
     AbsoluteOrRelativeValue.cpp
+    Accessibility.cpp
     Animation.cpp
     Clipboard.cpp
     Clipping.cpp
@@ -55,6 +56,7 @@ set(TEST_SOURCES
     SvgImage.cpp
     Tests.cpp
     Text.cpp
+    TextBoundaries.cpp
     Texture.cpp
     TextureManager.cpp
     Timer.cpp

@@ -3,6 +3,13 @@ TGUI 1.14  (TBD)
 
 - New backends: `SDL_VULKAN` and `GLFW_VULKAN`
 - New widget: LinkLabel
+- Widgets can be used with screen readers on Windows (via UI Automation)
+- On Windows, the caret in EditBox and TextArea moves over characters that consist of multiple code points as a whole
+- On Windows, moving the caret to the next word places it at the start of that word, like in native Windows controls
+- Radio buttons in the same container are a single tab stop, arrow keys move between them and check them
+- ProgressBar, SeparatorLine and Scrollbar can no longer receive focus
+- Tabs and VerticalTabs can be navigated with the arrow keys, home and end
+- The value of a Slider can be changed with the arrow keys, page up, page down, home and end
 - Bound layouts didn't take widget scale factors into account
 - Fixed possible text corruption when switching between fonts
 

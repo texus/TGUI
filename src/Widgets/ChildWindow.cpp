@@ -474,6 +474,8 @@ namespace tgui
 
         // Reposition the images and text
         setPosition(m_position);
+
+        onAccessibleTextChange.emit(this, title);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

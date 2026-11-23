@@ -29,6 +29,7 @@
 
 #include <TGUI/Backend/Renderer/BackendRenderTarget.hpp>
 
+#include <TGUI/AccessibleRole.hpp>
 #include <TGUI/Any.hpp>
 #include <TGUI/CopiedPtr.hpp>
 #include <TGUI/Cursor.hpp>
@@ -773,6 +774,65 @@ namespace tgui
         [[nodiscard]] String getWidgetName() const;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the role of the widget that is reported to screen readers and other assistive technology
+        ///
+        /// @param role  What kind of control the widget is
+        ///
+        /// By default, the role is AccessibleRole::Default which means that the role is determined by the type of the widget.
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAccessibleRole(AccessibleRole role);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the role of the widget that is reported to screen readers and other assistive technology
+        ///
+        /// @return Role that was set with setAccessibleRole, or AccessibleRole::Default if the role depends on the widget type
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [[nodiscard]] AccessibleRole getAccessibleRole() const;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the name of the widget that is read by screen readers and other assistive technology
+        ///
+        /// @param name  Name that tells the user what the widget is used for
+        ///
+        /// If no accessible name is set then widgets that display text (e.g. a Button or Label) use that text instead.
+        /// Other widgets use the text of a Label that is directly in front of them in their parent, or else the widget name.
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAccessibleName(const String& name);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the name of the widget that is read by screen readers and other assistive technology
+        ///
+        /// @return Name that was set with setAccessibleName, or an empty string if no name was set
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [[nodiscard]] const String& getAccessibleName() const;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Changes the description of the widget that is read by screen readers and other assistive technology
+        ///
+        /// @param description  Text that explains the widget in more detail than its name
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAccessibleDescription(const String& description);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// @brief Returns the description of the widget that is read by screen readers and other assistive technology
+        ///
+        /// @return Description that was set with setAccessibleDescription, or an empty string if no description was set
+        ///
+        /// @since TGUI 1.14
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        [[nodiscard]] const String& getAccessibleDescription() const;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// @brief Changes which mouse cursor is shown when hovering over the widget
         ///
         /// @param cursor  The cursor to show when the mouse is on top of the widget
@@ -1219,6 +1279,12 @@ namespace tgui
         /// Optional parameter: animation type
         SignalAnimationType onAnimationFinish = {"AnimationFinished"};
 
+        SignalBool onVisibilityChange = {"VisibilityChanged"};       //!< The widget was shown or hidden. Optional parameter: new visibility. @since TGUI 1.14
+        SignalBool onEnabledChange = {"EnabledChanged"};             //!< The widget was enabled or disabled. Optional parameter: new state. @since TGUI 1.14
+        Signal onAccessibilityChange = {"AccessibilityChanged"};     //!< The accessible role, name or description changed. @since TGUI 1.14
+        SignalString onAccessibleTextChange = {"AccessibleTextChanged"}; //!< The text shown by the widget changed (e.g. the caption of a button). Optional parameter: new text. @since TGUI 1.14
+        Signal onChildrenChange = {"ChildrenChanged"};               //!< Widgets were added to or removed from the container, or their order changed. @since TGUI 1.14
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     protected:
@@ -1309,6 +1375,9 @@ namespace tgui
         AutoLayout m_autoLayout = AutoLayout::Manual;
         bool m_autoLayoutUpdateEnabled = true;
         bool m_ignoreMouseEvents = false;
+        AccessibleRole m_accessibleRole = AccessibleRole::Default;
+        String m_accessibleName;
+        String m_accessibleDescription;
 
         // Cached renderer properties
         Font m_fontCached = Font::getGlobalFont();

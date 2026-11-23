@@ -33,8 +33,14 @@
 
 #include <chrono>
 #include <stack>
+#include <memory>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace tgui::priv
+{
+    class AccessibilityBackend;
+} // namespace tgui::priv
 
 namespace tgui
 {
@@ -705,6 +711,20 @@ namespace tgui
         virtual void updateContainerSize();
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Exposes the gui to the accessibility api of the operating system, e.g. UI Automation on Windows.
+        // Derived classes should call this function as soon as they know the window, and call it with a nullptr when the
+        // window is about to be destroyed. The handle is an HWND on Windows. Nothing happens on unsupported platforms.
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void setAccessibilityWindowHandle(void* nativeWindowHandle);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Sleeps until the timeout expires, but wakes up earlier when a message arrives for the window if the platform
+        // supports it. Main loops that would otherwise sleep should call this, as assistive technology waits for the window
+        // to answer its requests and would otherwise be delayed by the sleep.
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        void waitForEvents(Duration timeout);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Used when the NumLock is off to translate keypad key events to key events for text cursor navigation.
         // The key parameter should be a value from Numpad0 to Numpad9 and the output is the key code that corresponds to the
         // wanted functionality (e.g. for Numpad0 we return the Insert key). Unknown is returned for Numpad5.
@@ -747,6 +767,9 @@ namespace tgui
         std::stack<Cursor::Type> m_overrideMouseCursors;
 
         std::shared_ptr<BackendRenderTarget> m_backendRenderTarget = nullptr;
+
+        std::unique_ptr<priv::AccessibilityBackend> m_accessibilityBackend;
+        void* m_accessibilityWindowHandle = nullptr;
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

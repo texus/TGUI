@@ -253,6 +253,9 @@ namespace tgui
     {
 #ifdef TGUI_SYSTEM_WINDOWS
         WindowsIMM::initialize();
+
+        // Expose the widgets to screen readers via the window that raylib created
+        setAccessibilityWindowHandle(GetWindowHandle());
 #endif
     }
 

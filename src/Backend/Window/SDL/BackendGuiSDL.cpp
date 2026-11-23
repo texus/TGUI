@@ -32,6 +32,12 @@
 #include <cmath>
 #include <thread>
 
+#if defined(TGUI_SYSTEM_WINDOWS) && (SDL_MAJOR_VERSION < 3)
+    // Older SDL versions include windows.h from SDL_syswm.h while they changed the struct packing, so it is included first
+    #include <TGUI/extlibs/IncludeWindows.hpp>
+    #include <SDL_syswm.h>
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace tgui
@@ -861,6 +867,19 @@ namespace tgui
         std::static_pointer_cast<BackendSDL>(getBackend())->setGuiWindow(this, window);
 
         updateContainerSize();
+
+#ifdef TGUI_SYSTEM_WINDOWS
+        // Expose the widgets to screen readers via the native window
+    #if SDL_MAJOR_VERSION >= 3
+        setAccessibilityWindowHandle(
+            SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr));
+    #else
+        SDL_SysWMinfo windowInfo;
+        SDL_VERSION(&windowInfo.version);
+        if (SDL_GetWindowWMInfo(window, &windowInfo) && (windowInfo.subsystem == SDL_SYSWM_WINDOWS))
+            setAccessibilityWindowHandle(windowInfo.info.win.window);
+    #endif
+#endif
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

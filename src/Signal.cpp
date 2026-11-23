@@ -75,8 +75,19 @@ namespace tgui
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    void Signal::setAccessibilityHandler(std::function<void()> handler)
+    {
+        m_accessibilityHandler = std::move(handler);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     bool Signal::emit(const Widget* widget)
     {
+        // Assistive technology is always informed, even when the signal is disabled or has no other handlers
+        if (m_accessibilityHandler)
+            m_accessibilityHandler();
+
         if (m_handlers.empty() || !m_enabled)
             return false;
 
@@ -101,7 +112,7 @@ namespace tgui
 
     bool SignalChildWindow::emit(ChildWindow* childWindow)
     {
-        if (m_handlers.empty())
+        if (m_handlers.empty() && !m_accessibilityHandler)
             return false;
 
         m_parameters[1] = static_cast<const void*>(&childWindow);
@@ -119,7 +130,7 @@ namespace tgui
 
     bool SignalItem::emit(const Widget* widget, int index, const String& item, const String& id)
     {
-        if (m_handlers.empty())
+        if (m_handlers.empty() && !m_accessibilityHandler)
             return false;
 
         m_parameters[1] = static_cast<const void*>(&index);
@@ -132,7 +143,7 @@ namespace tgui
 
     bool SignalPanelListBoxItem::emit(const Widget* widget, int index, const std::shared_ptr<Panel>& panel, const String& id)
     {
-        if (m_handlers.empty())
+        if (m_handlers.empty() && !m_accessibilityHandler)
             return false;
 
         m_parameters[1] = static_cast<const void*>(&index);
@@ -152,7 +163,7 @@ namespace tgui
 
     bool SignalFileDialogPaths::emit(const Widget* widget, const std::vector<Filesystem::Path>& paths)
     {
-        if (m_handlers.empty())
+        if (m_handlers.empty() && !m_accessibilityHandler)
             return false;
 
         assert(!paths.empty());
@@ -167,7 +178,7 @@ namespace tgui
 
     bool SignalShowEffect::emit(const Widget* widget, ShowEffectType type, bool visible)
     {
-        if (m_handlers.empty())
+        if (m_handlers.empty() && !m_accessibilityHandler)
             return false;
 
         m_parameters[1] = static_cast<const void*>(&type);
@@ -179,7 +190,7 @@ namespace tgui
 
     bool SignalAnimationType::emit(const Widget* widget, AnimationType type)
     {
-        if (m_handlers.empty())
+        if (m_handlers.empty() && !m_accessibilityHandler)
             return false;
 
         m_parameters[1] = static_cast<const void*>(&type);
@@ -190,7 +201,7 @@ namespace tgui
 
     bool SignalItemHierarchy::emit(const Widget* widget, const String& item, const std::vector<String>& fullItem)
     {
-        if (m_handlers.empty())
+        if (m_handlers.empty() && !m_accessibilityHandler)
             return false;
 
         m_parameters[1] = static_cast<const void*>(&item);

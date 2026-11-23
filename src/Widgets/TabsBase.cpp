@@ -31,6 +31,20 @@
 
 namespace tgui
 {
+    namespace
+    {
+        // Returns whether a key was pressed that selects a different tab: an arrow key, home or end, without modifiers
+        [[nodiscard]] bool isTabNavigationKeyPress(const Event::KeyEvent& event)
+        {
+            if (event.control || event.alt || event.shift || event.system)
+                return false;
+
+            return (event.code == Event::KeyboardKey::Left) || (event.code == Event::KeyboardKey::Right)
+                   || (event.code == Event::KeyboardKey::Up) || (event.code == Event::KeyboardKey::Down)
+                   || (event.code == Event::KeyboardKey::Home) || (event.code == Event::KeyboardKey::End);
+        }
+    } // anonymous namespace
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     TabsBase::TabsBase(const char* typeName, bool initRenderer) :
@@ -422,6 +436,58 @@ namespace tgui
             m_hoveringTab = -1;
             updateTextColors();
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void TabsBase::keyPressed(const Event::KeyEvent& event)
+    {
+        if (!isTabNavigationKeyPress(event) || m_tabs.empty())
+            return;
+
+        // Find where to start searching and in which direction. Tabs that can't be selected are skipped.
+        const int lastIndex = static_cast<int>(m_tabs.size()) - 1;
+        int index;
+        int step;
+        if (event.code == Event::KeyboardKey::Home)
+        {
+            index = 0;
+            step = 1;
+        }
+        else if (event.code == Event::KeyboardKey::End)
+        {
+            index = lastIndex;
+            step = -1;
+        }
+        else if ((event.code == Event::KeyboardKey::Left) || (event.code == Event::KeyboardKey::Up))
+        {
+            index = (m_selectedTab >= 0) ? (m_selectedTab - 1) : lastIndex;
+            step = -1;
+        }
+        else // Right or Down
+        {
+            index = m_selectedTab + 1;
+            step = 1;
+        }
+
+        for (; (index >= 0) && (index <= lastIndex); index += step)
+        {
+            if (m_tabs[static_cast<std::size_t>(index)].visible && m_tabs[static_cast<std::size_t>(index)].enabled)
+            {
+                select(static_cast<std::size_t>(index));
+                return;
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    bool TabsBase::canHandleKeyPress(const Event::KeyEvent& event)
+    {
+        if (isTabNavigationKeyPress(event))
+            return true;
+
+        return Widget::canHandleKeyPress(event);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

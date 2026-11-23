@@ -263,6 +263,50 @@ TEST_CASE("[Tabs]")
         REQUIRE(!tabs->getTabEnabled(2)); // Tab that doesn't exist can't be enabled
     }
 
+    SECTION("Selecting with the keyboard")
+    {
+        tabs->add("0");
+        tabs->add("1");
+        tabs->add("2");
+        tabs->add("3");
+        tabs->setTabEnabled(2, false);
+        tabs->select(0);
+
+        tgui::Event::KeyEvent keyEvent;
+        keyEvent.alt = false;
+        keyEvent.control = false;
+        keyEvent.shift = false;
+        keyEvent.system = false;
+
+        // Tabs that are disabled are skipped and the selection doesn't wrap around
+        keyEvent.code = tgui::Event::KeyboardKey::Right;
+        REQUIRE(tabs->canHandleKeyPress(keyEvent));
+        tabs->keyPressed(keyEvent);
+        REQUIRE(tabs->getSelectedIndex() == 1);
+        tabs->keyPressed(keyEvent);
+        REQUIRE(tabs->getSelectedIndex() == 3);
+        tabs->keyPressed(keyEvent);
+        REQUIRE(tabs->getSelectedIndex() == 3);
+
+        keyEvent.code = tgui::Event::KeyboardKey::Left;
+        tabs->keyPressed(keyEvent);
+        REQUIRE(tabs->getSelectedIndex() == 1);
+
+        keyEvent.code = tgui::Event::KeyboardKey::End;
+        tabs->keyPressed(keyEvent);
+        REQUIRE(tabs->getSelectedIndex() == 3);
+
+        keyEvent.code = tgui::Event::KeyboardKey::Home;
+        tabs->keyPressed(keyEvent);
+        REQUIRE(tabs->getSelectedIndex() == 0);
+
+        // Keys with modifiers aren't used
+        keyEvent.code = tgui::Event::KeyboardKey::Right;
+        keyEvent.control = true;
+        tabs->keyPressed(keyEvent);
+        REQUIRE(tabs->getSelectedIndex() == 0);
+    }
+
     SECTION("TextSize")
     {
         tabs->setTextSize(12);
